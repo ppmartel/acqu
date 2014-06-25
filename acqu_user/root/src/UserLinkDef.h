@@ -26,6 +26,7 @@
 #pragma link C++ class TA2UserAnalysis+;
 
 // Physics classes
+#pragma link C++ class TA2PhysicsPMartel+;
 #pragma link C++ class TA2Pi0Compton+;
 #pragma link C++ class TA2OnlinePhys+;
 #pragma link C++ class TA2UserPhysics+;
