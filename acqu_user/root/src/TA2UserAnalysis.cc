@@ -32,6 +32,7 @@
 #include "TA2TriggerPhysics.h"
 #include "TA2Pi0Compton.h"
 #include "TA2OnlinePhys.h"
+#include "TA2PhysicsPMartel.h"
 #include "TA2GenericApp.h"
 #include "TA2BeamPolMon.h"
 #include "TA2MyCaLib.h"
@@ -60,6 +61,7 @@ enum {
   EA2TriggerPhysics,
   EA2Pi0Compton,
   EA2OnlinePhys,
+  EA2PhysicsPMartel,
   EA2MyCaLib, 
   EA2GeomCalibPhysics,
   EA2TAPSAnalysis };
@@ -78,6 +80,7 @@ static const Map_t kKnownChild[] =
   {"TA2GenericApp",       EA2GenericApp},  
   {"TA2BeamPolMon",       EA2BeamPolMon},  
   //Physics
+  {"TA2PhysicsPMartel",   EA2PhysicsPMartel},
   {"TA2GeomCalibPhysics", EA2GeomCalibPhysics},
   {"TA2Pi0Compton",       EA2Pi0Compton},
   {"TA2OnlinePhys",		  EA2OnlinePhys},
@@ -150,6 +153,9 @@ TA2DataManager* TA2UserAnalysis::CreateChild(const char* name, Int_t a)
     return new TA2BeamPolMon(name, this);
 
    //Physics stuff:
+   case EA2PhysicsPMartel:
+    // Phil's Physics class
+    return new TA2PhysicsPMartel( name, this );
    case EA2Pi0Compton:
     // Cristina's Physics class
     return new TA2Pi0Compton( name, this );
