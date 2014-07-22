@@ -43,11 +43,6 @@ class TA2PhysicsPMartel : public TA2AccessSQL {
   TTree* fPartTree;              // Part Tree
   TTree* fScalTree;              // Scal Tree
 
-  Bool_t fMCInOpen;              // MCIn Tree
-  TFile* fMCInFile;
-  TString fMCInFileName;
-  TTree* fMCInTree;
-
   Char_t fCutNaIPIDName[100];
   Char_t fCutNaIPIDFile[100];
   TCutG *fCutNaIPID;
@@ -295,45 +290,6 @@ class TA2PhysicsPMartel : public TA2AccessSQL {
   Float_t* fEtaPh;
   Float_t* fEtaTm;
   Float_t* fEtaOA;
-
-  Float_t fBeamEk;
-  Float_t fBeamCMEk;
-
-  Float_t fRecoEk;
-  Float_t fRecoTh;
-  Float_t fRecoPh;
-  Float_t fRecoCMEk;
-  Float_t fRecoCMTh;
-  Float_t fRecoCMPh;
-
-  Float_t fScatEk;
-  Float_t fScatTh;
-  Float_t fScatPh;
-  Float_t fScatCMEk;
-  Float_t fScatCMTh;
-  Float_t fScatCMPh;
-
-  Float_t fDec1Ek;
-  Float_t fDec1Th;
-  Float_t fDec1Ph;
-  Float_t fDec1CMEk;
-  Float_t fDec1CMTh;
-  Float_t fDec1CMPh;
-
-  Float_t fDec2Ek;
-  Float_t fDec2Th;
-  Float_t fDec2Ph;
-  Float_t fDec2CMEk;
-  Float_t fDec2CMTh;
-  Float_t fDec2CMPh;
-
-  Float_t fMissMa;
-  Float_t fScatOA;
-
-  TLorentzVector *lvScat;
-  TLorentzVector *lvScatCM;
-  TLorentzVector *lvReco;
-  TLorentzVector *lvRecoCM;
 
   Int_t* fTaggCh;                // Tagged variables
   Float_t* fTaggEk;

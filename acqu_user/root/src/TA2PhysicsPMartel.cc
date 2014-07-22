@@ -29,7 +29,6 @@ TA2PhysicsPMartel::TA2PhysicsPMartel( const char* name, TA2Analysis* analysis ):
   // Default null pointers, zeroed variables
 
   fTreeSave = false;
-  fMCInOpen = false;
 
   fIsCutNaIPID = false;
   fCanCutNaIPID = false;
@@ -275,9 +274,6 @@ TA2PhysicsPMartel::~TA2PhysicsPMartel() {
   delete fScalTree;
   delete fPartTree;
   delete fTreeFile;
-  
-  delete fMCInTree;
-  delete fMCInFile;
   
 }
 
@@ -535,11 +531,6 @@ void TA2PhysicsPMartel::PostInit() {
   fEtaTm = new Float_t[maxparticle];
   fEtaOA = new Float_t[maxparticle];
 
-  lvScat = new TLorentzVector();
-  lvScatCM = new TLorentzVector();
-  lvReco = new TLorentzVector();
-  lvRecoCM = new TLorentzVector();
-
   // Maximum # of tagger hits
   Int_t maxtagg = 0;
   if ( fTAGG ) {
@@ -601,7 +592,7 @@ void TA2PhysicsPMartel::PostInit() {
     TString sDir = gAR->GetTreeDir();
     TString sFile;
     if ( gAR->IsOnline() ) sFile = gAR->GetFileName();
-    else sFile = gAR->GetTreeFile()->GetName();
+    else sFile = gAR->GetTreeFileList(0);
     while(sFile.Contains("/")) sFile.Remove(0,1+sFile.Index("/"));
     sFile.ReplaceAll(".root",".tree.root");
     sFile.ReplaceAll(".dat",".tree.root");
@@ -860,57 +851,6 @@ void TA2PhysicsPMartel::Reconstruct() {
   // corresponding to PDG index ipdg.
   // This one deals with pion and eta photoproduction on the nucleon.
 
-  if ( ( gAR->GetProcessType() == EMCProcess ) && !fMCInOpen ) {
-    fMCInOpen = true;
-    fMCInFileName = gAR->GetTreeFile()->GetName();
-    fMCInFileName.Replace(fMCInFileName.Index("mc"),2,"eg");
-    fMCInFileName.Insert(fMCInFileName.Index(".root"),".tree");
-
-    cout << fMCInFileName << endl;
-
-    fMCInFile = new TFile(fMCInFileName,"READ");
-    fMCInTree = (TTree*)fMCInFile->Get("OutTree");
-    fMCInTree->SetBranchAddress("Phot",&fBeamEk);
-    fMCInTree->SetBranchAddress("PhotCM",&fBeamCMEk);
-    fMCInTree->SetBranchAddress("Reco",&lvReco);
-    fMCInTree->SetBranchAddress("RecoCM",&lvRecoCM);
-
-    if ( fMCInFileName.Contains("comp") ) {
-      fMCInTree->SetBranchAddress("Scat",&lvScat);
-      fMCInTree->SetBranchAddress("ScatCM",&lvScatCM);
-    }
-    else if ( fMCInFileName.Contains("pipn") ) {
-      fMCInTree->SetBranchAddress("PiP",&lvScat);
-      fMCInTree->SetBranchAddress("PiPCM",&lvScatCM);
-    }
-    else {
-      fMCInTree->SetBranchAddress("Pi0",&lvScat);
-      fMCInTree->SetBranchAddress("Pi0CM",&lvScatCM);
-    }
-
-    if ( fTreeSave ) {
-      fPartTree->Branch("BeamEk", &fBeamEk, "BeamEk/F");
-      fPartTree->Branch("BeamCMEk", &fBeamCMEk, "BeamCMEk/F");
-
-      fPartTree->Branch("RecoEk", &fRecoEk, "RecoEk/F");
-      fPartTree->Branch("RecoTh", &fRecoTh, "RecoTh/F");
-      fPartTree->Branch("RecoPh", &fRecoPh, "RecoPh/F");
-      fPartTree->Branch("RecoCMEk", &fRecoCMEk, "RecoCMEk/F");
-      fPartTree->Branch("RecoCMTh", &fRecoCMTh, "RecoCMTh/F");
-      fPartTree->Branch("RecoCMPh", &fRecoCMPh, "RecoCMPh/F");
-
-      fPartTree->Branch("ScatEk", &fScatEk, "ScatEk/F");
-      fPartTree->Branch("ScatTh", &fScatTh, "ScatTh/F");
-      fPartTree->Branch("ScatPh", &fScatPh, "ScatPh/F");
-      fPartTree->Branch("ScatCMEk", &fScatCMEk, "ScatCMEk/F");
-      fPartTree->Branch("ScatCMTh", &fScatCMTh, "ScatCMTh/F");
-      fPartTree->Branch("ScatCMPh", &fScatCMPh, "ScatCMPh/F");
-
-      fPartTree->Branch("MissMa", &fMissMa, "MissMa/F");
-      fPartTree->Branch("ScatOA", &fScatOA, "ScatOA/F");
-    }
-  }
-
   Int_t i, j, k, l;
 
   Int_t ncb = 0;
@@ -1117,14 +1057,6 @@ void TA2PhysicsPMartel::Reconstruct() {
     fErrorTrlr[i] = fError->fTrailer;
   }
 
-  fBeamEk = fBeamCMEk = 0;
-  fRecoEk = fRecoTh = fRecoPh = fRecoCMEk = fRecoCMTh = fRecoCMPh = 0;
-  fScatEk = fScatTh = fScatPh = fScatCMEk = fScatCMTh = fScatCMPh = 0;
-  fDec1Ek = fDec1Th = fDec1Ph = fDec1CMEk = fDec1CMTh = fDec1CMPh = 0;
-  fDec2Ek = fDec2Th = fDec2Ph = fDec2CMEk = fDec2CMTh = fDec2CMPh = 0;
-  fMissMa = 0;
-  fScatOA = 180;
-
   MarkEndBuffer();
 
   // Sort 4-momenta provided by apparati according to particle type
@@ -1270,7 +1202,6 @@ void TA2PhysicsPMartel::Reconstruct() {
     break;
   }
 
-  TA2Particle fTagged;
   TA2Particle fNeutral;
   TA2Particle fCharged;
   TA2Particle fPion;
@@ -1393,47 +1324,6 @@ void TA2PhysicsPMartel::Reconstruct() {
     fEtaPh[i] = (Float_t)fEta.GetPhiDg();
     fEtaTm[i] = (Float_t)fEta.GetTime();
     fEtaOA[i] = (Float_t)(fDecay1.GetVect()).Angle(fDecay2.GetVect())*TMath::RadToDeg();
-  }
-
-  if ( gAR->GetProcessType() == EMCProcess ) {
-    fMCInTree->GetEntry(((TA2Analysis*)fParent)->GetNEvent());
-    // Should be minus one, but there's a discrepancy between eg and mc numbers
-    //fMCInTree->GetEntry();
-
-    fScatEk = (lvScat->E()-lvScat->M());
-    fScatCMEk = (lvScatCM->E()-lvScatCM->M());
-
-    fRecoEk = (lvReco->E()-lvReco->M());
-    fRecoTh = (TMath::RadToDeg()*lvReco->Theta());
-    fRecoPh = (TMath::RadToDeg()*lvReco->Phi());
-    fRecoCMEk = (lvRecoCM->E()-lvRecoCM->M());
-    fRecoCMTh = (TMath::RadToDeg()*lvRecoCM->Theta());
-    fRecoCMPh = (TMath::RadToDeg()*lvRecoCM->Phi());
-
-    fScatEk = (lvScat->E()-lvScat->M());
-    fScatTh = (TMath::RadToDeg()*lvScat->Theta());
-    fScatPh = (TMath::RadToDeg()*lvScat->Phi());
-    fScatCMEk = (lvScatCM->E()-lvScatCM->M());
-    fScatCMTh = (TMath::RadToDeg()*lvScatCM->Theta());
-    fScatCMPh = (TMath::RadToDeg()*lvScatCM->Phi());
-
-    if ( fNneut>=1 && fNchar>=1 ) {
-      TLorentzVector lvPhotD(0,0,fBeamEk,fBeamEk);
-      TLorentzVector lvTargD(0,0,0,(fParticleID->GetMassMeV(kProton)));
-      TLorentzVector lvScatD(fCharPx[0],fCharPy[0],fCharPz[0],fCharEk[0]+(fParticleID->GetMassMeV(kPiPlus)));
-      lvScatD.SetRho(TMath::Sqrt((TMath::Power((fCharEk[0]+(fParticleID->GetMassMeV(kPiPlus))),2))-(TMath::Power((fParticleID->GetMassMeV(kPiPlus)),2))));
-      TLorentzVector lvRecoD(fNeutPx[0],fNeutPy[0],fNeutPz[0],fNeutEk[0]+(fParticleID->GetMassMeV(kNeutron)));
-      lvRecoD.SetRho(TMath::Sqrt((TMath::Power((fNeutEk[0]+(fParticleID->GetMassMeV(kNeutron))),2))-(TMath::Power((fParticleID->GetMassMeV(kNeutron)),2))));
-
-      TLorentzVector lvMissD = lvPhotD+lvTargD-lvScatD;
-      fMissMa = lvMissD.M();
-
-      fScatOA = (Float_t)(lvMissD.Vect()).Angle(lvRecoD.Vect())*TMath::RadToDeg();
-    }
-    else{
-      fMissMa = 0;
-      fScatOA = 180;
-    }
   }
 
   if ( fTreeSave ) fPartTree->Fill();
