@@ -1,0 +1,55 @@
+## Server file for running Tagger + CB 
+########################################################################
+## Number of Input streams (sources of data), Record length to write data
+## and switch 0/1 = no/yes to control data write
+##              Number streams	Record Len	Save Data
+Input-Streams:	12		32768		0
+##
+## Optional directory spec. If not specified File-Names must contain the full
+## directory path
+#File-Directory:	/home/a2compton/data/cosmics/
+#File-Directory:	/home/a2compton/data/cosmics_12/
+#File-Directory:	/home/a2compton/data/source/
+File-Directory:	/home/a2compton/data/source_12/
+#File-Directory:	/home/a2compton/data/source_32/
+#File-Directory:	/home/a2compton/data/PIDTest/
+##
+## Specify each network-socket input stream
+##            	Source	Format	Save?	RecLen	Buffers MkID	Swap
+#
+Stream-Spec:	File	Mk2	0	32768	32	0	400
+File-Name:	trig_0.dat	0	0
+#
+Stream-Spec:	File	Mk2	0	32768	32	0	400
+File-Name:	beam_0.dat	0	0
+#
+Stream-Spec:	File	Mk2	0	32768	32	0	400
+File-Name:	adc1a_0.dat	0	0
+#
+Stream-Spec:	File	Mk2	0	32768	32	0	400
+File-Name:	adc1b_0.dat	0	0
+#
+Stream-Spec:	File	Mk2	0	32768	32	0	400
+File-Name:	adc2a_0.dat	0	0
+#
+Stream-Spec:	File	Mk2	0	32768	32	0	400
+File-Name:	adc2b_0.dat	0	0
+#
+Stream-Spec:	File	Mk2	0	32768	32	0	400
+File-Name:	mwpca_0.dat	0	0
+#
+Stream-Spec:	File	Mk2	0	32768	32	0	400
+File-Name:	mwpcb_0.dat	0	0
+#
+Stream-Spec:	File	Mk2	0	32768	32	0	400
+File-Name:	tdca_0.dat	0	0
+#
+Stream-Spec:	File	Mk2	0	32768	32	0	400
+File-Name:	tdcb_0.dat	0	0
+#
+Stream-Spec:	File	Mk2	0	32768	32	0	400
+File-Name:	tagga_0.dat	0	0
+#
+Stream-Spec:	File	Mk2	0	32768	32	0	400
+File-Name:	taggb_0.dat	0	0
+#

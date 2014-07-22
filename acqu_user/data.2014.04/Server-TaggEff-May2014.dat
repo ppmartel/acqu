@@ -1,0 +1,45 @@
+##-----------------------------------------------------------------------
+##--Author	JRM Annand   13th Jan 2004
+##--Update	JRM Annand... 1st Dec 2004
+##--Description
+##                *** Acqu++ <-> Root ***
+## Online/Offline Analysis of Sub-Atomic Physics Experimental Data 
+##
+## Parameter File: FPcommServer.Offline
+## Configuration file for DataServer (data input for analysis)
+##
+##-----------------------------------------------------------------------
+## Number of Input streams (sources of data), Record length to write data
+## and switch 0/1 = no/yes to control data write
+##              Number streams	Record Len	Save Data
+Input-Streams:	1		32768		0
+##
+## Optional directory spec. If not specified File-Names must contain the full
+## directory path
+File-Directory:	scratch/
+##
+## Specify each input stream
+## From disk file, ACQU (Mk1) format, save any output to file (save=1)
+## Input data record length, Output data record length
+##
+##            	Source	Format	Save?	RecLen	Buffers	Swap	MarkID
+#Stream-Spec:	File	Mk1	0	32768	32	0	400
+Stream-Spec:	File	Mk2	0	32768	32	0	400
+##
+## Now the list of data files to analyse
+## Tagger test data files
+##		File Name	1st rec	Last rec
+##
+#File-Name:	TaggEff_3671.dat	0	0
+#File-Name:	TaggEff_3675.dat	0	0
+#File-Name:	TaggEff_3676.dat	0	0
+#File-Name:	TaggEff_3702.dat	0	0
+#File-Name:	TaggEff_3703.dat	0	0
+#File-Name:	TaggEff_3704.dat	0	0
+#File-Name:	TaggEff_3738.dat	0	0
+#File-Name:	TaggEff_3739.dat	0	0
+#File-Name:	TaggEff_3740.dat	0	0
+File-Name:	TaggEff_3768.dat	0	0
+File-Name:	TaggEff_3769.dat	0	0
+File-Name:	TaggEff_3770.dat	0	0
+## END

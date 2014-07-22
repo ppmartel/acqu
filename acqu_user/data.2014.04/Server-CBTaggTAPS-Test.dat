@@ -1,0 +1,53 @@
+##-----------------------------------------------------------------------
+##--Author	JRM Annand   13th Jan 2004
+##--Update	JRM Annand... 1st Dec 2004
+##--Description
+##                *** Acqu++ <-> Root ***
+## Online/Offline Analysis of Sub-Atomic Physics Experimental Data
+##
+## Parameter File: FPcommServer.Offline
+## Configuration file for DataServer (data input for analysis)
+##
+##-----------------------------------------------------------------------
+## Number of Input streams (sources of data), Record length to write data
+## and switch 0/1 = no/yes to control data write
+##              Number streams	Record Len	Save Data
+Input-Streams:	1		32768		0
+##
+## Optional directory spec. If not specified File-Names must contain the full
+## directory path
+File-Directory: scratch/
+##
+## Specify each input stream
+## From disk file, ACQU (Mk1) format, save any output to file (save=1)
+## Input data record length, Output data record length
+##
+##            	Source	Format	Save?	RecLen	Buffers	Swap	MarkID
+#Stream-Spec:	File	Mk1	0	32768	32	0	400
+Stream-Spec:	File	Mk2	0	32768	32	0	400
+##
+## Now the list of data files to analyse
+##		File Name	1st rec	Last rec
+#
+#File-Name:	CBTaggTAPS_400.dat.xz 	0	0
+#File-Name:	CBTaggTAPS_1484.dat.xz 	0	0
+#File-Name:	CBTaggTAPS_1932.dat.xz 	0	0
+#File-Name:	CBTaggTAPS_2000.dat 	0	0
+#File-Name:	CBTaggTAPS_3000.dat 	0	0
+#File-Name:	CBTaggTAPS_3154.dat 	0	0
+#File-Name:	CBTaggTAPS_3190.dat 	0	0
+#File-Name:	CBTaggTAPS_3217.dat 	0	0
+#File-Name:	CBTaggTAPS_3221.dat 	0	0
+#File-Name:	CBTaggTAPS_3261.dat 	0	0
+#File-Name:	CBTaggTAPS_3356.dat 	0	0
+#File-Name:	CBTaggTAPS_3357.dat 	0	0
+#File-Name:	CBTaggTAPS_3358.dat 	0	0
+#File-Name:	CBTaggTAPS_3359.dat 	0	0
+#File-Name:	CBTaggTAPS_3361.dat 	0	0
+#File-Name:	CBTaggTAPS_3362.dat 	0	0
+#File-Name:	CBTaggTAPS_3363.dat 	0	0
+#File-Name:	CBTaggTAPS_3364.dat 	0	0
+#File-Name:	CBTaggTAPS_3365.dat 	0	0
+#File-Name:	CBTaggTAPS_3367.dat 	0	0
+##
+## END
