@@ -1,0 +1,57 @@
+##-----------------------------------------------------------------------
+##--Author	JRM Annand   13th Jan 2004
+##--Update	JRM Annand... 1st Dec 2004
+##--Description
+##                *** Acqu++ <-> Root ***
+## Online/Offline Analysis of Sub-Atomic Physics Experimental Data 
+##
+## Parameter File: FPcommServer.Offline
+## Configuration file for DataServer (data input for analysis)
+##
+##-----------------------------------------------------------------------
+## Number of Input streams (sources of data), Record length to write data
+## and switch 0/1 = no/yes to control data write
+##              Number streams	Record Len	Save Data
+Input-Streams:	1		32768		0
+##
+## Optional directory spec. If not specified File-Names must contain the full
+## directory path
+File-Directory:	scratch/
+##
+## Specify each input stream
+## From disk file, ACQU (Mk1) format, save any output to file (save=1)
+## Input data record length, Output data record length
+##
+##            	Source	Format	Save?	RecLen	Buffers	Swap	MarkID
+#Stream-Spec:	File	Mk1	0	32768	32	0	400
+Stream-Spec:	File	Mk2	0	32768	32	0	400
+##
+## Now the list of data files to analyse
+## Tagger test data files
+##		File Name	1st rec	Last rec
+##
+#File-Name:	TaggEff_3428.dat	0	0
+#File-Name:	TaggEff_3429.dat	0	0
+#File-Name:	TaggEff_3430.dat	0	0
+#File-Name:	TaggEff_3458.dat	0	0
+#File-Name:	TaggEff_3459.dat	0	0
+#File-Name:	TaggEff_3460.dat	0	0
+#File-Name:	TaggEff_3484.dat	0	0
+#File-Name:	TaggEff_3485.dat	0	0
+#File-Name:	TaggEff_3486.dat	0	0
+#File-Name:	TaggEff_3513.dat	0	0
+#File-Name:	TaggEff_3514.dat	0	0
+#File-Name:	TaggEff_3515.dat	0	0
+#File-Name:	TaggEff_3539.dat	0	0
+#File-Name:	TaggEff_3540.dat	0	0
+#File-Name:	TaggEff_3543.dat	0	0
+#File-Name:	TaggEff_3568.dat	0	0
+#File-Name:	TaggEff_3569.dat	0	0
+#File-Name:	TaggEff_3570.dat	0	0
+#File-Name:	TaggEff_3597.dat	0	0
+#File-Name:	TaggEff_3598.dat	0	0
+#File-Name:	TaggEff_3599.dat	0	0
+File-Name:	TaggEff_3624.dat	0	0
+File-Name:	TaggEff_3625.dat	0	0
+File-Name:	TaggEff_3626.dat	0	0
+## END

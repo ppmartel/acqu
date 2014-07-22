@@ -1,0 +1,136 @@
+##-----------------------------------------------------------------------
+##--Author	JRM Annand   29th Apr 2003
+##--Update	JRM Annand... 1st Dec 2004
+##--Description
+##                *** Acqu++ <-> Root ***
+## Online/Offline Analysis of Sub-Atomic Physics Experimental Data 
+##
+## Parameter File: PhysicsPMartel.dat
+## Last stage in event-by-event analysis
+##
+##-----------------------------------------------------------------------
+##
+## Target parameters
+##	x,y,z		Mass(MeV)
+## Proton
+Target:	0. 0. 0.	938.271
+## Carbon
+#Target:	0. 0. 0.	11174.86
+##
+## Wild-card stuff for fitting combinations of particles to a reaction
+## Not fully implemented
+Permutations: 1
+##
+## Particle data group database,	max # particles
+ParticleID:				16
+##
+## Limits for meson -> N photons invariant-mass identification
+##		pi0 (MeV)	eta (MeV)
+#Mass-Limits:	40.		40.
+#Mass-Limits:	20.		40.
+Mass-Limits:	23.		40.
+##
+## Output tree to ROOT file
+##
+SaveTree: PartTree.root
+##
+#RecordRaw: 1
+#Cherenkov: 1
+##
+CutNaIPID: ProtonCut data/cuts/CB_Cut_NaI_PID.root
+#CutNaIMWPC: ProtonCut data/cuts/CB_Cut_NaI_MWPC.root
+#CutPIDMWPC: ProtonCut data/cuts/CB_Cut_PID_MWPC.root
+##
+##
+## Do some post-initialisation.
+## Should usually be done before display is setup
+Initialise:
+#
+# Cut specification...see apparatus setup, same syntax applies
+#          1/2D Name       Link Scope L/H Limits
+#Data-Cut: 1D    Nneut     AND data 1 1
+#Data-Cut: 1D    Nchar     AND data 1 1
+#
+# Old Data
+#
+#Data-Cut: 1D     SynchDif    OR data -615 -585
+#Data-Cut: 1D     SynchDif    OR data 61440 61465
+#Data-Cut: 1D     SynchDif    OR data 0 0
+#
+# New Data
+#
+Data-Cut: 1D	 SynchDif    OR	data 225 245
+Data-Cut: 1D	 SynchDif    OR	data -61830 -61810
+Data-Cut: 1D	 SynchDif    OR	data 0 0
+#
+Data-Cut: 1D    CutCompW    AND	compound-hist
+Data-Cut: 1D    Nneut	    AND	element	1 1
+Data-Cut: 1D    Nchar	    AND	element 1 1
+#
+Data-Cut: 1D    CutCompM    AND	compound-hist
+Data-Cut: 1D    Nneut	    AND	element	1 1
+Data-Cut: 1D    Nchar	    AND	element 0 0
+#
+Data-Cut: 1D    CutPionW    AND	compound-hist
+Data-Cut: 1D	Npi0	    AND	element 1 1
+Data-Cut: 1D	Nchar	    AND	element 1 1
+#
+Data-Cut: 1D    CutPionM    AND	compound-hist
+Data-Cut: 1D	Npi0	    AND	element 1 1
+Data-Cut: 1D	Nchar	    AND	element 0 0
+#
+#
+Display: 1D SynchDif 70000 -69000 1000
+Display: 2D TgRefTDC 200 0 10000 -1 CBRefTDC 200 0 10000 -1
+#
+Display: 1D Nneut	16 0 16
+Display: 1D Nchar	16 0 16
+Display: 1D Ntagg	16 0 16
+#
+Display: 1D Npi0	16 0 16
+Display: 1D Neta	16 0 16
+Display: 1D Ngprime	16 0 16
+#
+Display: 1D Nchar	16 0 16 -1 -1 CutCompW
+Display: 1D Nchar	16 0 16 -1 -1 CutPionW
+#
+Display: 1D M2g 	800 0 800
+Display: 1D M6g 	800 0 800
+#
+#Display: 1D DetNaI 3 0 3
+#Display: 1D DetPID 3 0 3
+#Display: 1D DetMWPC 3 0 3
+#
+#Display: 1D ENaI 400 0 400
+#Display: 1D EPID 100 0 10
+#Display: 1D EMWPC 400 0 2000
+#
+#Display: 2D ENaI 400 0 400 -1 EPID 100 0 10 -1
+#Display: 2D ENaI 400 0 400 -1 EMWPC 400 0 2000 -1
+#Display: 2D EPID 100 0 10 -1 EMWPC 400 0 2000 -1
+#
+#Display: 3D ENaI 400 0 400 -1 EPID 100 0 10 -1 EMWPC 400 0 2000 -1
+#
+#Display: 1D CheckNaIPID 3 0 3
+#Display: 1D CheckNaIMWPC 3 0 3
+#Display: 1D CheckPIDMWPC 3 0 3
+#Display: 1D CheckCharged 3 0 3
+#
+#Display: 3D CheckNaIPID 3 0 3 -1 CheckNaIMWPC 3 0 3 -1 CheckPIDMWPC 3 0 3 -1
+#
+#Display: 3D ENaI 400 0 400 -1 EPID 100 0 10 -1 CheckNaIPID 3 0 3 -1
+#Display: 3D ENaI 400 0 400 -1 EMWPC 400 0 2000 -1 CheckNaIPID 3 0 3 -1
+#Display: 3D EPID 100 0 10 -1 EMWPC 400 0 2000 -1 CheckNaIPID 3 0 3 -1
+#
+#Display: 3D ENaI 400 0 400 -1 EPID 100 0 10 -1 CheckNaIMWPC 3 0 3 -1
+#Display: 3D ENaI 400 0 400 -1 EMWPC 400 0 2000 -1 CheckNaIMWPC 3 0 3 -1
+#Display: 3D EPID 100 0 10 -1 EMWPC 400 0 2000 -1 CheckNaIMWPC 3 0 3 -1
+#
+#Display: 3D ENaI 400 0 400 -1 EPID 100 0 10 -1 CheckPIDMWPC 3 0 3 -1
+#Display: 3D ENaI 400 0 400 -1 EMWPC 400 0 2000 -1 CheckPIDMWPC 3 0 3 -1
+#Display: 3D EPID 100 0 10 -1 EMWPC 400 0 2000 -1 CheckPIDMWPC 3 0 3 -1
+#
+#Display: 3D ENaI 400 0 400 -1 EPID 100 0 10 -1 CheckCharged 3 0 3 -1
+#Display: 3D ENaI 400 0 400 -1 EMWPC 400 0 2000 -1 CheckCharged 3 0 3 -1
+#Display: 3D EPID 100 0 10 -1 EMWPC 400 0 2000 -1 CheckCharged 3 0 3 -1
+#
