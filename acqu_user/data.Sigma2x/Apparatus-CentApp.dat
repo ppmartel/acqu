@@ -15,25 +15,13 @@
 ##
 ## Specify list of detectors which constitute the Crystal Ball apparatus
 ##	  Name       Class Name		Setup file
-## Sep2010
-#Detector: NaI        TA2CalArray	./data/CB_NaI_26639-27254.dat
-#Detector: NaI        TA2CalArray	./data/CB_NaI_27255-27367.dat
-#Detector: PID        TA2PlasticPID	./data/CB_PID_26639-27367.dat
-#Detector: CylMWPC    TA2CylMwpc		./data/CB_MWPC_26639-27367.dat
 ##
-## Jan2011
-#Detector: NaI        TA2CalArray	./data/CB_NaI_35253-35295.dat
-#Detector: NaI        TA2CalArray	./data/CB_NaI_35299-35335.dat
-#Detector: NaI        TA2CalArray	./data/CB_NaI_35339-35472.dat
-#Detector: PID        TA2PlasticPID	./data/CB_PID_35253-35472.dat
-#Detector: CylMWPC    TA2CylMwpc		./data/CB_MWPC_35253-35472.dat
+Detector: NaI        TA2CalArray	Detector-NaI.dat
+Detector: PID        TA2PlasticPID	Detector-PID.dat
+Detector: CylMWPC    TA2CylMwpc		Detector-MWPC.dat
 ##
-## Feb2011
-#Detector: NaI        TA2CalArray	./data/CB_NaI_35532-35695.dat
-#Detector: NaI        TA2CalArray	./data/CB_NaI_35698-35885.dat
-Detector: NaI        TA2CalArray	./data/CB_NaI_35887-36303.dat
-Detector: PID        TA2PlasticPID	./data/CB_PID_35532-36303.dat
-Detector: CylMWPC    TA2CylMwpc		./data/CB_MWPC_35532-36303.dat
+## MC
+#Detector: PID        TA2PlasticPID	Detector-PID-MC.dat
 ##
 ## Data reconstruction method for Crystal Ball 
 Reconstruct:

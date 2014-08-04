@@ -60,7 +60,7 @@ Directory: /home/martel/work1/analysis/
 Analysis: TA2UserAnalysis
 ##
 ## Analysis setup file
-AnalysisSetup: CBTaggTAPSAnalysis.dat
+AnalysisSetup: Analysis-CBTaggTAPS.dat
 ##
 ## Specify non-clearing scalers
 #ScalerNoClear: 12 139
@@ -77,7 +77,7 @@ SplitScaler: 2 128 492
 #ServerSetup: data/CBTaggTAPSServer.dat
 #
 #ServerSetup: data/Server-Sep2010.dat
-#ServerSetup: data/Server-Jan2011.dat
+ServerSetup: data/Server-Jan2011.dat
 #ServerSetup: data/Server-Feb2011.dat
 #
 #ServerSetup: data/Server-Sep2010-Segm.dat
@@ -85,5 +85,5 @@ SplitScaler: 2 128 492
 #ServerSetup: data/Server-Feb2011-Segm.dat
 #
 #ServerSetup: data/Server-Feb2011-PID.dat
-ServerSetup: data/Server-Test.dat
+#ServerSetup: data/Server-Test.dat
 #

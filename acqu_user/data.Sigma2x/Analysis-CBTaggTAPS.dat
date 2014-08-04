@@ -50,18 +50,17 @@ BitPattern:  Trigger.Pat
 ## Apparatus setup....
 ## Raw analysis may be performed without Apparati
 ##                  Name      Class                    Setup file
-Apparatus:	    TAGG      TA2Tagger		       Tagger.dat
-Apparatus:	    CB	      TA2CentralApparatus      CB.dat
-Apparatus:	    TAPS      TA2Taps		       Taps.dat
+Apparatus:	    TAGG      TA2Tagger		       Apparatus-Tagger.dat
+Apparatus:	    CB	      TA2CentralApparatus      Apparatus-CentApp.dat
+Apparatus:	    TAPS      TA2Taps		       Apparatus-Taps.dat
 ##
 ## Turn on apparatus-level reconstruction
 Reconstruct-Analysis:
 ##
 ## Specify physics analysis
 ##                  Name      Class                    Config File
-#Physics-Analysis:  SPs	      TA2SpinPolPhysics	       SpinPolPhysics.dat
-#Physics-Analysis:  PiPN      TA2PiPNPhysicsM	       PiPNPhysics.dat
-Physics-Analysis:  Phys	      TA2PhysicsPMartel	       PhysicsPMartel.dat
+Physics-Analysis:  Phys	      TA2PhysicsPMartel	       Physics-PMartel.dat
+#Physics-Analysis:  Phys	      TA2GoAT	       Physics-GoAT.dat
 ##
 ## Do some post initialisation...usually necessary
 Initialise:
