@@ -536,7 +536,7 @@ void TA2PhysicsPMartel::PostInit() {
   if ( fTAGG ) {
     maxtagg = fTAGG->GetMaxParticle() + 1;
     fMaxTagg = maxtagg;
-    fNmultS = fLADD->GetNMultihit();
+    if ( gAR->IsOnline() ) fNmultS = fLADD->GetNMultihit();
     if ( fNmultS == 0 ) fNmultS = 1;
     
     fTaggTLo = fLADD->GetElement(0)->GetTimeLowThr();
@@ -1107,10 +1107,11 @@ void TA2PhysicsPMartel::Reconstruct() {
 	l = 0;
 	while((fTaggTm[k]==(fTaggOff-1)) || (fTaggTm[k] < (fTaggTLo+fTaggOff)) || (fTaggTm[k] >= (fTaggTHi+fTaggOff))) fTaggTm[k] = (fMTime[l++][fMHits[j]]+fTaggOff);
       }
+      else fTaggTm[k] = 0;
       k++;
     }
   }
-  if ( (gAR->GetProcessType() == EMCProcess) && (fNtagg == 2) ) fNtagg = 1;
+  //if ( (gAR->GetProcessType() == EMCProcess) && (fNtagg == 2) ) fNtagg = 1;
 
   if ( fCB ) {
     // CB
