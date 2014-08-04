@@ -45,9 +45,8 @@ Branch:   emwpc         1024
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #ROOT file(s) (GEANT4 output) to be analysed. Add more lines for more files
 #
-#TreeFile: ~/a2Geant4/A2/out/acquMC/Pi0_g4_out_260.root
 #TreeFile: /home/martel/work1/analysis/g-p_g-p_tran_cher_QGSP_BIC/root/A2G4_g-p_g-p_isot_01.root
-#TreeFile: scratch/A2G4_g-p_g-p_isot_01.root
+#TreeFile: scratch/A2G4_g-p_pi0-p_isot_01.root
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -74,6 +73,6 @@ SetADC:  40000   640	 12
 #Class name for analysis class to be used in further processing
 Analysis:      TA2UserAnalysis
 #Configuration file for selected analysis class
-AnalysisSetup: CBTaggTAPSAnalysis.dat
+AnalysisSetup: Analysis-CBTaggTAPS.dat
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #

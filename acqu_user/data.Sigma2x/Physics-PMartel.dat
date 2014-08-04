@@ -14,21 +14,21 @@
 ##
 ##
 ## General:     dbhost		dbname			   dbuser      dbpass        calibration
-#Use-CaLib:      blaster		CaLib_2004_01-2012_08      calib       basel10       2011_02_Compton_Martel
+Use-CaLib:      blaster		CaLib_2004_01-2012_08      calib       basel10       2011_01_Compton_Martel
 ##
 ##
 ## miscellaneous calibrations    # target position  (0=off/1=on)
 #Use-CaLib-Misc:                 1
 ## tagger calib:     time  (0=off/1=on)
-#Use-CaLib-TAGG:     1
+Use-CaLib-TAGG:     1
 ## CB calib:         energy  time    timewalk    quadr. energy  (0=off/1=on)
-#Use-CaLib-CB:       1       1       1           0
+Use-CaLib-CB:       1       1       1           0
 ## TAPS calib:       energy  time    quadr. energy   LED thr.  (0=off/1=on)
-#Use-CaLib-TAPS:     1       1       0               0
+Use-CaLib-TAPS:     1       1       0               0
 ## PID calib:        phi     droop   energy  time  (0=off/1=on)
-#Use-CaLib-PID:      1       0       1       1
+Use-CaLib-PID:      1       0       1       1
 ## Veto calib:       energy  time  (0=off/1=on)
-#Use-CaLib-Veto:     1       1
+Use-CaLib-Veto:     1       1
 ##
 ##
 ## Target parameters
@@ -58,9 +58,9 @@ SaveTree: PartTree.root
 RecordRaw: 0
 Cherenkov: 1
 #
-CutNaIPID: ProtonCut data/CB_Cut_NaI_PID.root
-#CutNaIMWPC: ProtonCut data/CB_Cut_NaI_MWPC.root
-#CutPIDMWPC: ProtonCut data/CB_Cut_PID_MWPC.root
+CutNaIPID: ProtonCut data/cuts/CB_Cut_NaI_PID.root
+#CutNaIMWPC: ProtonCut data/cuts/CB_Cut_NaI_MWPC.root
+#CutPIDMWPC: ProtonCut data/cuts/CB_Cut_PID_MWPC.root
 ##
 ##
 ## Do some post-initialisation.

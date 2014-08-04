@@ -42,15 +42,14 @@ MultiADC:       3       1401    1911    1400
 ## Apparatus setup....
 ## Raw analysis may be performed without Apparati
 ##              Name            Class           	Setup file
-Apparatus:      Tagger           TA2Tagger   		TaggEffTagger.dat
-#Apparatus:      LinPol          TA2LinearPol            LinearPolapparatus.dat
+Apparatus:      Tagger           TA2Tagger   		Apparatus-Tagger.dat
 ##
 ## Turn on apparatus-level reconstruction
 Reconstruct-Analysis:
 ##
 ## Specify physics analysis
-##			Name	Class		Config File
-#Physics-Analysis:	MDM	TA2PhotoPhysics	CBphysics.dat
+##		   Name	      Class		       Config File
+Physics-Analysis:  Phys	      TA2PhysicsPMartel	       Physics-PMartel.dat
 ##
 ## Do some post initialisation...usually necessary
 Initialise:

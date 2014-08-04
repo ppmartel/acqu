@@ -60,7 +60,7 @@ Directory: data/
 Analysis: TA2UserAnalysis
 ##
 ## Analysis setup file
-AnalysisSetup: TaggEffAnalysis.dat
+AnalysisSetup: Analysis-TaggEff.dat
 ##
 ## Specify non-clearing scalers
 #ScalerNoClear: 12 139
@@ -68,4 +68,4 @@ AnalysisSetup: TaggEffAnalysis.dat
 ##
 ## Online running...setup of data server
 ## This is ignored for offline running and may be left in
-ServerSetup: TaggEffServer.dat
+ServerSetup: Server-TaggEff.dat
