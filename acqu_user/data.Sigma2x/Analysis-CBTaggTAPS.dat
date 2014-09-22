@@ -19,7 +19,7 @@
 ## from the other specified channels
 ## CB TDC's
 ##              #hits   start   stop    reference
-MultiADC:	3       1401    1911    1400
+MultiADC:	10       1401    1911    1400
 #MultiADC:	1	1400	1400	2000
 MultiADC:	3       2001    2767    2000
 #MultiADC:	3       4000    4511    2000

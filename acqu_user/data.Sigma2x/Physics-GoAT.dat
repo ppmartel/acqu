@@ -37,9 +37,9 @@ RootTree-File-Name:		Acqu
 # and L and H represent a 'low' and 'high' (0 and 1) respectively
 #
 # Old setting
-#Beam-Helicity: 6 I H L L H
+Beam-Helicity: 6 I H L L H
 # New setting
-Beam-Helicity: 7 H I H L
+#Beam-Helicity: 7 H I H L
 
 Initialise:
 

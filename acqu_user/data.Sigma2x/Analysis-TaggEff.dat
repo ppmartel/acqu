@@ -19,7 +19,7 @@
 ## from the other specified channels
 ## CB TDC's
 ##              #hits   start   stop    reference
-MultiADC:       3       1401    1911    1400
+MultiADC:       10       1401    1911    1400
 #MultiADC:       3       2001    2384    2000
 #MultiADC:       3       1017    1127    1016
 #MultiADC:       3       4000    4511    2000
@@ -42,7 +42,7 @@ MultiADC:       3       1401    1911    1400
 ## Apparatus setup....
 ## Raw analysis may be performed without Apparati
 ##              Name            Class           	Setup file
-Apparatus:      Tagger           TA2Tagger   		Apparatus-Tagger.dat
+Apparatus:      TAGG            TA2Tagger   		Apparatus-Tagger.dat
 ##
 ## Turn on apparatus-level reconstruction
 Reconstruct-Analysis:
@@ -50,6 +50,7 @@ Reconstruct-Analysis:
 ## Specify physics analysis
 ##		   Name	      Class		       Config File
 Physics-Analysis:  Phys	      TA2PhysicsPMartel	       Physics-PMartel.dat
+#Physics-Analysis:  Phys	      TA2GoAT	       Physics-GoAT.dat
 ##
 ## Do some post initialisation...usually necessary
 Initialise:
