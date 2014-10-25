@@ -13,8 +13,8 @@ Magnet:	0.5375		450.0
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #Detector systems in Tagger apparatus
 #         Name       Class Name      Setup file
-#Detector: FPD	     TA2Ladder       Detector-Ladder.dat
-Detector: FPD	     TA2Ladder       Detector-Ladder-Eff.dat
+Detector: FPD	     TA2Ladder       Detector-Ladder.dat
+#Detector: FPD	     TA2Ladder       Detector-Ladder-Eff.dat
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
