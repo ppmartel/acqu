@@ -8,13 +8,13 @@
 # Info switch is off/on = 0/1
 #       No. of elements   Energy  Time    Position
 Size:   272               0       1       1
-Multi-hit: 10
+Multi-hit: 8
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #Special ladder element configuration.
 ##	Scalers	Calib	Overlap	Micro	#trig	Toff	Tres
-Misc:	1	1     	1	0	0	272.4	5.0
+Misc:	1	1     	0	0	0	272.4	5.0
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

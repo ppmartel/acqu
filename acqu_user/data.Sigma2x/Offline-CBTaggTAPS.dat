@@ -26,7 +26,7 @@
 ## NB with TAPS the number of ADCs = 29001
 ##
 ## Batch mode operation...redirect output directory for log files etc.
-BatchDir: /home/martel/acqu/acqu_user/
+BatchDir: logfiles/
 ##
 ##        Tree Name     	# branches	Process Type
 Name:     RawEvent_AR_Save	3		Raw
@@ -38,7 +38,7 @@ Branch:	  Mk1_Header            120000
 ## List of Tree files which will form the input TChain for --offline running
 ##
 ## Directory to save any created ROOT files (include final / )
-Directory: /home/martel/work1/analysis/
+Directory: output/
 ##
 ## Manual setup of ADC, Scaler, bits-in-ADC numbers
 ## Usually needed only where experiment header information is not given
@@ -77,7 +77,7 @@ SplitScaler: 2 128 492
 #ServerSetup: data/CBTaggTAPSServer.dat
 #
 #ServerSetup: data/Server-Sep2010.dat
-ServerSetup: data/Server-Jan2011.dat
+#ServerSetup: data/Server-Jan2011.dat
 #ServerSetup: data/Server-Feb2011.dat
 #
 #ServerSetup: data/Server-Sep2010-Segm.dat
@@ -85,5 +85,5 @@ ServerSetup: data/Server-Jan2011.dat
 #ServerSetup: data/Server-Feb2011-Segm.dat
 #
 #ServerSetup: data/Server-Feb2011-PID.dat
-#ServerSetup: data/Server-Test.dat
+ServerSetup: data/Server-Test.dat
 #
