@@ -13,7 +13,7 @@ RawHits:
 #
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #Global (all NaI elements) scaling parameter for energy correction
-#Energy-Scale: 1.08
+Energy-Scale: 1.08
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
