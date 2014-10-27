@@ -14,7 +14,7 @@ RawHits:
 #
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #Global (all BaF2/PbWO4 elements) scaling parameter for energy correction
-#Energy-Scale:   1.10
+Energy-Scale:   1.10
 #
 # Energy resolution using the form A*(E^B): A, B,   Use to smear MC data (0/1 = off/on)
 Energy-Resolution: 0.0125 0 1
