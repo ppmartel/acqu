@@ -61,8 +61,8 @@ Reconstruct-Analysis:
 ##
 ## Specify physics analysis
 ##                  Name      Class                    Config File
-Physics-Analysis:   Phys      TA2GoAT		       Physics-GoAT.dat
-#Physics-Analysis:   Phys      TA2PhysicsPMartel	       Physics-PMartel.dat
+#Physics-Analysis:   Phys      TA2GoAT		       Physics-GoAT.dat
+Physics-Analysis:   Phys      TA2PhysicsPMartel	       Physics-PMartel.dat
 ##
 ## Do some post initialisation...usually necessary
 Initialise:

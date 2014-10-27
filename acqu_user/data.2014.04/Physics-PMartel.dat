@@ -34,8 +34,8 @@ Mass-Limits:	23.		40.
 ##
 SaveTree: PartTree.root
 ##
-#RecordRaw: 1
-#Cherenkov: 1
+RecordRaw: 0
+Cherenkov: 0
 ##
 CutNaIPID: ProtonCut data/cuts/CB_Cut_NaI_PID.root
 #CutNaIMWPC: ProtonCut data/cuts/CB_Cut_NaI_MWPC.root
