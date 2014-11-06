@@ -1492,8 +1492,8 @@ TimeWalk: 719 -135.458336   75.038031    0.000000    0.455071
 # 
 # Max # clusters to analyse	Cluster threshold Energy (MeV)
 #Max-Cluster:            12   20
-#Max-Cluster:            32   15
-Max-Cluster:            64   5
+Max-Cluster:            32   15
+#Max-Cluster:            64   5
 #
 # Nearest neighbours for each element of array
 # There would normally be 12 nearest neighbours for each CB Element

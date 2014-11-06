@@ -538,8 +538,8 @@ Element:   25264    4.0 2000.0  106.00 0.322779   25464  -400.0   400.0  2654.81
 #			     
 #                 No. of clusters to be processed   Cluster threshold energy [MeV]
 #Max-Cluster:    8      20
-#Max-Cluster:    32      15
-Max-Cluster:    64      5
+Max-Cluster:    32      15
+#Max-Cluster:    64      5
 #
 #RandomHitPosition: 12345
 #
