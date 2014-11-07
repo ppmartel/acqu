@@ -1,8 +1,6 @@
 //--Author	JRM Annand    4th Feb 2003
 //--Rev 	JRM Annand...21st Jan 2007   4v0 update remove net socket
 //--Rev 	JRM Annand...21st Jan 2007   Add gDAQ, gCTRL
-//--Rev 	JRM Annand... 2nd Oct 2008   Add TA2TOFApparatus
-//--Rev 	JRM Annand...27th May 2009   Add TA2GenericCluster
 //--Update	JRM Annand... 6th Mar 2013   Add TA2TAPSMk2Format
 //--Description
 //                *** Acqu++ <-> Root ***
@@ -40,12 +38,10 @@
 #pragma link C++ class TA2GenericPhysics+;
 #pragma link C++ class TA2Apparatus+;
 #pragma link C++ class TA2GenericApparatus+;
-#pragma link C++ class TA2TOFApparatus+;
 #pragma link C++ class TA2Tagger+;
 #pragma link C++ class TA2Detector+;
 #pragma link C++ class TA2GenericDetector+;
 #pragma link C++ class TA2ClusterDetector+;
-#pragma link C++ class TA2GenericCluster+;
 #pragma link C++ class TA2LongScint+;
 #pragma link C++ class TA2Ladder+;
 #pragma link C++ class TA2WireChamber+;
