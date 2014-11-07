@@ -31,12 +31,6 @@ Phi-Resolution:    3.0
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-#Usage of extended cluster algorithm. If this line is not present (or
-#commented out) the standard cluster determination is used.
-Cluster-UCLA:
-#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-#
-#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #Configuration of detector elements.
 #          ADC chan.  Low thres. [MeV]  High thres.[MeV]  Pedestal [chan.]  MeV/Chan.  TDC chan.  Low thres. [ns]  High thres.[ns]   Offset [chan.]  ns/Chan.  Position [x,y,z]
 Element:   3015M1     1.3               1200.1            0.0               0.0660786  2032M0     -600             600               -2200           0.11771     3.619     45.214      2.629

@@ -453,16 +453,13 @@ void TA2CentralApparatus::PostInit()
   
   // Pointer to NaI clasters
   if (fNaI)
-    {
-      if (((TA2CalArray*)fNaI)->IsUCLAClustering())
-	fClNaI = ((TA2CalArray*)fNaI)->GetClusterUCLA(); // UCLA claster analysis
-      else
-	fClNaI = fNaI->GetCluster(); // Standard claster analysis
-      fIdClNaI = fNaI->GetClustHit();
-      fPositionsNaI = new TVector3[fNaI->GetMaxCluster()];
-      fUsedClNaI = new Bool_t[fNaI->GetMaxCluster()];
-      for (UInt_t i=0; i<fNaI->GetMaxCluster(); ++i) fUsedClNaI[i] = kFALSE;
-    }
+  {    
+    fClNaI = fNaI->GetCluster(); // Standard claster analysis
+    fIdClNaI = fNaI->GetClustHit();
+    fPositionsNaI = new TVector3[fNaI->GetMaxCluster()];
+    fUsedClNaI = new Bool_t[fNaI->GetMaxCluster()];
+    for (UInt_t i=0; i<fNaI->GetMaxCluster(); ++i) fUsedClNaI[i] = kFALSE;
+  }
   
   // Tracks
   fTracks = new TA2CentralTrack[fMaxTrack];

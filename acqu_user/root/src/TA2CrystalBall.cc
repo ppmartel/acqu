@@ -211,12 +211,7 @@ void TA2CrystalBall::Reconstruct()
 
   Int_t nNaI = fNaI->GetNCluster();
   if(nNaI < 1) return;                         // no hit in NaI..no particles
-  HitCluster_t** clNaI;
-  if(((TA2CalArray*)fNaI)->IsUCLAClustering())
-    clNaI = ((TA2CalArray*)fNaI)->GetClusterUCLA();
-  else
-    clNaI = fNaI->GetCluster();                // NaI cluster struct pointers
-
+  HitCluster_t** clNaI = fNaI->GetCluster();   // NaI cluster struct pointers
   UInt_t* idNaI = fNaI->GetClustHit();         // NaI indices active clusts
   Int_t nPID, nMWPC;                           // # PID hits, # MWPC tracks
   if(!fPID) nPID = 0;                          // no PID

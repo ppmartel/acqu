@@ -26,7 +26,6 @@
 enum
 {
   ECAEnergyResolution=1900, ECATimeResolution, ECAThetaResolution, ECAPhiResolution,
-  ECAClusterUCLA,
   ECAScaleFile
 };
 
@@ -36,9 +35,6 @@ static const Map_t kCalArrayKeys[] =
   {"Time-Resolution:",     ECATimeResolution},
   {"Theta-Resolution:",    ECAThetaResolution},
   {"Phi-Resolution:",      ECAPhiResolution},
-  {"Max-Cluster:",         EClustDetMaxCluster},
-  {"Next-Neighbour:",      EClustDetNeighbour},
-  {"Cluster-UCLA:",        ECAClusterUCLA},
   {"Scale-File:",          ECAScaleFile},
   {NULL,            -1}
 };
@@ -53,12 +49,8 @@ TA2CalArray::TA2CalArray(const char* name, TA2System* apparatus)
   // Pass kLaddKeys (command-control keywords) and
   // kLaddHist (names of histograms) to progenitor classes
 
-  fTryHits = NULL;
-  fTempHits2 = NULL;
-
   fUseSigmaEnergy       = 0;
   fUseSigmaTime         = 0;
-  fUseClusterDecodeUCLA = 0;
   fSigmaEnergyFactor    = -1.0;
   fSigmaEnergyPower     = -1.0;
   fSigmaTime            = -1.0;
@@ -128,10 +120,6 @@ void TA2CalArray::SetConfig(char* line, int key)
     fclose(ScalFile);
     UseScales = true;
     break;
-  case ECAClusterUCLA:
-    // Set Clustering Algorithm to UCLA version
-    fUseClusterDecodeUCLA = 1;
-    break;
   case ECAEnergyResolution:
     // Energy Resolution Read-in Line
     if(sscanf(line, "%lf%lf%d", &fSigmaEnergyFactor, &fSigmaEnergyPower, &fUseSigmaEnergy) < 3)
@@ -151,43 +139,6 @@ void TA2CalArray::SetConfig(char* line, int key)
     // Time resolution read-in line
     if(sscanf(line, "%lf", &fSigmaPhi) < 1)
       PrintError(line,"<TA2CalArray Phi Resolution>");
-    break;
-  case EClustDetMaxCluster:
-    // Max number of clusters
-    if(sscanf( line, "%d%lf", &fMaxCluster, &fClEthresh ) < 1)
-    {
-      PrintError(line,"<Parse UCLA # clusters>");
-      break;
-    }
-    if(fUseClusterDecodeUCLA)
-      {
-  fUseClusterDecodeUCLA = 1;
-  fEthresh = fClEthresh;
-  fClusterUCLA = new HitClusterUCLA_t*[fNelement+1];
-  fCluster = (HitCluster_t**)fClusterUCLA;
-  fClustHit = new UInt_t[fMaxCluster+1];
-  fTryHits = new UInt_t[fNelement+1];
-  fTempHits = new UInt_t[fNelement+1];
-  fTempHits2 = new UInt_t[fNelement+1];
-  fNClustHitOR = new UInt_t[fNelement+1];
-  fTheta = new Double_t[fNelement+1];
-  fPhi = new Double_t[fNelement+1];
-  fClEnergyOR = new Double_t[fNelement+1];
-  fClTimeOR = new Double_t[fNelement+1];
-  fClCentFracOR = new Double_t[fNelement+1];
-  fClRadiusOR = new Double_t[fNelement+1];
-  fNCluster = 0;
-      } else TA2ClusterDetector::SetConfig(line, key);
-    break;
-  case EClustDetNeighbour:
-    // Nearest neighbout input
-    if(fUseClusterDecodeUCLA)
-      {
-  if( fNCluster < fNelement )
-    fClusterUCLA[fNCluster] = new HitClusterUCLA_t(line,fNCluster,fClustSizeFactor);
-  fNCluster++;
-      }
-    else TA2ClusterDetector::SetConfig(line, key);
     break;
   default:
     // Command not found...possible pass to next config
@@ -222,8 +173,6 @@ void TA2CalArray::PostInit()
   // Some further initialisation after all setup parameters read in
   // Start with alignment offsets
   // Create space for various output arrays
-
-  if(fUseClusterDecodeUCLA) printf("Using UCLA ClusterDecode for Crystal Ball NaI array\n");
 
   fEnergyAll = new Double_t[fNelem+1];
 
