@@ -81,6 +81,153 @@ TA2ClusterDetector::TA2ClusterDetector( const char* name,
 
 
 //---------------------------------------------------------------------------
+void TA2ClusterDetector::Decode( )
+{
+  // Run basic TA2Detector decode, then cluster decode
+  // and then histogram
+
+  DecodeBasic();                    
+  DecodeCluster();
+#ifdef WITH_A2DISPLAY
+  DisplayClusters();
+#endif
+}
+
+//---------------------------------------------------------------------------
+void TA2ClusterDetector::DecodeSaved( )
+{
+  // Run basic TA2Detector decode, then cluster decode
+  // and then histogram
+
+  ReadDecoded();                    
+  DecodeCluster();
+#ifdef WITH_A2DISPLAY
+  DisplayClusters();
+#endif
+}
+
+//---------------------------------------------------------------------------
+void TA2ClusterDetector::DecodeCluster( )
+{
+  // Determine clusters of hits
+  // Search around peak energies absorbed in individual crystals
+  // Make copy of hits array as the copy will be altered
+  
+  memcpy( fTempHits, fHits, sizeof(UInt_t)*fNhits );  // temp copy
+  //  fNCluster = 0;
+  Double_t maxenergy;
+  UInt_t i,j,k,kmax,jmax;
+  // Find hit with maximum energy
+  for( i=0; i<fMaxCluster;  ){
+    maxenergy = 0;
+    for( j=0; j<fNhits; j++ ){
+      if( (k = fTempHits[j]) == ENullHit ) continue;
+      if( maxenergy < fEnergy[k] ){
+        maxenergy = fEnergy[k];
+        kmax = k;
+        jmax = j;
+      }
+    }
+    if( maxenergy == 0 ) break;              // no more isolated hits
+    if( kmax < fNelement ){
+      fCluster[kmax]->ClusterDetermine( this ); // determine the cluster
+      if( fCluster[kmax]->GetEnergy() >= fEthresh ){
+        fClustHit[i] = kmax;
+        fTheta[i] = fCluster[kmax]->GetTheta();
+        fPhi[i] = fCluster[kmax]->GetPhi();
+        fNClustHitOR[i] = fCluster[kmax]->GetNhits();
+        fClEnergyOR[i] = fCluster[kmax]->GetEnergy();
+        fClTimeOR[i] = fCluster[kmax]->GetTime();
+        fClCentFracOR[i] = fCluster[kmax]->GetCentralFrac();
+        fClRadiusOR[i] = fCluster[kmax]->GetRadius();
+        i++;
+      }
+    }
+    // If you reach here then there is an error in the decode
+    // possible bad detector ID
+    else fTempHits[jmax] = ENullHit;
+  }
+  fNCluster = i;                   // save # clusters
+  // Now search for possible split offs if this is enabled
+  if( fMaxSplitPerm ) SplitSearch();
+  fClustHit[fNCluster] = EBufferEnd;
+  fTheta[fNCluster] = EBufferEnd;
+  fPhi[fNCluster] = EBufferEnd;
+  fNClustHitOR[fNCluster] = EBufferEnd;
+  fClEnergyOR[fNCluster] = EBufferEnd;
+  fClTimeOR[fNCluster] = EBufferEnd;
+  fClCentFracOR[fNCluster] = EBufferEnd;
+  fClRadiusOR[fNCluster] = EBufferEnd;
+}
+
+//---------------------------------------------------------------------------
+void TA2ClusterDetector::SplitSearch( )
+{
+  // Search for candidate split-off clusters associated with a main cluster
+  // and attempt to merge them
+  HitCluster_t *cli, *clj;
+  Int_t* pij = fIJSplit;
+  UInt_t i,j,ij,k,n;
+  Double_t openAngle;
+  for( i=0,n=0; i<fNCluster; i++ ){
+    cli = fCluster[ fClustHit[i] ];                        // ith cluster
+    if( cli->GetEnergy() > fClEthresh ) fIsSplit[i] = EFalse;
+    else fIsSplit[i] = ETrue;
+    for( j=i+1; j<fNCluster; j++ ){
+      clj = fCluster[ fClustHit[j] ];                      // jth cluster
+      if( (!fIsSplit[i]) && (clj->GetEnergy() > fClEthresh) ) continue;
+      if( ( fIsSplit[i]) && (clj->GetEnergy() < fClEthresh) ) continue;
+      openAngle = cli->OpeningAngle( clj );
+      if( openAngle > fMaxThetaSplitOff ) continue;
+      fSplitAngle[n] = openAngle;
+      *pij++ = i | (j<<16);                       // store j,k indices
+      n++;      
+    }
+  }
+  // Sort the opening angles
+  TMath::Sort((Int_t)n, fSplitAngle, fISplit, kFALSE);  // sort ascending
+  fNSplitMerged = 0;
+  for( k=0; k<n; k++ ){
+    ij = fIJSplit[fISplit[k]];
+    i = ij & 0xffff;
+    j = (ij>>16) & 0xffff;
+    cli = fCluster[ fClustHit[i] ];
+    clj = fCluster[ fClustHit[j] ];
+    if( cli->GetEnergy() > clj->GetEnergy() ){
+      cli->Merge( clj );
+      fIsSplit[j] = ETrue;
+    }
+    else{
+      clj->Merge( cli );
+      fIsSplit[i] = ETrue;
+    }
+    fNSplitMerged++;                          // # split-offs merged
+  }
+  // weed out any clusters marked as split off from cluster lists
+  for( i=0,n=0; i<fNCluster; i++ ){
+    if( fIsSplit[i] ) continue;
+    fClustHit[n] = fClustHit[i];
+    fTheta[n] = fCluster[i]->GetTheta();
+    fPhi[n] = fCluster[i]->GetPhi();
+    fNClustHitOR[n] = fCluster[i]->GetNhits();
+    fClEnergyOR[n] = fCluster[i]->GetEnergy();
+    fClTimeOR[n] = fCluster[i]->GetTime();
+    n++;
+  }
+  fNSplit = fNCluster - n;                     // total low energy split-off
+  fNCluster = n;                               // total accepted clusters
+}
+
+//---------------------------------------------------------------------------
+void TA2ClusterDetector::Cleanup( )
+{
+  // end-of-event cleanup
+  TA2Detector::Cleanup();
+  //  would also clean up any cluster info here
+  for(UInt_t i=0; i<fNCluster; i++) fCluster[ fClustHit[i] ]->Cleanup();
+}
+
+//---------------------------------------------------------------------------
 TA2ClusterDetector::~TA2ClusterDetector()
 {
   // Free up all allocated memory

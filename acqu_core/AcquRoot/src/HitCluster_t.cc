@@ -206,3 +206,58 @@ void HitCluster_t::MoreNeighbours( TA2ClusterDetector* cl ){
   return;
 }
 
+
+//---------------------------------------------------------------------------
+void HitCluster_t::Cleanup()
+{
+  // End-of-Event cleanup
+  fNhits = 0;
+  *fHits = ENullHit;
+  fEnergy = (Double_t)ENullHit;
+  fTime = (Double_t)ENullHit;
+} 
+
+//---------------------------------------------------------------------------
+Bool_t HitCluster_t::IsNeighbour( UInt_t i )
+{
+  // Is element i a neighbour of the central cluster element
+  UInt_t j;
+  UInt_t* neighbour = fNeighbour;
+  for(j=0; j<fNNeighbour; j++){
+    if( i == *neighbour++ ) return ETrue;
+  }
+  return EFalse;
+}
+
+//---------------------------------------------------------------------------
+void HitCluster_t::Merge( HitCluster_t* cl )
+{
+  // Merge cluster pointed to by cl with present cluster
+  // merged-cluster position sqrt(Energy)-weighted sum of positions
+  // merged-cluster Energy = sum of two energies
+  
+  Double_t sqE1,sqE2;
+  if( !fEWgt ){
+    sqE1 = TMath::Sqrt( fEnergy );
+    sqE2 = TMath::Sqrt( cl->GetEnergy() );
+  }
+  else{
+    sqE1 = TMath::Power( fEnergy, fEWgt );
+    sqE2 = TMath::Power( cl->GetEnergy(), fEWgt );
+  }
+  TVector3 pos = (*fMeanPosition * sqE1) + (*(cl->GetMeanPosition()) * sqE2);
+  *fMeanPosition = pos * (1./( sqE1 + sqE2 ));
+  fTheta = TMath::RadToDeg() * fMeanPosition->Theta();
+  fPhi   = TMath::RadToDeg() * fMeanPosition->Phi();
+  Double_t totEnergy = fEnergy + cl->GetEnergy();
+  fCentralFrac *= fEnergy/totEnergy;
+  fEnergy = totEnergy;
+}
+
+//---------------------------------------------------------------------------
+Double_t HitCluster_t::OpeningAngle( HitCluster_t* cl )
+{
+  // Opening angle in deg. of cluster pointed to by cl with respect to
+  // the present cluster
+  return fMeanPosition->Angle( *(cl->GetMeanPosition()) ) * TMath::RadToDeg();
+}
