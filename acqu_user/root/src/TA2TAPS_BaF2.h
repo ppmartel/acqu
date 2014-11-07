@@ -19,7 +19,6 @@
 
 #include "MCBranchID.h"
 #include "TA2ClusterDetector.h"
-#include "HitClusterTAPS_t.h"
 
 enum ETAPSType {
     ENoType,

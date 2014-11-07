@@ -13,7 +13,6 @@
 //
 
 #include "TA2TAPS_BaF2.h"
-#include "HitClusterTAPS_t.h"
 #include <string>
 #include <sstream>
 
@@ -23,17 +22,15 @@
 
 // constants for command-line maps below
 enum {
-  ETAPSSGMaxDet=510, ETAPSSG, EClustDetMaxTAPSCluster, EClustDetTAPSNeighbour,
+  ETAPSSGMaxDet=510, ETAPSSG, 
   ETAPSEnergyResolution, ETAPSTimeResolution, ETAPSThetaResolution, ETAPSPhiResolution,
-  ETAPSVetoEnergy, ETAPSVetoEfficiency, ETAPSVetoThreshold,
+  ETAPSVetoEnergy, ETAPSVetoEfficiency, ETAPSVetoThreshold
 };
 
 // Command-line key words which determine what to read in
 static const Map_t kTAPSClustDetKeys[] = {
   {"TAPSSGMaxDet:",        ETAPSSGMaxDet},
   {"TAPSSG:",              ETAPSSG},
-  {"Max-TAPSCluster:",     EClustDetMaxTAPSCluster},
-  {"Next-TAPS:",           EClustDetTAPSNeighbour},
   {"Energy-Resolution:",   ETAPSEnergyResolution},
   {"Time-Resolution:",     ETAPSTimeResolution},
   {"Theta-Resolution:",    ETAPSThetaResolution},
@@ -50,8 +47,8 @@ static const Map_t kTAPSClustDetKeys[] = {
 TA2TAPS_BaF2::TA2TAPS_BaF2(const char* name, TA2System* apparatus)
              :TA2ClusterDetector(name, apparatus)
 {
-  fType = ENoType;
-
+  fType = ENoType;	
+	
   fUseEnergyResolution    = 0;
   fUseTimeResolution      = 0;
   fEnergyResolutionFactor = -1.0;
@@ -177,28 +174,6 @@ void TA2TAPS_BaF2::SetConfig(Char_t* line, Int_t key)
     // workaround for this pretty ugly design feature...
     fSGEnergy[fNSG] = new HitD2A_t( line, fNSG, this, kTRUE );
     fNSG++;
-    break;
-   case EClustDetMaxTAPSCluster:
-    // Max number of clusters
-    if(sscanf(line, "%d%lf", &fMaxCluster, &fClEthresh) < 1) goto error;
-    fEthresh = fClEthresh;
-    fCluster = new HitCluster_t*[fNelement+1];
-    fprintf(fLogStream, " HitClusterTAPS_t class used for shower reconstruction\n");
-    fClustHit = new UInt_t[fMaxCluster+1];
-    fTempHits = new UInt_t[fNelement+1];
-    fNClustHitOR = new UInt_t[fNelement+1];
-    fTheta = new Double_t[fNelement+1];
-    fPhi      = new Double_t[fNelement+1];
-    fClEnergyOR  = new Double_t[fNelement+1];
-    fClTimeOR  = new Double_t[fNelement+1];
-    fClCentFracOR  = new Double_t[fNelement+1];
-    fClRadiusOR  = new Double_t[fNelement+1];
-    fNCluster = 0;
-    break;
- case EClustDetTAPSNeighbour:
-    // Nearest neighbout input
-    if(fNCluster < fNelement) fCluster[fNCluster] = new HitClusterTAPS_t(line, fNCluster);
-    fNCluster++;
     break;
    default:
     // Command not found...possible pass to next config

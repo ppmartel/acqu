@@ -501,408 +501,408 @@ Max-Cluster:    8      20
 ##
 ##           N    List of neighbours
 ##
-Next-TAPS:  15    0    1    2    3    4    5   67   68   69   70  335  336  337  338  340
-Next-TAPS:  15    1    0    2    3    4    5   67   68   69   70  335  336  337  338  340
-Next-TAPS:  15    2    0    1    3    4    5   67   68   69   70  335  336  337  338  340
-Next-TAPS:  15    3    0    1    2    4    5   67   68   69   70  335  336  337  338  340
-Next-TAPS:  10    4    0    1    2    3    5    7    6  343  340
-Next-TAPS:  13    5    0    1    2    3    4    7    8   71   67   68   69   70
-Next-TAPS:   7    6    4  343  347    9   10    7
-Next-TAPS:   7    7    4    5    8   11   10    6
-Next-TAPS:   7    8    5    7   11   12   73   71
-Next-TAPS:   7    9    6  347  352   13   14   10
-Next-TAPS:   7   10    7    6    9   14   15   11
-Next-TAPS:   7   11    7   10   15   16   12    8
-Next-TAPS:   7   12   76   73    8   11   16   17
-Next-TAPS:   7   13   14    9  352  358   18   19
-Next-TAPS:   7   14   15   10    9   13   19   20
-Next-TAPS:   7   15   16   11   10   14   20   21
-Next-TAPS:   7   16   17   12   11   15   21   22
-Next-TAPS:   7   17   80   76   12   16   22   23
-Next-TAPS:   7   18   19   13  358  365   24   25
-Next-TAPS:   7   19   20   14   13   18   25   26
-Next-TAPS:   7   20   21   15   14   19   26   27
-Next-TAPS:   7   21   22   16   15   20   27   28
-Next-TAPS:   7   22   23   17   16   21   28   29
-Next-TAPS:   7   23   85   80   17   22   29   30
-Next-TAPS:   7   24   25   18  365  373   31   32
-Next-TAPS:   7   25   26   19   18   24   32   33
-Next-TAPS:   7   26   27   20   19   25   33   34
-Next-TAPS:   7   27   28   21   20   26   34   35
-Next-TAPS:   7   28   29   22   21   27   35   36
-Next-TAPS:   7   29   30   23   22   28   36   37
-Next-TAPS:   7   30   91   85   23   29   37   38
-Next-TAPS:   7   31   32   24  373  382   39   40
-Next-TAPS:   7   32   33   25   24   31   40   41
-Next-TAPS:   7   33   34   26   25   32   41   42
-Next-TAPS:   7   34   35   27   26   33   42   43
-Next-TAPS:   7   35   36   28   27   34   43   44
-Next-TAPS:   7   36   37   29   28   35   44   45
-Next-TAPS:   7   37   38   30   29   36   45   46
-Next-TAPS:   7   38   98   91   30   37   46   47
-Next-TAPS:   7   39   40   31  382  392   48   49
-Next-TAPS:   7   40   41   32   31   39   49   50
-Next-TAPS:   7   41   42   33   32   40   50   51
-Next-TAPS:   7   42   43   34   33   41   51   52
-Next-TAPS:   7   43   44   35   34   42   52   53
-Next-TAPS:   7   44   45   36   35   43   53   54
-Next-TAPS:   7   45   46   37   36   44   54   55
-Next-TAPS:   7   46   47   38   37   45   55   56
-Next-TAPS:   7   47  106   98   38   46   56   57
-Next-TAPS:   6   48   49   39  392  401   58
-Next-TAPS:   7   49   50   40   39   48   58   49
-Next-TAPS:   7   50   51   41   40   49   59   50
-Next-TAPS:   7   51   52   42   41   50   60   51
-Next-TAPS:   7   52   53   43   42   49   61   52
-Next-TAPS:   7   53   54   44   43   50   62   53
-Next-TAPS:   7   54   55   45   44   51   63   54
-Next-TAPS:   7   55   56   46   45   52   62   55
-Next-TAPS:   7   56   57   47   46   53   63   56
-Next-TAPS:   6   57  115  106   47   56   66
-Next-TAPS:   4   58   59   49   48
-Next-TAPS:   5   59   60   50   49   58
-Next-TAPS:   5   60   61   51   50   59
-Next-TAPS:   5   61   62   52   51   60
-Next-TAPS:   5   62   63   53   52   61
-Next-TAPS:   5   63   64   54   53   62
-Next-TAPS:   5   64   65   55   54   63
-Next-TAPS:   5   65   66   56   55   64
-Next-TAPS:   4   66   57   56   65
-Next-TAPS:  15   67   68   69   70   72  134  135  136  137    0    1    2    3    5   71
-Next-TAPS:  15   68   67   69   70   72  134  135  136  137    0    1    2    3    5   71
-Next-TAPS:  15   69   67   68   70   72  134  135  136  137    0    1    2    3    5   71
-Next-TAPS:  15   70   67   68   69   72  134  135  136  137    0    1    2    3    5   71
-Next-TAPS:  10   71   74   72   67   68   69   70    5    8   73
-Next-TAPS:  13   72   75  138  134  135  136  137   67   68   69   70   71   74
-Next-TAPS:   7   73   77   74   71    8   12   76
-Next-TAPS:   7   74   78   75   72   71   73   77
-Next-TAPS:   7   75   79  140  138   72   74   78
-Next-TAPS:   7   76   81   77   73   12   17   80
-Next-TAPS:   7   77   82   78   74   73   76   81
-Next-TAPS:   7   78   83   79   75   74   77   82
-Next-TAPS:   7   79   84  143  140   75   78   83
-Next-TAPS:   7   80   86   81   76   17   23   85
-Next-TAPS:   7   81   87   82   77   76   80   86
-Next-TAPS:   7   82   88   83   78   77   81   87
-Next-TAPS:   7   83   89   84   79   78   82   88
-Next-TAPS:   7   84   90  147  143   79   83   89
-Next-TAPS:   7   85   92   86   80   23   30   91
-Next-TAPS:   7   86   93   87   81   80   85   92
-Next-TAPS:   7   87   94   88   82   81   86   93
-Next-TAPS:   7   88   95   89   83   82   87   94
-Next-TAPS:   7   89   96   90   84   83   88   95
-Next-TAPS:   7   90   97  152  147   84   89   96
-Next-TAPS:   7   91   99   92   85   30   38   98
-Next-TAPS:   7   92  100   93   86   85   91   99
-Next-TAPS:   7   93  101   94   87   86   92  100
-Next-TAPS:   7   94  102   95   88   87   93  101
-Next-TAPS:   7   95  103   96   89   88   94  102
-Next-TAPS:   7   96  104   97   90   89   95  103
-Next-TAPS:   7   97  105  158  152   90   96  104
-Next-TAPS:   7   98  107   99   91   38   47  106
-Next-TAPS:   7   99  108  100   92   91   98  107
-Next-TAPS:   7  100  109  101   93   92   99  108
-Next-TAPS:   7  101  110  102   94   93  100  109
-Next-TAPS:   7  102  111  103   95   94  101  110
-Next-TAPS:   7  103  112  104   96   95  102  111
-Next-TAPS:   7  104  113  105   97   96  103  112
-Next-TAPS:   7  105  114  165  158   97  104  113
-Next-TAPS:   7  106  116  107   98   47   57  115
-Next-TAPS:   7  107  117  108   99   98  106  116
-Next-TAPS:   7  108  118  109  100   99  107  117
-Next-TAPS:   7  109  119  110  101  100  108  118
-Next-TAPS:   7  110  120  111  102  101  109  119
-Next-TAPS:   7  111  121  112  103  102  110  120
-Next-TAPS:   7  112  122  113  104  103  111  121
-Next-TAPS:   7  113  123  114  105  104  112  122
-Next-TAPS:   7  114  124  173  165  105  113  123
-Next-TAPS:   5  115  125  116  106   57
-Next-TAPS:   7  116  126  117  107  106  115  125
-Next-TAPS:   7  117  127  118  108  107  116  126
-Next-TAPS:   7  118  128  119  109  108  117  127
-Next-TAPS:   7  119  129  120  110  109  118  128
-Next-TAPS:   7  120  130  121  111  110  119  129
-Next-TAPS:   7  121  131  122  112  111  120  130
-Next-TAPS:   7  122  132  123  113  112  121  131
-Next-TAPS:   7  123  133  124  114  113  122  132
-Next-TAPS:   6  124  182  173  114  123  133
-Next-TAPS:   4  125  126  116  115
-Next-TAPS:   5  126  127  117  116  125
-Next-TAPS:   5  127  128  118  117  126
-Next-TAPS:   5  128  129  119  118  127
-Next-TAPS:   5  129  130  120  119  128
-Next-TAPS:   5  130  131  121  120  129
-Next-TAPS:   5  131  132  122  121  130
-Next-TAPS:   5  132  133  123  122  131
-Next-TAPS:   4  133  124  123  132
-Next-TAPS:  15  134  135  136  137  138  139  201  202  203  204   67   68   69   70   72
-Next-TAPS:  15  135  134  136  137  138  139  201  202  203  204   67   68   69   70   72
-Next-TAPS:  15  136  134  135  137  138  139  201  202  203  204   67   68   69   70   72
-Next-TAPS:  15  137  134  135  136  138  139  201  202  203  204   67   68   69   70   72
-Next-TAPS:  10  138  140  141  139  134  135  136  137   72   75
-Next-TAPS:  13  139  141  142  205  201  202  203  204  134  135  136  137  138
-Next-TAPS:   7  140  143  144  141  138   75   79
-Next-TAPS:   7  141  144  145  142  139  138  140
-Next-TAPS:   7  142  145  146  207  205  139  141
-Next-TAPS:   7  143  147  148  144  140   79   84
-Next-TAPS:   7  144  148  149  145  141  140  143
-Next-TAPS:   7  145  149  150  146  142  141  144
-Next-TAPS:   7  146  150  151  210  207  142  145
-Next-TAPS:   7  147  152  153  148  143   84   90
-Next-TAPS:   7  148  153  154  149  144  143  147
-Next-TAPS:   7  149  154  155  150  145  144  148
-Next-TAPS:   7  150  155  156  151  146  145  149
-Next-TAPS:   7  151  156  157  214  210  146  150
-Next-TAPS:   7  152  158  159  153  147   90   97
-Next-TAPS:   7  153  159  160  154  148  147  152
-Next-TAPS:   7  154  160  161  155  149  153  148
-Next-TAPS:   7  155  161  162  156  150  154  149
-Next-TAPS:   7  156  162  163  157  151  155  150
-Next-TAPS:   7  157  163  164  219  214  151  156
-Next-TAPS:   7  158  165  166  159  152   97  105
-Next-TAPS:   7  159  166  167  160  153  152  158
-Next-TAPS:   7  160  167  168  161  154  153  159
-Next-TAPS:   7  161  168  169  162  155  154  160
-Next-TAPS:   7  162  169  170  163  156  155  161
-Next-TAPS:   7  163  170  171  164  157  156  162
-Next-TAPS:   7  164  171  172  225  219  157  163
-Next-TAPS:   7  165  173  174  166  158  105  114
-Next-TAPS:   7  166  174  175  167  159  158  165
-Next-TAPS:   7  167  175  176  168  160  159  166
-Next-TAPS:   7  168  176  177  169  161  160  167
-Next-TAPS:   7  169  177  178  170  162  161  168
-Next-TAPS:   7  170  178  179  180  163  162  169
-Next-TAPS:   7  171  179  180  181  164  163  170
-Next-TAPS:   7  172  180  181  232  225  164  171
-Next-TAPS:   7  173  182  183  174  165  114  124
-Next-TAPS:   7  174  183  184  175  166  165  173
-Next-TAPS:   7  175  184  185  176  167  166  174
-Next-TAPS:   7  176  185  186  177  168  167  175
-Next-TAPS:   7  177  186  187  178  169  168  176
-Next-TAPS:   7  178  187  188  179  170  169  177
-Next-TAPS:   7  179  188  189  180  171  170  178
-Next-TAPS:   7  180  189  190  181  172  171  179
-Next-TAPS:   7  181  190  191  240  232  172  180
-Next-TAPS:   4  182  183  173  124
-Next-TAPS:   6  183  192  184  174  173  182
-Next-TAPS:   7  184  192  193  185  175  174  183
-Next-TAPS:   7  185  193  194  186  176  175  184
-Next-TAPS:   7  186  194  195  187  177  176  185
-Next-TAPS:   7  187  195  196  188  178  177  186
-Next-TAPS:   7  188  196  197  189  179  178  187
-Next-TAPS:   7  189  197  198  190  180  179  188
-Next-TAPS:   7  190  198  199  191  181  180  189
-Next-TAPS:   7  191  199  200  249  240  181  190
-Next-TAPS:   4  192  193  184  183
-Next-TAPS:   5  193  194  185  184  192
-Next-TAPS:   5  194  195  186  185  193
-Next-TAPS:   5  195  196  187  186  194
-Next-TAPS:   5  196  197  188  187  195
-Next-TAPS:   5  197  198  189  188  196
-Next-TAPS:   5  198  199  190  189  197
-Next-TAPS:   5  199  200  191  190  198
-Next-TAPS:   4  200  249  191  199
-Next-TAPS:  15  201  202  203  204  134  135  136  137  139  205  206  268  269  270  271
-Next-TAPS:  15  202  201  203  204  134  135  136  137  139  205  206  268  269  270  271
-Next-TAPS:  15  203  201  202  204  134  135  136  137  139  205  206  268  269  270  271
-Next-TAPS:  15  204  201  202  203  134  135  136  137  139  205  206  268  269  270  271
-Next-TAPS:  10  205  142  207  208  206  201  202  203  204  139
-Next-TAPS:  13  206  205  208  209  272  268  269  270  271  201  202  203  204
-Next-TAPS:   7  207  146  210  211  208  205  142
-Next-TAPS:   7  208  207  211  212  209  206  205
-Next-TAPS:   7  209  208  212  213  274  272  206
-Next-TAPS:   7  210  151  214  215  211  207  146
-Next-TAPS:   7  211  210  215  216  212  208  207
-Next-TAPS:   7  212  211  216  217  213  209  208
-Next-TAPS:   7  213  212  217  218  277  274  209
-Next-TAPS:   7  214  157  219  220  215  210  151
-Next-TAPS:   7  215  214  220  221  216  211  210
-Next-TAPS:   7  216  215  221  222  217  212  211
-Next-TAPS:   7  217  216  222  223  218  213  212
-Next-TAPS:   7  218  217  223  224  281  277  213
-Next-TAPS:   7  219  164  225  226  220  214  157
-Next-TAPS:   7  220  219  226  227  221  215  214
-Next-TAPS:   7  221  220  227  228  222  216  215
-Next-TAPS:   7  222  221  228  229  223  217  216
-Next-TAPS:   7  223  222  229  230  224  218  217
-Next-TAPS:   7  224  223  230  231  286  281  218
-Next-TAPS:   7  225  172  232  233  226  219  164
-Next-TAPS:   7  226  225  233  234  227  220  219
-Next-TAPS:   7  227  226  234  235  228  221  220
-Next-TAPS:   7  228  227  235  236  229  222  221
-Next-TAPS:   7  229  228  236  237  230  223  222
-Next-TAPS:   7  230  229  237  238  231  224  223
-Next-TAPS:   7  231  230  238  239  292  286  224
-Next-TAPS:   7  232  181  240  241  233  225  172
-Next-TAPS:   7  233  232  241  242  234  226  225
-Next-TAPS:   7  234  233  242  243  235  227  226
-Next-TAPS:   7  235  234  243  244  236  228  227
-Next-TAPS:   7  236  235  244  245  237  229  228
-Next-TAPS:   7  237  236  245  246  238  230  229
-Next-TAPS:   7  238  237  246  247  239  231  230
-Next-TAPS:   7  239  238  247  248  299  292  231
-Next-TAPS:   7  240  191  249  250  241  232  181
-Next-TAPS:   7  241  240  250  251  242  233  232
-Next-TAPS:   7  242  241  251  252  243  234  233
-Next-TAPS:   7  243  242  252  253  244  235  234
-Next-TAPS:   7  244  243  253  254  245  236  235
-Next-TAPS:   7  245  244  254  255  246  237  236
-Next-TAPS:   7  246  245  255  256  247  238  237
-Next-TAPS:   7  247  246  256  257  248  239  238
-Next-TAPS:   7  248  247  257  258  307  299  239
-Next-TAPS:   6  249  259  250  240  191  200
-Next-TAPS:   7  250  249  259  260  251  241  240
-Next-TAPS:   7  251  250  260  261  252  242  241
-Next-TAPS:   7  252  251  261  262  253  243  242
-Next-TAPS:   7  253  252  262  263  254  244  243
-Next-TAPS:   7  254  253  263  264  255  245  244
-Next-TAPS:   7  255  254  264  265  256  246  245
-Next-TAPS:   7  256  255  265  266  257  247  246
-Next-TAPS:   7  257  256  266  267  258  248  247
-Next-TAPS:   6  258  257  267  316  307  248
-Next-TAPS:   4  259  249  250  260
-Next-TAPS:   5  260  259  261  251  250
-Next-TAPS:   5  261  260  262  252  251
-Next-TAPS:   5  262  261  263  253  252
-Next-TAPS:   5  263  262  264  254  253
-Next-TAPS:   5  264  263  265  255  254
-Next-TAPS:   5  265  264  266  256  255
-Next-TAPS:   5  266  265  267  257  256
-Next-TAPS:   4  267  266  258  257
-Next-TAPS:  15  268  269  270  271  201  202  203  204  206  272  273  335  336  337  338
-Next-TAPS:  15  269  268  270  271  201  202  203  204  206  272  273  335  336  337  338
-Next-TAPS:  15  270  268  269  271  201  202  203  204  206  272  273  335  336  337  338
-Next-TAPS:  15  271  268  269  270  201  202  203  204  206  272  273  335  336  337  338
-Next-TAPS:  10  272  206  209  274  275  273  268  269  270  271
-Next-TAPS:  13  273  268  269  270  271  272  275  276  339  335  336  337  338
-Next-TAPS:   7  274  209  213  277  278  275  272
-Next-TAPS:   7  275  272  274  278  279  276  273
-Next-TAPS:   7  276  273  275  279  280  341  339
-Next-TAPS:   7  277  213  218  281  282  278  274
-Next-TAPS:   7  278  274  277  282  283  279  275
-Next-TAPS:   7  279  275  278  283  284  280  276
-Next-TAPS:   7  280  276  279  284  285  344  341
-Next-TAPS:   7  281  218  224  286  287  282  277
-Next-TAPS:   7  282  277  281  287  288  283  278
-Next-TAPS:   7  283  278  282  288  289  284  279
-Next-TAPS:   7  284  279  283  289  290  285  280
-Next-TAPS:   7  285  280  284  290  291  348  344
-Next-TAPS:   7  286  224  231  292  293  287  281
-Next-TAPS:   7  287  281  286  293  294  288  282
-Next-TAPS:   7  288  282  287  294  295  289  283
-Next-TAPS:   7  289  283  288  295  296  290  284
-Next-TAPS:   7  290  284  289  296  297  291  285
-Next-TAPS:   7  291  285  290  297  298  353  348
-Next-TAPS:   7  292  231  239  299  300  293  286
-Next-TAPS:   7  293  286  292  300  301  294  287
-Next-TAPS:   7  294  287  293  301  302  295  288
-Next-TAPS:   7  295  288  294  302  303  296  289
-Next-TAPS:   7  296  289  295  303  304  297  290
-Next-TAPS:   7  297  290  296  304  305  298  291
-Next-TAPS:   7  298  291  297  305  306  359  353
-Next-TAPS:   7  299  239  248  307  308  300  292
-Next-TAPS:   7  300  292  299  308  309  301  293
-Next-TAPS:   7  301  293  300  309  310  302  294
-Next-TAPS:   7  302  294  301  310  311  303  295
-Next-TAPS:   7  303  295  302  311  312  304  296
-Next-TAPS:   7  304  296  303  312  313  305  297
-Next-TAPS:   7  305  297  304  313  314  306  298
-Next-TAPS:   7  306  298  305  314  315  366  359
-Next-TAPS:   7  307  248  258  316  317  308  299
-Next-TAPS:   7  308  299  307  317  318  309  300
-Next-TAPS:   7  309  300  308  318  319  310  301
-Next-TAPS:   7  310  301  309  319  320  311  302
-Next-TAPS:   7  311  302  310  320  321  312  303
-Next-TAPS:   7  312  303  311  321  322  313  304
-Next-TAPS:   7  313  304  312  322  323  314  305
-Next-TAPS:   7  314  305  313  323  324  315  306
-Next-TAPS:   7  315  306  314  324  325  374  366
-Next-TAPS:   5  316  258  326  317  307
-Next-TAPS:   7  317  307  316  326  327  318  308
-Next-TAPS:   7  318  308  317  327  328  319  309
-Next-TAPS:   7  319  309  318  328  329  320  310
-Next-TAPS:   7  320  310  319  329  330  321  311
-Next-TAPS:   7  321  311  320  330  331  322  312
-Next-TAPS:   7  322  312  321  331  332  323  313
-Next-TAPS:   7  323  313  322  332  333  324  314
-Next-TAPS:   7  324  314  323  333  334  325  315
-Next-TAPS:   6  325  315  324  334  383  374
-Next-TAPS:   4  326  316  327  317
-Next-TAPS:   5  327  326  317  318  328
-Next-TAPS:   5  328  327  318  319  329
-Next-TAPS:   5  329  328  319  320  330
-Next-TAPS:   5  330  329  320  321  331
-Next-TAPS:   5  331  330  321  322  332
-Next-TAPS:   5  332  331  322  323  333
-Next-TAPS:   5  333  332  323  324  334
-Next-TAPS:   4  334  333  324  325
-Next-TAPS:  15  335  336  337  338  268  269  270  271  273  339  340    0    1    2    3
-Next-TAPS:  15  336  335  337  338  268  269  270  271  273  339  340    0    1    2    3
-Next-TAPS:  15  337  335  336  338  268  269  270  271  273  339  340    0    1    2    3
-Next-TAPS:  15  338  335  336  337  268  269  270  271  273  339  340    0    1    2    3
-Next-TAPS:  10  339  335  336  337  338  273  276  341  342  340
-Next-TAPS:  13  340    0    1    2    3  335  336  337  338  339  342  343    4
-Next-TAPS:   7  341  339  276  280  344  345  342
-Next-TAPS:   7  342  340  339  341  345  346  343
-Next-TAPS:   7  343    4  340  342  346  347    6
-Next-TAPS:   7  344  341  280  285  348  349  345
-Next-TAPS:   7  345  342  341  344  349  350  346
-Next-TAPS:   7  346  343  342  345  350  351  347
-Next-TAPS:   7  347    6  343  346  351  352    9
-Next-TAPS:   7  348  344  285  291  353  354  349
-Next-TAPS:   7  349  345  344  348  354  355  350
-Next-TAPS:   7  350  346  345  349  355  356  351
-Next-TAPS:   7  351  347  346  350  356  357  352
-Next-TAPS:   7  352    9  347  351  357  358   13
-Next-TAPS:   7  353  348  291  298  359  360  354
-Next-TAPS:   7  354  349  348  353  360  361  355
-Next-TAPS:   7  355  350  349  354  361  362  356
-Next-TAPS:   7  356  351  350  355  362  363  357
-Next-TAPS:   7  357  352  351  356  363  364  358
-Next-TAPS:   7  358   13  352  357  364  365   18
-Next-TAPS:   7  359  353  298  306  366  367  360
-Next-TAPS:   7  360  354  353  359  367  368  361
-Next-TAPS:   7  361  355  354  360  368  369  362
-Next-TAPS:   7  362  356  355  361  369  370  363
-Next-TAPS:   7  363  357  356  362  370  371  364
-Next-TAPS:   7  364  358  357  363  371  372  365
-Next-TAPS:   7  365   18  358  364  372  373   24
-Next-TAPS:   7  366  359  306  315  374  375  367
-Next-TAPS:   7  367  360  359  366  375  376  368
-Next-TAPS:   7  368  361  360  367  376  377  369
-Next-TAPS:   7  369  362  361  368  377  378  370
-Next-TAPS:   7  370  363  362  369  378  379  371
-Next-TAPS:   7  371  364  363  370  379  380  372
-Next-TAPS:   7  372  365  364  371  380  381  373
-Next-TAPS:   7  373   24  365  372  381  382   31
-Next-TAPS:   7  374  366  315  325  383  384  375
-Next-TAPS:   7  375  367  366  374  384  385  376
-Next-TAPS:   7  376  368  367  375  385  386  377
-Next-TAPS:   7  377  369  368  376  386  387  378
-Next-TAPS:   7  378  370  369  377  387  388  379
-Next-TAPS:   7  379  371  370  378  388  389  380
-Next-TAPS:   7  380  372  371  379  389  390  381
-Next-TAPS:   7  381  373  372  380  390  391  382
-Next-TAPS:   7  382   31  373  381  391  392   39
-Next-TAPS:   4  383  325  374  384
-Next-TAPS:   6  384  383  374  375  385  393
-Next-TAPS:   7  385  376  375  384  393  394  386
-Next-TAPS:   7  386  377  376  385  394  395  387
-Next-TAPS:   7  387  378  377  386  395  396  388
-Next-TAPS:   7  388  379  378  387  396  397  389
-Next-TAPS:   7  389  380  379  388  397  398  390
-Next-TAPS:   7  390  381  380  389  398  399  391
-Next-TAPS:   7  391  382  381  390  399  400  392
-Next-TAPS:   7  392   39  382  391  400  401   48
-Next-TAPS:   4  393  384  385  394
-Next-TAPS:   5  394  393  385  386  395
-Next-TAPS:   5  395  394  386  387  396
-Next-TAPS:   5  396  395  387  388  397
-Next-TAPS:   5  397  396  388  389  398
-Next-TAPS:   5  398  397  389  390  399
-Next-TAPS:   5  399  398  390  391  400
-Next-TAPS:   5  400  399  391  392  401
-Next-TAPS:   4  401  400  392   48
+Next-Neighbour:  15    0    1    2    3    4    5   67   68   69   70  335  336  337  338  340
+Next-Neighbour:  15    1    0    2    3    4    5   67   68   69   70  335  336  337  338  340
+Next-Neighbour:  15    2    0    1    3    4    5   67   68   69   70  335  336  337  338  340
+Next-Neighbour:  15    3    0    1    2    4    5   67   68   69   70  335  336  337  338  340
+Next-Neighbour:  10    4    0    1    2    3    5    7    6  343  340
+Next-Neighbour:  13    5    0    1    2    3    4    7    8   71   67   68   69   70
+Next-Neighbour:   7    6    4  343  347    9   10    7
+Next-Neighbour:   7    7    4    5    8   11   10    6
+Next-Neighbour:   7    8    5    7   11   12   73   71
+Next-Neighbour:   7    9    6  347  352   13   14   10
+Next-Neighbour:   7   10    7    6    9   14   15   11
+Next-Neighbour:   7   11    7   10   15   16   12    8
+Next-Neighbour:   7   12   76   73    8   11   16   17
+Next-Neighbour:   7   13   14    9  352  358   18   19
+Next-Neighbour:   7   14   15   10    9   13   19   20
+Next-Neighbour:   7   15   16   11   10   14   20   21
+Next-Neighbour:   7   16   17   12   11   15   21   22
+Next-Neighbour:   7   17   80   76   12   16   22   23
+Next-Neighbour:   7   18   19   13  358  365   24   25
+Next-Neighbour:   7   19   20   14   13   18   25   26
+Next-Neighbour:   7   20   21   15   14   19   26   27
+Next-Neighbour:   7   21   22   16   15   20   27   28
+Next-Neighbour:   7   22   23   17   16   21   28   29
+Next-Neighbour:   7   23   85   80   17   22   29   30
+Next-Neighbour:   7   24   25   18  365  373   31   32
+Next-Neighbour:   7   25   26   19   18   24   32   33
+Next-Neighbour:   7   26   27   20   19   25   33   34
+Next-Neighbour:   7   27   28   21   20   26   34   35
+Next-Neighbour:   7   28   29   22   21   27   35   36
+Next-Neighbour:   7   29   30   23   22   28   36   37
+Next-Neighbour:   7   30   91   85   23   29   37   38
+Next-Neighbour:   7   31   32   24  373  382   39   40
+Next-Neighbour:   7   32   33   25   24   31   40   41
+Next-Neighbour:   7   33   34   26   25   32   41   42
+Next-Neighbour:   7   34   35   27   26   33   42   43
+Next-Neighbour:   7   35   36   28   27   34   43   44
+Next-Neighbour:   7   36   37   29   28   35   44   45
+Next-Neighbour:   7   37   38   30   29   36   45   46
+Next-Neighbour:   7   38   98   91   30   37   46   47
+Next-Neighbour:   7   39   40   31  382  392   48   49
+Next-Neighbour:   7   40   41   32   31   39   49   50
+Next-Neighbour:   7   41   42   33   32   40   50   51
+Next-Neighbour:   7   42   43   34   33   41   51   52
+Next-Neighbour:   7   43   44   35   34   42   52   53
+Next-Neighbour:   7   44   45   36   35   43   53   54
+Next-Neighbour:   7   45   46   37   36   44   54   55
+Next-Neighbour:   7   46   47   38   37   45   55   56
+Next-Neighbour:   7   47  106   98   38   46   56   57
+Next-Neighbour:   6   48   49   39  392  401   58
+Next-Neighbour:   7   49   50   40   39   48   58   49
+Next-Neighbour:   7   50   51   41   40   49   59   50
+Next-Neighbour:   7   51   52   42   41   50   60   51
+Next-Neighbour:   7   52   53   43   42   49   61   52
+Next-Neighbour:   7   53   54   44   43   50   62   53
+Next-Neighbour:   7   54   55   45   44   51   63   54
+Next-Neighbour:   7   55   56   46   45   52   62   55
+Next-Neighbour:   7   56   57   47   46   53   63   56
+Next-Neighbour:   6   57  115  106   47   56   66
+Next-Neighbour:   4   58   59   49   48
+Next-Neighbour:   5   59   60   50   49   58
+Next-Neighbour:   5   60   61   51   50   59
+Next-Neighbour:   5   61   62   52   51   60
+Next-Neighbour:   5   62   63   53   52   61
+Next-Neighbour:   5   63   64   54   53   62
+Next-Neighbour:   5   64   65   55   54   63
+Next-Neighbour:   5   65   66   56   55   64
+Next-Neighbour:   4   66   57   56   65
+Next-Neighbour:  15   67   68   69   70   72  134  135  136  137    0    1    2    3    5   71
+Next-Neighbour:  15   68   67   69   70   72  134  135  136  137    0    1    2    3    5   71
+Next-Neighbour:  15   69   67   68   70   72  134  135  136  137    0    1    2    3    5   71
+Next-Neighbour:  15   70   67   68   69   72  134  135  136  137    0    1    2    3    5   71
+Next-Neighbour:  10   71   74   72   67   68   69   70    5    8   73
+Next-Neighbour:  13   72   75  138  134  135  136  137   67   68   69   70   71   74
+Next-Neighbour:   7   73   77   74   71    8   12   76
+Next-Neighbour:   7   74   78   75   72   71   73   77
+Next-Neighbour:   7   75   79  140  138   72   74   78
+Next-Neighbour:   7   76   81   77   73   12   17   80
+Next-Neighbour:   7   77   82   78   74   73   76   81
+Next-Neighbour:   7   78   83   79   75   74   77   82
+Next-Neighbour:   7   79   84  143  140   75   78   83
+Next-Neighbour:   7   80   86   81   76   17   23   85
+Next-Neighbour:   7   81   87   82   77   76   80   86
+Next-Neighbour:   7   82   88   83   78   77   81   87
+Next-Neighbour:   7   83   89   84   79   78   82   88
+Next-Neighbour:   7   84   90  147  143   79   83   89
+Next-Neighbour:   7   85   92   86   80   23   30   91
+Next-Neighbour:   7   86   93   87   81   80   85   92
+Next-Neighbour:   7   87   94   88   82   81   86   93
+Next-Neighbour:   7   88   95   89   83   82   87   94
+Next-Neighbour:   7   89   96   90   84   83   88   95
+Next-Neighbour:   7   90   97  152  147   84   89   96
+Next-Neighbour:   7   91   99   92   85   30   38   98
+Next-Neighbour:   7   92  100   93   86   85   91   99
+Next-Neighbour:   7   93  101   94   87   86   92  100
+Next-Neighbour:   7   94  102   95   88   87   93  101
+Next-Neighbour:   7   95  103   96   89   88   94  102
+Next-Neighbour:   7   96  104   97   90   89   95  103
+Next-Neighbour:   7   97  105  158  152   90   96  104
+Next-Neighbour:   7   98  107   99   91   38   47  106
+Next-Neighbour:   7   99  108  100   92   91   98  107
+Next-Neighbour:   7  100  109  101   93   92   99  108
+Next-Neighbour:   7  101  110  102   94   93  100  109
+Next-Neighbour:   7  102  111  103   95   94  101  110
+Next-Neighbour:   7  103  112  104   96   95  102  111
+Next-Neighbour:   7  104  113  105   97   96  103  112
+Next-Neighbour:   7  105  114  165  158   97  104  113
+Next-Neighbour:   7  106  116  107   98   47   57  115
+Next-Neighbour:   7  107  117  108   99   98  106  116
+Next-Neighbour:   7  108  118  109  100   99  107  117
+Next-Neighbour:   7  109  119  110  101  100  108  118
+Next-Neighbour:   7  110  120  111  102  101  109  119
+Next-Neighbour:   7  111  121  112  103  102  110  120
+Next-Neighbour:   7  112  122  113  104  103  111  121
+Next-Neighbour:   7  113  123  114  105  104  112  122
+Next-Neighbour:   7  114  124  173  165  105  113  123
+Next-Neighbour:   5  115  125  116  106   57
+Next-Neighbour:   7  116  126  117  107  106  115  125
+Next-Neighbour:   7  117  127  118  108  107  116  126
+Next-Neighbour:   7  118  128  119  109  108  117  127
+Next-Neighbour:   7  119  129  120  110  109  118  128
+Next-Neighbour:   7  120  130  121  111  110  119  129
+Next-Neighbour:   7  121  131  122  112  111  120  130
+Next-Neighbour:   7  122  132  123  113  112  121  131
+Next-Neighbour:   7  123  133  124  114  113  122  132
+Next-Neighbour:   6  124  182  173  114  123  133
+Next-Neighbour:   4  125  126  116  115
+Next-Neighbour:   5  126  127  117  116  125
+Next-Neighbour:   5  127  128  118  117  126
+Next-Neighbour:   5  128  129  119  118  127
+Next-Neighbour:   5  129  130  120  119  128
+Next-Neighbour:   5  130  131  121  120  129
+Next-Neighbour:   5  131  132  122  121  130
+Next-Neighbour:   5  132  133  123  122  131
+Next-Neighbour:   4  133  124  123  132
+Next-Neighbour:  15  134  135  136  137  138  139  201  202  203  204   67   68   69   70   72
+Next-Neighbour:  15  135  134  136  137  138  139  201  202  203  204   67   68   69   70   72
+Next-Neighbour:  15  136  134  135  137  138  139  201  202  203  204   67   68   69   70   72
+Next-Neighbour:  15  137  134  135  136  138  139  201  202  203  204   67   68   69   70   72
+Next-Neighbour:  10  138  140  141  139  134  135  136  137   72   75
+Next-Neighbour:  13  139  141  142  205  201  202  203  204  134  135  136  137  138
+Next-Neighbour:   7  140  143  144  141  138   75   79
+Next-Neighbour:   7  141  144  145  142  139  138  140
+Next-Neighbour:   7  142  145  146  207  205  139  141
+Next-Neighbour:   7  143  147  148  144  140   79   84
+Next-Neighbour:   7  144  148  149  145  141  140  143
+Next-Neighbour:   7  145  149  150  146  142  141  144
+Next-Neighbour:   7  146  150  151  210  207  142  145
+Next-Neighbour:   7  147  152  153  148  143   84   90
+Next-Neighbour:   7  148  153  154  149  144  143  147
+Next-Neighbour:   7  149  154  155  150  145  144  148
+Next-Neighbour:   7  150  155  156  151  146  145  149
+Next-Neighbour:   7  151  156  157  214  210  146  150
+Next-Neighbour:   7  152  158  159  153  147   90   97
+Next-Neighbour:   7  153  159  160  154  148  147  152
+Next-Neighbour:   7  154  160  161  155  149  153  148
+Next-Neighbour:   7  155  161  162  156  150  154  149
+Next-Neighbour:   7  156  162  163  157  151  155  150
+Next-Neighbour:   7  157  163  164  219  214  151  156
+Next-Neighbour:   7  158  165  166  159  152   97  105
+Next-Neighbour:   7  159  166  167  160  153  152  158
+Next-Neighbour:   7  160  167  168  161  154  153  159
+Next-Neighbour:   7  161  168  169  162  155  154  160
+Next-Neighbour:   7  162  169  170  163  156  155  161
+Next-Neighbour:   7  163  170  171  164  157  156  162
+Next-Neighbour:   7  164  171  172  225  219  157  163
+Next-Neighbour:   7  165  173  174  166  158  105  114
+Next-Neighbour:   7  166  174  175  167  159  158  165
+Next-Neighbour:   7  167  175  176  168  160  159  166
+Next-Neighbour:   7  168  176  177  169  161  160  167
+Next-Neighbour:   7  169  177  178  170  162  161  168
+Next-Neighbour:   7  170  178  179  180  163  162  169
+Next-Neighbour:   7  171  179  180  181  164  163  170
+Next-Neighbour:   7  172  180  181  232  225  164  171
+Next-Neighbour:   7  173  182  183  174  165  114  124
+Next-Neighbour:   7  174  183  184  175  166  165  173
+Next-Neighbour:   7  175  184  185  176  167  166  174
+Next-Neighbour:   7  176  185  186  177  168  167  175
+Next-Neighbour:   7  177  186  187  178  169  168  176
+Next-Neighbour:   7  178  187  188  179  170  169  177
+Next-Neighbour:   7  179  188  189  180  171  170  178
+Next-Neighbour:   7  180  189  190  181  172  171  179
+Next-Neighbour:   7  181  190  191  240  232  172  180
+Next-Neighbour:   4  182  183  173  124
+Next-Neighbour:   6  183  192  184  174  173  182
+Next-Neighbour:   7  184  192  193  185  175  174  183
+Next-Neighbour:   7  185  193  194  186  176  175  184
+Next-Neighbour:   7  186  194  195  187  177  176  185
+Next-Neighbour:   7  187  195  196  188  178  177  186
+Next-Neighbour:   7  188  196  197  189  179  178  187
+Next-Neighbour:   7  189  197  198  190  180  179  188
+Next-Neighbour:   7  190  198  199  191  181  180  189
+Next-Neighbour:   7  191  199  200  249  240  181  190
+Next-Neighbour:   4  192  193  184  183
+Next-Neighbour:   5  193  194  185  184  192
+Next-Neighbour:   5  194  195  186  185  193
+Next-Neighbour:   5  195  196  187  186  194
+Next-Neighbour:   5  196  197  188  187  195
+Next-Neighbour:   5  197  198  189  188  196
+Next-Neighbour:   5  198  199  190  189  197
+Next-Neighbour:   5  199  200  191  190  198
+Next-Neighbour:   4  200  249  191  199
+Next-Neighbour:  15  201  202  203  204  134  135  136  137  139  205  206  268  269  270  271
+Next-Neighbour:  15  202  201  203  204  134  135  136  137  139  205  206  268  269  270  271
+Next-Neighbour:  15  203  201  202  204  134  135  136  137  139  205  206  268  269  270  271
+Next-Neighbour:  15  204  201  202  203  134  135  136  137  139  205  206  268  269  270  271
+Next-Neighbour:  10  205  142  207  208  206  201  202  203  204  139
+Next-Neighbour:  13  206  205  208  209  272  268  269  270  271  201  202  203  204
+Next-Neighbour:   7  207  146  210  211  208  205  142
+Next-Neighbour:   7  208  207  211  212  209  206  205
+Next-Neighbour:   7  209  208  212  213  274  272  206
+Next-Neighbour:   7  210  151  214  215  211  207  146
+Next-Neighbour:   7  211  210  215  216  212  208  207
+Next-Neighbour:   7  212  211  216  217  213  209  208
+Next-Neighbour:   7  213  212  217  218  277  274  209
+Next-Neighbour:   7  214  157  219  220  215  210  151
+Next-Neighbour:   7  215  214  220  221  216  211  210
+Next-Neighbour:   7  216  215  221  222  217  212  211
+Next-Neighbour:   7  217  216  222  223  218  213  212
+Next-Neighbour:   7  218  217  223  224  281  277  213
+Next-Neighbour:   7  219  164  225  226  220  214  157
+Next-Neighbour:   7  220  219  226  227  221  215  214
+Next-Neighbour:   7  221  220  227  228  222  216  215
+Next-Neighbour:   7  222  221  228  229  223  217  216
+Next-Neighbour:   7  223  222  229  230  224  218  217
+Next-Neighbour:   7  224  223  230  231  286  281  218
+Next-Neighbour:   7  225  172  232  233  226  219  164
+Next-Neighbour:   7  226  225  233  234  227  220  219
+Next-Neighbour:   7  227  226  234  235  228  221  220
+Next-Neighbour:   7  228  227  235  236  229  222  221
+Next-Neighbour:   7  229  228  236  237  230  223  222
+Next-Neighbour:   7  230  229  237  238  231  224  223
+Next-Neighbour:   7  231  230  238  239  292  286  224
+Next-Neighbour:   7  232  181  240  241  233  225  172
+Next-Neighbour:   7  233  232  241  242  234  226  225
+Next-Neighbour:   7  234  233  242  243  235  227  226
+Next-Neighbour:   7  235  234  243  244  236  228  227
+Next-Neighbour:   7  236  235  244  245  237  229  228
+Next-Neighbour:   7  237  236  245  246  238  230  229
+Next-Neighbour:   7  238  237  246  247  239  231  230
+Next-Neighbour:   7  239  238  247  248  299  292  231
+Next-Neighbour:   7  240  191  249  250  241  232  181
+Next-Neighbour:   7  241  240  250  251  242  233  232
+Next-Neighbour:   7  242  241  251  252  243  234  233
+Next-Neighbour:   7  243  242  252  253  244  235  234
+Next-Neighbour:   7  244  243  253  254  245  236  235
+Next-Neighbour:   7  245  244  254  255  246  237  236
+Next-Neighbour:   7  246  245  255  256  247  238  237
+Next-Neighbour:   7  247  246  256  257  248  239  238
+Next-Neighbour:   7  248  247  257  258  307  299  239
+Next-Neighbour:   6  249  259  250  240  191  200
+Next-Neighbour:   7  250  249  259  260  251  241  240
+Next-Neighbour:   7  251  250  260  261  252  242  241
+Next-Neighbour:   7  252  251  261  262  253  243  242
+Next-Neighbour:   7  253  252  262  263  254  244  243
+Next-Neighbour:   7  254  253  263  264  255  245  244
+Next-Neighbour:   7  255  254  264  265  256  246  245
+Next-Neighbour:   7  256  255  265  266  257  247  246
+Next-Neighbour:   7  257  256  266  267  258  248  247
+Next-Neighbour:   6  258  257  267  316  307  248
+Next-Neighbour:   4  259  249  250  260
+Next-Neighbour:   5  260  259  261  251  250
+Next-Neighbour:   5  261  260  262  252  251
+Next-Neighbour:   5  262  261  263  253  252
+Next-Neighbour:   5  263  262  264  254  253
+Next-Neighbour:   5  264  263  265  255  254
+Next-Neighbour:   5  265  264  266  256  255
+Next-Neighbour:   5  266  265  267  257  256
+Next-Neighbour:   4  267  266  258  257
+Next-Neighbour:  15  268  269  270  271  201  202  203  204  206  272  273  335  336  337  338
+Next-Neighbour:  15  269  268  270  271  201  202  203  204  206  272  273  335  336  337  338
+Next-Neighbour:  15  270  268  269  271  201  202  203  204  206  272  273  335  336  337  338
+Next-Neighbour:  15  271  268  269  270  201  202  203  204  206  272  273  335  336  337  338
+Next-Neighbour:  10  272  206  209  274  275  273  268  269  270  271
+Next-Neighbour:  13  273  268  269  270  271  272  275  276  339  335  336  337  338
+Next-Neighbour:   7  274  209  213  277  278  275  272
+Next-Neighbour:   7  275  272  274  278  279  276  273
+Next-Neighbour:   7  276  273  275  279  280  341  339
+Next-Neighbour:   7  277  213  218  281  282  278  274
+Next-Neighbour:   7  278  274  277  282  283  279  275
+Next-Neighbour:   7  279  275  278  283  284  280  276
+Next-Neighbour:   7  280  276  279  284  285  344  341
+Next-Neighbour:   7  281  218  224  286  287  282  277
+Next-Neighbour:   7  282  277  281  287  288  283  278
+Next-Neighbour:   7  283  278  282  288  289  284  279
+Next-Neighbour:   7  284  279  283  289  290  285  280
+Next-Neighbour:   7  285  280  284  290  291  348  344
+Next-Neighbour:   7  286  224  231  292  293  287  281
+Next-Neighbour:   7  287  281  286  293  294  288  282
+Next-Neighbour:   7  288  282  287  294  295  289  283
+Next-Neighbour:   7  289  283  288  295  296  290  284
+Next-Neighbour:   7  290  284  289  296  297  291  285
+Next-Neighbour:   7  291  285  290  297  298  353  348
+Next-Neighbour:   7  292  231  239  299  300  293  286
+Next-Neighbour:   7  293  286  292  300  301  294  287
+Next-Neighbour:   7  294  287  293  301  302  295  288
+Next-Neighbour:   7  295  288  294  302  303  296  289
+Next-Neighbour:   7  296  289  295  303  304  297  290
+Next-Neighbour:   7  297  290  296  304  305  298  291
+Next-Neighbour:   7  298  291  297  305  306  359  353
+Next-Neighbour:   7  299  239  248  307  308  300  292
+Next-Neighbour:   7  300  292  299  308  309  301  293
+Next-Neighbour:   7  301  293  300  309  310  302  294
+Next-Neighbour:   7  302  294  301  310  311  303  295
+Next-Neighbour:   7  303  295  302  311  312  304  296
+Next-Neighbour:   7  304  296  303  312  313  305  297
+Next-Neighbour:   7  305  297  304  313  314  306  298
+Next-Neighbour:   7  306  298  305  314  315  366  359
+Next-Neighbour:   7  307  248  258  316  317  308  299
+Next-Neighbour:   7  308  299  307  317  318  309  300
+Next-Neighbour:   7  309  300  308  318  319  310  301
+Next-Neighbour:   7  310  301  309  319  320  311  302
+Next-Neighbour:   7  311  302  310  320  321  312  303
+Next-Neighbour:   7  312  303  311  321  322  313  304
+Next-Neighbour:   7  313  304  312  322  323  314  305
+Next-Neighbour:   7  314  305  313  323  324  315  306
+Next-Neighbour:   7  315  306  314  324  325  374  366
+Next-Neighbour:   5  316  258  326  317  307
+Next-Neighbour:   7  317  307  316  326  327  318  308
+Next-Neighbour:   7  318  308  317  327  328  319  309
+Next-Neighbour:   7  319  309  318  328  329  320  310
+Next-Neighbour:   7  320  310  319  329  330  321  311
+Next-Neighbour:   7  321  311  320  330  331  322  312
+Next-Neighbour:   7  322  312  321  331  332  323  313
+Next-Neighbour:   7  323  313  322  332  333  324  314
+Next-Neighbour:   7  324  314  323  333  334  325  315
+Next-Neighbour:   6  325  315  324  334  383  374
+Next-Neighbour:   4  326  316  327  317
+Next-Neighbour:   5  327  326  317  318  328
+Next-Neighbour:   5  328  327  318  319  329
+Next-Neighbour:   5  329  328  319  320  330
+Next-Neighbour:   5  330  329  320  321  331
+Next-Neighbour:   5  331  330  321  322  332
+Next-Neighbour:   5  332  331  322  323  333
+Next-Neighbour:   5  333  332  323  324  334
+Next-Neighbour:   4  334  333  324  325
+Next-Neighbour:  15  335  336  337  338  268  269  270  271  273  339  340    0    1    2    3
+Next-Neighbour:  15  336  335  337  338  268  269  270  271  273  339  340    0    1    2    3
+Next-Neighbour:  15  337  335  336  338  268  269  270  271  273  339  340    0    1    2    3
+Next-Neighbour:  15  338  335  336  337  268  269  270  271  273  339  340    0    1    2    3
+Next-Neighbour:  10  339  335  336  337  338  273  276  341  342  340
+Next-Neighbour:  13  340    0    1    2    3  335  336  337  338  339  342  343    4
+Next-Neighbour:   7  341  339  276  280  344  345  342
+Next-Neighbour:   7  342  340  339  341  345  346  343
+Next-Neighbour:   7  343    4  340  342  346  347    6
+Next-Neighbour:   7  344  341  280  285  348  349  345
+Next-Neighbour:   7  345  342  341  344  349  350  346
+Next-Neighbour:   7  346  343  342  345  350  351  347
+Next-Neighbour:   7  347    6  343  346  351  352    9
+Next-Neighbour:   7  348  344  285  291  353  354  349
+Next-Neighbour:   7  349  345  344  348  354  355  350
+Next-Neighbour:   7  350  346  345  349  355  356  351
+Next-Neighbour:   7  351  347  346  350  356  357  352
+Next-Neighbour:   7  352    9  347  351  357  358   13
+Next-Neighbour:   7  353  348  291  298  359  360  354
+Next-Neighbour:   7  354  349  348  353  360  361  355
+Next-Neighbour:   7  355  350  349  354  361  362  356
+Next-Neighbour:   7  356  351  350  355  362  363  357
+Next-Neighbour:   7  357  352  351  356  363  364  358
+Next-Neighbour:   7  358   13  352  357  364  365   18
+Next-Neighbour:   7  359  353  298  306  366  367  360
+Next-Neighbour:   7  360  354  353  359  367  368  361
+Next-Neighbour:   7  361  355  354  360  368  369  362
+Next-Neighbour:   7  362  356  355  361  369  370  363
+Next-Neighbour:   7  363  357  356  362  370  371  364
+Next-Neighbour:   7  364  358  357  363  371  372  365
+Next-Neighbour:   7  365   18  358  364  372  373   24
+Next-Neighbour:   7  366  359  306  315  374  375  367
+Next-Neighbour:   7  367  360  359  366  375  376  368
+Next-Neighbour:   7  368  361  360  367  376  377  369
+Next-Neighbour:   7  369  362  361  368  377  378  370
+Next-Neighbour:   7  370  363  362  369  378  379  371
+Next-Neighbour:   7  371  364  363  370  379  380  372
+Next-Neighbour:   7  372  365  364  371  380  381  373
+Next-Neighbour:   7  373   24  365  372  381  382   31
+Next-Neighbour:   7  374  366  315  325  383  384  375
+Next-Neighbour:   7  375  367  366  374  384  385  376
+Next-Neighbour:   7  376  368  367  375  385  386  377
+Next-Neighbour:   7  377  369  368  376  386  387  378
+Next-Neighbour:   7  378  370  369  377  387  388  379
+Next-Neighbour:   7  379  371  370  378  388  389  380
+Next-Neighbour:   7  380  372  371  379  389  390  381
+Next-Neighbour:   7  381  373  372  380  390  391  382
+Next-Neighbour:   7  382   31  373  381  391  392   39
+Next-Neighbour:   4  383  325  374  384
+Next-Neighbour:   6  384  383  374  375  385  393
+Next-Neighbour:   7  385  376  375  384  393  394  386
+Next-Neighbour:   7  386  377  376  385  394  395  387
+Next-Neighbour:   7  387  378  377  386  395  396  388
+Next-Neighbour:   7  388  379  378  387  396  397  389
+Next-Neighbour:   7  389  380  379  388  397  398  390
+Next-Neighbour:   7  390  381  380  389  398  399  391
+Next-Neighbour:   7  391  382  381  390  399  400  392
+Next-Neighbour:   7  392   39  382  391  400  401   48
+Next-Neighbour:   4  393  384  385  394
+Next-Neighbour:   5  394  393  385  386  395
+Next-Neighbour:   5  395  394  386  387  396
+Next-Neighbour:   5  396  395  387  388  397
+Next-Neighbour:   5  397  396  388  389  398
+Next-Neighbour:   5  398  397  389  390  399
+Next-Neighbour:   5  399  398  390  391  400
+Next-Neighbour:   5  400  399  391  392  401
+Next-Neighbour:   4  401  400  392   48
 ##
 ########################################################################
 ## Post initialization
