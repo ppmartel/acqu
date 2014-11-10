@@ -45,20 +45,17 @@ Branch:   emwpc         1024
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #ROOT file(s) (GEANT4 output) to be analysed. Add more lines for more files
 #
-#TreeFile: /home/martel/work1/analysis/g-p_g-p_tran_cher_QGSP_BIC/root/A2G4_g-p_g-p_isot_01.root
-#TreeFile: scratch/A2G4_g-p_pi0-p_isot_01.root
+TreeFile: scratch/A2G4_g-p_pi0-p_isot_01.root
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## Batch mode operation...redirect output directory for log files etc.
-#BatchDir: ./
-BatchDir: /home/martel/acqu/acqu_user/
+BatchDir: logfiles/
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #Directory to save any created ROOT files (include final '/')
-#Directory: ./
-Directory: /home/martel/acqu/acqu_user/
+Directory: output/
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

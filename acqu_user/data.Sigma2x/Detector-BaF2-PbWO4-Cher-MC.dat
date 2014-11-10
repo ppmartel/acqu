@@ -538,8 +538,8 @@ Element:   25264    4.0 2000.0  106.00 0.322779   25464  -400.0   400.0  2654.81
 #			     
 #                 No. of clusters to be processed   Cluster threshold energy [MeV]
 #Max-Cluster:    8      20
-#Max-Cluster:    32      15
-Max-Cluster:    64      5
+Max-Cluster:    32      15
+#Max-Cluster:    64      5
 #
 #RandomHitPosition: 12345
 #
@@ -1000,7 +1000,7 @@ Initialise:
 #Display of basic hit information
 Display:  1D    Nhits      128     0   128
 Display:  1D    Hits       512     0   512
-Display:  1D    TimeOR   12000  -300   900
+Display:  1D    TimeOR   1200  -300   900
 Display:  1D    EnergyOR  1000     0  1000
 *Display:  1D    Energy    1000     0  1000   0   438
 *Display:  1D    Time     12000  -300   900   0   438
