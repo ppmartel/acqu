@@ -495,9 +495,9 @@ Element:   25264      4.0               2000.0             106.973           0.1
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #Set-up of clustering
 #                 No. of clusters to be processed   Cluster threshold energy [MeV]
-#Max-TAPSCluster:  64                                15
-#Max-TAPSCluster:  16                                15
-Max-TAPSCluster:  16                                5
+#Max-Cluster:  64                                15
+#Max-Cluster:  16                                15
+Max-Cluster:  16                                5
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

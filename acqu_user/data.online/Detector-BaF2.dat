@@ -424,7 +424,7 @@ Element:   25498    1.0 2000.0  100.977  0.250000   25491 -1000.0  1000.0  3218.
 ##      Setup of Clustering
 ##			     
 ## Max # clusters to analyse    ClusterMinEnergy
-Max-TAPSCluster:    8      20
+Max-Cluster:    8      20
 ##
 ## Nearest neighbours for each element of array
 ## There would normally be 6 nearest neighbours for each TAPS Element
