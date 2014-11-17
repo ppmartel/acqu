@@ -49,8 +49,8 @@ Reconstruct-Analysis:
 ##
 ## Specify physics analysis
 ##		   Name	      Class		       Config File
-Physics-Analysis:  Phys	      TA2PhysicsPMartel	       Physics-PMartel.dat
-#Physics-Analysis:  Phys	      TA2GoAT	       Physics-GoAT.dat
+Physics-Analysis:  Phys	      TA2PhysicsPMartel	       Physics-PMartel-Eff.dat
+#Physics-Analysis:  Phys	      TA2GoAT	       Physics-GoAT-Eff.dat
 ##
 ## Do some post initialisation...usually necessary
 Initialise:
@@ -65,7 +65,7 @@ Period:		100000	root/macros/PeriodMacro.C	PeriodMacro()
 #EndFile:		root/macros/EndFileMacro.C  EndFileMacro()
 ##
 ## Finish...when all input data files processed
-Finish:		root/macros/FinishMacro.C	FinishMacro()
+Finish:		root/macros/FinishBatch.C	FinishBatch()
 ##
 ## Save all accepted events (ie those which pass all data cuts) to a
 ## ROOT file. Data saved in RAW format (ie ADC indices and values)

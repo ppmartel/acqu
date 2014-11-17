@@ -1,4 +1,4 @@
-void FinishBatch(TString sInput="", TString sOutput="ARHist"){
+void FinishBatch(TString sInput="", TString sOutput="Hist"){
 
   // Stuff to do at the end of an analysis run
   // Here all spectra are saved to disk
