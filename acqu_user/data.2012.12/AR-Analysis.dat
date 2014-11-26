@@ -30,6 +30,7 @@ MultiADC:       3       30201   30350   30200
 MultiADC:	3	30419	30419	30200
 MultiADC:	3	30200	30200	30200
 MultiADC:	3	30600	30600	30200
+MultiADC:	3	30619	30619	30200
 MultiADC:	3	29953	29965	30200
 ##
 ## SG ADC read out in 3-sum mode (#hits is always 3)
