@@ -1475,6 +1475,8 @@ Next-Neighbour: 13	716	715	718	141	719	143	138	142	95	711	713	714	717
 Next-Neighbour: 13	717	714	572	718	571	575	719	716	715	713	671	567	574	
 Next-Neighbour: 13	718	719	716	717	715	713	714	572	574	575	143	142	141	
 Next-Neighbour: 12	719	718	575	143	574	142	287	141	716	717	572	431	
+## Moliere Radius for NaI
+Moliere-Radius: 4.8
 ##
 ## Do some further array initialisation BEFORE display specification
 Initialise:
