@@ -17,10 +17,10 @@ fi
 ####################################################
 
 # Expected number of root files per job
-NRoot=2
+NRoot=1
 
 # Clean up after check: 0 queries before deleting files, 1 does not query
-Clean=0
+Clean=1
 
 # Output directory
 OutputDir=/local/raid1/work/$USER/analysis
