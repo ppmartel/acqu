@@ -14,7 +14,7 @@ Max-Cluster: 16		  5
 Energy-Scale: 1.05
 #
 # Energy resolution using the form A*(E^B): A, B,   Use to smear MC data (0/1 = off/on) 
-Energy-Resolution: 0.027 0.75 1
+Energy-Resolution: 0.027 0.75 0
 #
 # Time resolution, apply gaus. smear (sigma in ns), Use to smear MC data (0/1 = off/on)
 Time-Resolution: 2.87 0
@@ -970,7 +970,7 @@ Initialise:
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #Display of basic hit information
 Display:  1D    Nhits      128     0   128
-Display:  1D    Hits       512     0   512
+Display:  1D    Hits       438     0   438
 Display:  1D    TimeOR    1000   -50    50
 Display:  1D    EnergyOR  1000     0  1000
 *Display:  1D    Energy    1000     0  1000   0   512
