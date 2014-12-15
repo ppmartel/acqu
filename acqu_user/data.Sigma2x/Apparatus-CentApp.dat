@@ -21,6 +21,7 @@ Detector: PID        TA2PlasticPID	Detector-PID.dat
 Detector: CylMWPC    TA2CylMwpc		Detector-MWPC.dat
 ##
 ## MC
+#Detector: NaI        TA2CalArray	Detector-NaI-MC.dat
 #Detector: PID        TA2PlasticPID	Detector-PID-MC.dat
 ##
 ## Data reconstruction method for Crystal Ball 

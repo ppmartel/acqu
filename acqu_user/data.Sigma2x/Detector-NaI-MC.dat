@@ -13,14 +13,14 @@ RawHits:
 #
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #Global (all NaI elements) scaling parameter for energy correction
-Energy-Scale: 1.08
+Energy-Scale: 1.09
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #Energy  and Time resolutions for MC smearing (enable/disable by last
 #parameter). Energy resolutiuon is given by c1 * (E/GeV)^c2, time resolution is
 #according to Gaussioan with given sigma in ns.
-Energy-Resolution: 0.027  0.750  1
+Energy-Resolution: 0.033  0.750  1
 Time-Resolution:   2.870  1
 #Theta and phi resolutions (deg) to be reported by TA2Particles from CB. Phi
 #resolution is divided by sin(theta) to give resolution at specific theta.

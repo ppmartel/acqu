@@ -14,7 +14,7 @@
 ##
 ##
 ## General:     dbhost		dbname			   dbuser      dbpass        calibration
-Use-CaLib:      blaster		CaLib_2004_01-2012_08      calib       basel10       2011_02_Compton_Martel
+Use-CaLib:      blaster		CaLib_2004_01-2012_08      calib       basel10       2011_01_Compton_Martel
 ##
 ##
 # tagger calib:     time    efficiency (0=off/1=on)
@@ -56,7 +56,7 @@ SaveTree: PartTree.root
 RecordRaw: 0
 #Cherenkov: 1
 #
-CutNaIPID: ProtonCut data/cuts/CB_Cut_NaI_PID.root
+#CutNaIPID: ProtonCut data/cuts/CB_Cut_NaI_PID.root
 #CutNaIMWPC: ProtonCut data/cuts/CB_Cut_NaI_MWPC.root
 #CutPIDMWPC: ProtonCut data/cuts/CB_Cut_PID_MWPC.root
 ##

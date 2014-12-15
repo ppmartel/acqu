@@ -19,7 +19,7 @@
 ## from the other specified channels
 ## CB TDC's
 ##              #hits   start   stop    reference
-MultiADC:	3       1401    1911    1400
+MultiADC:	8       1401    1911    1400
 MultiADC:	3       2001    2767    2000
 MultiADC:	3       4000    4639    2000
 ##
@@ -61,8 +61,8 @@ Reconstruct-Analysis:
 ##
 ## Specify physics analysis
 ##                  Name      Class                    Config File
-#Physics-Analysis:   Phys      TA2GoAT		       Physics-GoAT.dat
-Physics-Analysis:   Phys      TA2PhysicsPMartel	       Physics-PMartel.dat
+Physics-Analysis:   Phys      TA2GoAT		       Physics-GoAT.dat
+#Physics-Analysis:   Phys      TA2PhysicsPMartel	       Physics-PMartel.dat
 ##
 ## Do some post initialisation...usually necessary
 Initialise:
