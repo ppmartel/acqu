@@ -676,8 +676,7 @@ void TDAQexperiment::RunIRQ()
   // 1/9/10 if running slave mode call fSupervise->ExecAutoStart()
   //
   if( !(fNADC + fNScaler) ){
-    PrintError("","<RunIRQ: no IRQ modules loaded>\n");
-    return;
+    printf("Warning: <RunIRQ: no IRQ modules loaded>\n");
   }
   TIter nexta( fADCList );
   TIter nexts( fScalerList );
