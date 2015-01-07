@@ -166,6 +166,8 @@ TDAQexperiment::TDAQexperiment( const Char_t* name, const Char_t* input, const C
   strcpy( fRunDesc, "AcquDAQ Experimental Data, in MkII format\n" );
   strcpy( fFileName, "AcquDAQ" );
   fRunStart = -1;
+  fIRQThread = 0;
+  fDAQCtrlThread = 0;
 }
 
 //-----------------------------------------------------------------------------
