@@ -39,6 +39,8 @@ Module: CAMAC	      caen_208_F	caen_208.EPT	  4	19
 # -----------------------------------------              fIndex  fNcha  Bits 
 Module: CATCH_TDC    cat0 	catchTDC.d 	e0300000  1400    128 	14
 Module: CATCH_TDC    cat1 	catchTDC.d 	e0310000  1528    128 	14
+Module: CATCH_TDC    cat2 	catchTDC.d 	e0320000  1656    128 	14
+Module: CATCH_TDC    cat3       catchTDC.d    e0330000  1784    128  14
 ## Interrupt control module
 IRQ-Ctrl: vit0
 ## Trigger enable and TCS start/stop module, and delay in usec after CATCH reset
