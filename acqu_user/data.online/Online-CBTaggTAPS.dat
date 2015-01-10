@@ -34,3 +34,5 @@ AnalysisSetup: Analysis-CBTaggTAPS.dat
 ##
 ## Set Server file
 ServerSetup: Server-CBTaggTAPS.dat
+
+Log-Hard-Error:
