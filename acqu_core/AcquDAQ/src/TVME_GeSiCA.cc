@@ -429,7 +429,7 @@ void TVME_GeSiCA::ProgFPGA()
   UInt_t nTries = 0;
   while((Read(EIFPGAReg) & 0x1) == 0) {
     nTries++;
-    if(nTries==1000) {
+    if(nTries==10000) {
       cerr << "Reached maximum wait time for init programming. "
            << "Last value 0x14 = " << hex << Read(EIFPGAReg)<< dec << endl;
       exit (EXIT_FAILURE); 
