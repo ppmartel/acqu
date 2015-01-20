@@ -33,15 +33,18 @@
 static const Map_t kClustDetKeys[] = {
   {"Max-Cluster:",          EClustDetMaxCluster},
   {"Next-Neighbour:",       EClustDetNeighbour},
-  {"All-Neighbour:",        EClustDetAllNeighbour},
-  {"Split-Off:",            EClustDetSplitOff},
-  {"Iterate-Neighbours:",   EClustDetIterate},
-  {"Energy-Weight:",        EClustEnergyWeight},
+  {"Moliere-Radius:",       EClustDetMoliereRadius},
   {NULL,          -1}
 };
 
+#include <iostream>
+#include <set>
+#include <map>
+#include <algorithm>
 #include <sstream>
 #include <TA2Analysis.h>
+
+using namespace std;
 
 //---------------------------------------------------------------------------
 TA2ClusterDetector::TA2ClusterDetector( const char* name,
@@ -54,20 +57,10 @@ TA2ClusterDetector::TA2ClusterDetector( const char* name,
   AddCmdList( kClustDetKeys );
   fCluster = NULL;
   fClustHit = NULL;
-  fIsSplit = NULL;
-  fTempHits = NULL;
-  fNCluster = fNSplit = fNSplitMerged = fMaxCluster = 0;
-  fClustSizeFactor = 1;
+  fNCluster =  fMaxCluster = 0;
   fNClustHitOR = NULL;
   fTheta = fPhi = fClEnergyOR = fClTimeOR = fClCentFracOR = fClRadiusOR = NULL;
-  fClEthresh = fEthresh = fEthreshSplit = 0.0;
-  fMaxThetaSplitOff = fMinPosDiff  = fMaxPosDiff = 0.0;
-  fEWgt = 0.0;
-  fLEWgt = 0.0;
-  fSplitAngle = NULL;
-  fISplit = fIJSplit = NULL;
-  fMaxSplitPerm = 0;
-  fIsIterate = kFALSE;
+  fEthresh = 0.0;
 
 
   fDispClusterEnable = kFALSE; // config stuff missing...
@@ -106,50 +99,385 @@ void TA2ClusterDetector::DecodeSaved( )
 #endif
 }
 
-//---------------------------------------------------------------------------
+static Double_t calc_total_energy(const vector< crystal_t >& cluster) {
+  Double_t energy = 0;
+  for(size_t i=0;i<cluster.size();i++) {
+    energy += cluster[i].Energy;
+  }
+  return energy;
+}
+
+static Double_t opening_angle(const crystal_t& c1, const crystal_t& c2)  {
+  // use TMath::ACos since it catches some NaN cases due to double rounding issues
+  return TMath::RadToDeg()*TMath::ACos(c1.Position.Unit()*c2.Position.Unit());
+}
+
+typedef struct {
+  TVector3 Position;
+  vector<Double_t> Weights;
+} bump_t;
+
+// use local Moliere radius (NaI=4.8, BaF2=3.4, PbWO4=2.2)
+// given by config file
+static void calc_bump_weights(const vector<crystal_t>& cluster, bump_t& bump) {
+  Double_t w_sum = 0;
+  for(size_t i=0;i<cluster.size();i++) {
+    Double_t r = (bump.Position - cluster[i].Position).Mag();
+    Double_t w = cluster[i].Energy*TMath::Exp(-2.0*r/cluster[i].MoliereRadius); // originally 2.5
+    bump.Weights[i] = w;
+    w_sum += w;
+  }
+  for(size_t i=0;i<cluster.size();i++) { 
+    bump.Weights[i] /= w_sum; 
+  }
+}
+
+static void update_bump_position(const vector<crystal_t>& cluster, bump_t& bump) {
+  Double_t bump_energy = 0;
+  for(size_t i=0;i<cluster.size();i++) {
+    bump_energy += bump.Weights[i] * cluster[i].Energy;
+  }
+  TVector3 position(0,0,0);
+  Double_t w_sum = 0;
+  for(size_t i=0;i<cluster.size();i++) {
+    Double_t energy = bump.Weights[i] * cluster[i].Energy;
+    Double_t w = 4.0 + TMath::Log(energy / bump_energy);
+    w = w<0 ? 0 : w; // ignore too small energy contributions
+    position += w * cluster[i].Position;
+    w_sum += w;
+  }
+  position *= 1.0/w_sum;
+  bump.Position = position;
+}
+
+static bump_t merge_bumps(const vector< list<bump_t>::iterator > bumps) {
+  bump_t bump = *(bumps[0]);
+  for(size_t i=1;i<bumps.size();i++) {
+    bump_t b = *(bumps[i]);
+    for(size_t j=0;j<bump.Weights.size();j++) {
+      bump.Weights[j] += b.Weights[j];
+    }
+  }
+  // normalize
+  for(size_t j=0;j<bump.Weights.size();j++) {
+    bump.Weights[j] /= bumps.size();
+  }
+  return bump;
+}
+
+static void split_cluster(const vector<crystal_t>& cluster,
+                          vector< vector<crystal_t> >& clusters) {
+  
+  // make Voting based on relative distance or energy difference
+   
+  Double_t totalClusterEnergy = 0;
+  vector<UInt_t> votes;
+  votes.resize(cluster.size(), 0);
+  // start searching at the second highest energy (i>0 case in next for loop)
+  // since we know that the highest energy always has a vote
+  votes[0]++;
+  for(size_t i=0;i<cluster.size();i++) {   
+    totalClusterEnergy += cluster[i].Energy; // side calculation in this loop, but include i=0
+    if(i==0)
+      continue;
+    
+    // i>0 now...
+    // for each crystal walk through cluster 
+    // according to energy gradient    
+    UInt_t currPos = i;
+    bool reachedMaxEnergy = false;
+    Double_t maxEnergy = 0;
+    while(!reachedMaxEnergy) {
+      // find neighbours intersection with actually hit clusters
+      reachedMaxEnergy = true;
+      vector<UInt_t> neighbours = cluster[currPos].NeighbourIndices;
+      for(size_t j=0;j<cluster.size();j++) {                      
+        for(UInt_t n=0;n<neighbours.size();n++) {
+          if(neighbours[n] != cluster[j].Index)
+            continue; // cluster element j not neighbour of element currPos, go to next
+          Double_t energy = cluster[j].Energy;
+          if(maxEnergy < energy) {
+            maxEnergy = energy;
+            currPos = j;
+            reachedMaxEnergy = false;
+          }
+          break; // neighbour indices are unique, stop iterating
+        }
+      }
+    }
+    // currPos is now at max Energy
+    votes[currPos]++;
+  }
+  
+  // all crystals vote for highest energy 
+  // so this cluster should not be splitted,
+  // just add it to the clusters
+  if(votes[0] == cluster.size()) {
+    clusters.push_back(cluster);
+    return;
+  }
+  
+  // find the bumps (crystals voted for)
+  // and init the weights
+  list<bump_t> bumps;
+  for(size_t i=0;i<votes.size();i++) {
+    if(votes[i]==0)
+      continue;
+    // initialize the weights with the position of the crystal
+    bump_t bump;
+    bump.Position = cluster[i].Position;
+    bump.Weights.resize(cluster.size(), 0);
+    calc_bump_weights(cluster, bump);
+    bumps.push_back(bump);
+  }
+
+  // as long as we have overlapping bumps
+  Bool_t haveOverlap = kFALSE;
+   
+  do {  
+    // converge the positions of the bumps
+    UInt_t iterations = 0;
+    list< bump_t > stable_bumps;
+    const Double_t positionEpsilon = 0.01;
+    while(!bumps.empty()) {
+      for(list<bump_t>::iterator b=bumps.begin(); b != bumps.end(); ++b) {
+        // calculate new bump position with current weights
+        TVector3 oldPos = (*b).Position;
+        update_bump_position(cluster, *b);
+        Double_t diff = (oldPos - (*b).Position).Mag();
+        // check if position is stable
+        if(diff>positionEpsilon) {
+          // no, then calc new weights with new position
+          calc_bump_weights(cluster, *b);
+          continue;
+        }
+        // yes, then save it and erase it from to-be-stabilized bumps
+        stable_bumps.push_back(*b);
+        b = bumps.erase(b);
+      }
+      // check max iterations
+      iterations++;
+      if(iterations<100)
+        continue; // go on iterating...
+      // ... or we iterated really long without convergence
+      // discard the bumps which havn't converged
+      bumps.clear();    
+    }
+    
+    // do we have any stable bumps? 
+    // Then just the use cluster as is
+    if(stable_bumps.empty()) {
+      clusters.push_back(cluster);
+      return;
+    } 
+    
+    // stable_bumps are now identified, form clusters out of it  
+    // check if two bumps share the same crystal of highest energy
+    
+    // for each crystal, we distribute its energy according to the
+    // relative "pull" from each bump
+    const Double_t weightEpsilon = 1.0e-5;
+    vector<Double_t> weights_sum(cluster.size(), 0);
+    for(size_t i=0;i<cluster.size();i++) {
+      for(list<bump_t>::iterator b=stable_bumps.begin(); b != stable_bumps.end(); ++b) {
+        if((*b).Weights[i] <  weightEpsilon) // ignore really small weights
+          continue;
+        weights_sum[i] += (*b).Weights[i];
+      }
+    }
+    
+    typedef map<UInt_t, vector< list<bump_t>::iterator > > overlaps_t;
+    overlaps_t overlaps; // index of highest energy crystal -> corresponding stable bumps
+    haveOverlap = kFALSE;
+    vector< vector<crystal_t> > potential_clusters;
+    for(list<bump_t>::iterator b=stable_bumps.begin(); b != stable_bumps.end(); ++b) {
+      vector<crystal_t> bump_cluster;
+      for(size_t i=0;i<cluster.size();i++) {
+        if((*b).Weights[i] <  weightEpsilon) // ignore really small weights
+          continue;
+        crystal_t crys = cluster[i];
+        crys.Energy *= (*b).Weights[i] / weights_sum[i];
+        bump_cluster.push_back(crys);
+      }
+      // sort also the bump_cluster by energy, get index of highest energy (first one after sorting)
+      sort(bump_cluster.begin(), bump_cluster.end());
+      UInt_t kmax = bump_cluster[0].Index;
+      // check if overlaps contains something at kmax
+      if(overlaps.find(kmax) != overlaps.end()) {
+        haveOverlap = kTRUE;
+      }
+      // remember the bump at its highest energy     
+      overlaps[kmax].push_back(b);
+      // if there's no overlap detected so far, we save the potential cluster
+      if(!haveOverlap)
+        potential_clusters.push_back(bump_cluster);
+    }
+    
+    // if no overlaps detected,
+    // then potential clusters can be added to clusters
+    if(!haveOverlap) {
+      clusters.insert(clusters.end(), potential_clusters.begin(), potential_clusters.end());
+      break; // = continue since haveOverlap is false
+    } 
+    
+    // if overlaps detected, 
+    // merge those overlapping bumps and stabilize position again 
+    for(overlaps_t::iterator o=overlaps.begin(); o != overlaps.end(); ++o) {
+      bumps.push_back(merge_bumps(o->second));
+    }
+    
+  } while(haveOverlap);
+  
+}
+
+
+static void build_cluster(list<crystal_t>& crystals, 
+                           vector<crystal_t> &cluster) {
+  list<crystal_t>::iterator i = crystals.begin();
+  
+  // start with initial seed list 
+  vector<crystal_t> seeds;
+  seeds.push_back(*i);
+  
+  // save i in the current cluster
+  cluster.push_back(*i);
+  // remove it from the candidates
+  crystals.erase(i);
+  
+  while(seeds.size()>0) {
+    // neighbours of all seeds are next seeds
+    vector<crystal_t> next_seeds; 
+    
+    for(vector<crystal_t>::iterator seed=seeds.begin(); seed != seeds.end(); seed++) {
+      // find intersection of neighbours and seed 
+      for(list<crystal_t>::iterator j = crystals.begin() ; j != crystals.end() ; ) {
+        bool foundNeighbour = false;
+        for(UInt_t n=0;n<(*seed).NeighbourIndices.size();n++) {
+          if((*seed).NeighbourIndices[n] != (*j).Index) 
+            continue;    
+          next_seeds.push_back(*j);
+          cluster.push_back(*j);
+          j = crystals.erase(j);
+          foundNeighbour = true;
+          // neighbours is a list of unique items, we can stop searching
+          break;
+        }
+        // removal moves iterator one forward
+        if(!foundNeighbour)
+          ++j;
+      }
+    }
+    // set new seeds, if any new found...
+    seeds = next_seeds;    
+  }
+  
+  // sort it by energy
+  sort(cluster.begin(), cluster.end());
+}
+
+
+
 void TA2ClusterDetector::DecodeCluster( )
 {
-  // Determine clusters of hits
-  // Search around peak energies absorbed in individual crystals
-  // Make copy of hits array as the copy will be altered
   
-  memcpy( fTempHits, fHits, sizeof(UInt_t)*fNhits );  // temp copy
-  //  fNCluster = 0;
-  Double_t maxenergy;
-  UInt_t i,j,k,kmax,jmax;
-  // Find hit with maximum energy
-  for( i=0; i<fMaxCluster;  ){
-    maxenergy = 0;
-    for( j=0; j<fNhits; j++ ){
-      if( (k = fTempHits[j]) == ENullHit ) continue;
-      if( maxenergy < fEnergy[k] ){
-        maxenergy = fEnergy[k];
-        kmax = k;
-        jmax = j;
+  // build the hit crystals from the available hits
+  // including the neighbour information...
+  list<crystal_t> crystals; 
+  for(UInt_t i=0;i<fNhits;i++) {
+    UInt_t idx = fHits[i];
+    crystals.push_back(
+          crystal_t(idx,
+                    fEnergy[idx], 
+                    fTime[idx],
+                    *(fPosition[idx]),
+                    fCluster[idx]->GetNNeighbour(),
+                    fCluster[idx]->GetNeighbour(),
+                    fCluster[idx]->GetMoliereRadius()
+                    )
+          );
       }
-    }
-    if( maxenergy == 0 ) break;              // no more isolated hits
-    if( kmax < fNelement ){
-      fCluster[kmax]->ClusterDetermine( this ); // determine the cluster
-      if( fCluster[kmax]->GetEnergy() >= fEthresh ){
-        fClustHit[i] = kmax;
-        fTheta[i] = fCluster[kmax]->GetTheta();
-        fPhi[i] = fCluster[kmax]->GetPhi();
-        fNClustHitOR[i] = fCluster[kmax]->GetNhits();
-        fClEnergyOR[i] = fCluster[kmax]->GetEnergy();
-        fClTimeOR[i] = fCluster[kmax]->GetTime();
-        fClCentFracOR[i] = fCluster[kmax]->GetCentralFrac();
-        fClRadiusOR[i] = fCluster[kmax]->GetRadius();
-        i++;
+  // sort hits with highest energy first
+  // makes the cluster building faster hopefully
+  crystals.sort();
+ 
+  vector< vector<crystal_t> > clusters; // contains the final truly split clusters
+  while(crystals.size()>0) {
+    vector<crystal_t> cluster; 
+    build_cluster(crystals, cluster); // already sorts it by energy
+    
+    // check if cluster contains bumps
+    // if not, cluster is simply added to clusters
+    split_cluster(cluster, clusters);
+  } 
+  
+ 
+  // calculate cluster properties and fill the many arrays of this detector... 
+  // assume that each cluster is sorted by fEnergy
+  fNCluster = 0;
+  for(size_t i=0 ; i < clusters.size() ; i++) {
+    vector<crystal_t> cluster = clusters[i];
+    
+    // kick out really large clusters already here...
+    if(cluster.size()>(UInt_t)fCluster[0]->GetMaxHits())
+      continue;
+    
+    fClEnergyOR[fNCluster] = calc_total_energy(cluster);
+    // kick out low energetic clusters...
+    if(fClEnergyOR[fNCluster]<fEthresh) 
+      continue;
+    
+    // kmax is crystal index with highest energy in cluster
+    // cluster is sorted, so it's the first crystal
+    UInt_t kmax = cluster[0].Index; 
+    fClustHit[fNCluster] = kmax;
+    fClTimeOR[fNCluster] = fIsTime ? fTime[kmax] : 0; 
+    fNClustHitOR[fNCluster] = cluster.size();
+    fClCentFracOR[fNCluster] = cluster[0].Energy / fClEnergyOR[fNCluster];
+         
+    // go over cluster once more
+    TVector3 weightedPosition(0,0,0);
+    Double_t weightedSum = 0;
+    Double_t weightedRadius = 0;
+    Double_t avgRadius = 0;
+    Double_t avgOpeningAngle = 0; 
+    for(size_t j=0;j<cluster.size();j++) {
+   
+      // energy weighting, parameter W0=3.5 (should be checked)
+      Double_t energy = cluster[j].Energy;
+      Double_t wgtE = 4.0 + TMath::Log(energy / fClEnergyOR[fNCluster]); // log to base e
+      wgtE = wgtE<0 ? 0 : wgtE; // no negative weights
+      weightedSum += wgtE;
+      
+      // position/radius weighting
+      TVector3 pos = cluster[j].Position;
+      TVector3 diff = cluster[0].Position - pos;
+      weightedPosition += pos * wgtE;
+      weightedRadius += diff.Mag() * wgtE;
+      
+      avgRadius += diff.Mag();
+      avgOpeningAngle += opening_angle(cluster[0], cluster[j]);
       }
+    
+    avgRadius /= cluster.size();    
+    avgOpeningAngle /= cluster.size();
+    
+    weightedPosition *= 1.0/weightedSum;
+  
+    fPhi[fNCluster] = TMath::RadToDeg() * weightedPosition.Phi();
+    fTheta[fNCluster] = TMath::RadToDeg() * weightedPosition.Theta();
+    fClRadiusOR[fNCluster] = weightedRadius / weightedSum;
+    
+    fCluster[kmax]->SetFields(cluster,
+                              fClEnergyOR[fNCluster],
+                              weightedPosition);
+    
+    fNCluster++;
+    // just discard more clusters
+    if(fNCluster==fMaxCluster)
+      break;
     }
-    // If you reach here then there is an error in the decode
-    // possible bad detector ID
-    else fTempHits[jmax] = ENullHit;
-  }
-  fNCluster = i;                   // save # clusters
-  // Now search for possible split offs if this is enabled
-  if( fMaxSplitPerm ) SplitSearch();
+ 
+  // mark ends in those stupid c-arrays...
   fClustHit[fNCluster] = EBufferEnd;
   fTheta[fNCluster] = EBufferEnd;
   fPhi[fNCluster] = EBufferEnd;
@@ -158,64 +486,6 @@ void TA2ClusterDetector::DecodeCluster( )
   fClTimeOR[fNCluster] = EBufferEnd;
   fClCentFracOR[fNCluster] = EBufferEnd;
   fClRadiusOR[fNCluster] = EBufferEnd;
-}
-
-//---------------------------------------------------------------------------
-void TA2ClusterDetector::SplitSearch( )
-{
-  // Search for candidate split-off clusters associated with a main cluster
-  // and attempt to merge them
-  HitCluster_t *cli, *clj;
-  Int_t* pij = fIJSplit;
-  UInt_t i,j,ij,k,n;
-  Double_t openAngle;
-  for( i=0,n=0; i<fNCluster; i++ ){
-    cli = fCluster[ fClustHit[i] ];                        // ith cluster
-    if( cli->GetEnergy() > fClEthresh ) fIsSplit[i] = EFalse;
-    else fIsSplit[i] = ETrue;
-    for( j=i+1; j<fNCluster; j++ ){
-      clj = fCluster[ fClustHit[j] ];                      // jth cluster
-      if( (!fIsSplit[i]) && (clj->GetEnergy() > fClEthresh) ) continue;
-      if( ( fIsSplit[i]) && (clj->GetEnergy() < fClEthresh) ) continue;
-      openAngle = cli->OpeningAngle( clj );
-      if( openAngle > fMaxThetaSplitOff ) continue;
-      fSplitAngle[n] = openAngle;
-      *pij++ = i | (j<<16);                       // store j,k indices
-      n++;      
-    }
-  }
-  // Sort the opening angles
-  TMath::Sort((Int_t)n, fSplitAngle, fISplit, kFALSE);  // sort ascending
-  fNSplitMerged = 0;
-  for( k=0; k<n; k++ ){
-    ij = fIJSplit[fISplit[k]];
-    i = ij & 0xffff;
-    j = (ij>>16) & 0xffff;
-    cli = fCluster[ fClustHit[i] ];
-    clj = fCluster[ fClustHit[j] ];
-    if( cli->GetEnergy() > clj->GetEnergy() ){
-      cli->Merge( clj );
-      fIsSplit[j] = ETrue;
-    }
-    else{
-      clj->Merge( cli );
-      fIsSplit[i] = ETrue;
-    }
-    fNSplitMerged++;                          // # split-offs merged
-  }
-  // weed out any clusters marked as split off from cluster lists
-  for( i=0,n=0; i<fNCluster; i++ ){
-    if( fIsSplit[i] ) continue;
-    fClustHit[n] = fClustHit[i];
-    fTheta[n] = fCluster[i]->GetTheta();
-    fPhi[n] = fCluster[i]->GetPhi();
-    fNClustHitOR[n] = fCluster[i]->GetNhits();
-    fClEnergyOR[n] = fCluster[i]->GetEnergy();
-    fClTimeOR[n] = fCluster[i]->GetTime();
-    n++;
-  }
-  fNSplit = fNCluster - n;                     // total low energy split-off
-  fNCluster = n;                               // total accepted clusters
 }
 
 //---------------------------------------------------------------------------
@@ -264,68 +534,44 @@ void TA2ClusterDetector::SetConfig( char* line, int key )
   switch( key ){
   case EClustDetMaxCluster:
     // Max number of clusters
-    if( sscanf( line, "%d%lf", &fMaxCluster, &fClEthresh ) < 1 ){
+    if( sscanf( line, "%d%lf", &fMaxCluster, &fEthresh ) < 1 ){
       PrintError(line,"<Parse # clusters>");
       break;
     }
-    fEthresh = fClEthresh;
     fCluster = new HitCluster_t*[fNelement];
-    fClustHit = new UInt_t[fMaxCluster];
-    fTempHits = new UInt_t[fNelement];
-    fNClustHitOR = new UInt_t[fNelement];
-    fTheta = new Double_t[fNelement];
-    fPhi      = new Double_t[fNelement];
-    fClEnergyOR  = new Double_t[fNelement];
-    fClTimeOR  = new Double_t[fNelement];
-    fClCentFracOR  = new Double_t[fNelement];
-    fClRadiusOR  = new Double_t[fNelement];
+    fClustHit = new UInt_t[fMaxCluster+1];
+    fNClustHitOR = new UInt_t[fMaxCluster+1];
+    fTheta = new Double_t[fMaxCluster+1];
+    fPhi      = new Double_t[fMaxCluster+1];
+    fClEnergyOR  = new Double_t[fMaxCluster+1];
+    fClTimeOR  = new Double_t[fMaxCluster+1];
+    fClCentFracOR  = new Double_t[fMaxCluster+1];
+    fClRadiusOR  = new Double_t[fMaxCluster+1];
     fNCluster = 0;
-    break;
-  case EClustDetIterate:
-    // Enable iterative cluster-member determination
-    // Must be done before any next-neighbour setup
-    if( fNCluster ){
-      PrintError(line,"<Enable iteration before cluster-neighbour setup>");
-      break;
-    }
-    if( sscanf( line, "%d%lf%lf",
-    &fClustSizeFactor, &fMinPosDiff, &fMaxPosDiff ) < 3 ){
-      PrintError(line,"<Cluster-iterate parse>");
-      break;
-    }
-    PrintMessage(" Iterative cluster neighbour seek enabled\n");
-    fIsIterate = kTRUE;
     break;
   case EClustDetNeighbour:
     // Nearest neighbout input
     if( fNCluster < fNelement )
       fCluster[fNCluster] =
-  new HitCluster_t(line,fNCluster,fClustSizeFactor,fEWgt,fLEWgt);
+          new HitCluster_t(line, fNCluster);
     fNCluster++;
     break;
-  case EClustDetAllNeighbour:
-    // All nearest neighbours (for diagnostics only)
-    for(fNCluster=0; fNCluster < fNelement; fNCluster++)
-      fCluster[fNCluster] = new HitCluster_t( line,fNCluster );
-    break;
-  case EClustDetSplitOff:
-    // Enable split-off search
-    if( sscanf( line, "%lf%lf", &fEthreshSplit, &fMaxThetaSplitOff ) < 1 ){
-      PrintError(line,"<Parse split off threshold>");
-      break;
+  case EClustDetMoliereRadius:
+    UInt_t i1, i2;
+    Double_t moliere;
+    int n;
+    n = sscanf(line, "%lf%d%d", &moliere,&i1,&i2);
+    if(n==1) {
+      // indices not provided, assume global value
+      i1 = 0;
+      i2 = fNelement-1;
     }
-    fEthresh = fEthreshSplit;          // reset generic threshold
-    for(UInt_t i=2; i<fMaxCluster; i++) fMaxSplitPerm += i;
-    fSplitAngle = new Double_t[fMaxSplitPerm];
-    fISplit = new Int_t[fMaxSplitPerm];
-    fIJSplit = new Int_t[fMaxSplitPerm];
-    fIsSplit = new Bool_t[fMaxCluster];
+    else if(n != 3) {
+      PrintError(line,"<Moliere Radius format wrong>");
     break;
-  case EClustEnergyWeight:
-    // Set energy-weighting factor for position determination
-    // default = sqrt(E)
-    if( sscanf( line, "%lf%d", &fEWgt, &fLEWgt ) < 1 ){
-      PrintError(line,"<Parse energy weighting factor>");
+    }
+    for(UInt_t i=i1;i<=i2;i++) {
+      fCluster[i]->SetMoliereRadius(moliere);
     }
     break;
   default:
@@ -363,8 +609,6 @@ void TA2ClusterDetector::LoadVariable( )
   //  TA2DataManager::LoadVariable("ClHits",    fClHits,           EDSingleX);
   //  TA2DataManager::LoadVariable("ClMulti",   fClMulti,         EDMultiX);
   TA2DataManager::LoadVariable("ClNhits",       &fNCluster,      EISingleX);
-  TA2DataManager::LoadVariable("ClNSplit",      &fNSplit,        EISingleX);
-  TA2DataManager::LoadVariable("ClNSplitMerged",&fNSplitMerged,  EISingleX);
   TA2DataManager::LoadVariable("ClTotHits",     fClustHit,       EIMultiX);
   TA2DataManager::LoadVariable("ClTheta",       fTheta,          EDMultiX);
   TA2DataManager::LoadVariable("ClPhi",         fPhi,            EDMultiX);
@@ -373,6 +617,7 @@ void TA2ClusterDetector::LoadVariable( )
   TA2DataManager::LoadVariable("ClTimeOR",      fClTimeOR,       EDMultiX);
   TA2DataManager::LoadVariable("ClCentFracOR",  fClCentFracOR,   EDMultiX);
   TA2DataManager::LoadVariable("ClRadiusOR",    fClRadiusOR,     EDMultiX);
+  
   TA2Detector::LoadVariable();
 }
 

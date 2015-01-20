@@ -70,8 +70,7 @@ class TA2CalArray : public TA2ClusterDetector
   Double_t GetSigmaTime();        // Return sigma of time resolution
   Double_t* GetEnergyAll()               { return fEnergyAll; }
   Double_t  GetEnergyAll(Int_t t)        { return fEnergyAll[t]; }
-  Double_t GetClusterThreshold()	 { return fClEthresh; } //*** 
- ClassDef(TA2CalArray,1)
+  ClassDef(TA2CalArray,1)
 };
 
 //---------------------------------------------------------------------------

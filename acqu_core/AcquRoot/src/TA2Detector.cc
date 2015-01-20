@@ -40,10 +40,6 @@
 #include "TA2Detector.h"
 #include "TA2Analysis.h"
 
-ClassImp(TA2Detector)
-
-
-
 //-----------------------------------------------------------------------------
 TA2Detector::TA2Detector(const char* name, TA2System* apparatus,
 			 const Map_t* commands, const Map_t* hists )
@@ -551,3 +547,5 @@ void TA2Detector::ApplyShift( Int_t i )
     }
   }
 }
+
+ClassImp(TA2Detector);

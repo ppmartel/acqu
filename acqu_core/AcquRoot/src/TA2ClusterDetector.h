@@ -30,6 +30,9 @@
 #include "TA2Detector.h"
 #include "HitCluster_t.h"       // hit cluster determination
 
+#include <list>
+#include <vector>
+
 
 #include "a2display.h"
 #define MAX_DISP_CLUSTERS 8
@@ -37,22 +40,58 @@
 
 // constants for command-line maps
 enum { 
-  EClustDetMaxCluster = 100, EClustDetNeighbour,  EClustDetAllNeighbour,
-  EClustDetSplitOff, EClustDetIterate, EClustEnergyWeight,
+  EClustDetMaxCluster = 100, EClustDetNeighbour, EClustDetMoliereRadius, 
   EClustDetEnergy, EClustDetTime, EClustDetCentFrac, EClustDetRadius,
-  EClustDetHits, EClustDetMulti,
+  EClustDetHits, EClustDetMulti
 };
+
+class crystal_t : public TObject {
+public:
+  UInt_t Index;
+  Double_t Energy;
+  Double_t Time;
+  TVector3 Position;
+  std::vector<UInt_t> NeighbourIndices; // potential neighbours
+  Double_t MoliereRadius;
+  crystal_t(const UInt_t index,  
+            const Double_t energy,
+            const Double_t time,
+            const TVector3& position, 
+            const UInt_t nNeighbours,
+            const UInt_t* neighbours,
+            const Double_t moliere
+            ) : 
+    Index(index),
+    Energy(energy),
+    Time(time),
+    Position(position),
+    MoliereRadius(moliere)
+  { 
+    NeighbourIndices.assign(neighbours,neighbours+nNeighbours);
+  }
+  crystal_t() { }
+  ClassDef(crystal_t, 1)
+};
+
+inline bool operator< (const crystal_t& lhs, const crystal_t& rhs){
+    return lhs.Energy>rhs.Energy;
+}
+
+inline std::ostream& operator<< (std::ostream& o, const TVector3& c) {
+  return o << "(" << c.X() << "," << c.Y() << "," << c.Z() << ")"; 
+}
+
+inline std::ostream& operator<< (std::ostream& o, const crystal_t& c) {
+  return o << "Crystal Index=" << c.Index 
+           << " Energy=" << c.Energy
+           << " Position " << c.Position;
+}
 
 class TA2ClusterDetector : public TA2Detector {
  protected:
   HitCluster_t** fCluster;              // Clusters of hits
   UInt_t* fClustHit;                    // Cluster indices
-  Bool_t* fIsSplit;                     // Indices split-off clusters
-  UInt_t* fTempHits;                    // Element-Hit store
   UInt_t fNCluster;                     // # of clusters
-  Int_t fClustSizeFactor;               // enlarge factor, hit cluster buffers
-  UInt_t fNSplit;                       // # low energy clusters
-  UInt_t fNSplitMerged;                 // # split-offs merged
   UInt_t fMaxCluster;                   // Max # of clusters
   UInt_t* fNClustHitOR;                 // OR of #hits in individuyal clusters
   Double_t* fTheta;                     // theta of cluster hit
@@ -61,19 +100,7 @@ class TA2ClusterDetector : public TA2Detector {
   Double_t* fClTimeOR;                  // OR of cluster times
   Double_t* fClCentFracOR;              // OR of energy ratios in central elem.
   Double_t* fClRadiusOR;                // OR E-weighted cluster radii
-  Double_t fClEthresh;                  // threshold energy for main cluster
   Double_t fEthresh;                    // generic threshold energy for cluster
-  Double_t fEthreshSplit;               // threshold energy for split-off
-  Double_t fMaxThetaSplitOff;           // max split-off opening angle 
-  Double_t fMinPosDiff;                 // min acceptable neighbour pos diff. 
-  Double_t fMaxPosDiff;                 // max acceptable neighbour pos diff. 
-  Double_t* fSplitAngle;                // opening angles detween clusters
-  Double_t fEWgt;                       // energy weighting factor
-  Int_t fLEWgt;                         // energy weighting factor switch
-  Int_t* fISplit;                       // for sorting cluster opening angles
-  Int_t* fIJSplit;                      // for sorting cluster opening angles
-  Int_t fMaxSplitPerm;                  // for sorting cluster opening angles
-  Bool_t fIsIterate;                    // cluster member find iteration ON/OFF
 
   Bool_t fDispClusterEnable;
   TH2Crystals*  fDispClusterHitsAll;
@@ -82,6 +109,7 @@ class TA2ClusterDetector : public TA2Detector {
   void DisplayClusters();
 
  public:
+
   TA2ClusterDetector( const char*, TA2System* );// Normal use
   virtual ~TA2ClusterDetector();
   virtual void SetConfig( char*, int );// decode and load setup info
@@ -95,19 +123,12 @@ class TA2ClusterDetector : public TA2Detector {
   virtual void SaveDecoded( ) = 0;     // specialist
   virtual void ReadDecoded( ) = 0;     // specialist
   virtual void DeleteClusterArrays();  // flush cluster-specific arrays
-  virtual void SplitSearch();          // look for split-off clusters
 
   HitCluster_t** GetCluster(){ return fCluster; }
   HitCluster_t* GetCluster( UInt_t i ){ return fCluster[i]; }
   UInt_t* GetClustHit(){ return fClustHit; }
   UInt_t* GetClustHit( UInt_t i ){ return fClustHit + i; }
-  Bool_t* GetIsSplit(){ return fIsSplit; }
-  Bool_t* GetIsSplit( UInt_t i ){ return fIsSplit + i; }
-  UInt_t* GetTempHits(){ return fTempHits; }
   UInt_t GetNCluster(){ return fNCluster; }
-  Int_t GetClustSizeFactor(){ return fClustSizeFactor; }
-  UInt_t GetNSplit(){ return fNSplit; }
-  UInt_t GetNSplitMerged(){ return fNSplitMerged; } 
   UInt_t GetMaxCluster(){ return fMaxCluster; }
   UInt_t* GetNClustHitOR(){ return fNClustHitOR; }
   Double_t* GetTheta(){ return fTheta; }
@@ -116,21 +137,10 @@ class TA2ClusterDetector : public TA2Detector {
   Double_t* GetClTimeOR(){ return fClTimeOR; }
   Double_t* GetClCentFracOR(){ return fClCentFracOR; }
   Double_t* GetClRadiusOR(){ return fClRadiusOR; }
-  Double_t GetClEthresh(){ return fClEthresh; }
-  Double_t GetEthresh(){ return fEthresh; }
-  Double_t GetEthreshSplit(){ return fEthreshSplit; }
-  Double_t GetMaxThetaSplitOff(){ return fMaxThetaSplitOff; }
-  Double_t GetMinPosDiff(){ return fMinPosDiff; } 
-  Double_t GetMaxPosDiff(){ return fMaxPosDiff; }
-  Double_t* GetSplitAngle(){ return fSplitAngle; }
-  Double_t GetEWgt(){ return fEWgt; }
-  Int_t GetLEWgt(){ return fLEWgt; }
-  Int_t* GetISplit(){ return fISplit; }
-  Int_t* GetIJSplit(){ return fIJSplit; }
-  Int_t GetMaxSplitPerm(){ return fMaxSplitPerm; }
-  Bool_t IsIterate(){ return fIsIterate; }
+  Double_t GetClusterThreshold(){ return fEthresh; }
  
   ClassDef(TA2ClusterDetector,1)
+  
 };
 
 
