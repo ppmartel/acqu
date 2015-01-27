@@ -43,12 +43,12 @@ Module: LRS_1821	smi0		smi1821_PedSup.dat
 #
 #
 # Tagger QDC	
-Module: LRS_1885	lrs1885_0	lrs_1885.adc800	 9	b	800
-Module: LRS_1885	lrs1885_1	lrs_1885.adc896	 8	b	896
-Module: LRS_1885	lrs1885_2	lrs_1885.adc992	 7	b	992
+Module: LRS_1885	lrs1885_4	lrs_1885.adc1184 4	b	1184
+#Module: LRS_1885	lrs1885_0	lrs_1885.adc800	 9	b	800
+#Module: LRS_1885	lrs1885_1	lrs_1885.adc896	 8	b	896
+#Module: LRS_1885	lrs1885_2	lrs_1885.adc992	 7	b	992
 Module: LRS_1885	lrs1885_3	lrs_1885.adc1088 6	b	1088
 # EPT QDC
-#Module: LRS_1885	lrs1885_4	lrs_1885.adc1184 4	b	1184
 #
 #Module: STR_200         strsca_0	str_200_clr.d     21	z	400
 #Module: STR_200         strsca_1	str_200_clr.d     20	z	432
