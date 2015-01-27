@@ -6,4 +6,5 @@ Number-Rates: 3
 ##	     Name	Scaler	Clock	Frequency	Normalisation
 RateData: ScInt4	300	304	1		10000.
 RateData: ScLiveTime	305	304	1		100.
-RateData: ScG175	575	304	1		10000.
+#RateData: ScG175	575	304	1		10000.
+RateData: ScG175	2367	304	1		10000.

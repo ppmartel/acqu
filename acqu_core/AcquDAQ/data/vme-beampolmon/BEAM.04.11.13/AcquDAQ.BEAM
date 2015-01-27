@@ -22,19 +22,19 @@ Module: KPH_VITEC  vit0	        vitec_0.dat 0 0 0
 ### Never enable both module groups at once!
 
 # Tagger/PairSpec readout                            baseAddr  baseIndex  #ch  #bits
-#Module: GSI_VUPROM_Scaler vup1 vup_tagg_288ch.dat    01000000  2000       288  32 
-#Module: GSI_VUPROM_Scaler vup2 vup_tagg_288ch.dat    02000000  2288       288  32
-#Module: GSI_VUPROM_Scaler vup3 vup_tagg_288ch.dat    03000000  2576       288  32
-#Module: GSI_VUPROM_Scaler vup4 vup_tagg_192ch.dat    04000000  2864       192  32
+Module: GSI_VUPROM_Scaler vup1 vup_tagg_288ch.dat    01000000  2000       288  32 
+Module: GSI_VUPROM_Scaler vup2 vup_tagg_288ch.dat    02000000  2288       288  32
+Module: GSI_VUPROM_Scaler vup3 vup_tagg_288ch.dat    03000000  2576       288  32
+Module: GSI_VUPROM_Scaler vup4 vup_tagg_192ch.dat    04000000  2864       192  32
 
 # EPT/PairSpec readout
-Module: GSI_VUPROM_Scaler vup1 vup_EPT_dummy.dat        01000000  0           0    0
-Module: GSI_VUPROM_Scaler vup2 vup_EPT_32ch_10.dat      03000000  3100        32  32
-Module: GSI_VUPROM_Scaler vup3 vup_EPT_32ch_10.dat      04000000  3132        32  32
-Module: GSI_VUPROM_Scaler vup4 vup_EPT_32ch_12.dat      03000000  3164        32  32
-Module: GSI_VUPROM_Scaler vup5 vup_EPT_32ch_12.dat      04000000  3196        32  32
-Module: GSI_VUPROM_Scaler vup6 vup_EPT_32ch_13.dat      03000000  3228        32  32
-Module: GSI_VUPROM_Scaler vup7 vup_EPT_32ch_13.dat      04000000  3260        32  32
+#Module: GSI_VUPROM_Scaler vup1 vup_EPT_dummy.dat        01000000  0           0    0
+#Module: GSI_VUPROM_Scaler vup2 vup_EPT_32ch_10.dat      03000000  3100        32  32
+#Module: GSI_VUPROM_Scaler vup3 vup_EPT_32ch_10.dat      04000000  3132        32  32
+#Module: GSI_VUPROM_Scaler vup4 vup_EPT_32ch_12.dat      03000000  3164        32  32
+#Module: GSI_VUPROM_Scaler vup5 vup_EPT_32ch_12.dat      04000000  3196        32  32
+#Module: GSI_VUPROM_Scaler vup6 vup_EPT_32ch_13.dat      03000000  3228        32  32
+#Module: GSI_VUPROM_Scaler vup7 vup_EPT_32ch_13.dat      04000000  3260        32  32
 
 # DAQ monitor scalers
 # Note the different base index

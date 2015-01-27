@@ -17,8 +17,8 @@ RateMonitor: ./data/monitor/Rate-Tagg.dat
 ## Apparatus setup....
 ## Raw analysis may be performed without Apparati
 ##              Name            Class           	Setup file
-#Apparatus:      Tagger           TA2Tagger   		Apparatus-Tagger1557.dat
-Apparatus:      Tagger           TA2Tagger              Apparatus-EPT.dat
+Apparatus:      Tagger           TA2Tagger   		Apparatus-Tagger450.dat
+#Apparatus:      Tagger           TA2Tagger              Apparatus-EPT.dat
 #Apparatus:      LinPol          TA2LinearPol            LinearPolapparatus.dat
 Apparatus:      BeamPolMon      TA2BeamPolMon           Apparatus-BeamPolMon.dat
 ##
@@ -42,11 +42,11 @@ Period:  3000	PeriodMacro.C	PeriodMacro()
 ## Tagger QDCs
 Display: ADC 800 1183
 ## EPT - TDCs, Microscope Sector E, D, C
-Display: MultiHit 1817 1863 6000 -4000 -2000 0
-Display: MultiHit 1817 1863 6000 -4000 -2000 1
-Display: MultiHit 1817 1863 6000 -4000 -2000 2
+#Display: MultiHit 1817 1863 6000 -4000 -2000 0
+#Display: MultiHit 1817 1863 6000 -4000 -2000 1
+#Display: MultiHit 1817 1863 6000 -4000 -2000 2
 ## EPT - ADCs
-Display: ADC 1184 1231
+#Display: ADC 1184 1231
 ## Microscope QDCs
 #Display: ADC 1184 1279
 #
@@ -63,8 +63,10 @@ Display: Scaler 000 191
 Display: SumScaler 0 191
 #Display: Scaler 300 311
 #Display: SumScaler 300 311
-Display: Scaler 400 751
-Display: SumScaler 400 751
+#Display: Scaler 400 751
+#Display: SumScaler 400 751
+Display: Scaler 2000 3000
+Display: SumScaler 2000 3000
 #
 ## Time dependence of individual scaler rates and ratios
 Display: Rate	0	2500
