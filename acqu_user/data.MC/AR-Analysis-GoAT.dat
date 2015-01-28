@@ -17,7 +17,7 @@ RootTree-File-Name:		Acqu
 # Optional argument to include tagged photon energies in the tagger tree
 # GoAT currently handles this with an included histogram, reducing file size
 #
-#Save-Tagged-Energy: 1
+Save-Tagged-Energy: 1
 
 Initialise:
 
