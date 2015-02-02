@@ -32,7 +32,7 @@ Enable-TAPS: 0
 Helicity-Inhibit: 0
 Set-M-Threshold: 0 1 2 3
 #L2-Prescale: 65535 65535 65535 65535 0 0 0 65535
-L2-Prescale: 65535 65535 0 0 0 0 0 65535
+L2-Prescale: 0 0 0 0 0 0 0 65535
 GUI-permit:
 #	End of File
 #
