@@ -8,4 +8,10 @@ Hardware-ID: 02000025
 # and the pairs of the "right" channel?
 #         left    right
 #         AB      UV 
-CfgMode:  1       15
+
+# 1557 MeV
+#CfgMode:  1       15
+
+# 450 MeV
+CfgMode:  12       10
+

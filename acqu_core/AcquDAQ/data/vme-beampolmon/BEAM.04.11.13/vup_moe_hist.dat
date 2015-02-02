@@ -28,4 +28,4 @@ NReadsPerIRQ: 25
 # Number of scaler events between Moeller readout
 # this can be used to optimize the livetime
 # of the Moeller measurement
-ScalerModulo: 25
+ScalerModulo: 4

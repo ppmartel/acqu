@@ -8,4 +8,9 @@ Hardware-ID: 02000025
 # and the pairs of the "right" channel?
 #          left    right
 #          IJ      OP 
-CfgMode:   1       16
+
+# 1557 MeV
+#CfgMode:   1       16
+
+# 450 MeV
+CfgMode:   3       16

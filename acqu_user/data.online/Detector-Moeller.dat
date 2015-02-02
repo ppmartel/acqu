@@ -24,4 +24,4 @@ Initialise:
 #Display: 1D TDC_Vup_Left_Pair_Hel_3_9_2_1 256 0 256
 
 # show all
-# DisplayAllHistos:
+DisplayAllHistos:
