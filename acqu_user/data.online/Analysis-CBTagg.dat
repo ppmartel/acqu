@@ -92,7 +92,7 @@ Display: ADC 100 131
 ########################################################################
 ##
 ## MWPC Wires - TDCs
-#Display: MultiHit 4000 4559 1000 -7000 3000 0
+Display: MultiHit 4000 4559 1000 -7000 3000 0
 ##
 ## MWPC Strips - ADCs
 #Display: MultiHit 5000 5351 2000 -1000 1000 0
