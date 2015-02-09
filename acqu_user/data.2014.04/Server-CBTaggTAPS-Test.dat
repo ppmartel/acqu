@@ -29,25 +29,6 @@ Stream-Spec:	File	Mk2	0	32768	32	0	400
 ## Now the list of data files to analyse
 ##		File Name	1st rec	Last rec
 #
-#File-Name:	CBTaggTAPS_400.dat.xz 	0	0
-#File-Name:	CBTaggTAPS_1484.dat.xz 	0	0
-#File-Name:	CBTaggTAPS_1932.dat.xz 	0	0
-#File-Name:	CBTaggTAPS_2000.dat 	0	0
-#File-Name:	CBTaggTAPS_3000.dat 	0	0
-#File-Name:	CBTaggTAPS_3154.dat 	0	0
-#File-Name:	CBTaggTAPS_3190.dat 	0	0
-#File-Name:	CBTaggTAPS_3217.dat 	0	0
-#File-Name:	CBTaggTAPS_3221.dat 	0	0
-#File-Name:	CBTaggTAPS_3261.dat 	0	0
-#File-Name:	CBTaggTAPS_3356.dat 	0	0
-#File-Name:	CBTaggTAPS_3357.dat 	0	0
-#File-Name:	CBTaggTAPS_3358.dat 	0	0
-#File-Name:	CBTaggTAPS_3359.dat 	0	0
-#File-Name:	CBTaggTAPS_3361.dat 	0	0
-#File-Name:	CBTaggTAPS_3362.dat 	0	0
-#File-Name:	CBTaggTAPS_3363.dat 	0	0
-#File-Name:	CBTaggTAPS_3364.dat 	0	0
-#File-Name:	CBTaggTAPS_3365.dat 	0	0
-#File-Name:	CBTaggTAPS_3367.dat 	0	0
+File-Name:	CBTaggTAPS_3407.dat.xz 	0	100
 ##
 ## END
