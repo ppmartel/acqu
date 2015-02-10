@@ -14,7 +14,7 @@ Input-Streams:	1		32768		0
 ##############################################################################
 # Optional directory spec. 
 # If not specified File-Names must contain the full directory path
-File-Directory:	/local/raid0/work/a2data/2013_11-G-E/
+File-Directory:	scratch/
 #
 ##############################################################################
 # Now the list of data files to analyse normal mode
@@ -23,7 +23,8 @@ Stream-Spec:	File	Mk2	0	32768	32	0	400
 #
 ##############################################################################
 # Specify files
-File-Name:     CBTaggTAPS_400.dat 0 0
+File-Name:     CBTaggTAPS_2011.dat.xz 0 0
+#File-Name:     CBTaggTAPS_7855.dat 0 0
 #File-Name:     CBTaggTAPS_401.dat 0 0
 #File-Name:     CBTaggTAPS_402.dat 0 0
 #File-Name:     CBTaggTAPS_404.dat 0 0
