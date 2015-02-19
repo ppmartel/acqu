@@ -352,7 +352,7 @@ inline Bool_t TA2PhysicsPMartel::MakeTable(TString det)
   Double_t* fitY;    
   char buffer[256] ;
 
-  Double_t maxX, maxY;
+  Double_t max;
   
   TFile *myfile = new TFile((det+"Fits.root"),"RECREATE");
   
@@ -405,7 +405,7 @@ inline Bool_t TA2PhysicsPMartel::MakeTable(TString det)
   //Read in the data
   for ( Int_t iX=0; iX<nX; iX++ ) {
 
-    maxX = maxY = 0;
+    max = 0;
     
     for ( Int_t iE=0; iE<nE; iE++ ) {   //Read in the data   
       
@@ -414,9 +414,8 @@ inline Bool_t TA2PhysicsPMartel::MakeTable(TString det)
       fitX[iE] = valE;
       fitY[iE] = valL;
 
-      if(valL > maxY){
-	maxX = valE;
-	maxY = valL;
+      if(valL > max){
+    max = valL;
       }
       
       //printf("%d\t%f\t%d\t%f\t%f\n", iX, valX, iE, valE, valL);
@@ -428,7 +427,7 @@ inline Bool_t TA2PhysicsPMartel::MakeTable(TString det)
     //TF1 *fit1 = new TF1("fit1","expo+[2]",0,500);
     TF1 *fit1 = new TF1("fit1","[0]+[1]/(x-[2])",0,500);
 
-    if(maxY > 0){
+    if(max > 0){
       fit1->SetParameters(4.5,3200,-46.5);
       /*
       fit1->SetParLimits(0,3.5,7);                                          

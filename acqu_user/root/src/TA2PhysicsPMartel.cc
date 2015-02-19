@@ -283,7 +283,7 @@ void TA2PhysicsPMartel::Finish() {
   if ( fTAGG ) {
     TH1D *hScalAcc = new TH1D("hScalAcc","hScalAcc",352,0,352);
     fScalAcc = fLADD->GetScalerAcc();
-    for(Int_t i=0; i<(fLADD->GetNelement()); i++) hScalAcc->SetBinContent(i+1,fScalAcc[i]);
+    for(UInt_t i=0; i<(fLADD->GetNelement()); i++) hScalAcc->SetBinContent(i+1,fScalAcc[i]);
   }
 
   if ( fTreeSave ) {
