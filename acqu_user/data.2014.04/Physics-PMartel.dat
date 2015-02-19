@@ -10,6 +10,25 @@
 ##
 ##-----------------------------------------------------------------------
 ##
+##
+## CaLib configuration
+##
+## General:      dbhost    dbname                   dbuser      dbpass        calibration
+Use-CaLib:      a2calib   CaLib_2013_10-Present    calib       basel10       2014_04_Compton_Martel
+##
+##
+## tagger calib:     time    efficiency (0=off/1=on)
+Use-CaLib-TAGG:      1       0
+## CB calib:         energy  time    timewalk    quadr. energy    led  (0=off/1=on)
+Use-CaLib-CB:        1       1       0           0                0 
+## TAPS calib:       energy  time    quadr. energy   LED thr.    CFD thr.  (0=off/1=on)
+Use-CaLib-TAPS:      1       1       0               0           0
+## PID calib:        phi     energy  time  (0=off/1=on)
+Use-CaLib-PID:       1       1       1
+## Veto calib:       energy  time    LED thr. (0=off/1=on)
+Use-CaLib-Veto:      1       1       0
+##
+##
 ## Target parameters
 ##	x,y,z		Mass(MeV)
 ## Proton
@@ -59,9 +78,9 @@ Initialise:
 #
 # New Data
 #
-Data-Cut: 1D	 SynchDif    OR	data 225 245
-Data-Cut: 1D	 SynchDif    OR	data -61830 -61810
-Data-Cut: 1D	 SynchDif    OR	data 0 0
+#Data-Cut: 1D	 SynchDif    OR	data 225 245
+#Data-Cut: 1D	 SynchDif    OR	data -61830 -61810
+#Data-Cut: 1D	 SynchDif    OR	data 0 0
 #
 Data-Cut: 1D    CutCompW    AND	compound-hist
 Data-Cut: 1D    Nneut	    AND	element	1 1
