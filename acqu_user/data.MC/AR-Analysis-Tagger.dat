@@ -7,7 +7,7 @@
 #Set-up of magnetic field and MAMI electron beam energy (needed for correct
 #calculation of emitted photon energy).
 #         NMR field    MAMI beam energy
-Magnet:  1.05715      883.13
+Magnet:  1.423      1604.0
 #Magnet:   0.5381       450.0
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
@@ -15,8 +15,7 @@ Magnet:  1.05715      883.13
 #Detector systems in Tagger apparatus
 #         Name       Class Name      Setup file
 #Detector: FPD        TA2Ladder       FP_MC.dat
-Detector: FPD        TA2Ladder		AR-Analysis-Tagger-FP883.dat
-#Detector: FPD        TA2Ladder		AR-Analysis-Tagger-FP450.dat
+Detector: FPD        TA2Ladder		AR-Analysis-Tagger-EPT.dat
 #
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
@@ -29,7 +28,7 @@ Initialise:
 #
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #Display some basic histograms
-Display: 1D PhotonEnergy 352 v2u_plot/883.ghist -1
+#Display: 1D PhotonEnergy 352 v2u_plot/883.ghist -1
 #Display: 1D PhotonEnergy 352 v2u_plot/450.ghist -1
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
