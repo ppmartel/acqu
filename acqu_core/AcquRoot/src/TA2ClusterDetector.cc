@@ -276,7 +276,7 @@ static void split_cluster(const vector<crystal_t>& cluster,
     
     // for each crystal, we distribute its energy according to the
     // relative "pull" from each bump
-    const Double_t weightEpsilon = 1.0e-5;
+    const Double_t weightEpsilon = 0;
     vector<Double_t> weights_sum(cluster.size(), 0);
     for(size_t i=0;i<cluster.size();i++) {
       for(list<bump_t>::iterator b=stable_bumps.begin(); b != stable_bumps.end(); ++b) {
