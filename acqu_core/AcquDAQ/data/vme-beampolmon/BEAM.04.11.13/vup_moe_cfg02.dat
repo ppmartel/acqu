@@ -10,8 +10,8 @@ Hardware-ID: 02000025
 #          GH      QR
 
 # 1557 MeV
-#CfgMode:   1       11
+CfgMode:   1       11
 
 # 450 MeV
-CfgMode:   0       13
+#CfgMode:   0       13
 

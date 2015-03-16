@@ -10,8 +10,8 @@ Hardware-ID: 02000025
 #         AB      UV 
 
 # 1557 MeV
-#CfgMode:  1       15
+CfgMode:  1       15
 
 # 450 MeV
-CfgMode:  12       10
+#CfgMode:  12       10
 

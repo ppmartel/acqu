@@ -10,7 +10,7 @@ Hardware-ID: 02000025
 #          IJ      OP 
 
 # 1557 MeV
-#CfgMode:   1       16
+CfgMode:   1       16
 
 # 450 MeV
-CfgMode:   3       16
+#CfgMode:   3       16
