@@ -29,7 +29,7 @@ V-Off: 190
 ## Veto QDC pedestal set
 Ped-VG: 2093 1264 2165 2087 341 149 1845 1895
 ## Veto LED thresholds in mV
-Thr-VLED: 50 110 120 131 38 125 140 135
+Thr-VLED: 60 110 120 131 38 125 180 135
 #
 # Global data ready signal
 Data-Ready: 2
