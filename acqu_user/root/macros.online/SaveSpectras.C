@@ -53,6 +53,7 @@ void SaveOpenSpectras() {
 
 
 	printf("\nPosting all PNG images to the Elog\n");
+        cout << elog_cmd.str() << endl;
 	system(elog_cmd.str().c_str());
 	printf("\nPLEASE EDIT THE ELOG ENTRY TO MAKE IT COMPLETE!\n\n");
 }
