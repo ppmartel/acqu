@@ -10,14 +10,15 @@ EPICSBaseSetup:      	0           CbremEPICS
 #
 #
 ## Define the channels
-#               PVName			Nelem   Type (epicsBYTE,epicsSHORT,epicsLONG,epicsFLOAT,epicsDOUBLE)
-EPICSchannel:   BEAM:CBREM:Edge     	1       epicsDOUBLE
-EPICSchannel:   BEAM:CBREM:Radiator     1       epicsDOUBLE
-EPICSchannel:   BEAM:CBREM:Plane     	1       epicsDOUBLE
-EPICSchannel:   BEAM:GONI:Axis_1     	1       epicsDOUBLE
-EPICSchannel:   BEAM:GONI:Axis_2     	1       epicsDOUBLE
-EPICSchannel:   BEAM:GONI:Axis_3     	1       epicsDOUBLE
-EPICSchannel:   BEAM:GONI:Axis_4     	1       epicsDOUBLE
-EPICSchannel:   BEAM:GONI:Axis_5     	1       epicsDOUBLE
+#               PVName			     Nelem   Type (epicsBYTE,epicsSHORT,epicsLONG,epicsFLOAT,epicsDOUBLE)
+EPICSchannel:   BEAM:CBREM:EDGE              1       epicsDOUBLE
+EPICSchannel:   BEAM:CBREM:PLANE     	     1       epicsDOUBLE
+EPICSchannel:   BEAM:GONI:RADIATOR_INDEX     1       epicsDOUBLE
+EPICSchannel:   BEAM:GONI:RADIATOR_ID        1       epicsDOUBLE
+EPICSchannel:   BEAM:GONI:X     	     1       epicsDOUBLE
+EPICSchannel:   BEAM:GONI:Y     	     1       epicsDOUBLE
+EPICSchannel:   BEAM:GONI:ROLL     	     1       epicsDOUBLE
+EPICSchannel:   BEAM:GONI:PITCH     	     1       epicsDOUBLE
+EPICSchannel:   BEAM:GONI:YAW     	     1       epicsDOUBLE
 #
 ##
