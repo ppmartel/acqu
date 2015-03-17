@@ -32,8 +32,8 @@ BitPattern:  ./data/monitor/Trig-Pattern.dat
 ##
 ## Apparatus setup....
 ##              Name            Class           	Setup file
-#Apparatus:      TAGG            TA2Tagger   		Apparatus-Tagger883.dat
-Apparatus:      TAGG            TA2Tagger   		Apparatus-EPT.dat
+Apparatus:      TAGG            TA2Tagger   		Apparatus-Tagger450.dat
+#Apparatus:      TAGG            TA2Tagger   		Apparatus-EPT.dat
 Apparatus:      CB              TA2CrystalBall		Apparatus-CB.dat
 Apparatus:      MWPC	        TA2GenericApp  		Apparatus-MWPC.dat
 Apparatus:      BeamPolMon      TA2BeamPolMon           Apparatus-BeamPolMon.dat
@@ -99,6 +99,8 @@ Display: MultiHit 4000 4559 1000 -7000 3000 0
 #Display: MultiHit 5000 5351 2000 -1000 1000 1
 #Display: MultiHit 5000 5351 2000 -1000 1000 2
 ##
+## Cherenkov - TDCs
+Display: MultiHit 2001 2007 1000 -7000 3000 0
 ########################################################################
 ##
 ## Tagger - ADCs

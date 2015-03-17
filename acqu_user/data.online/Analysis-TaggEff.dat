@@ -31,6 +31,7 @@ Initialise:
 # Macros
 #Period: 100000	PeriodMacro.C	PeriodMacro()
 Period:  3000	PeriodMacro.C	PeriodMacro()
+#Period:   1000	PeriodMacro.C	PeriodMacro()
 #EndFile:	EndFileMacro.C  EndFileMacro()
 #Finish:	FinishMacro.C	FinishMacro()
 ##
