@@ -115,7 +115,13 @@ static Double_t opening_angle(const crystal_t& c1, const crystal_t& c2)  {
 typedef struct {
   TVector3 Position;
   vector<Double_t> Weights;
+  size_t MaxIndex; // index of highest weight
 } bump_t;
+
+static Double_t calc_energy_weight(const Double_t energy, const Double_t total_energy) {
+  Double_t wgtE = 4.0 + TMath::Log(energy / total_energy); // log to base e
+  return wgtE<0 ? 0 : wgtE; // no negative weights
+}
 
 // use local Moliere radius (NaI=4.8, BaF2=3.4, PbWO4=2.2)
 // given by config file
@@ -123,13 +129,22 @@ static void calc_bump_weights(const vector<crystal_t>& cluster, bump_t& bump) {
   Double_t w_sum = 0;
   for(size_t i=0;i<cluster.size();i++) {
     Double_t r = (bump.Position - cluster[i].Position).Mag();
-    Double_t w = cluster[i].Energy*TMath::Exp(-2.0*r/cluster[i].MoliereRadius); // originally 2.5
+    Double_t w = cluster[i].Energy*TMath::Exp(-2.5*r/cluster[i].MoliereRadius); // originally 2.5
     bump.Weights[i] = w;
     w_sum += w;
   }
+  // normalize weights and find index of highest weight
+  // (important for merging later)
+  Double_t w_max = 0;
+  size_t i_max = 0;  
   for(size_t i=0;i<cluster.size();i++) { 
-    bump.Weights[i] /= w_sum; 
+    bump.Weights[i] /= w_sum;
+    if(w_max<bump.Weights[i]) {
+      i_max = i;
+      w_max = bump.Weights[i];
+    }
   }
+  bump.MaxIndex = i_max;
 }
 
 static void update_bump_position(const vector<crystal_t>& cluster, bump_t& bump) {
@@ -141,8 +156,7 @@ static void update_bump_position(const vector<crystal_t>& cluster, bump_t& bump)
   Double_t w_sum = 0;
   for(size_t i=0;i<cluster.size();i++) {
     Double_t energy = bump.Weights[i] * cluster[i].Energy;
-    Double_t w = 4.0 + TMath::Log(energy / bump_energy);
-    w = w<0 ? 0 : w; // ignore too small energy contributions
+    Double_t w = calc_energy_weight(energy, bump_energy);
     position += w * cluster[i].Position;
     w_sum += w;
   }
@@ -150,18 +164,25 @@ static void update_bump_position(const vector<crystal_t>& cluster, bump_t& bump)
   bump.Position = position;
 }
 
-static bump_t merge_bumps(const vector< list<bump_t>::iterator > bumps) {
-  bump_t bump = *(bumps[0]);
+static bump_t merge_bumps(const vector<bump_t> bumps) {
+  bump_t bump = bumps[0];
   for(size_t i=1;i<bumps.size();i++) {
-    bump_t b = *(bumps[i]);
+    bump_t b = bumps[i];
     for(size_t j=0;j<bump.Weights.size();j++) {
       bump.Weights[j] += b.Weights[j];
     }
   }
   // normalize
-  for(size_t j=0;j<bump.Weights.size();j++) {
-    bump.Weights[j] /= bumps.size();
+  Double_t w_max = 0;
+  size_t i_max = 0;  
+  for(size_t i=0;i<bump.Weights.size();i++) {
+    bump.Weights[i] /= bumps.size();
+    if(w_max<bump.Weights[i]) {
+      i_max = i;
+      w_max = bump.Weights[i];
+    }
   }
+  bump.MaxIndex = i_max;  
   return bump;
 }
 
@@ -219,7 +240,8 @@ static void split_cluster(const vector<crystal_t>& cluster,
   
   // find the bumps (crystals voted for)
   // and init the weights
-  list<bump_t> bumps;
+  typedef list<bump_t> bumps_t;
+  bumps_t bumps;
   for(size_t i=0;i<votes.size();i++) {
     if(votes[i]==0)
       continue;
@@ -237,10 +259,10 @@ static void split_cluster(const vector<crystal_t>& cluster,
   do {  
     // converge the positions of the bumps
     UInt_t iterations = 0;
-    list< bump_t > stable_bumps;
+    bumps_t stable_bumps;
     const Double_t positionEpsilon = 0.01;
     while(!bumps.empty()) {
-      for(list<bump_t>::iterator b=bumps.begin(); b != bumps.end(); ++b) {
+      for(bumps_t::iterator b=bumps.begin(); b != bumps.end(); ++b) {
         // calculate new bump position with current weights
         TVector3 oldPos = (*b).Position;
         update_bump_position(cluster, *b);
@@ -271,63 +293,148 @@ static void split_cluster(const vector<crystal_t>& cluster,
       return;
     } 
     
+   
     // stable_bumps are now identified, form clusters out of it  
     // check if two bumps share the same crystal of highest energy
+    // if they do, merge them
     
-    // for each crystal, we distribute its energy according to the
-    // relative "pull" from each bump
-    const Double_t weightEpsilon = 0;
-    vector<Double_t> weights_sum(cluster.size(), 0);
-    for(size_t i=0;i<cluster.size();i++) {
-      for(list<bump_t>::iterator b=stable_bumps.begin(); b != stable_bumps.end(); ++b) {
-        if((*b).Weights[i] <  weightEpsilon) // ignore really small weights
-          continue;
-        weights_sum[i] += (*b).Weights[i];
-      }
-    }
-    
-    typedef map<UInt_t, vector< list<bump_t>::iterator > > overlaps_t;
-    overlaps_t overlaps; // index of highest energy crystal -> corresponding stable bumps
+    typedef vector< vector< bump_t > > overlaps_t;
+    overlaps_t overlaps(cluster.size()); // index of highest energy crystal -> corresponding stable bumps
     haveOverlap = kFALSE;
-    vector< vector<crystal_t> > potential_clusters;
-    for(list<bump_t>::iterator b=stable_bumps.begin(); b != stable_bumps.end(); ++b) {
-      vector<crystal_t> bump_cluster;
-      for(size_t i=0;i<cluster.size();i++) {
-        if((*b).Weights[i] <  weightEpsilon) // ignore really small weights
-          continue;
-        crystal_t crys = cluster[i];
-        crys.Energy *= (*b).Weights[i] / weights_sum[i];
-        bump_cluster.push_back(crys);
-      }
-      // sort also the bump_cluster by energy, get index of highest energy (first one after sorting)
-      sort(bump_cluster.begin(), bump_cluster.end());
-      UInt_t kmax = bump_cluster[0].Index;
-      // check if overlaps contains something at kmax
-      if(overlaps.find(kmax) != overlaps.end()) {
-        haveOverlap = kTRUE;
-      }
+    for(bumps_t::iterator b=stable_bumps.begin(); b != stable_bumps.end(); ++b) {
       // remember the bump at its highest energy     
-      overlaps[kmax].push_back(b);
-      // if there's no overlap detected so far, we save the potential cluster
-      if(!haveOverlap)
-        potential_clusters.push_back(bump_cluster);
+      overlaps[b->MaxIndex].push_back(*b);
     }
     
-    // if no overlaps detected,
-    // then potential clusters can be added to clusters
-    if(!haveOverlap) {
-      clusters.insert(clusters.end(), potential_clusters.begin(), potential_clusters.end());
-      break; // = continue since haveOverlap is false
-    } 
-    
-    // if overlaps detected, 
-    // merge those overlapping bumps and stabilize position again 
     for(overlaps_t::iterator o=overlaps.begin(); o != overlaps.end(); ++o) {
-      bumps.push_back(merge_bumps(o->second));
-    }
-    
+      if(o->size()==0) {
+        continue;
+      }
+      else if(o->size()==1) {
+        bumps.push_back(o->at(0));
+      }
+      else { // size>1 more than one bump at index, then merge overlapping bumps
+        haveOverlap = kTRUE;
+        bumps.push_back(merge_bumps(*o));
+      }
+    }  
+   
   } while(haveOverlap);
   
+  // bumps contain non-overlapping, stable bumps
+  // try to build clusters out of it
+  // we start with seeds at the position of the heighest weight in each bump,
+  // and similarly to build_cluster iterate over the cluster's crystals
+  
+ 
+  // populate seeds and flags
+  typedef vector< vector<size_t> > bump_seeds_t;
+  bump_seeds_t b_seeds; // for each bump, we track the seeds independently
+  b_seeds.reserve(bumps.size());
+  typedef vector< set<size_t> > state_t;
+  state_t state(cluster.size()); // at each crystal, we track the bump index
+  for(bumps_t::iterator b=bumps.begin(); b != bumps.end(); ++b) {    
+    size_t i = b_seeds.size();
+    state[b->MaxIndex].insert(i);
+    // starting seed is just the max index
+    vector<size_t> single;
+    single.push_back(b->MaxIndex);
+    b_seeds.push_back(single);    
+  }  
+  
+  Bool_t noMoreSeeds = kFALSE;
+  while(!noMoreSeeds) {
+    bump_seeds_t b_next_seeds(bumps.size());
+    state_t next_state = state;
+    noMoreSeeds = kTRUE;
+    for(size_t i=0; i<bumps.size(); i++) {    
+      // for each bump, do next neighbour iteration
+      // so find intersection of neighbours of seeds with crystals inside the cluster
+      vector<size_t> seeds = b_seeds[i];
+      for(size_t j=0;j<cluster.size();j++) {
+        // skip crystals in cluster which have already been visited/assigned
+        if(state[j].size()>0) 
+          continue;        
+        for(size_t s=0; s<seeds.size(); s++) {
+          crystal_t seed = cluster[seeds[s]];
+          for(size_t n=0;n<seed.NeighbourIndices.size();n++) {
+            if(seed.NeighbourIndices[n] != cluster[j].Index) 
+              continue;              
+            // for bump i, we found a next_seed, ...
+            b_next_seeds[i].push_back(j);
+            // ... and we assign it to this bump
+            next_state[j].insert(i);
+            // flag that we found more seeds
+            noMoreSeeds = kFALSE;
+            // neighbours is a list of unique items, we can stop searching
+            break;
+          }          
+        }      
+      }
+    }
+    
+    // prepare for next iteration
+    state = next_state;
+    b_seeds = b_next_seeds;
+  }
+  
+  // now, state tells us which crystals can be assigned directly to each bump
+  // crystals are shared if they were claimed by more than one bump at the same neighbour iteration
+  
+  // first assign easy things and determine rough bump energy
+  vector< vector<crystal_t> > bump_clusters(bumps.size());
+  vector< Double_t > bump_energies(bumps.size(), 0);  
+  for(size_t j=0;j<cluster.size();j++) {
+    if(state[j].size()==1) {
+      // crystal claimed by only one bump
+      size_t i = *(state[j].begin());
+      bump_clusters[i].push_back(cluster[j]);
+      bump_energies[i] += cluster[j].Energy;
+    }
+  }
+  
+  // then calc weighted bump_positions for those preliminary bumps
+  vector<TVector3> bump_positions(bumps.size(), TVector3(0,0,0));
+  for(size_t i=0; i<bump_clusters.size(); i++) {
+    vector<crystal_t> bump_cluster = bump_clusters[i];
+    Double_t w_sum = 0;
+    for(size_t j=0;j<bump_cluster.size();j++) {
+      Double_t w = calc_energy_weight(bump_cluster[j].Energy, bump_energies[i]);
+      bump_positions[i] += w * bump_cluster[j].Position;
+      w_sum += w;
+    }
+    bump_positions[i] *= 1.0/w_sum;
+  }
+  
+  // finally we can share the energy of crystals claimed by more than one bump
+  // we use bump_positions and bump_energies to do that
+  for(size_t j=0;j<cluster.size();j++) {
+    if(state[j].size()==1) 
+      continue;
+    // size should never be zero, aka a crystal always belongs to at least one bump 
+    
+    vector<Double_t> pulls(bumps.size());
+    Double_t sum_pull = 0;
+    for(set<size_t>::iterator b=state[j].begin(); b != state[j].end(); ++b) {
+      TVector3 r = cluster[j].Position - bump_positions[*b]; 
+      Double_t pull = bump_energies[*b] * TMath::Exp(-r.Mag()/cluster[j].MoliereRadius);
+      pulls[*b] = pull;
+      sum_pull += pull;
+    }
+    
+    for(set<size_t>::iterator b=state[j].begin(); b != state[j].end(); ++b) {
+      crystal_t crys = cluster[j];
+      crys.Energy *= pulls[*b]/sum_pull;
+      bump_clusters[*b].push_back(crys);
+    }    
+  }
+   
+  for(size_t i=0; i<bump_clusters.size(); i++) {
+    vector<crystal_t> bump_cluster = bump_clusters[i];
+     // always sort before adding to clusters
+    sort(bump_cluster.begin(), bump_cluster.end());
+    clusters.push_back(bump_cluster);
+  }  
 }
 
 
@@ -352,7 +459,7 @@ static void build_cluster(list<crystal_t>& crystals,
       // find intersection of neighbours and seed 
       for(list<crystal_t>::iterator j = crystals.begin() ; j != crystals.end() ; ) {
         bool foundNeighbour = false;
-        for(UInt_t n=0;n<(*seed).NeighbourIndices.size();n++) {
+        for(size_t n=0;n<(*seed).NeighbourIndices.size();n++) {
           if((*seed).NeighbourIndices[n] != (*j).Index) 
             continue;    
           next_seeds.push_back(*j);
@@ -444,8 +551,7 @@ void TA2ClusterDetector::DecodeCluster( )
    
       // energy weighting, parameter W0=3.5 (should be checked)
       Double_t energy = cluster[j].Energy;
-      Double_t wgtE = 4.0 + TMath::Log(energy / fClEnergyOR[fNCluster]); // log to base e
-      wgtE = wgtE<0 ? 0 : wgtE; // no negative weights
+      Double_t wgtE = calc_energy_weight(energy, fClEnergyOR[fNCluster]);
       weightedSum += wgtE;
       
       // position/radius weighting
