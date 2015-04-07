@@ -10,8 +10,9 @@
     FPD_ScalerCurr->Draw();
 
     watcher->cd(2);
-    gPad->SetLogy();
-    MWPC_Wires_Hits->Draw();
+    gPad->SetLogz();
+    NaI_ClPhi_v_ClTheta->Draw("colz");
+    //MWPC_Wires_Hits->Draw();
     //watcher->cd(2);
     //FPD_TimeOR->Draw();
 
@@ -23,7 +24,7 @@
     gPad->SetLogz();
     TwoD2000v1400->Draw("colz");
 
-    TTimer* update_timer = new TTimer("watcher->Update();watcher->Draw();",2000);
+    TTimer* update_timer = new TTimer("watcher->Update();watcher->Draw();",4000);
 
     update_timer->Start();
 }
