@@ -10,7 +10,7 @@
 Magnet:	1.8880042	1557.0
 #
 #	  Name          Class Name    	Setup file
-Detector: FPD        	TA2Ladder   	Detector-FPD1557.dat
+Detector: FPD        	TA2Ladder   	Detector-FPD1557.dat.NewScIndex
 Initialise:
 #
 #Data-Cut: 1D Ladder_Time AND histogram 66 78
