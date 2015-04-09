@@ -130,12 +130,6 @@ class TA2ClusterDetector : public TA2Detector {
   Int_t GetMaxSplitPerm(){ return fMaxSplitPerm; }
   Bool_t IsIterate(){ return fIsIterate; }
 
-  void SetEthreshSplit(Double_t e){ fEthreshSplit = e; }
-  void SetMaxThetaSplitOff(Double_t t){ fMaxThetaSplitOff = t; }
-  void SetMinPosDiff(Double_t d){ fMinPosDiff = d; }
-  void SetMaxPosDiff(Double_t d){ fMaxPosDiff = d; }
-  void SetIterate(Bool_t iter){ fIsIterate = iter; }
-
   ClassDef(TA2ClusterDetector,1)
 };
 
