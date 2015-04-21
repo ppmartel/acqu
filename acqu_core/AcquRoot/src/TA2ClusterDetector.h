@@ -1,5 +1,5 @@
 //--Author	JRM Annand   30th Sep 2003  Read MC data
-//--Rev 	JRM Annand...15th Sep 2003  Generalise methods  
+//--Rev 	JRM Annand...15th Sep 2003  Generalise methods
 //--Rev 	JRM Annand....9th Mar 2004  New OR variables
 //--Rev 	JRM Annand....9th Mar 2005  protected instead of private vars
 //--Rev 	JRM Annand...13th Jul 2005  split offs, time OR
@@ -14,13 +14,13 @@
 //--Update	JRM Annand   17th Sep 2011  log energy weighting
 //--Description
 //                *** Acqu++ <-> Root ***
-// Online/Offline Analysis of Sub-Atomic Physics Experimental Data 
+// Online/Offline Analysis of Sub-Atomic Physics Experimental Data
 //
 // TA2ClusterDetector
 //
 // Decoding and calibration methods for EM calorimeters or similar systems
 // where a shower or showers of secondary particles fire a cluster or
-// clusters neighbouring calorimeter elements, 
+// clusters neighbouring calorimeter elements,
 // e.g. Crystal Ball NaI(Tl) array
 //
 
@@ -39,8 +39,8 @@
 
 
 // constants for command-line maps
-enum { 
-  EClustDetMaxCluster = 100, EClustDetNeighbour, EClustDetMoliereRadius, 
+enum {
+  EClustDetMaxCluster = 100, EClustDetNeighbour, EClustDetMoliereRadius,
   EClustDetEnergy, EClustDetTime, EClustDetCentFrac, EClustDetRadius,
   EClustDetHits, EClustDetMulti
 };
@@ -53,20 +53,20 @@ public:
   TVector3 Position;
   std::vector<UInt_t> NeighbourIndices; // potential neighbours
   Double_t MoliereRadius;
-  crystal_t(const UInt_t index,  
+  crystal_t(const UInt_t index,
             const Double_t energy,
             const Double_t time,
-            const TVector3& position, 
+            const TVector3& position,
             const UInt_t nNeighbours,
             const UInt_t* neighbours,
             const Double_t moliere
-            ) : 
+            ) :
     Index(index),
     Energy(energy),
     Time(time),
     Position(position),
     MoliereRadius(moliere)
-  { 
+  {
     NeighbourIndices.assign(neighbours,neighbours+nNeighbours);
   }
   crystal_t() { }
@@ -74,21 +74,21 @@ public:
 };
 
 inline bool operator< (const crystal_t& lhs, const crystal_t& rhs){
-    return lhs.Energy>rhs.Energy;
+  return lhs.Energy>rhs.Energy;
 }
 
 inline std::ostream& operator<< (std::ostream& o, const TVector3& c) {
-  return o << "(" << c.X() << "," << c.Y() << "," << c.Z() << ")"; 
+  return o << "(" << c.X() << "," << c.Y() << "," << c.Z() << ")";
 }
 
 inline std::ostream& operator<< (std::ostream& o, const crystal_t& c) {
-  return o << "Crystal Index=" << c.Index 
+  return o << "Crystal Index=" << c.Index
            << " Energy=" << c.Energy
            << " Position " << c.Position;
 }
 
 class TA2ClusterDetector : public TA2Detector {
- protected:
+protected:
   HitCluster_t** fCluster;              // Clusters of hits
   UInt_t* fClustHit;                    // Cluster indices
   UInt_t fNCluster;                     // # of clusters
@@ -104,11 +104,11 @@ class TA2ClusterDetector : public TA2Detector {
 
   Bool_t fDispClusterEnable;
   TH2Crystals*  fDispClusterHitsAll;
-  TH2Crystals** fDispClusterHitsSingle;  
+  TH2Crystals** fDispClusterHitsSingle;
   TH2Crystals*  fDispClusterHitsEnergy;
   void DisplayClusters();
 
- public:
+public:
 
   TA2ClusterDetector( const char*, TA2System* );// Normal use
   virtual ~TA2ClusterDetector();
@@ -138,9 +138,9 @@ class TA2ClusterDetector : public TA2Detector {
   Double_t* GetClCentFracOR(){ return fClCentFracOR; }
   Double_t* GetClRadiusOR(){ return fClRadiusOR; }
   Double_t GetClusterThreshold(){ return fEthresh; }
- 
+
   ClassDef(TA2ClusterDetector,1)
-  
+
 };
 
 

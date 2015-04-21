@@ -48,7 +48,7 @@ using namespace std;
 
 //---------------------------------------------------------------------------
 TA2ClusterDetector::TA2ClusterDetector( const char* name,
-          TA2System* apparatus )
+                                        TA2System* apparatus )
   :TA2Detector(name, apparatus)
 {
   // Do not allocate any "new" memory here...Root will wipe
@@ -66,7 +66,7 @@ TA2ClusterDetector::TA2ClusterDetector( const char* name,
   fDispClusterEnable = kFALSE; // config stuff missing...
   // will be set by child class
   fDispClusterHitsAll    = NULL;
-  fDispClusterHitsSingle = NULL;  
+  fDispClusterHitsSingle = NULL;
   fDispClusterHitsEnergy = NULL;
 
   fIsPos = ETrue;          // override standard detector, must have position
@@ -79,7 +79,7 @@ void TA2ClusterDetector::Decode( )
   // Run basic TA2Detector decode, then cluster decode
   // and then histogram
 
-  DecodeBasic();                    
+  DecodeBasic();
   DecodeCluster();
 #ifdef WITH_A2DISPLAY
   DisplayClusters();
@@ -92,7 +92,7 @@ void TA2ClusterDetector::DecodeSaved( )
   // Run basic TA2Detector decode, then cluster decode
   // and then histogram
 
-  ReadDecoded();                    
+  ReadDecoded();
   DecodeCluster();
 #ifdef WITH_A2DISPLAY
   DisplayClusters();
@@ -136,8 +136,8 @@ static void calc_bump_weights(const vector<crystal_t>& cluster, bump_t& bump) {
   // normalize weights and find index of highest weight
   // (important for merging later)
   Double_t w_max = 0;
-  size_t i_max = 0;  
-  for(size_t i=0;i<cluster.size();i++) { 
+  size_t i_max = 0;
+  for(size_t i=0;i<cluster.size();i++) {
     bump.Weights[i] /= w_sum;
     if(w_max<bump.Weights[i]) {
       i_max = i;
@@ -174,7 +174,7 @@ static bump_t merge_bumps(const vector<bump_t> bumps) {
   }
   // normalize
   Double_t w_max = 0;
-  size_t i_max = 0;  
+  size_t i_max = 0;
   for(size_t i=0;i<bump.Weights.size();i++) {
     bump.Weights[i] /= bumps.size();
     if(w_max<bump.Weights[i]) {
@@ -182,29 +182,29 @@ static bump_t merge_bumps(const vector<bump_t> bumps) {
       w_max = bump.Weights[i];
     }
   }
-  bump.MaxIndex = i_max;  
+  bump.MaxIndex = i_max;
   return bump;
 }
 
 static void split_cluster(const vector<crystal_t>& cluster,
                           vector< vector<crystal_t> >& clusters) {
-  
+
   // make Voting based on relative distance or energy difference
-   
+
   Double_t totalClusterEnergy = 0;
   vector<UInt_t> votes;
   votes.resize(cluster.size(), 0);
   // start searching at the second highest energy (i>0 case in next for loop)
   // since we know that the highest energy always has a vote
   votes[0]++;
-  for(size_t i=0;i<cluster.size();i++) {   
+  for(size_t i=0;i<cluster.size();i++) {
     totalClusterEnergy += cluster[i].Energy; // side calculation in this loop, but include i=0
     if(i==0)
       continue;
-    
+
     // i>0 now...
-    // for each crystal walk through cluster 
-    // according to energy gradient    
+    // for each crystal walk through cluster
+    // according to energy gradient
     UInt_t currPos = i;
     bool reachedMaxEnergy = false;
     Double_t maxEnergy = 0;
@@ -212,7 +212,7 @@ static void split_cluster(const vector<crystal_t>& cluster,
       // find neighbours intersection with actually hit clusters
       reachedMaxEnergy = true;
       vector<UInt_t> neighbours = cluster[currPos].NeighbourIndices;
-      for(size_t j=0;j<cluster.size();j++) {                      
+      for(size_t j=0;j<cluster.size();j++) {
         for(UInt_t n=0;n<neighbours.size();n++) {
           if(neighbours[n] != cluster[j].Index)
             continue; // cluster element j not neighbour of element currPos, go to next
@@ -229,15 +229,15 @@ static void split_cluster(const vector<crystal_t>& cluster,
     // currPos is now at max Energy
     votes[currPos]++;
   }
-  
-  // all crystals vote for highest energy 
+
+  // all crystals vote for highest energy
   // so this cluster should not be splitted,
   // just add it to the clusters
   if(votes[0] == cluster.size()) {
     clusters.push_back(cluster);
     return;
   }
-  
+
   // find the bumps (crystals voted for)
   // and init the weights
   typedef list<bump_t> bumps_t;
@@ -255,8 +255,8 @@ static void split_cluster(const vector<crystal_t>& cluster,
 
   // as long as we have overlapping bumps
   Bool_t haveOverlap = kFALSE;
-   
-  do {  
+
+  do {
     // converge the positions of the bumps
     UInt_t iterations = 0;
     bumps_t stable_bumps;
@@ -283,29 +283,29 @@ static void split_cluster(const vector<crystal_t>& cluster,
         continue; // go on iterating...
       // ... or we iterated really long without convergence
       // discard the bumps which havn't converged
-      bumps.clear();    
+      bumps.clear();
     }
-    
-    // do we have any stable bumps? 
+
+    // do we have any stable bumps?
     // Then just the use cluster as is
     if(stable_bumps.empty()) {
       clusters.push_back(cluster);
       return;
-    } 
-    
-   
-    // stable_bumps are now identified, form clusters out of it  
+    }
+
+
+    // stable_bumps are now identified, form clusters out of it
     // check if two bumps share the same crystal of highest energy
     // if they do, merge them
-    
+
     typedef vector< vector< bump_t > > overlaps_t;
     overlaps_t overlaps(cluster.size()); // index of highest energy crystal -> corresponding stable bumps
     haveOverlap = kFALSE;
     for(bumps_t::iterator b=stable_bumps.begin(); b != stable_bumps.end(); ++b) {
-      // remember the bump at its highest energy     
+      // remember the bump at its highest energy
       overlaps[b->MaxIndex].push_back(*b);
     }
-    
+
     for(overlaps_t::iterator o=overlaps.begin(); o != overlaps.end(); ++o) {
       if(o->size()==0) {
         continue;
@@ -317,49 +317,49 @@ static void split_cluster(const vector<crystal_t>& cluster,
         haveOverlap = kTRUE;
         bumps.push_back(merge_bumps(*o));
       }
-    }  
-   
+    }
+
   } while(haveOverlap);
-  
+
   // bumps contain non-overlapping, stable bumps
   // try to build clusters out of it
   // we start with seeds at the position of the heighest weight in each bump,
   // and similarly to build_cluster iterate over the cluster's crystals
-  
- 
+
+
   // populate seeds and flags
   typedef vector< vector<size_t> > bump_seeds_t;
   bump_seeds_t b_seeds; // for each bump, we track the seeds independently
   b_seeds.reserve(bumps.size());
   typedef vector< set<size_t> > state_t;
   state_t state(cluster.size()); // at each crystal, we track the bump index
-  for(bumps_t::iterator b=bumps.begin(); b != bumps.end(); ++b) {    
+  for(bumps_t::iterator b=bumps.begin(); b != bumps.end(); ++b) {
     size_t i = b_seeds.size();
     state[b->MaxIndex].insert(i);
     // starting seed is just the max index
     vector<size_t> single;
     single.push_back(b->MaxIndex);
-    b_seeds.push_back(single);    
-  }  
-  
+    b_seeds.push_back(single);
+  }
+
   Bool_t noMoreSeeds = kFALSE;
   while(!noMoreSeeds) {
     bump_seeds_t b_next_seeds(bumps.size());
     state_t next_state = state;
     noMoreSeeds = kTRUE;
-    for(size_t i=0; i<bumps.size(); i++) {    
+    for(size_t i=0; i<bumps.size(); i++) {
       // for each bump, do next neighbour iteration
       // so find intersection of neighbours of seeds with crystals inside the cluster
       vector<size_t> seeds = b_seeds[i];
       for(size_t j=0;j<cluster.size();j++) {
         // skip crystals in cluster which have already been visited/assigned
-        if(state[j].size()>0) 
-          continue;        
+        if(state[j].size()>0)
+          continue;
         for(size_t s=0; s<seeds.size(); s++) {
           crystal_t seed = cluster[seeds[s]];
           for(size_t n=0;n<seed.NeighbourIndices.size();n++) {
-            if(seed.NeighbourIndices[n] != cluster[j].Index) 
-              continue;              
+            if(seed.NeighbourIndices[n] != cluster[j].Index)
+              continue;
             // for bump i, we found a next_seed, ...
             b_next_seeds[i].push_back(j);
             // ... and we assign it to this bump
@@ -368,22 +368,22 @@ static void split_cluster(const vector<crystal_t>& cluster,
             noMoreSeeds = kFALSE;
             // neighbours is a list of unique items, we can stop searching
             break;
-          }          
-        }      
+          }
+        }
       }
     }
-    
+
     // prepare for next iteration
     state = next_state;
     b_seeds = b_next_seeds;
   }
-  
+
   // now, state tells us which crystals can be assigned directly to each bump
   // crystals are shared if they were claimed by more than one bump at the same neighbour iteration
-  
+
   // first assign easy things and determine rough bump energy
   vector< vector<crystal_t> > bump_clusters(bumps.size());
-  vector< Double_t > bump_energies(bumps.size(), 0);  
+  vector< Double_t > bump_energies(bumps.size(), 0);
   for(size_t j=0;j<cluster.size();j++) {
     if(state[j].size()==1) {
       // crystal claimed by only one bump
@@ -392,7 +392,7 @@ static void split_cluster(const vector<crystal_t>& cluster,
       bump_energies[i] += cluster[j].Energy;
     }
   }
-  
+
   // then calc weighted bump_positions for those preliminary bumps
   vector<TVector3> bump_positions(bumps.size(), TVector3(0,0,0));
   for(size_t i=0; i<bump_clusters.size(); i++) {
@@ -405,63 +405,63 @@ static void split_cluster(const vector<crystal_t>& cluster,
     }
     bump_positions[i] *= 1.0/w_sum;
   }
-  
+
   // finally we can share the energy of crystals claimed by more than one bump
   // we use bump_positions and bump_energies to do that
   for(size_t j=0;j<cluster.size();j++) {
-    if(state[j].size()==1) 
+    if(state[j].size()==1)
       continue;
-    // size should never be zero, aka a crystal always belongs to at least one bump 
-    
+    // size should never be zero, aka a crystal always belongs to at least one bump
+
     vector<Double_t> pulls(bumps.size());
     Double_t sum_pull = 0;
     for(set<size_t>::iterator b=state[j].begin(); b != state[j].end(); ++b) {
-      TVector3 r = cluster[j].Position - bump_positions[*b]; 
+      TVector3 r = cluster[j].Position - bump_positions[*b];
       Double_t pull = bump_energies[*b] * TMath::Exp(-r.Mag()/cluster[j].MoliereRadius);
       pulls[*b] = pull;
       sum_pull += pull;
     }
-    
+
     for(set<size_t>::iterator b=state[j].begin(); b != state[j].end(); ++b) {
       crystal_t crys = cluster[j];
       crys.Energy *= pulls[*b]/sum_pull;
       bump_clusters[*b].push_back(crys);
-    }    
+    }
   }
-   
+
   for(size_t i=0; i<bump_clusters.size(); i++) {
     vector<crystal_t> bump_cluster = bump_clusters[i];
-     // always sort before adding to clusters
+    // always sort before adding to clusters
     sort(bump_cluster.begin(), bump_cluster.end());
     clusters.push_back(bump_cluster);
-  }  
+  }
 }
 
 
-static void build_cluster(list<crystal_t>& crystals, 
-                           vector<crystal_t> &cluster) {
+static void build_cluster(list<crystal_t>& crystals,
+                          vector<crystal_t> &cluster) {
   list<crystal_t>::iterator i = crystals.begin();
-  
-  // start with initial seed list 
+
+  // start with initial seed list
   vector<crystal_t> seeds;
   seeds.push_back(*i);
-  
+
   // save i in the current cluster
   cluster.push_back(*i);
   // remove it from the candidates
   crystals.erase(i);
-  
+
   while(seeds.size()>0) {
     // neighbours of all seeds are next seeds
-    vector<crystal_t> next_seeds; 
-    
+    vector<crystal_t> next_seeds;
+
     for(vector<crystal_t>::iterator seed=seeds.begin(); seed != seeds.end(); seed++) {
-      // find intersection of neighbours and seed 
+      // find intersection of neighbours and seed
       for(list<crystal_t>::iterator j = crystals.begin() ; j != crystals.end() ; ) {
         bool foundNeighbour = false;
         for(size_t n=0;n<(*seed).NeighbourIndices.size();n++) {
-          if((*seed).NeighbourIndices[n] != (*j).Index) 
-            continue;    
+          if((*seed).NeighbourIndices[n] != (*j).Index)
+            continue;
           next_seeds.push_back(*j);
           cluster.push_back(*j);
           j = crystals.erase(j);
@@ -475,9 +475,9 @@ static void build_cluster(list<crystal_t>& crystals,
       }
     }
     // set new seeds, if any new found...
-    seeds = next_seeds;    
+    seeds = next_seeds;
   }
-  
+
   // sort it by energy
   sort(cluster.begin(), cluster.end());
 }
@@ -486,15 +486,15 @@ static void build_cluster(list<crystal_t>& crystals,
 
 void TA2ClusterDetector::DecodeCluster( )
 {
-  
+
   // build the hit crystals from the available hits
   // including the neighbour information...
-  list<crystal_t> crystals; 
+  list<crystal_t> crystals;
   for(UInt_t i=0;i<fNhits;i++) {
     UInt_t idx = fHits[i];
     crystals.push_back(
           crystal_t(idx,
-                    fEnergy[idx], 
+                    fEnergy[idx],
                     fTime[idx],
                     *(fPosition[idx]),
                     fCluster[idx]->GetNNeighbour(),
@@ -502,87 +502,87 @@ void TA2ClusterDetector::DecodeCluster( )
                     fCluster[idx]->GetMoliereRadius()
                     )
           );
-      }
+  }
   // sort hits with highest energy first
   // makes the cluster building faster hopefully
   crystals.sort();
- 
+
   vector< vector<crystal_t> > clusters; // contains the final truly split clusters
   while(crystals.size()>0) {
-    vector<crystal_t> cluster; 
+    vector<crystal_t> cluster;
     build_cluster(crystals, cluster); // already sorts it by energy
-    
+
     // check if cluster contains bumps
     // if not, cluster is simply added to clusters
     split_cluster(cluster, clusters);
-  } 
-  
- 
-  // calculate cluster properties and fill the many arrays of this detector... 
+  }
+
+
+  // calculate cluster properties and fill the many arrays of this detector...
   // assume that each cluster is sorted by fEnergy
   fNCluster = 0;
   for(size_t i=0 ; i < clusters.size() ; i++) {
     vector<crystal_t> cluster = clusters[i];
-    
+
     // kick out really large clusters already here...
     if(cluster.size()>(UInt_t)fCluster[0]->GetMaxHits())
       continue;
-    
+
     fClEnergyOR[fNCluster] = calc_total_energy(cluster);
     // kick out low energetic clusters...
-    if(fClEnergyOR[fNCluster]<fEthresh) 
+    if(fClEnergyOR[fNCluster]<fEthresh)
       continue;
-    
+
     // kmax is crystal index with highest energy in cluster
     // cluster is sorted, so it's the first crystal
-    UInt_t kmax = cluster[0].Index; 
+    UInt_t kmax = cluster[0].Index;
     fClustHit[fNCluster] = kmax;
-    fClTimeOR[fNCluster] = fIsTime ? fTime[kmax] : 0; 
+    fClTimeOR[fNCluster] = fIsTime ? fTime[kmax] : 0;
     fNClustHitOR[fNCluster] = cluster.size();
     fClCentFracOR[fNCluster] = cluster[0].Energy / fClEnergyOR[fNCluster];
-         
+
     // go over cluster once more
     TVector3 weightedPosition(0,0,0);
     Double_t weightedSum = 0;
     Double_t weightedRadius = 0;
     Double_t avgRadius = 0;
-    Double_t avgOpeningAngle = 0; 
+    Double_t avgOpeningAngle = 0;
     for(size_t j=0;j<cluster.size();j++) {
-   
+
       // energy weighting, parameter W0=3.5 (should be checked)
       Double_t energy = cluster[j].Energy;
       Double_t wgtE = calc_energy_weight(energy, fClEnergyOR[fNCluster]);
       weightedSum += wgtE;
-      
+
       // position/radius weighting
       TVector3 pos = cluster[j].Position;
       TVector3 diff = cluster[0].Position - pos;
       weightedPosition += pos * wgtE;
       weightedRadius += diff.Mag() * wgtE;
-      
+
       avgRadius += diff.Mag();
       avgOpeningAngle += opening_angle(cluster[0], cluster[j]);
-      }
-    
-    avgRadius /= cluster.size();    
+    }
+
+    avgRadius /= cluster.size();
     avgOpeningAngle /= cluster.size();
-    
+
     weightedPosition *= 1.0/weightedSum;
-  
+
     fPhi[fNCluster] = TMath::RadToDeg() * weightedPosition.Phi();
     fTheta[fNCluster] = TMath::RadToDeg() * weightedPosition.Theta();
     fClRadiusOR[fNCluster] = weightedRadius / weightedSum;
-    
+
     fCluster[kmax]->SetFields(cluster,
                               fClEnergyOR[fNCluster],
                               weightedPosition);
-    
+
     fNCluster++;
     // just discard more clusters
     if(fNCluster==fMaxCluster)
       break;
-    }
- 
+  }
+
   // mark ends in those stupid c-arrays...
   fClustHit[fNCluster] = EBufferEnd;
   fTheta[fNCluster] = EBufferEnd;
@@ -674,7 +674,7 @@ void TA2ClusterDetector::SetConfig( char* line, int key )
     }
     else if(n != 3) {
       PrintError(line,"<Moliere Radius format wrong>");
-    break;
+      break;
     }
     for(UInt_t i=i1;i<=i2;i++) {
       fCluster[i]->SetMoliereRadius(moliere);
@@ -723,7 +723,7 @@ void TA2ClusterDetector::LoadVariable( )
   TA2DataManager::LoadVariable("ClTimeOR",      fClTimeOR,       EDMultiX);
   TA2DataManager::LoadVariable("ClCentFracOR",  fClCentFracOR,   EDMultiX);
   TA2DataManager::LoadVariable("ClRadiusOR",    fClRadiusOR,     EDMultiX);
-  
+
   TA2Detector::LoadVariable();
 }
 
@@ -772,23 +772,23 @@ void TA2ClusterDetector::ParseDisplay( char* line )
     }
     for( l=j; l<=k; l++ ){
       if( l >= fNCluster ){
-  PrintError(line,"<Cluster display - element outwith range>");
-  return;
+        PrintError(line,"<Cluster display - element outwith range>");
+        return;
       }
       sprintf( histline, "%s%d %d  %lf %lf",name,l,chan,low,high );
       switch( i ){
       case EClustDetEnergy:
-  Setup1D( histline, fCluster[l]->GetEnergyPtr() );
-  break;
+        Setup1D( histline, fCluster[l]->GetEnergyPtr() );
+        break;
       case EClustDetHits:
-  Setup1D( histline, fCluster[l]->GetHits(), EHistMultiX );
-  break;
+        Setup1D( histline, fCluster[l]->GetHits(), EHistMultiX );
+        break;
       case EClustDetTime:
-  Setup1D( histline, fCluster[l]->GetTimePtr() );
-  break;
+        Setup1D( histline, fCluster[l]->GetTimePtr() );
+        break;
       case EClustDetMulti:
-  Setup1D( histline, fCluster[l]->GetNhitsPtr() );
-  break;
+        Setup1D( histline, fCluster[l]->GetNhitsPtr() );
+        break;
       }
     }
     break;
@@ -818,17 +818,17 @@ void TA2ClusterDetector::DisplayClusters() {
   // clear histograms
   fDispClusterHitsEnergy->GetListOfFunctions()->Clear();
   for(UInt_t i=0;i<fNelement;i++) {
-    fDispClusterHitsAll->SetElement(i,0);    
-    fDispClusterHitsEnergy->SetElement(i,0);     
+    fDispClusterHitsAll->SetElement(i,0);
+    fDispClusterHitsEnergy->SetElement(i,0);
     for(int i=0;i<MAX_DISP_CLUSTERS;i++) {
-      fDispClusterHitsSingle[i]->SetElement(i,0);           
+      fDispClusterHitsSingle[i]->SetElement(i,0);
     }
   }
-  
+
   for(UInt_t i=0;i<fNhits;i++) {
     fDispClusterHitsEnergy->SetElement(fHits[i],fEnergy[fHits[i]]);
   }
-  
+
   for(UInt_t i=0;i<fNCluster;i++) {
     HitCluster_t* cl = fCluster[fClustHit[i]];
     UInt_t* hits = cl->GetHits();
@@ -845,7 +845,7 @@ void TA2ClusterDetector::DisplayClusters() {
       if(i>=MAX_DISP_CLUSTERS)
         continue;
       //Double_t energy = energies[j]<0.1 ? 0 : energies[j];
-      fDispClusterHitsSingle[i]->SetElement(hits[j],energies[j]);      
+      fDispClusterHitsSingle[i]->SetElement(hits[j],energies[j]);
       /*cout << "i="<<i<<" j="<<j<<" energy="<<energies[j]
               <<" hit=" << hits[j]
               <<endl;*/
