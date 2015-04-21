@@ -1477,6 +1477,13 @@ Next-Neighbour: 13	718	719	716	717	715	713	714	572	574	575	143	142	141
 Next-Neighbour: 12	719	718	575	143	574	142	287	141	716	717	572	431	
 ## Moliere Radius for NaI
 Moliere-Radius: 4.8
+## Cluster weighting options
+# default: Log with e^-4 = 1.8% of total energy cutoff
+#Cluster-Weighting: Log 4.1
+# square root of single crystal energy
+#Cluster-Weighting: Power 0.5
+# square root of single crystal energy, relative to total energy
+#Cluster-Weighting: RelPower 0.5
 ##
 ## Do some further array initialisation BEFORE display specification
 Initialise:

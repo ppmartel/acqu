@@ -34,6 +34,7 @@ static const Map_t kClustDetKeys[] = {
   {"Max-Cluster:",          EClustDetMaxCluster},
   {"Next-Neighbour:",       EClustDetNeighbour},
   {"Moliere-Radius:",       EClustDetMoliereRadius},
+  {"Cluster-Weighting:",    EClustDetWeighting},
   {NULL,          -1}
 };
 
@@ -43,6 +44,20 @@ static const Map_t kClustDetKeys[] = {
 #include <algorithm>
 #include <sstream>
 #include <TA2Analysis.h>
+
+// yeah, C++11 offers scoped enums with "enum class", I know...
+enum {
+  EClustDetWeightingTypeLog,
+  EClustDetWeightingTypePower,
+  EClustDetWeightingTypeRelPower
+};
+
+struct cluster_config_t {
+  UInt_t   WeightingType;
+  Double_t WeightingPar1;
+  cluster_config_t(UInt_t weightingType, Double_t weightingPar1) :
+    WeightingType(weightingType), WeightingPar1(weightingPar1) {}
+};
 
 using namespace std;
 
@@ -61,6 +76,8 @@ TA2ClusterDetector::TA2ClusterDetector( const char* name,
   fNClustHitOR = NULL;
   fTheta = fPhi = fClEnergyOR = fClTimeOR = fClCentFracOR = fClRadiusOR = NULL;
   fEthresh = 0.0;
+  fClusterWeightingType = EClustDetWeightingTypeLog;
+  fClusterWeightingPar1 = 4.0; // see calc_energy_weight for meaning of Par1
 
 
   fDispClusterEnable = kFALSE; // config stuff missing...
@@ -118,9 +135,19 @@ typedef struct {
   size_t MaxIndex; // index of highest weight
 } bump_t;
 
-static Double_t calc_energy_weight(const Double_t energy, const Double_t total_energy) {
-  Double_t wgtE = 4.0 + TMath::Log(energy / total_energy); // log to base e
-  return wgtE<0 ? 0 : wgtE; // no negative weights
+static Double_t calc_energy_weight(const Double_t energy, const Double_t total_energy,
+                                   const cluster_config_t& cfg) {
+  if(cfg.WeightingType == EClustDetWeightingTypeLog) {
+    Double_t wgtE = cfg.WeightingPar1 + TMath::Log(energy / total_energy); // log to base e
+    return wgtE<0 ? 0 : wgtE; // no negative weights
+  }
+  else if(cfg.WeightingType == EClustDetWeightingTypePower) {
+    return TMath::Power(energy, cfg.WeightingPar1);
+  }
+  else if(cfg.WeightingType == EClustDetWeightingTypeRelPower) {
+    return TMath::Power(energy/total_energy, cfg.WeightingPar1);
+  }
+  return 0;
 }
 
 // use local Moliere radius (NaI=4.8, BaF2=3.4, PbWO4=2.2)
@@ -147,7 +174,8 @@ static void calc_bump_weights(const vector<crystal_t>& cluster, bump_t& bump) {
   bump.MaxIndex = i_max;
 }
 
-static void update_bump_position(const vector<crystal_t>& cluster, bump_t& bump) {
+static void update_bump_position(const vector<crystal_t>& cluster, bump_t& bump,
+                                 const cluster_config_t& cfg) {
   Double_t bump_energy = 0;
   for(size_t i=0;i<cluster.size();i++) {
     bump_energy += bump.Weights[i] * cluster[i].Energy;
@@ -156,7 +184,7 @@ static void update_bump_position(const vector<crystal_t>& cluster, bump_t& bump)
   Double_t w_sum = 0;
   for(size_t i=0;i<cluster.size();i++) {
     Double_t energy = bump.Weights[i] * cluster[i].Energy;
-    Double_t w = calc_energy_weight(energy, bump_energy);
+    Double_t w = calc_energy_weight(energy, bump_energy, cfg);
     position += w * cluster[i].Position;
     w_sum += w;
   }
@@ -187,7 +215,8 @@ static bump_t merge_bumps(const vector<bump_t> bumps) {
 }
 
 static void split_cluster(const vector<crystal_t>& cluster,
-                          vector< vector<crystal_t> >& clusters) {
+                          vector< vector<crystal_t> >& clusters,
+                          const cluster_config_t& cfg) {
 
   // make Voting based on relative distance or energy difference
 
@@ -265,7 +294,7 @@ static void split_cluster(const vector<crystal_t>& cluster,
       for(bumps_t::iterator b=bumps.begin(); b != bumps.end(); ++b) {
         // calculate new bump position with current weights
         TVector3 oldPos = (*b).Position;
-        update_bump_position(cluster, *b);
+        update_bump_position(cluster, *b, cfg);
         Double_t diff = (oldPos - (*b).Position).Mag();
         // check if position is stable
         if(diff>positionEpsilon) {
@@ -399,7 +428,7 @@ static void split_cluster(const vector<crystal_t>& cluster,
     vector<crystal_t> bump_cluster = bump_clusters[i];
     Double_t w_sum = 0;
     for(size_t j=0;j<bump_cluster.size();j++) {
-      Double_t w = calc_energy_weight(bump_cluster[j].Energy, bump_energies[i]);
+      Double_t w = calc_energy_weight(bump_cluster[j].Energy, bump_energies[i], cfg);
       bump_positions[i] += w * bump_cluster[j].Position;
       w_sum += w;
     }
@@ -503,6 +532,9 @@ void TA2ClusterDetector::DecodeCluster( )
                     )
           );
   }
+  // build the config
+  const cluster_config_t cfg(fClusterWeightingType, fClusterWeightingPar1);
+
   // sort hits with highest energy first
   // makes the cluster building faster hopefully
   crystals.sort();
@@ -514,7 +546,7 @@ void TA2ClusterDetector::DecodeCluster( )
 
     // check if cluster contains bumps
     // if not, cluster is simply added to clusters
-    split_cluster(cluster, clusters);
+    split_cluster(cluster, clusters, cfg);
   }
 
 
@@ -549,9 +581,9 @@ void TA2ClusterDetector::DecodeCluster( )
     Double_t avgOpeningAngle = 0;
     for(size_t j=0;j<cluster.size();j++) {
 
-      // energy weighting, parameter W0=3.5 (should be checked)
+      // energy weighting
       Double_t energy = cluster[j].Energy;
-      Double_t wgtE = calc_energy_weight(energy, fClEnergyOR[fNCluster]);
+      Double_t wgtE = calc_energy_weight(energy, fClEnergyOR[fNCluster], cfg);
       weightedSum += wgtE;
 
       // position/radius weighting
@@ -679,6 +711,33 @@ void TA2ClusterDetector::SetConfig( char* line, int key )
     for(UInt_t i=i1;i<=i2;i++) {
       fCluster[i]->SetMoliereRadius(moliere);
     }
+    break;
+  case EClustDetWeighting: {
+    stringstream s_line(line);
+    string type;
+    if(!(s_line >> type)) {
+      PrintError(line,"<Cluster Weighting no type given>");
+      break;
+    }
+    if(!(s_line >> fClusterWeightingPar1)) {
+      PrintError(line,"<Cluster Weighting first parameter not given/not parsable>");
+      break;
+    }
+    if(type == "Log") {
+      fClusterWeightingType = EClustDetWeightingTypeLog;
+
+    }
+    else if(type == "Power" ) {
+      fClusterWeightingType = EClustDetWeightingTypePower;
+    }
+    else if(type == "RelPower" ) {
+      fClusterWeightingType = EClustDetWeightingTypeRelPower;
+    }
+    else {
+      PrintError(line,"<Cluster Weighting type not Log/Power/RelPower>");
+      break;
+    }
+  }
     break;
   default:
     // Command not found...try standard detector

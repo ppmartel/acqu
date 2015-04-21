@@ -41,6 +41,7 @@
 // constants for command-line maps
 enum {
   EClustDetMaxCluster = 100, EClustDetNeighbour, EClustDetMoliereRadius,
+  EClustDetWeighting,
   EClustDetEnergy, EClustDetTime, EClustDetCentFrac, EClustDetRadius,
   EClustDetHits, EClustDetMulti
 };
@@ -90,7 +91,7 @@ protected:
   UInt_t* fClustHit;                    // Cluster indices
   UInt_t fNCluster;                     // # of clusters
   UInt_t fMaxCluster;                   // Max # of clusters
-  UInt_t* fNClustHitOR;                 // OR of #hits in individuyal clusters
+  UInt_t* fNClustHitOR;                 // OR of #hits in individual clusters
   Double_t* fTheta;                     // theta of cluster hit
   Double_t* fPhi;                       // phi of cluster hit
   Double_t* fClEnergyOR;                // OR of cluster energies
@@ -98,6 +99,10 @@ protected:
   Double_t* fClCentFracOR;              // OR of energy ratios in central elem.
   Double_t* fClRadiusOR;                // OR E-weighted cluster radii
   Double_t fEthresh;                    // generic threshold energy for cluster
+  UInt_t   fClusterWeightingType;
+  Double_t fClusterWeightingPar1;
+
+
 
   Bool_t fDispClusterEnable;
   TH2Crystals*  fDispClusterHitsAll;
