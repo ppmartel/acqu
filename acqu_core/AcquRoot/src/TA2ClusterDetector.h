@@ -45,8 +45,7 @@ enum {
   EClustDetHits, EClustDetMulti
 };
 
-class crystal_t : public TObject {
-public:
+struct crystal_t  {
   UInt_t Index;
   Double_t Energy;
   Double_t Time;
@@ -69,8 +68,6 @@ public:
   {
     NeighbourIndices.assign(neighbours,neighbours+nNeighbours);
   }
-  crystal_t() { }
-  ClassDef(crystal_t, 1)
 };
 
 inline bool operator< (const crystal_t& lhs, const crystal_t& rhs){
