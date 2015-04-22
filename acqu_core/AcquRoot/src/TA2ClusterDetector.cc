@@ -48,6 +48,7 @@ static const Map_t kClustDetKeys[] = {
 // yeah, C++11 offers scoped enums with "enum class", I know...
 enum {
   EClustDetWeightingTypeLog,
+  EClustDetWeightingTypeScaledLog,
   EClustDetWeightingTypePower,
   EClustDetWeightingTypeRelPower
 };
@@ -55,8 +56,11 @@ enum {
 struct cluster_config_t {
   UInt_t   WeightingType;
   Double_t WeightingPar1;
-  cluster_config_t(UInt_t weightingType, Double_t weightingPar1) :
-    WeightingType(weightingType), WeightingPar1(weightingPar1) {}
+  Double_t WeightingPar2;
+  cluster_config_t(UInt_t weightingType, Double_t weightingPar1, Double_t weightingPar2) :
+    WeightingType(weightingType), 
+    WeightingPar1(weightingPar1), 
+    WeightingPar2(weightingPar2) {}
 };
 
 using namespace std;
@@ -77,7 +81,10 @@ TA2ClusterDetector::TA2ClusterDetector( const char* name,
   fTheta = fPhi = fClEnergyOR = fClTimeOR = fClCentFracOR = fClRadiusOR = NULL;
   fEthresh = 0.0;
   fClusterWeightingType = EClustDetWeightingTypeLog;
-  fClusterWeightingPar1 = 4.0; // see calc_energy_weight for meaning of Par1
+  // see calc_energy_weight for meaning of Par1/Par2
+  // depends on type
+  fClusterWeightingPar1 = 4.0; 
+  fClusterWeightingPar2 = 100;    
 
 
   fDispClusterEnable = kFALSE; // config stuff missing...
@@ -138,11 +145,15 @@ typedef struct {
 static Double_t calc_energy_weight(const Double_t energy, const Double_t total_energy,
                                    const cluster_config_t& cfg) {
   if(cfg.WeightingType == EClustDetWeightingTypeLog) {
-    Double_t wgtE = cfg.WeightingPar1 + TMath::Log(energy / total_energy); // log to base e
+    Double_t wgtE = cfg.WeightingPar1 + TMath::Log(energy / total_energy);
+    return wgtE<0 ? 0 : wgtE; // no negative weights
+  }
+  else if(cfg.WeightingType == EClustDetWeightingTypeScaledLog) {
+    Double_t wgtE = cfg.WeightingPar1 + TMath::Log(energy / cfg.WeightingPar2);
     return wgtE<0 ? 0 : wgtE; // no negative weights
   }
   else if(cfg.WeightingType == EClustDetWeightingTypePower) {
-    return TMath::Power(energy, cfg.WeightingPar1);
+    return TMath::Power(energy/cfg.WeightingPar2, cfg.WeightingPar1);
   }
   else if(cfg.WeightingType == EClustDetWeightingTypeRelPower) {
     return TMath::Power(energy/total_energy, cfg.WeightingPar1);
@@ -533,7 +544,7 @@ void TA2ClusterDetector::DecodeCluster( )
           );
   }
   // build the config
-  const cluster_config_t cfg(fClusterWeightingType, fClusterWeightingPar1);
+  const cluster_config_t cfg(fClusterWeightingType, fClusterWeightingPar1, fClusterWeightingPar2);
 
   // sort hits with highest energy first
   // makes the cluster building faster hopefully
@@ -719,16 +730,29 @@ void TA2ClusterDetector::SetConfig( char* line, int key )
       PrintError(line,"<Cluster Weighting no type given>");
       break;
     }
+    // all weighting types need at least one parameter
     if(!(s_line >> fClusterWeightingPar1)) {
       PrintError(line,"<Cluster Weighting first parameter not given/not parsable>");
       break;
     }
     if(type == "Log") {
       fClusterWeightingType = EClustDetWeightingTypeLog;
-
+    }
+    else if(type == "ScaledLog") {
+      fClusterWeightingType = EClustDetWeightingTypeScaledLog;
+      // scaled log needs energy scale
+      if(!(s_line >> fClusterWeightingPar2)) {
+        PrintError(line,"<Cluster Weighting second parameter not given/not parsable>");
+        break;
+      }
     }
     else if(type == "Power" ) {
       fClusterWeightingType = EClustDetWeightingTypePower;
+      // power needs energy scale
+      if(!(s_line >> fClusterWeightingPar2)) {
+        PrintError(line,"<Cluster Weighting second parameter not given/not parsable>");
+        break;
+      }
     }
     else if(type == "RelPower" ) {
       fClusterWeightingType = EClustDetWeightingTypeRelPower;

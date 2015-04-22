@@ -101,6 +101,7 @@ protected:
   Double_t fEthresh;                    // generic threshold energy for cluster
   UInt_t   fClusterWeightingType;
   Double_t fClusterWeightingPar1;
+  Double_t fClusterWeightingPar2;
 
 
 
