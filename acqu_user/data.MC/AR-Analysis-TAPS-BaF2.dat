@@ -949,6 +949,17 @@ Moliere-Radius: 2.2 146 157
 Moliere-Radius: 2.2 219 230
 Moliere-Radius: 2.2 292 303
 Moliere-Radius: 2.2 365 376
+## Cluster weighting options
+# default: Log with exp(-4) =~ 1.8% of total energy cutoff
+#Cluster-Weighting: Log 4.0
+# energy-scaled Log with e^-4 = 1.8% of energy scale 100 MeV
+#Cluster-Weighting: ScaledLog 4.0 100
+# square root of single crystal energy with energy scale 100 MeV
+#Cluster-Weighting: Power 0.5 100
+# square root of single crystal energy, relative to total energy
+#Cluster-Weighting: RelPower 0.5
+## Shower Depth Correction
+#ShowerDepthCorrection: 1.2
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

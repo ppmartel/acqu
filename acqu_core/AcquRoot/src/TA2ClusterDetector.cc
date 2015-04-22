@@ -31,10 +31,11 @@
 
 // Command-line key words which determine what to read in
 static const Map_t kClustDetKeys[] = {
-  {"Max-Cluster:",          EClustDetMaxCluster},
-  {"Next-Neighbour:",       EClustDetNeighbour},
-  {"Moliere-Radius:",       EClustDetMoliereRadius},
-  {"Cluster-Weighting:",    EClustDetWeighting},
+  {"Max-Cluster:",           EClustDetMaxCluster},
+  {"Next-Neighbour:",        EClustDetNeighbour},
+  {"Moliere-Radius:",        EClustDetMoliereRadius},
+  {"Cluster-Weighting:",     EClustDetWeighting},
+  {"ShowerDepthCorrection:", EClustDetShowerDepthCorr},
   {NULL,          -1}
 };
 
@@ -43,6 +44,7 @@ static const Map_t kClustDetKeys[] = {
 #include <map>
 #include <algorithm>
 #include <sstream>
+#include <limits>
 #include <TA2Analysis.h>
 
 // yeah, C++11 offers scoped enums with "enum class", I know...
@@ -85,6 +87,8 @@ TA2ClusterDetector::TA2ClusterDetector( const char* name,
   // depends on type
   fClusterWeightingPar1 = 4.0; 
   fClusterWeightingPar2 = 100;    
+  
+  fShowerDepthCorrection = numeric_limits<double>::quiet_NaN();
 
 
   fDispClusterEnable = kFALSE; // config stuff missing...
@@ -611,6 +615,19 @@ void TA2ClusterDetector::DecodeCluster( )
     avgOpeningAngle /= cluster.size();
 
     weightedPosition *= 1.0/weightedSum;
+    
+    if(isfinite(fShowerDepthCorrection)) {
+      // correct for the shower depth
+      // this is copied from acqu_user/root/src/MyHitCluster_TAPS.cc
+      // the parameter fShowerDepthCorrection was 1.2 in this code 
+      Double_t sh_dep = 2.05 * (TMath::Log(fClEnergyOR[fNCluster] / 12.7) + fShowerDepthCorrection);
+      if (sh_dep > 0)
+      {
+          Double_t sh_corr = weightedPosition.Mag() / sh_dep + 1.;                
+          weightedPosition.SetX(weightedPosition.X() - weightedPosition.X() / sh_corr);
+          weightedPosition.SetY(weightedPosition.Y() - weightedPosition.Y() / sh_corr);
+      }
+    }
 
     fPhi[fNCluster] = TMath::RadToDeg() * weightedPosition.Phi();
     fTheta[fNCluster] = TMath::RadToDeg() * weightedPosition.Theta();
@@ -759,6 +776,14 @@ void TA2ClusterDetector::SetConfig( char* line, int key )
     }
     else {
       PrintError(line,"<Cluster Weighting type not Log/Power/RelPower>");
+      break;
+    }
+  }
+    break;
+  case EClustDetShowerDepthCorr: {
+    stringstream s_line(line);
+    if(!(s_line >> fShowerDepthCorrection)) {
+      PrintError(line,"<Shower Depth Correction parameter non-parsable>");
       break;
     }
   }

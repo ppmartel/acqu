@@ -41,7 +41,7 @@
 // constants for command-line maps
 enum {
   EClustDetMaxCluster = 100, EClustDetNeighbour, EClustDetMoliereRadius,
-  EClustDetWeighting,
+  EClustDetWeighting, EClustDetShowerDepthCorr,
   EClustDetEnergy, EClustDetTime, EClustDetCentFrac, EClustDetRadius,
   EClustDetHits, EClustDetMulti
 };
@@ -102,6 +102,7 @@ protected:
   UInt_t   fClusterWeightingType;
   Double_t fClusterWeightingPar1;
   Double_t fClusterWeightingPar2;
+  Double_t fShowerDepthCorrection;      // if non-nan, shower depth correction is applied 
 
 
 
