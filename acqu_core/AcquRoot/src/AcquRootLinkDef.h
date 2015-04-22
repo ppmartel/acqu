@@ -42,7 +42,6 @@
 #pragma link C++ class TA2Detector+;
 #pragma link C++ class TA2GenericDetector+;
 #pragma link C++ class TA2ClusterDetector+;
-#pragma link C++ class crystal_t+;
 #pragma link C++ class TA2LongScint+;
 #pragma link C++ class TA2Ladder+;
 #pragma link C++ class TA2WireChamber+;
