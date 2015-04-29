@@ -1009,6 +1009,10 @@ Moliere-Radius: 2.2 219 230
 Moliere-Radius: 2.2 292 303
 Moliere-Radius: 2.2 365 376
 ##
+
+## Shower Depth Correction
+ShowerDepthCorrection: 1.2
+
 ########################################################################
 ## Post initialization
 ########################################################################
