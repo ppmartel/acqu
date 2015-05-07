@@ -12,5 +12,8 @@ Hardware-ID: 02000025
 # 1557 MeV
 CfgMode:   1       16
 
+# 887 MeV
+#CfgMode:   3       15
+
 # 450 MeV
 #CfgMode:   3       16
