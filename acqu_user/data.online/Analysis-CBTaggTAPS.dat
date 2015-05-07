@@ -55,7 +55,7 @@ Physics-Analysis:	PHYS	TA2OnlinePhys	Physics-Online.dat
 Initialise:
 ##
 ## Macros
-Period:  3000	PeriodMacro.C	PeriodMacro()
+Period:  5000	PeriodMacro.C	PeriodMacro()
 #EndFile:	EndFileMacro.C  EndFileMacro()
 #Finish:	FinishMacro.C	FinishMacro()
 ##
