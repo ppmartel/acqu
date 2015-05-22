@@ -1,0 +1,95 @@
+#########################################################################
+#                                                                       #
+# Physics analysis class configuration file                             #
+#                                                                       #
+#########################################################################
+
+
+Reconstruct:
+
+#
+# CaLib configuration
+#
+
+# General:      dbhost       			 dbname   dbuser      dbpass        calibration
+#Use-CaLib:      marvin.cb.uni-bonn.de           a2_calib   a2_user    a2db4all      2014-05_G_E_Proton-Linturi
+#
+# miscellaneous calibrations    # target position  						(0=off/1=on)
+#Use-CaLib-Misc:                 0
+# tagger calib:     time    eff										(0=off/1=on)
+#Use-CaLib-TAGG:    1	 0
+# CB calib:         energy  time    timewalk    quadr. energy  LED thr.		(0=off/1=on)
+#Use-CaLib-CB:       1         1             1                     0              0
+# TAPS calib:       energy  time    quadr. energy   LED thr.   CFD thr.		(0=off/1=on)
+#Use-CaLib-TAPS:     1          1               0                 1               1
+# PID calib:        phi     energy  time								(0=off/1=on)
+#Use-CaLib-PID:     1        1          1
+# Veto calib:       energy  time    LED thr.							(0=off/1=on)
+#Use-CaLib-Veto:     1          1        0
+
+#
+# TA2MyCaLib calibration configuration
+#
+
+# target position calibration
+#CaLib-Target-Position: 1
+
+#CB energy calibration
+#CaLib-CB-Energy: 1
+
+# CB quadratic energy correction
+#              on/off  pi0_min  pi0_max  eta_min  eta_max
+#CaLib-CB-Quad: 1       100      150      480      575
+
+# CB time calibration
+#CaLib-CB-Time: 1
+
+# CB risetime calibration
+#                 on/off  pi0_min  pi0_max  
+#CaLib-CB-RiseTime: 1       110      155     
+
+
+# CB time walk calibration
+#              on/off  pi0_min  pi0_max  prompt_min  prompt_max  bg1_min  bg1_max  bg2_min  bg2_max  mm_min  mm_max
+#CaLib-CB-Walk: 1       110      155      -10         30           -400     -150     150      400      -100    100
+
+
+# TAPS energy calibration
+CaLib-TAPS-Energy: 1
+
+# TAPS quadratic energy correction
+#                on/off  pi0_min  pi0_max  eta_min  eta_max
+#CaLib-TAPS-Quad: 1       110      160      500      600
+
+# TAPS time calibration
+#CaLib-TAPS-Time: 1
+
+# TAPS PSA calibration
+#CaLib-TAPS-PSA: 1
+
+# TAPS LED calibration
+CaLib-TAPS-LED: 1
+
+# PID Phi calibration
+#CaLib-PID-Phi: 1
+
+# PID energy calibration
+#CaLib-PID-Energy: 1
+
+# PID time calibration
+#CaLib-PID-Time: 1
+
+# veto-crystal correlation
+#CaLib-Veto-Corr: 1
+
+# Veto energy
+#CaLib-Veto-Energy: 1
+
+# Veto time           on/off   	time_max
+#CaLib-Veto-Time: 	1 		20
+
+# tagger time calibration
+#CaLib-Tagger-Time: 1
+
+Initialise:
+
