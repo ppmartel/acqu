@@ -42,7 +42,9 @@ Stream-Spec:	File	Mk1	0	32768	32	0	400
 ## Feb2011
 #File-Name:	CB_35533.dat	0	0
 #File-Name:	CB_35883.dat	0	0
-File-Name:	CB_36000.dat	0	0
+#File-Name:	CB_36000.dat	0	0
 #File-Name:	CB_36027.dat	0	0
 ##
+File-Name:	CB_36000.dat.xz	0	0
+#
 ## END

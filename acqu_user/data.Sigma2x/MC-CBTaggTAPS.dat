@@ -40,12 +40,14 @@ Branch:   mposx         1024
 Branch:   mposy         1024
 Branch:   mposz         1024
 Branch:   emwpc         1024
+Branch:   mc_evt_id     8
+Branch:   mc_rnd_id     8
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #ROOT file(s) (GEANT4 output) to be analysed. Add more lines for more files
 #
-#TreeFile: scratch/A2G4_g-C12_pi0-C12_isot_01.root
+TreeFile: /scratch/martel/Analysis/MC/A2G4_g-p_pi0-p_isot_01.root
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
