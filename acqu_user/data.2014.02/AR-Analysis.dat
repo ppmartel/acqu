@@ -20,7 +20,7 @@
 ## from the other specified channels
 ## CB TDC's
 ##              #hits   start   stop    reference
-MultiADC:       3       1401    1911    1400
+MultiADC:       8       1401    1911    1400
 MultiADC:       3       2001    2767    2000
 ## MWPC TDCS
 MultiADC:       3       4000    4639    2000
@@ -52,10 +52,10 @@ BitPattern:  AR-Analysis-TriggerPat.dat
 ## Apparatus setup....
 ## Raw analysis may be performed without Apparati
 ##              Name            Class           	Setup file
-#Apparatus:      TAGG            TA2Tagger   		AR-Analysis-Tagger.dat
+Apparatus:      TAGG            TA2Tagger   		AR-Analysis-Tagger.dat
 #Apparatus:      CB              TA2CentralApparatus	AR-Analysis-CentApp.dat
 #Apparatus:      TAPS            TA2Taps		  	AR-Analysis-TAPS.dat
-Apparatus:      BeamPolMon      TA2BeamPolMon           Apparatus-BeamPolMon.dat
+#Apparatus:      BeamPolMon      TA2BeamPolMon           Apparatus-BeamPolMon.dat
 ##
 ## Turn on apparatus-level reconstruction
 Reconstruct-Analysis:
