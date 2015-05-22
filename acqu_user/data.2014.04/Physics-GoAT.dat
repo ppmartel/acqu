@@ -59,4 +59,7 @@ Display: 1D taggedTime    200 -100 100
 Display: 1D vetoEnergy    25 0 25 
 Display: 1D MWPC0Energy   500 0 500 
 Display: 1D MWPC1Energy   500 0 500
+Display: 1D vertexX       100 -50 50
+Display: 1D vertexY       100 -50 50
+Display: 1D vertexZ       1000 -500 500
 Display: 1D energySum     2000 0 2000
