@@ -1475,24 +1475,33 @@ void TA2MyCaLib::ReconstructPhysics()
         UInt_t* g1_hits     = decay_photons[0]->GetClusterHits();
         Double_t* g1_energy = decay_photons[0]->GetClusterHitEnergies();
         Double_t* g1_time   = decay_photons[0]->GetClusterHitTimes();
+        Int_t* g1_mults     = decay_photons[0]->GetClusterHitTimeMultiplicities(); 
+        
 
         // photon 2 cluster properties
         Int_t g2_nhits      = decay_photons[1]->GetClusterSize();
         UInt_t* g2_hits     = decay_photons[1]->GetClusterHits();
         Double_t* g2_energy = decay_photons[1]->GetClusterHitEnergies();
         Double_t* g2_time   = decay_photons[1]->GetClusterHitTimes();    
+        Int_t* g2_mults     = decay_photons[1]->GetClusterHitTimeMultiplicities(); 
         
         // use only first crystal (with highest energy) of both photons
 //        if(g1_nhits>1) g1_nhits=1;
 //        if(g2_nhits>1) g2_nhits=1;
         
         // fill energies and times of all elements of the photon cluster 1
-        for (Int_t j = 0; j < g1_nhits; j++) 
-            fHCalib_CB_Walk_EPT_E_T[g1_hits[j]]->Fill(g1_energy[j], g1_time[j] - proton_time);
+        for (Int_t j = 0; j < g1_nhits; j++)  {
+          if(g1_mults[j] != 1)
+            continue;
+          fHCalib_CB_Walk_EPT_E_T[g1_hits[j]]->Fill(g1_energy[j], g1_time[j] - proton_time);
+        }
     
         // fill energies and times of all elements of the photon cluster 2
-        for (Int_t j = 0; j < g2_nhits; j++) 
-            fHCalib_CB_Walk_EPT_E_T[g2_hits[j]]->Fill(g2_energy[j], g2_time[j] - proton_time);
+        for (Int_t j = 0; j < g2_nhits; j++) {
+          if(g2_mults[j] != 1)
+            continue;  
+          fHCalib_CB_Walk_EPT_E_T[g2_hits[j]]->Fill(g2_energy[j], g2_time[j] - proton_time);
+        }
 
     } // end CB time walk
     label_end_cb_timewalk_ept:
