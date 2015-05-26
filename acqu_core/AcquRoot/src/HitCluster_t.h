@@ -45,8 +45,9 @@ protected:
   UInt_t fNNeighbour;                  // # neighbour elements in array
   Int_t fMaxHits;                      // size of hits array
   UInt_t* fHits;                       // indices of hit elements
-  Double_t* fEnergies;                   // energies of hit elements  
-  Double_t* fTimes;                   // times of hit elements  
+  Double_t* fEnergies;                 // energies of hit elements  
+  Double_t* fTimes;                    // times of hit elements  
+  Int_t* fTimeMultiplicities;          // multiplicity of each crystal hit times
   UInt_t fNhits;                       // # of hits in cluster
   Double_t fMoliereRadius;             // Moliere Radius of crystal with fIndex
 public:
@@ -68,6 +69,7 @@ public:
   UInt_t* GetHits(){ return fHits; }
   Double_t* GetEnergies(){ return fEnergies; }  
   Double_t* GetTimes(){ return fTimes; }  
+  Int_t* GetTimeMultiplicities(){ return fTimeMultiplicities; }    
   UInt_t GetNhits(){ return fNhits; }
   //
   UInt_t* GetNhitsPtr(){ return &fNhits; }

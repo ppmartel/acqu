@@ -1402,6 +1402,8 @@ void TA2MyPhysics::Reconstruct()
         fPartCB[nCB]->SetClusterHits(clNhits, clHits);
         fPartCB[nCB]->SetClusterHitEnergies(clNhits, cl->GetEnergies());
         fPartCB[nCB]->SetClusterHitTimes(clNhits, cl->GetTimes());
+        fPartCB[nCB]->SetClusterHitTimeMultiplicities(clNhits, cl->GetTimeMultiplicities());
+        
         
         // calculate photon resolutions
         CalculatePhotonResolutions(fPartCB[nCB]);
@@ -1548,6 +1550,7 @@ void TA2MyPhysics::Reconstruct()
         fPartTAPS[nTAPS]->SetClusterHits(clNhits, clHits);
         fPartTAPS[nTAPS]->SetClusterHitEnergies(clNhits, cl->GetEnergies());
         fPartTAPS[nTAPS]->SetClusterHitTimes(clNhits, cl->GetTimes());
+        fPartTAPS[nTAPS]->SetClusterHitTimeMultiplicities(clNhits, cl->GetTimeMultiplicities());
         fPartTAPS[nTAPS]->SetCentralSGEnergy(fBaF2PWO->GetSGEnergy(cl->GetIndex()));
         
         // calculate photon resolutions

@@ -27,11 +27,14 @@ TOA2DetParticle::TOA2DetParticle(const TOA2DetParticle& orig)
     fClusterHits        = new UInt_t[fClusterSize];
     fClusterHitEnergies = new Double_t[fClusterSize];
     fClusterHitTimes    = new Double_t[fClusterSize];
+    fClusterHitTimeMultiplicities    = new Int_t[fClusterSize];
+    
     for (Int_t i = 0; i < fClusterSize; i++) 
     {
         fClusterHits[i]        = orig.fClusterHits[i];
         fClusterHitEnergies[i] = orig.fClusterHitEnergies[i];
         fClusterHitTimes[i]    = orig.fClusterHitTimes[i];
+        fClusterHitTimeMultiplicities[i]    = orig.fClusterHitTimeMultiplicities[i];
     }
 
     fErrorTheta = orig.fErrorTheta;
@@ -48,11 +51,14 @@ TOA2DetParticle::TOA2DetParticle(const TOA2BaseDetParticle& orig)
     fClusterHits        = new UInt_t[fClusterSize];
     fClusterHitEnergies = new Double_t[fClusterSize];
     fClusterHitTimes    = new Double_t[fClusterSize];
+    fClusterHitTimeMultiplicities    = new Int_t[fClusterSize];
+    
     for (Int_t i = 0; i < fClusterSize; i++) 
     {
         fClusterHits[i]        = 0;
         fClusterHitEnergies[i] = 0;
         fClusterHitTimes[i]    = 0;
+        fClusterHitTimeMultiplicities[i] = 0;
     }
 
     fErrorTheta  = 0;
@@ -68,6 +74,8 @@ TOA2DetParticle::~TOA2DetParticle()
     if (fClusterHits) delete [] fClusterHits;
     if (fClusterHitEnergies) delete [] fClusterHitEnergies;
     if (fClusterHitTimes) delete [] fClusterHitTimes;
+    if (fClusterHitTimeMultiplicities) delete [] fClusterHitTimeMultiplicities;
+    
 }
 
 //______________________________________________________________________________
@@ -125,6 +133,25 @@ void TOA2DetParticle::SetClusterHitTimes(Int_t size, Double_t* times)
 
     // copy the array elements
     for (Int_t i = 0; i < fClusterSize; i++) fClusterHitTimes[i] = times[i];
+}
+
+//______________________________________________________________________________
+void TOA2DetParticle::SetClusterHitTimeMultiplicities(Int_t size, Int_t* mults)
+{
+    // Set the cluster hit times using the time array 'times' and its
+    // length 'size'.
+    
+    // delete old array if necessary
+    if (fClusterHitTimeMultiplicities) delete [] fClusterHitTimeMultiplicities;
+
+    // set the cluster size
+    fClusterSize = size;
+
+    // create a new array
+    fClusterHitTimeMultiplicities = new Int_t[fClusterSize];
+
+    // copy the array elements
+    for (Int_t i = 0; i < fClusterSize; i++) fClusterHitTimeMultiplicities[i] = mults[i];
 }
 
 //______________________________________________________________________________
@@ -187,6 +214,7 @@ void TOA2DetParticle::Print(Option_t* option) const
     printf("Cluster hits           : %s\n", TOSUtils::FormatArrayList(fClusterSize, fClusterHits));
     printf("Cluster hit energies   : %s\n", TOSUtils::FormatArrayList(fClusterSize, fClusterHitEnergies, "%f"));
     printf("Cluster hit times      : %s\n", TOSUtils::FormatArrayList(fClusterSize, fClusterHitTimes, "%f"));
+    printf("Cluster hit time mults : %s\n", TOSUtils::FormatArrayList(fClusterSize, fClusterHitTimeMultiplicities, "%f"));    
     printf("Error in theta         : %f\n", fErrorTheta*TMath::RadToDeg());
     printf("Error in phi           : %f\n", fErrorPhi*TMath::RadToDeg());
     printf("Error in energy        : %f\n", fErrorEnergy);

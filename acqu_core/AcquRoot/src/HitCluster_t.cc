@@ -61,6 +61,7 @@ HitCluster_t::HitCluster_t( Char_t* line, UInt_t index)
   fHits = new UInt_t[ fMaxHits ];
   fEnergies = new Double_t[ fMaxHits ];
   fTimes = new Double_t[ fMaxHits ];  
+  fTimeMultiplicities = new Int_t[ fMaxHits ];    
   fHits[0] = ENullHit;
   fNhits = 0;
   fEnergy = (Double_t)ENullHit;
@@ -88,6 +89,7 @@ Bool_t HitCluster_t::SetFields(const std::vector< crystal_t >& cluster,
     fHits[i] = cluster[i].Index;
     fEnergies[i] = cluster[i].Energy;
     fTimes[i] = cluster[i].Time;
+    fTimeMultiplicities[i] = cluster[i].TimeMultiplicity;
   }
   fHits[fNhits] = EBufferEnd;
   

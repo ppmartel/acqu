@@ -50,12 +50,14 @@ struct crystal_t  {
   UInt_t Index;
   Double_t Energy;
   Double_t Time;
+  Int_t TimeMultiplicity;
   TVector3 Position;
   std::vector<UInt_t> NeighbourIndices; // potential neighbours
   Double_t MoliereRadius;
   crystal_t(const UInt_t index,
             const Double_t energy,
             const Double_t time,
+            const Int_t timeMultiplicity,
             const TVector3& position,
             const UInt_t nNeighbours,
             const UInt_t* neighbours,
@@ -64,6 +66,7 @@ struct crystal_t  {
     Index(index),
     Energy(energy),
     Time(time),
+    TimeMultiplicity(timeMultiplicity),
     Position(position),
     MoliereRadius(moliere)
   {
