@@ -109,9 +109,7 @@ void TA2ClusterDetector::Decode( )
 
   DecodeBasic();
   DecodeCluster();
-#ifdef WITH_A2DISPLAY
   DisplayClusters();
-#endif
 }
 
 //---------------------------------------------------------------------------
@@ -122,9 +120,7 @@ void TA2ClusterDetector::DecodeSaved( )
 
   ReadDecoded();
   DecodeCluster();
-#ifdef WITH_A2DISPLAY
   DisplayClusters();
-#endif
 }
 
 static Double_t calc_total_energy(const vector< crystal_t >& cluster) {
