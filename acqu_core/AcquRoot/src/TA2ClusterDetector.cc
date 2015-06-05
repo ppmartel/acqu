@@ -36,6 +36,7 @@ static const Map_t kClustDetKeys[] = {
   {"Moliere-Radius:",        EClustDetMoliereRadius},
   {"Cluster-Weighting:",     EClustDetWeighting},
   {"ShowerDepthCorrection:", EClustDetShowerDepthCorr},
+  {"SimplyOneRingMode-OBSOLETE:", EClustDetSimplyOneRingMode},
   {NULL,          -1}
 };
 
@@ -59,10 +60,16 @@ struct cluster_config_t {
   UInt_t   WeightingType;
   Double_t WeightingPar1;
   Double_t WeightingPar2;
-  cluster_config_t(UInt_t weightingType, Double_t weightingPar1, Double_t weightingPar2) :
+  Bool_t   OneRingMode;
+  cluster_config_t(UInt_t weightingType,
+                   Double_t weightingPar1,
+                   Double_t weightingPar2,
+                   Bool_t oneRingMode) :
     WeightingType(weightingType), 
     WeightingPar1(weightingPar1), 
-    WeightingPar2(weightingPar2) {}
+    WeightingPar2(weightingPar2),
+    OneRingMode(oneRingMode)
+  {}
 };
 
 using namespace std;
@@ -90,6 +97,7 @@ TA2ClusterDetector::TA2ClusterDetector( const char* name,
   
   fShowerDepthCorrection = numeric_limits<double>::quiet_NaN();
 
+  fSimplyOneRingMode = kFALSE; // obsolete, never kTRUE by default!
 
   fDispClusterEnable = kFALSE; // config stuff missing...
   // will be set by child class
@@ -479,7 +487,9 @@ static void split_cluster(const vector<crystal_t>& cluster,
 
 
 static void build_cluster(list<crystal_t>& crystals,
-                          vector<crystal_t> &cluster) {
+                          vector<crystal_t> &cluster,
+                          const cluster_config_t& cfg) {
+  // first crystal has highest energy
   list<crystal_t>::iterator i = crystals.begin();
 
   // start with initial seed list
@@ -509,11 +519,14 @@ static void build_cluster(list<crystal_t>& crystals,
           // neighbours is a list of unique items, we can stop searching
           break;
         }
-        // removal moves iterator one forward
+        // removal moves iterator already one forward
         if(!foundNeighbour)
           ++j;
       }
     }
+    // only one ring of neighbours required?
+    if(cfg.OneRingMode)
+      break;
     // set new seeds, if any new found...
     seeds = next_seeds;
   }
@@ -545,20 +558,29 @@ void TA2ClusterDetector::DecodeCluster( )
           );
   }
   // build the config
-  const cluster_config_t cfg(fClusterWeightingType, fClusterWeightingPar1, fClusterWeightingPar2);
+  const cluster_config_t cfg(fClusterWeightingType,
+                             fClusterWeightingPar1,
+                             fClusterWeightingPar2,
+                             fSimplyOneRingMode);
 
   // sort hits with highest energy first
-  // makes the cluster building faster hopefully
+  // crucial if running one ring mode
   crystals.sort();
 
-  vector< vector<crystal_t> > clusters; // contains the final truly split clusters
+  vector< vector<crystal_t> > clusters; // contains the final clusters
   while(crystals.size()>0) {
     vector<crystal_t> cluster;
-    build_cluster(crystals, cluster); // already sorts it by energy
+    build_cluster(crystals, cluster, cfg); // already sorts "cluster" it by energy
 
-    // check if cluster contains bumps
-    // if not, cluster is simply added to clusters
-    split_cluster(cluster, clusters, cfg);
+    if(cfg.OneRingMode) {
+      // simply add the cluster
+      clusters.push_back(cluster);
+    }
+    else {
+      // check if cluster contains bumps
+      // if not, cluster is simply added to clusters
+      split_cluster(cluster, clusters, cfg);
+    }
   }
 
 
@@ -782,6 +804,18 @@ void TA2ClusterDetector::SetConfig( char* line, int key )
     if(!(s_line >> fShowerDepthCorrection)) {
       PrintError(line,"<Shower Depth Correction parameter non-parsable>");
       break;
+    }
+  }
+    break;
+  case EClustDetSimplyOneRingMode: {
+    stringstream s_line(line);
+    if(!(s_line >> fSimplyOneRingMode)) {
+      PrintError(line,"<SimplyOneRingMode not boolean>");
+      break;
+    }
+    if(fSimplyOneRingMode) {
+      cout << ">>>>> WARNING: You're using the OBSOLETE version of the clustering algorithm in " << this->ClassName() << endl;
+      cout << ">>>>> DO NOT USE THIS FOR NEW ANALYSIS! YOU HAVE BEEN WARNED!" << endl;
     }
   }
     break;

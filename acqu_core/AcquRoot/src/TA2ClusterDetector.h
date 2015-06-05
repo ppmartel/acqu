@@ -43,7 +43,8 @@ enum {
   EClustDetMaxCluster = 100, EClustDetNeighbour, EClustDetMoliereRadius,
   EClustDetWeighting, EClustDetShowerDepthCorr,
   EClustDetEnergy, EClustDetTime, EClustDetCentFrac, EClustDetRadius,
-  EClustDetHits, EClustDetMulti
+  EClustDetHits, EClustDetMulti,
+  EClustDetSimplyOneRingMode
 };
 
 struct crystal_t  {
@@ -106,6 +107,7 @@ protected:
   Double_t fClusterWeightingPar1;
   Double_t fClusterWeightingPar2;
   Double_t fShowerDepthCorrection;      // if non-nan, shower depth correction is applied 
+  Bool_t   fSimplyOneRingMode;            // if true, the old clustering algorithm is mimicked. DON'T USE FOR NEW ANALYSIS!
 
 
 
