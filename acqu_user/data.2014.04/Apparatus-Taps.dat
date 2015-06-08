@@ -7,7 +7,7 @@
 #Detector systems in TAPS apparatus
 #Detector: BaF2          TA2TAPS_BaF2		Detector-BaF2.dat
 Detector: BaF2          TA2TAPS_BaF2		Detector-BaF2-PbWO4.dat
-Detector: Veto          TA2TAPS_Veto		Detector-Veto-384.dat
+Detector: Veto          TA2TAPS_Veto		Detector-Veto.dat
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
