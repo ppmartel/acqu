@@ -5,10 +5,9 @@
 #
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #Detector systems in TAPS apparatus
-Detector: Veto          TA2TAPS_Veto		Detector-Veto-438.dat
-Detector: BaF2          TA2TAPS_BaF2		Detector-BaF2-PbWO4.dat
-#Detector: Veto          TA2TAPS_Veto		Detector-Veto-384.dat
 #Detector: BaF2          TA2TAPS_BaF2		Detector-BaF2.dat
+Detector: BaF2          TA2TAPS_BaF2		Detector-BaF2-PbWO4.dat
+Detector: Veto          TA2TAPS_Veto		Detector-Veto-384.dat
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -60,8 +59,8 @@ TAPS_TOF_TaggerTime:  0
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #Set distance between TAPS and target centre for correct TOF calculation.
 #Additional correction for longer flight path to outer rings is possible.
-TAPSTargetDistance:  141.2
-#TAPSTargetDistance:  174.7
+#TAPSTargetDistance:  141.2
+TAPSTargetDistance:  174.7
 TAPSDoFlightTimeCorrection:  1
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
