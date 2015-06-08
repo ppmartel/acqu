@@ -74,4 +74,4 @@ AnalysisSetup: Analysis-CBTaggTAPS.dat
 ##
 ## Online running...setup of data server
 ## This is ignored for offline running and may be left in
-ServerSetup: data/Server-CBTaggTAPS-New.dat
+ServerSetup: data/Server-CBTaggTAPS-Apr2014.dat

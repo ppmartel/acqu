@@ -14,7 +14,7 @@ Size:   384     1       1       1
 ## Process raw ADC/TDC hits, uncomment if desired
 ########################################################################
 ##
-#RawHits:
+RawHits:
 ##
 ########################################################################
 ## Use bit pattern, uncomment if desired

@@ -11,13 +11,13 @@ Reconstruct:
 #
 
 # General:      dbhost    dbname                   dbuser      dbpass        calibration
-Use-CaLib:      a2calib   CaLib_2013_10-Present    calib       basel10       2014_04_Compton_Martel
+Use-CaLib:      blaster   CaLib_2013_10-Present    calib       basel10       2014_04_Compton_Paudyal
 #
 #
 # tagger calib:     time    efficiency (0=off/1=on)
 Use-CaLib-TAGG:     1       0
 # CB calib:         energy  time    timewalk    quadr. energy    led  (0=off/1=on)
-Use-CaLib-CB:       1       1       0           0                0 
+Use-CaLib-CB:       1       1       1           0                0
 # TAPS calib:       energy  time    quadr. energy   LED thr.    CFD thr.  (0=off/1=on)
 Use-CaLib-TAPS:     1       1       0               0           0
 # PID calib:        phi     energy  time  (0=off/1=on)

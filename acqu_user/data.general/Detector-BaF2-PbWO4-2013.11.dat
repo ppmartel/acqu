@@ -14,7 +14,7 @@ Size:   438     1       1       1
 ## Process raw ADC/TDC hits, uncomment if desired
 ########################################################################
 ##
-#RawHits:
+RawHits:
 ##
 ########################################################################
 ## Use bit pattern, uncomment if desired
@@ -550,8 +550,8 @@ Element:   25498  1.000 2000.0  106.00 0.368420   25491 -1000.0  1000.0  3168.74
 ##
 ## Max # clusters to analyse	Cluster threshold Energy (MeV)
 ##
-Max-Cluster:    8      20
-#Max-Cluster:    32      15
+#Max-Cluster:    8      20
+Max-Cluster:    16      15
 ##
 ########################################################################
 ## Nearest neighbours for each element of array
