@@ -26,6 +26,7 @@ TCMySQLManager::TCMySQLManager()
 {
     // Constructor.
 
+    MC = false;
     fDB = 0;
     fSilence = kFALSE;
     fData = new THashList();
@@ -1301,10 +1302,17 @@ void TCMySQLManager::AddCalibAR(CalibDetector_t det, const Char_t* calibFileAR,
     for (Int_t i = 0; i < nDet; i++)
     {
         eL[i] = r.GetElement(i)->GetEnergyLow();
-        e0[i] = r.GetElement(i)->GetPedestal();
-        e1[i] = r.GetElement(i)->GetADCGain();
-        t0[i] = r.GetElement(i)->GetOffset();
-        t1[i] = r.GetElement(i)->GetTDCGain();
+        if (!MC) {
+            e0[i] = r.GetElement(i)->GetPedestal();
+            e1[i] = r.GetElement(i)->GetADCGain();
+            t0[i] = r.GetElement(i)->GetOffset();
+            t1[i] = r.GetElement(i)->GetTDCGain();
+        } else {
+            e0[i] = 0.;
+            e1[i] = 1.;
+            t0[i] = 0.;
+            t1[i] = 1.;
+        }
     }
 
     // read detector specific calibration values
@@ -1352,8 +1360,13 @@ void TCMySQLManager::AddCalibAR(CalibDetector_t det, const Char_t* calibFileAR,
             // read SG parameters
             for (Int_t i = 0; i < nDetSG; i++)
             {
-                e0SG[i] = rSG.GetElement(i)->GetPedestal();
-                e1SG[i] = rSG.GetElement(i)->GetADCGain();
+                if (!MC) {
+                    e0SG[i] = rSG.GetElement(i)->GetPedestal();
+                    e1SG[i] = rSG.GetElement(i)->GetADCGain();
+                } else {
+                    e0SG[i] = 0.;
+                    e1SG[i] = 1.;
+                }
             }
 
             // write to database

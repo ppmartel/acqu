@@ -18,19 +18,22 @@
 void AddCalibMC()
 {
     // load CaLib
-    gSystem->Load("libCaLib.so");
+    gSystem->Load("../build/lib/libCaLib.so");
  
     // macro configuration: just change here for your beamtime and leave
     // the other parts of the code unchanged
-    const Char_t target[]           = "LD2";
+    const Char_t target[]           = "LH2";
     const Int_t dummyRun            = 999001;
-    const Char_t calibName[]        = "LD2_MC_Feb_09";
-    const Char_t calibDesc[]        = "MC calibration for February 2009 beamtime";
-    const Char_t calibFileTagger[]  = "/usr/users/werthm/AcquRoot/acqu/acqu/data/MC_Feb_09/LadderMC.dat";
-    const Char_t calibFileCB[]      = "/usr/users/werthm/AcquRoot/acqu/acqu/data/MC_Feb_09/NaI_MC.dat";
-    const Char_t calibFileTAPS[]    = "/usr/users/werthm/AcquRoot/acqu/acqu/data/MC_Feb_09/BaF2_MC_09.dat";
-    const Char_t calibFilePID[]     = "/usr/users/werthm/AcquRoot/acqu/acqu/data/MC_Feb_09/PID2_MC.dat";
-    const Char_t calibFileVeto[]    = "/usr/users/werthm/AcquRoot/acqu/acqu/data/MC_Feb_09/Veto_MC.dat";
+    const Char_t calibName[]        = "2015-MC-Init-Test";
+    const Char_t calibDesc[]        = "Calibration for MC data, test to set proper starting values";
+    const Char_t calibFileTagger[]  = "../acqu_user/data/AR-Analysis-Tagger-EPT.dat";
+    const Char_t calibFileCB[]      = "../acqu_user/data/AR-Analysis-CB-NaI.dat";
+    const Char_t calibFileTAPS[]    = "../acqu_user/data/AR-Analysis-TAPS-BaF2.dat";
+    const Char_t calibFilePID[]     = "../acqu_user/data/AR-Analysis-CB-PID.dat";
+    const Char_t calibFileVeto[]    = "../acqu_user/data/AR-Analysis-TAPS-Veto.dat";
+
+    // set MC mode to pass 0s and 1s to the database for gains, offset, pedestals, etc.
+    TCMySQLManager::GetManager()->SetMC(true);
 
     // add raw files to the database
     TCMySQLManager::GetManager()->AddRun(dummyRun, target, calibDesc);
