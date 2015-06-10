@@ -27,6 +27,7 @@ MultiADC:	3       4000    4559    2000
 #
 ## TAPS inner ring
 MultiADC:	3       30201   30350   30200
+MultiADC:	3       30601   30618   30200
 #
 ## Problem ADCs
 MultiADC:	3       29953   29965   30200
