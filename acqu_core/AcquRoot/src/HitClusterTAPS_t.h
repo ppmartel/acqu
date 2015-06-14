@@ -14,21 +14,16 @@
 #ifndef __THitClusterTAPS_h__
 #define __THitClusterTAPS_h__
 
-#include "TVector3.h"
-#include "EnumConst.h"
 #include "HitCluster_t.h"       // base hit cluster determination
 
 class TA2ClusterDetector;
 
 class HitClusterTAPS_t : public HitCluster_t
 {
- private:
- protected:
  public:
   HitClusterTAPS_t( char*, UInt_t );
-  virtual ~HitClusterTAPS_t();
+  virtual ~HitClusterTAPS_t() { }
   virtual void ClusterDetermine(TA2ClusterDetector*);
-  void Neighbours(TA2ClusterDetector*);
 };
 
 //---------------------------------------------------------------------------

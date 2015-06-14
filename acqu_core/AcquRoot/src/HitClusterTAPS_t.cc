@@ -23,141 +23,154 @@ HitClusterTAPS_t::HitClusterTAPS_t( Char_t* line, UInt_t index )
 
 }
 
-
-//---------------------------------------------------------------------------
-HitClusterTAPS_t::~HitClusterTAPS_t()
-{
-  // delete arrays
-  if(fHits) delete fHits;
-  if(fNeighbour) delete fNeighbour;
-  if(fMeanPosition) delete fMeanPosition;
-}
-
-//---------------------------------------------------------------------------
+//______________________________________________________________________________
 void HitClusterTAPS_t::ClusterDetermine(TA2ClusterDetector* cl)
 {
-  // Determine which hits form the cluster.
-  // Basic algorithm: supply list of nearest neighbours for
-  // each element in calorimeter. Any (not previously claimed) hit in one
-  // of these neighbours is added to the cluster. Clusters are initially
-  // centered on elements where the energy signal is a local maximum.
-  // The fIsIterate = kTRUE flag signals that a further search for cluster-
-  // connected hits which are NOT in the nearest neighbours list
-  // should be made.
-  // The position of the cluster is taken as the
-  // sqrt(energy)-weighted mean of the individual positions of the
-  // hit elements.
+    // Cluster algorithm for TAPS.
 
-  UInt_t i,j,k;
+    // get detector pointers
+    Double_t* energy   = cl->GetEnergy();
+    Double_t* time     = cl->GetTime();
+    UInt_t* hits       = cl->GetTempHits();
+    TVector3** pos     = cl->GetPosition();
+    UInt_t nhits       = cl->GetNhits();
 
-  Double_t* energy = cl->GetEnergy();
-  Double_t* time = cl->GetTime();
-  UInt_t* hits = cl->GetTempHits();
-  TVector3** pos = cl->GetPosition();
-  UInt_t nhits = cl->GetNhits();
+    // define local variables
+    Double_t w, w_tot;
+    UInt_t loc_nhits = 0;
+    UInt_t loc_hits[fMaxHits+1];
+    TVector3 loc_pos[fMaxHits+1];
+    Double_t loc_energy[fMaxHits+1];
+    UInt_t loc_orighit[fMaxHits+1];
 
-  *fMeanPosition = *(pos[fIndex]);            // position = "centre"
-  fEnergy = energy[fIndex];                   // energy in "central" element
-  if(cl->IsTime()) fTime = time[fIndex];       // time in central element
-  Double_t sqrtE = sqrt(fEnergy);
-  fSqrtEtot = sqrtE;
-  *fMeanPosition = *(pos[fIndex]) * sqrtE;    // position = "centre"
-  TVector3 diff;
-  fRadius = 0.0;
-  fHits[0] = fIndex;
+    // process central element
+    loc_nhits = 1;
+    loc_hits[0] = fIndex;
+    loc_pos[0] = *(pos[fIndex]);
+    loc_energy[0] = energy[fIndex];
+    if (cl->IsTime()) fTime = time[fIndex];
 
-  // Accumulate weighted mean position
-  for( i=0,k=1; i<nhits; i++ )
-  {
-    if((j = hits[i])==ENullHit) continue; // was previously counted
-    if(j == fIndex)
+    // loop over cluster hits
+    for (UInt_t i = 0; i < loc_nhits; i++)
     {
-      hits[i] = ENullHit;
-      continue;
-    }                                         // already got center
-    if(IsNeighbour(j))                     // a neighbour of the center?
-    {
-      hits[i] = ENullHit;                     // so its not double counted
-      fHits[k] = j;                           // add to cluster hits collection
-      sqrtE = sqrt(energy[j]);
-      fEnergy+=energy[j];
-      fSqrtEtot+=sqrtE;
-      *fMeanPosition+=( *(pos[j]) * sqrtE );// root energy weighted pos
-      diff = *(pos[fIndex]) - *(pos[j]);
-      fRadius = fRadius + sqrtE * diff.Mag();
-      k++;
-    }
-  }
-  fNhits = k;
-  // Check if any unused hits (ie NOT in the near neighbour array) are connected to existing hits
-  Neighbours(cl);
+        // cluster element
+        UInt_t index = loc_hits[i];
 
-  fHits[fNhits] = EBufferEnd;                  // mark no more hits
-  // Normalise weighted mean, get fraction total energy in central crystal,
-  // calc circular polar coordinates of cluster center
-  *fMeanPosition = (*fMeanPosition) * (1./fSqrtEtot);// normalise weighted mean
-  fRadius = fRadius/fSqrtEtot;                // normalise weighted radius
-  fCentralFrac = energy[fIndex]/fEnergy;      // fraction Etot in central elem
-  fTheta = TMath::RadToDeg() * fMeanPosition->Theta();
-  fPhi   = TMath::RadToDeg() * fMeanPosition->Phi();
-}
-
-//-----------------------------------------------------------------------------
-
-void HitClusterTAPS_t::Neighbours(TA2ClusterDetector* cl)
-{
-  // Assume 1st go at cluster member search complete.
-  // Now scan for any other close-proximity detector hits for potential
-  // additional members of the cluster
-
-  UInt_t i,j,k,n;
-  Double_t distApart;                          // distance between elements
-  TVector3** pos = cl->GetPosition();          // element position array
-  UInt_t* hits = cl->GetTempHits();            // hits array
-  UInt_t nhits = cl->GetNhits();               // # hits
-  Double_t* energy = cl->GetEnergy();          // array of energies
-  UInt_t* nextIter;                            // -> relevent part fHits array
-  UInt_t* hitsEnd = fHits + fMaxHits - 1;      // end-stop of fHits array
-  Double_t sqrtE;                              // square root energy weighting
-  UInt_t pNhits = 0;                           // # previously processed hits
-
-  // Iterate round while new cluster members still found
-  do
-  {
-    nextIter = fHits + fNhits;                 // -> start new cluster members
-    for(i=pNhits,n=0; i<fNhits; i++)         // loop existing clust hits
-    {
-      for(j=0; j<nhits; j++)               // loop total detector hits
-      {
-	if ((k = hits[j]) == ENullHit) continue; // hit already spoken for
-	// distance between cluster hit and potential new hit
-	// if its within limits add the new hit to the cluster
-	distApart = (*(pos[fHits[i]]) - *(pos[k])).Mag();
-	if ((distApart > 5.9) && (distApart < 6.1))
+        // loop over total hits
+        for (UInt_t j = 0; j < nhits; j++)
         {
-	  sqrtE = sqrt(energy[k]);
-	  fEnergy+=energy[k];
-	  fSqrtEtot+=sqrtE;
-	  *fMeanPosition+=(*(pos[k])*sqrtE);// pos root energy weighted
-	  hits[j] = ENullHit;                 // mark hit as spoken for
-	  *nextIter++ = k;                    // add index to cluster hits list
-	  n++;                                // update # new clust members
-	  // Check if space for futher cluster members, finish if not
-	  if(nextIter>=hitsEnd)
-          {
-	    fNhits += n;
-	    return;
-	  }
-	}
-      }
+            // skip already added hits
+            if (hits[j] == ENullHit) continue;
+
+            // skip and mark central hit
+            if (hits[j] == fIndex)
+            {
+                hits[j] = ENullHit;
+                continue;
+            }
+
+            // add if neighbour
+            if (cl->GetCluster(index)->IsNeighbour(hits[j]))
+            {
+                // save position, energy, element index, original hit index
+                loc_pos[loc_nhits] = *(pos[hits[j]]);
+                loc_energy[loc_nhits] = energy[hits[j]];
+                loc_orighit[loc_nhits] = j;
+                loc_hits[loc_nhits] = hits[j];
+
+                // count hit
+                loc_nhits++;
+
+                // mark as added in total hit array
+                hits[j] = ENullHit;
+            }
+        }
     }
-    pNhits = fNhits;         // update previously processed hits
-    fNhits+=n;             // update total processed hits
-  }
-  while(n);               // iterate while new cluster members found
 
-  return;
+    // check if two local, not-neighouring maxima were found
+    Int_t secMax = -1;
+    //if (loc_nhits > 2)
+    //{
+    //    // sort according to energy
+    //    UInt_t id_sort[loc_nhits];
+    //    TMath::Sort(loc_nhits, loc_energy, id_sort);
+
+    //    // check if the two maxima are neighbours
+    //    if (!cl->GetCluster(loc_hits[id_sort[0]])->IsNeighbour(loc_hits[id_sort[1]]) &&
+    //        loc_energy[id_sort[1]] / loc_energy[id_sort[0]] > 0.5)
+    //    {
+    //        // unmark second maximum as added
+    //        hits[loc_orighit[id_sort[1]]] = loc_hits[id_sort[1]];
+    //        loc_hits[id_sort[1]] = ENullHit;
+    //        secMax = id_sort[1];
+    //    }
+    //}
+
+    // compose final cluster
+    fNhits = 0;
+    fEnergy = 0;
+    fSqrtEtot = 0.;
+    fRadius = 0.;
+    for (UInt_t i = 0; i < loc_nhits; i++)
+    {
+        // remove hits belonging to second cluster
+        if (secMax != -1)
+        {
+            Double_t dist_1 = (loc_pos[0] - loc_pos[i]).Mag();
+            Double_t dist_2 = (loc_pos[secMax] - loc_pos[i]).Mag();
+
+            // hit is nearer to second center
+            if (dist_2 < dist_1)
+            {
+                // unmark as added
+                hits[loc_orighit[i]] = loc_hits[i];
+                continue;
+            }
+        }
+
+        // skip removed hits
+        if (loc_hits[i] != ENullHit)
+        {
+            fHits[fNhits++] = loc_hits[i];
+            fEnergy += loc_energy[i];
+        }
+    }
+
+    fHits[fNhits] = EBufferEnd;                  // mark no more hits
+
+    // Calculate weights and mean position
+    w_tot = 0.;
+    fMeanPosition->SetXYZ(0., 0., 0.);
+    for (UInt_t i = 0; i < loc_nhits; i++)
+    {
+        // skip removed hits
+        if (loc_hits[i] != ENullHit)
+        {
+            // calculate log. weight
+            w = 5. + TMath::Log(loc_energy[i] / fEnergy);
+            if (w < 0)  w = 0.;
+            w_tot += w;
+
+            // update mean position
+            *fMeanPosition += (w * loc_pos[i]);
+        }
+    }
+
+    // Normalize mean position
+    *fMeanPosition *= 1. / w_tot;
+
+    // correct for the shower depth
+    Double_t sh_dep = 2.05 * (TMath::Log(fEnergy / 12.7) + 1.2);
+    if (sh_dep > 0)
+    {
+        Double_t sh_corr = fMeanPosition->Mag() / sh_dep + 1.;
+        fMeanPosition->SetX(fMeanPosition->X() - fMeanPosition->X() / sh_corr);
+        fMeanPosition->SetY(fMeanPosition->Y() - fMeanPosition->Y() / sh_corr);
+    }
+
+    // Calculate the rest of the cluster information
+    fCentralFrac = energy[fIndex] / fEnergy;
+    fTheta = TMath::RadToDeg() * fMeanPosition->Theta();
+    fPhi   = TMath::RadToDeg() * fMeanPosition->Phi();
 }
-
-//-----------------------------------------------------------------------------
 
