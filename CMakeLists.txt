@@ -65,6 +65,14 @@ else()
   add_subdirectory(CaLib)
 endif()
 
+# check for external OSCAR
+if(DEFINED ENV{OSCAR})
+  message("-- Found external OSCAR in " $ENV{OSCAR})
+  include_directories($ENV{OSCAR}/include)
+  link_directories($ENV{OSCAR}/lib)
+  set(ACQU_USER_LIBS ${ACQU_USER_LIBS} OSCAR)
+endif()
+
 # finally, the main user part
 add_subdirectory(acqu_user)
 

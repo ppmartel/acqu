@@ -9,12 +9,7 @@ endif()
 
 add_subdirectory(Worker)
 # check for external OSCAR
-if(DEFINED ENV{OSCAR})
-  message("-- Found external OSCAR in " $ENV{OSCAR})
-  include_directories($ENV{OSCAR}/include)
-  link_directories($ENV{OSCAR}/lib)
-  set(ACQU_USER_LIBS ${ACQU_USER_LIBS} OSCAR)
-else()
+if(NOT DEFINED ENV{OSCAR})
   add_subdirectory(OSCAR)
 endif()
 
