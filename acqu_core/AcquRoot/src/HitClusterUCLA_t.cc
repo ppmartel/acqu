@@ -20,7 +20,7 @@
 //---------------------------------------------------------------------------
 
 #include "HitClusterUCLA_t.h"
-#include "TA2CalArray.h"
+#include "TA2ClusterDetector.h"
 
 //---------------------------------------------------------------------------
 
@@ -83,7 +83,7 @@ HitClusterUCLA_t::~HitClusterUCLA_t()
 
 //---------------------------------------------------------------------------
 
-void HitClusterUCLA_t::ClusterDetermineUCLA(TA2CalArray* cldet)
+void HitClusterUCLA_t::ClusterDetermine(TA2ClusterDetector* cldet)
 {
   // Determine the boundary of the cluster the local total energy
   // and the sqrt(energy)-weighted centre-of-gravity vector
@@ -232,7 +232,7 @@ void HitClusterUCLA_t::ClusterDetermineUCLA(TA2CalArray* cldet)
 
 //---------------------------------------------------------------------------
 
-Bool_t HitClusterUCLA_t::ClusterDetermineUCLA2(TA2CalArray* cldet)
+Bool_t HitClusterUCLA_t::ClusterDetermine2(TA2ClusterDetector* cldet)
 {
   // Determine the boundary of the cluster the local total energy
   // and the sqrt(energy)-weighted centre-of-gravity vector
@@ -322,7 +322,7 @@ Bool_t HitClusterUCLA_t::ClusterDetermineUCLA2(TA2CalArray* cldet)
 
 //---------------------------------------------------------------------------
 
-Double_t HitClusterUCLA_t::ClusterRadiusUCLA(TA2CalArray* cldet)
+Double_t HitClusterUCLA_t::ClusterRadiusUCLA(TA2ClusterDetector* cldet)
 {
   // Determine the boundary of the cluster the local total energy
   // and the sqrt(energy)-weighted centre-of-gravity vector

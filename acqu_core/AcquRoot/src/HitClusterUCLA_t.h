@@ -28,7 +28,6 @@
 
 //---------------------------------------------------------------------------
 
-class TA2CalArray;
 class TA2ClusterDetector;
 
 class HitClusterUCLA_t : public HitCluster_t
@@ -43,9 +42,9 @@ public:
   HitClusterUCLA_t(char*, UInt_t, Int_t = 1);
   virtual ~HitClusterUCLA_t();
   virtual void     Cleanup();
-  virtual void     ClusterDetermineUCLA(TA2CalArray*);
-  virtual Bool_t   ClusterDetermineUCLA2(TA2CalArray*);
-  virtual Double_t ClusterRadiusUCLA(TA2CalArray*);
+  virtual void     ClusterDetermine(TA2ClusterDetector*);
+  virtual Bool_t   ClusterDetermine2(TA2ClusterDetector*);
+  virtual Double_t ClusterRadiusUCLA(TA2ClusterDetector*);
   TVector3* GetMeanPosUp(){ return fMeanPosUp; }
   TVector3* GetMeanPosDn(){ return fMeanPosDn; }
   Double_t  GetSqrtEtUp() { return fSqrtEtUp; }
