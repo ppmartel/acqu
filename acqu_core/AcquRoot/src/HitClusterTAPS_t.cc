@@ -18,7 +18,7 @@
 //---------------------------------------------------------------------------
 
 HitClusterTAPS_t::HitClusterTAPS_t( Char_t* line, UInt_t index )
-                 :HitCluster_t(line, index)
+                 :HitCluster_t(line, index, 146)
 {
 
 }
