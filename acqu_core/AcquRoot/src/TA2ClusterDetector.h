@@ -40,8 +40,17 @@ enum {
   EClustDetMaxCluster = 100, EClustDetNeighbour,  EClustDetAllNeighbour,
   EClustDetSplitOff, EClustDetIterate, EClustEnergyWeight,
   EClustDetEnergy, EClustDetTime, EClustDetCentFrac, EClustDetRadius,
-  EClustDetHits, EClustDetMulti,
+  EClustDetHits, EClustDetMulti, EClustAlgo,
 };
+
+// constants for cluster algorithms
+enum EClustAlgoType {
+  EClustAlgoEmpty = 0,
+  EClustAlgoTrad,
+  EClustAlgoTAPS,
+  EClustAlgoUCLA,
+};
+typedef EClustAlgoType ClustAlgoType_t;
 
 class TA2ClusterDetector : public TA2Detector {
  protected:
@@ -49,6 +58,8 @@ class TA2ClusterDetector : public TA2Detector {
   UInt_t* fClustHit;                    // Cluster indices
   Bool_t* fIsSplit;                     // Indices split-off clusters
   UInt_t* fTempHits;                    // Element-Hit store
+  UInt_t* fTempHits2;                   // Element-Hit store (UCLA)
+  UInt_t* fTryHits;                     // Element-Hit store (UCLA)
   UInt_t fNCluster;                     // # of clusters
   Int_t fClustSizeFactor;               // enlarge factor, hit cluster buffers
   UInt_t fNSplit;                       // # low energy clusters
@@ -74,6 +85,7 @@ class TA2ClusterDetector : public TA2Detector {
   Int_t* fIJSplit;                      // for sorting cluster opening angles
   Int_t fMaxSplitPerm;                  // for sorting cluster opening angles
   Bool_t fIsIterate;                    // cluster member find iteration ON/OFF
+  ClustAlgoType_t fClustAlgoType;       // type of cluster algorithm
 
   Bool_t fDispClusterEnable;
   TH2Crystals*  fDispClusterHitsAll;
@@ -90,6 +102,8 @@ class TA2ClusterDetector : public TA2Detector {
   virtual void PostInit( );            // initialise using setup info
   virtual void Decode( );              // hits -> energy procedure
   virtual void DecodeCluster( );       // determine clusters
+  virtual void DecodeClusterTrad( );   // determine clusters
+  virtual void DecodeClusterUCLA( );   // determine clusters
   virtual void DecodeSaved( );         // decode previously written data
   virtual void Cleanup( );             // end-of-event cleanup
   virtual void SaveDecoded( ) = 0;     // specialist
@@ -104,6 +118,7 @@ class TA2ClusterDetector : public TA2Detector {
   Bool_t* GetIsSplit(){ return fIsSplit; }
   Bool_t* GetIsSplit( UInt_t i ){ return fIsSplit + i; }
   UInt_t* GetTempHits(){ return fTempHits; }
+  UInt_t* GetTempHits2(){ return fTempHits2; }
   UInt_t GetNCluster(){ return fNCluster; }
   Int_t GetClustSizeFactor(){ return fClustSizeFactor; }
   UInt_t GetNSplit(){ return fNSplit; }
@@ -159,60 +174,6 @@ inline void TA2ClusterDetector::DecodeSaved( )
   ReadDecoded();
   DecodeCluster();
   DisplayClusters();
-}
-
-//---------------------------------------------------------------------------
-inline void TA2ClusterDetector::DecodeCluster( )
-{
-  // Determine clusters of hits
-  // Search around peak energies absorbed in individual crystals
-  // Make copy of hits array as the copy will be altered
-
-  memcpy( fTempHits, fHits, sizeof(UInt_t)*fNhits );  // temp copy
-  //  fNCluster = 0;
-  Double_t maxenergy;
-  UInt_t i,j,k,kmax,jmax;
-  // Find hit with maximum energy
-  for( i=0; i<fMaxCluster;  ){
-    maxenergy = 0;
-    for( j=0; j<fNhits; j++ ){
-      if( (k = fTempHits[j]) == ENullHit ) continue;
-      if( maxenergy < fEnergy[k] ){
-  maxenergy = fEnergy[k];
-  kmax = k;
-  jmax = j;
-      }
-    }
-    if( maxenergy == 0 ) break;              // no more isolated hits
-    if( kmax < fNelement ){
-      fCluster[kmax]->ClusterDetermine( this ); // determine the cluster
-      if( fCluster[kmax]->GetEnergy() >= fEthresh ){
-  fClustHit[i] = kmax;
-  fTheta[i] = fCluster[kmax]->GetTheta();
-  fPhi[i] = fCluster[kmax]->GetPhi();
-  fNClustHitOR[i] = fCluster[kmax]->GetNhits();
-  fClEnergyOR[i] = fCluster[kmax]->GetEnergy();
-  fClTimeOR[i] = fCluster[kmax]->GetTime();
-  fClCentFracOR[i] = fCluster[kmax]->GetCentralFrac();
-  fClRadiusOR[i] = fCluster[kmax]->GetRadius();
-  i++;
-      }
-    }
-    // If you reach here then there is an error in the decode
-    // possible bad detector ID
-    else fTempHits[jmax] = ENullHit;
-  }
-  fNCluster = i;                   // save # clusters
-  // Now search for possible split offs if this is enabled
-  if( fMaxSplitPerm ) SplitSearch();
-  fClustHit[fNCluster] = EBufferEnd;
-  fTheta[fNCluster] = EBufferEnd;
-  fPhi[fNCluster] = EBufferEnd;
-  fNClustHitOR[fNCluster] = EBufferEnd;
-  fClEnergyOR[fNCluster] = EBufferEnd;
-  fClTimeOR[fNCluster] = EBufferEnd;
-  fClCentFracOR[fNCluster] = EBufferEnd;
-  fClRadiusOR[fNCluster] = EBufferEnd;
 }
 
 //---------------------------------------------------------------------------

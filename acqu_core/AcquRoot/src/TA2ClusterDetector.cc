@@ -27,6 +27,9 @@
 #define NICE_EVENT 106
 
 #include "TA2ClusterDetector.h"
+#include "HitClusterTrad_t.h"
+#include "HitClusterTAPS_t.h"
+#include "HitClusterUCLA_t.h"
 #include "TMarker.h"
 
 // Command-line key words which determine what to read in
@@ -37,6 +40,7 @@ static const Map_t kClustDetKeys[] = {
   {"Split-Off:",            EClustDetSplitOff},
   {"Iterate-Neighbours:",   EClustDetIterate},
   {"Energy-Weight:",        EClustEnergyWeight},
+  {"Cluster-Algorithm:",    EClustAlgo},
   {NULL,          -1}
 };
 
@@ -56,6 +60,8 @@ TA2ClusterDetector::TA2ClusterDetector( const char* name,
   fClustHit = NULL;
   fIsSplit = NULL;
   fTempHits = NULL;
+  fTempHits2 = NULL;
+  fTryHits = NULL;
   fNCluster = fNSplit = fNSplitMerged = fMaxCluster = 0;
   fClustSizeFactor = 1;
   fNClustHitOR = NULL;
@@ -68,7 +74,7 @@ TA2ClusterDetector::TA2ClusterDetector( const char* name,
   fISplit = fIJSplit = NULL;
   fMaxSplitPerm = 0;
   fIsIterate = kFALSE;
-
+  fClustAlgoType = EClustAlgoEmpty;
 
   fDispClusterEnable = kFALSE; // config stuff missing...
   // will be set by child class
@@ -122,16 +128,18 @@ void TA2ClusterDetector::SetConfig( char* line, int key )
       break;
     }
     fEthresh = fClEthresh;
-    fCluster = new HitCluster_t*[fNelement];
-    fClustHit = new UInt_t[fMaxCluster];
-    fTempHits = new UInt_t[fNelement];
-    fNClustHitOR = new UInt_t[fNelement];
-    fTheta = new Double_t[fNelement];
-    fPhi      = new Double_t[fNelement];
-    fClEnergyOR  = new Double_t[fNelement];
-    fClTimeOR  = new Double_t[fNelement];
-    fClCentFracOR  = new Double_t[fNelement];
-    fClRadiusOR  = new Double_t[fNelement];
+    fCluster = new HitCluster_t*[fNelement+1];
+    fClustHit = new UInt_t[fMaxCluster+1];
+    fTempHits = new UInt_t[fNelement+1];
+    fTempHits2 = new UInt_t[fNelement+1];
+    fTryHits = new UInt_t[fNelement+1];
+    fNClustHitOR = new UInt_t[fNelement+1];
+    fTheta = new Double_t[fNelement+1];
+    fPhi      = new Double_t[fNelement+1];
+    fClEnergyOR  = new Double_t[fNelement+1];
+    fClTimeOR  = new Double_t[fNelement+1];
+    fClCentFracOR  = new Double_t[fNelement+1];
+    fClRadiusOR  = new Double_t[fNelement+1];
     fNCluster = 0;
     break;
   case EClustDetIterate:
@@ -152,14 +160,45 @@ void TA2ClusterDetector::SetConfig( char* line, int key )
   case EClustDetNeighbour:
     // Nearest neighbout input
     if( fNCluster < fNelement )
-      fCluster[fNCluster] =
-  new HitCluster_t(line,fNCluster,fClustSizeFactor,fEWgt,fLEWgt);
-    fNCluster++;
+    {
+      switch (fClustAlgoType)
+      {
+        case EClustAlgoTrad:
+          fCluster[fNCluster] = new HitClusterTrad_t(line,fNCluster,fClustSizeFactor,fEWgt,fLEWgt);
+          break;
+        case EClustAlgoTAPS:
+          fCluster[fNCluster] = new HitClusterTAPS_t(line,fNCluster);
+          break;
+        case EClustAlgoUCLA:
+          fCluster[fNCluster] = new HitClusterUCLA_t(line,fNCluster,fClustSizeFactor);
+          break;
+        default:
+          PrintError("Unknown or unconfigured cluster algorithm!");
+          break;
+      }
+      fNCluster++;
+    }
     break;
   case EClustDetAllNeighbour:
     // All nearest neighbours (for diagnostics only)
     for(fNCluster=0; fNCluster < fNelement; fNCluster++)
-      fCluster[fNCluster] = new HitCluster_t( line,fNCluster );
+    {
+      switch (fClustAlgoType)
+      {
+        case EClustAlgoTrad:
+          fCluster[fNCluster] = new HitClusterTrad_t(line,fNCluster,fClustSizeFactor,fEWgt,fLEWgt);
+          break;
+        case EClustAlgoTAPS:
+          fCluster[fNCluster] = new HitClusterTAPS_t(line,fNCluster);
+          break;
+        case EClustAlgoUCLA:
+          fCluster[fNCluster] = new HitClusterUCLA_t(line,fNCluster,fClustSizeFactor);
+          break;
+        default:
+          PrintError("Unknown or unconfigured cluster algorithm!");
+          break;
+      }
+    }
     break;
   case EClustDetSplitOff:
     // Enable split-off search
@@ -181,6 +220,16 @@ void TA2ClusterDetector::SetConfig( char* line, int key )
       PrintError(line,"<Parse energy weighting factor>");
     }
     break;
+  case EClustAlgo:
+  {
+    // select cluster algorithm
+    TString s(line);
+    s.ReplaceAll(" ", "");
+    if (s.EqualTo("Trad")) fClustAlgoType = EClustAlgoTrad;
+    else if (s.EqualTo("TAPS")) fClustAlgoType = EClustAlgoTAPS;
+    else if (s.EqualTo("UCLA")) fClustAlgoType = EClustAlgoUCLA;
+    break;
+  }
   default:
     // Command not found...try standard detector
     TA2Detector::SetConfig( line, key );
@@ -196,6 +245,23 @@ void TA2ClusterDetector::PostInit()
   // Start with alignment offsets
   // Create space for various output arrays
   TA2Detector::PostInit();
+
+  // log type of cluster algorithm
+  switch (fClustAlgoType)
+  {
+    case EClustAlgoTrad:
+      PrintMessage("Cluster algorithm: Traditional");
+      break;
+    case EClustAlgoTAPS:
+      PrintMessage("Cluster algorithm: TAPS");
+      break;
+    case EClustAlgoUCLA:
+      PrintMessage("Cluster algorithm: UCLA");
+      break;
+    default:
+      PrintError("Unknown or unconfigured cluster algorithm!");
+      break;
+  }
 }
 
 //-----------------------------------------------------------------------------
@@ -359,6 +425,319 @@ void TA2ClusterDetector::DisplayClusters() {
   ss << " Clusters=" << fNCluster;
   fDispClusterHitsAll->SetTitle(ss.str().c_str());
   //usleep(5e5);
+}
+
+//---------------------------------------------------------------------------
+void TA2ClusterDetector::DecodeCluster( )
+{
+  switch (fClustAlgoType)
+  {
+    case EClustAlgoTrad:
+      DecodeClusterTrad();
+      break;
+    case EClustAlgoTAPS:
+      DecodeClusterTrad();
+      break;
+    case EClustAlgoUCLA:
+      DecodeClusterUCLA();
+      break;
+    default:
+      PrintError("Unknown or unconfigured cluster algorithm!");
+      break;
+  }
+}
+
+//---------------------------------------------------------------------------
+void TA2ClusterDetector::DecodeClusterTrad( )
+{
+  // Determine clusters of hits
+  // Search around peak energies absorbed in individual crystals
+  // Make copy of hits array as the copy will be altered
+
+  memcpy( fTempHits, fHits, sizeof(UInt_t)*fNhits );  // temp copy
+  //  fNCluster = 0;
+  Double_t maxenergy;
+  UInt_t i,j,k,kmax,jmax;
+  // Find hit with maximum energy
+  for( i=0; i<fMaxCluster;  ){
+    maxenergy = 0;
+    for( j=0; j<fNhits; j++ ){
+      if( (k = fTempHits[j]) == ENullHit ) continue;
+      if( maxenergy < fEnergy[k] ){
+  maxenergy = fEnergy[k];
+  kmax = k;
+  jmax = j;
+      }
+    }
+    if( maxenergy == 0 ) break;              // no more isolated hits
+    if( kmax < fNelement ){
+      fCluster[kmax]->ClusterDetermine( this ); // determine the cluster
+      if( fCluster[kmax]->GetEnergy() >= fEthresh ){
+  fClustHit[i] = kmax;
+  fTheta[i] = fCluster[kmax]->GetTheta();
+  fPhi[i] = fCluster[kmax]->GetPhi();
+  fNClustHitOR[i] = fCluster[kmax]->GetNhits();
+  fClEnergyOR[i] = fCluster[kmax]->GetEnergy();
+  fClTimeOR[i] = fCluster[kmax]->GetTime();
+  fClCentFracOR[i] = fCluster[kmax]->GetCentralFrac();
+  fClRadiusOR[i] = fCluster[kmax]->GetRadius();
+  i++;
+      }
+    }
+    // If you reach here then there is an error in the decode
+    // possible bad detector ID
+    else fTempHits[jmax] = ENullHit;
+  }
+  fNCluster = i;                   // save # clusters
+  // Now search for possible split offs if this is enabled
+  if( fMaxSplitPerm ) SplitSearch();
+  fClustHit[fNCluster] = EBufferEnd;
+  fTheta[fNCluster] = EBufferEnd;
+  fPhi[fNCluster] = EBufferEnd;
+  fNClustHitOR[fNCluster] = EBufferEnd;
+  fClEnergyOR[fNCluster] = EBufferEnd;
+  fClTimeOR[fNCluster] = EBufferEnd;
+  fClCentFracOR[fNCluster] = EBufferEnd;
+  fClRadiusOR[fNCluster] = EBufferEnd;
+}
+
+//---------------------------------------------------------------------------
+void TA2ClusterDetector::DecodeClusterUCLA()
+{
+  // Determine clusters of hits
+  // Search around peak energies absorbed in individual crystals
+  // Make copy of hits array as the copy will be altered
+
+/*   std::cout<<"Beginning DecodeClusterUCLA"<<std::endl; */
+  memcpy( fTempHits, fHits, sizeof(UInt_t)*fNhits );  // temp copy
+
+  const Double_t fEthcrs_CB = 4., fEthcls_CB = 12.;
+  const Double_t fEthcrs_TAPS = 4., fEthcls_TAPS = 12.;
+  const Double_t fEthcls2_CB = 50., fEthcls2_TAPS = 50.;
+  const Double_t opangl = 32., difmax = 24.;
+  Double_t fEthcrs, fEthclsi, fEthcls, fEthcls2, thet, phi, Ecl, Ecli, oang;
+
+  Double_t maxenergy;
+  UInt_t i, j, k, m, ntaken, nc;
+  UInt_t kmax = 0;
+  UInt_t jmax = 0;
+  //UInt_t nwid=0,
+  //UInt_t indwid[15]={15*0},
+  UInt_t nomit=0;
+  TVector3 vcl, vcln, vdif;
+
+  /*static Int_t ifirst = 0;
+  char hiname[100];
+
+  if(ifirst==0)
+  {
+    ifirst = 1;
+    for(i=0; i<720; i++)
+    {
+      sprintf(hiname,"h_energyor_timeor_%d",i);
+      htmp[i] = new TH2F(hiname,hiname,200,-50.,150.,500,0.,500.);
+    }
+  }
+  */
+  fNCluster = 0;
+  if(fNhits>250 || fNhits<1) goto OUT;
+/*   std::cout<<"here in DecodeClusterUCLA"<<std::endl; */
+  if(fNelement == 720)
+  {
+    fEthcrs=fEthcrs_CB; fEthcls=fEthcls_CB; fEthcls2=fEthcls2_CB;
+    /*
+    for(j=0; j<fNhits; j++)
+    {
+      k = fTempHits[j];
+      if(k>=0 && k < 720) htmp[k]->Fill(fTime[k], fEnergy[k]);
+    }
+    */
+  }
+  else
+  {
+    fEthcrs=fEthcrs_TAPS; fEthcls=fEthcls_TAPS; fEthcls2=fEthcls2_TAPS;
+  }
+  // Find hit with maximum energy
+
+  for(m=0; m<fNhits; m++) fTryHits[m] = fTempHits[m];
+
+  for(i=0; i<fMaxCluster; )
+  {
+    maxenergy = 0;
+    for(j=0; j<fNhits; j++)
+    {
+      if((k = fTryHits[j])  == ENullHit) continue;
+      if((k = fTempHits[j]) == ENullHit) continue;
+      if((maxenergy < fEnergy[k]) && (fEnergy[k] > fEthcrs))
+      {
+	maxenergy = fEnergy[k];
+	kmax = k;
+	jmax = j;
+      }
+    }
+    if(maxenergy==0) break;              // no more isolated hits
+    if(kmax < fNelement)
+    {
+      for(m=0; m<fNhits; m++) fTempHits2[m] = fTempHits[m];
+      //std::cout<<"here2 in DecodeClusterUCLA"<<std::endl;
+      fCluster[kmax]->ClusterDetermine(this); // determine the cluster
+      Ecl = fCluster[kmax]->GetEnergy();
+      if(Ecl>=fEthcls)
+      {
+        if ( Ecl < fEthcls2 && fNCluster>0 )
+        {
+          for (j=0; j<fNCluster; j++)
+          {
+	    Ecli = fClEnergyOR[j];
+	    fEthclsi = 25.+ 25. * Ecli / 1000.;
+            thet = fTheta[j] * TMath::DegToRad();
+            phi  = fPhi[j] * TMath::DegToRad();
+	    vcl.SetMagThetaPhi ( 146., thet, phi );
+            thet = fCluster[kmax]->GetTheta() * TMath::DegToRad();
+            phi  = fCluster[kmax]->GetPhi() * TMath::DegToRad();
+	    vcln.SetMagThetaPhi( 146., thet, phi );
+	    if ( fNelement==720 )
+            {
+	      oang = vcl.Angle(vcln)*TMath::RadToDeg();
+	      if ( oang < opangl && Ecl < fEthclsi )
+              {
+		nomit++;
+		fTryHits[jmax] = ENullHit;
+		goto NEXTCR;
+	      }
+	    }
+	    else
+            {
+	      vdif = vcl - vcln;
+	      if((vdif.Mag() < difmax)  && (Ecl < fEthclsi))
+              {
+		nomit++;
+		fTryHits[jmax] = ENullHit;
+		goto NEXTCR;
+	      }
+	    }
+	  }
+	}
+        for(m=0; m<fNhits; m++) fTempHits[m] = fTempHits2[m];
+	fClustHit[i] = kmax;
+	fTheta[i] = fCluster[kmax]->GetTheta();
+	fPhi[i] = fCluster[kmax]->GetPhi();
+	fNClustHitOR[i] = fCluster[kmax]->GetNhits();
+	fClEnergyOR[i] = Ecl;
+	fClRadiusOR[i] = ((HitClusterUCLA_t*)fCluster[kmax])->ClusterRadiusUCLA(this);
+	i++;
+	fNCluster = i;
+      }
+      else fTryHits[jmax] = ENullHit;
+    }
+    // If you reach here then there is an error in the decode
+    // possible bad detector ID
+    else fTryHits[jmax] = ENullHit;
+  NEXTCR: continue;
+  }
+ OUT:
+  fClustHit[fNCluster] = EBufferEnd;
+  fTheta[fNCluster] = EBufferEnd;
+  fPhi[fNCluster] = EBufferEnd;
+  fNClustHitOR[fNCluster] = EBufferEnd;
+  fClEnergyOR[fNCluster] = EBufferEnd;
+  fClRadiusOR[fNCluster] = EBufferEnd;
+
+  if(fNCluster==0) return;
+
+  ntaken=0;
+  for(m=0; m<fNhits; m++)
+  {
+    fTempHits2[m] = fTempHits[m];
+    if(fTempHits2[m]==ENullHit) ntaken++;
+  }
+  if(ntaken==fNhits) return;
+
+  for(j=0; j<fNCluster; j++)
+  {
+    kmax = fClustHit[j];
+    if(((HitClusterUCLA_t*)fCluster[kmax])->ClusterDetermine2(this)) // the wider cluster
+    {
+      fTheta[j] = fCluster[kmax]->GetTheta();
+      fPhi[j] = fCluster[kmax]->GetPhi();
+      fNClustHitOR[j] = fCluster[kmax]->GetNhits();
+      fClEnergyOR[j] = fCluster[kmax]->GetEnergy();
+      fClRadiusOR[j] = ((HitClusterUCLA_t*)fCluster[kmax])->ClusterRadiusUCLA(this);
+    }
+  }
+
+  if(nomit==0) return;
+  ntaken = 0;
+  for(m=0; m<fNhits; m++)
+  {
+    if(fTempHits2[m]==ENullHit) ntaken++;
+    fTryHits[m] = fTempHits[m] = fTempHits2[m];
+  }
+  if(ntaken==fNhits) return;
+
+  nc = fNCluster;
+  for( i=nc; i<fMaxCluster; )
+  {
+    maxenergy = 0;
+    for( j=0; j<fNhits; j++ )
+     {
+      if((k = fTryHits[j])==ENullHit) continue;
+      if((k = fTempHits[j])==ENullHit) continue;
+      if((maxenergy < fEnergy[k]) && (fEnergy[k] > fEthcrs))
+      {
+	maxenergy = fEnergy[k];
+	kmax = k;
+	jmax = j;
+      }
+    }
+    if(maxenergy==0) break;              // no more isolated hits
+    if(kmax < fNelement)
+    {
+      for(m=0;m<fNhits;m++) fTempHits2[m] = fTempHits[m];
+      fCluster[kmax]->ClusterDetermine(this); // determine the cluster
+      Ecl = fCluster[kmax]->GetEnergy();
+      if(Ecl>=fEthcls)
+      {
+        for(m=0;m<fNhits;m++) fTempHits[m] = fTempHits2[m];
+	fClustHit[i] = kmax;
+	fTheta[i] = fCluster[kmax]->GetTheta();
+	fPhi[i] = fCluster[kmax]->GetPhi();
+	fNClustHitOR[i] = fCluster[kmax]->GetNhits();
+	fClEnergyOR[i] = Ecl;
+	fClRadiusOR[i] = ((HitClusterUCLA_t*)fCluster[kmax])->ClusterRadiusUCLA(this);
+	i++;
+	fNCluster = i;
+      }
+      else fTryHits[jmax] = ENullHit;
+    }
+    // If you reach here then there is an error in the decode
+    // possible bad detector ID
+    else fTryHits[jmax] = ENullHit;
+  }
+  fClustHit[fNCluster] = EBufferEnd;
+  fTheta[fNCluster] = EBufferEnd;
+  fPhi[fNCluster] = EBufferEnd;
+  fNClustHitOR[fNCluster] = EBufferEnd;
+  fClEnergyOR[fNCluster] = EBufferEnd;
+  fClRadiusOR[fNCluster] = EBufferEnd;
+
+  if(nc==fNCluster) return;
+  ntaken = 0;
+  for(m=0; m<fNhits; m++) if(fTempHits2[m]==ENullHit) ntaken++;
+  if(ntaken==fNhits) return;
+
+  for (j=nc; j<fNCluster; j++ )
+  {
+    kmax = fClustHit[j];
+    if(((HitClusterUCLA_t*)fCluster[kmax])->ClusterDetermine2(this))  // the wider cluster
+    {
+      fTheta[j] = fCluster[kmax]->GetTheta();
+      fPhi[j] = fCluster[kmax]->GetPhi();
+      fNClustHitOR[j] = fCluster[kmax]->GetNhits();
+      fClEnergyOR[j] = fCluster[kmax]->GetEnergy();
+      fClRadiusOR[j] = ((HitClusterUCLA_t*)fCluster[kmax])->ClusterRadiusUCLA(this);
+    }
+  }
 }
 
 
