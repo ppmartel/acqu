@@ -41,25 +41,22 @@ protected:
   Double_t fTheta;                     // Cluster's theta
   Double_t fPhi;                       // Cluster's phi
   Double_t fRadius;                    // energy-weighted "radius" of cluster
-  Double_t fEWgt;                      // energy weighting factor
-  Int_t fLEWgt;                       // energy weighting factor switch
   UInt_t fNNeighbour;                  // # neighbour elements in array
   Int_t fMaxHits;                      // size of hits array
   UInt_t fNNearNeighbour;              // # nearest neighbours
   UInt_t* fHits;                       // indices of hit elements
-  Double_t* fEnergies;                   // energies of hit elements  
-  Double_t* fTimes;                   // times of hit elements  
+  Double_t* fEnergies;                 // energies of hit elements  
+  Double_t* fTimes;                    // times of hit elements  
   UInt_t fNhits;                       // # of hits in cluster
 public:
-  HitCluster_t( char*, UInt_t, Int_t = 1, Double_t = 0.0, Int_t = 0.0 );
+  HitCluster_t(char* line, UInt_t index, Int_t sizefactor = 1);
   virtual ~HitCluster_t();
-  virtual void ClusterDetermine( TA2ClusterDetector* );
+  virtual void ClusterDetermine( TA2ClusterDetector* ) = 0;
   virtual void Cleanup();
   virtual Bool_t IsNeighbour( UInt_t );
-  virtual void MoreNeighbours( TA2ClusterDetector* );
   virtual void Merge( HitCluster_t* );
   virtual Double_t OpeningAngle( HitCluster_t* );
-  //
+
   TVector3* GetMeanPosition(){ return fMeanPosition; }
   UInt_t* GetNeighbour(){ return fNeighbour; }
   UInt_t GetIndex(){ return fIndex; }
@@ -91,7 +88,7 @@ inline void HitCluster_t::Cleanup()
   *fHits = ENullHit;
   fEnergy = (Double_t)ENullHit;
   fTime = (Double_t)ENullHit;
-} 
+}
 
 //---------------------------------------------------------------------------
 inline Bool_t HitCluster_t::IsNeighbour( UInt_t i )
@@ -112,22 +109,7 @@ inline void HitCluster_t::Merge( HitCluster_t* cl )
   // merged-cluster position sqrt(Energy)-weighted sum of positions
   // merged-cluster Energy = sum of two energies
 
-  Double_t sqE1,sqE2;
-  if( !fEWgt ){
-    sqE1 = TMath::Sqrt( fEnergy );
-    sqE2 = TMath::Sqrt( cl->GetEnergy() );
-  }
-  else{
-    sqE1 = TMath::Power( fEnergy, fEWgt );
-    sqE2 = TMath::Power( cl->GetEnergy(), fEWgt );
-  }
-  TVector3 pos = (*fMeanPosition * sqE1) + (*(cl->GetMeanPosition()) * sqE2);
-  *fMeanPosition = pos * (1./( sqE1 + sqE2 ));
-  fTheta = TMath::RadToDeg() * fMeanPosition->Theta();
-  fPhi   = TMath::RadToDeg() * fMeanPosition->Phi();
-  Double_t totEnergy = fEnergy + cl->GetEnergy();
-  fCentralFrac *= fEnergy/totEnergy;
-  fEnergy = totEnergy;
+  Error("Merge", "Not implemented in base class!");
 }
 
 //---------------------------------------------------------------------------
@@ -137,4 +119,5 @@ inline Double_t HitCluster_t::OpeningAngle( HitCluster_t* cl )
   // the present cluster
   return fMeanPosition->Angle( *(cl->GetMeanPosition()) ) * TMath::RadToDeg();
 }
+
 #endif
