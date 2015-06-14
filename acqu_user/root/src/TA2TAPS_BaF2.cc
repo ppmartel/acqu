@@ -50,6 +50,7 @@ static const Map_t kTAPSClustDetKeys[] = {
 TA2TAPS_BaF2::TA2TAPS_BaF2(const char* name, TA2System* apparatus)
              :TA2ClusterDetector(name, apparatus)
 {
+  fClustAlgoType = EClustAlgoTAPS;
   fType = ENoType;
 
   fUseEnergyResolution    = 0;
@@ -179,26 +180,10 @@ void TA2TAPS_BaF2::SetConfig(Char_t* line, Int_t key)
     fNSG++;
     break;
    case EClustDetMaxTAPSCluster:
-    // Max number of clusters
-    if(sscanf(line, "%d%lf", &fMaxCluster, &fClEthresh) < 1) goto error;
-    fEthresh = fClEthresh;
-    fCluster = new HitCluster_t*[fNelement+1];
-    fprintf(fLogStream, " HitClusterTAPS_t class used for shower reconstruction\n");
-    fClustHit = new UInt_t[fMaxCluster+1];
-    fTempHits = new UInt_t[fNelement+1];
-    fNClustHitOR = new UInt_t[fNelement+1];
-    fTheta = new Double_t[fNelement+1];
-    fPhi      = new Double_t[fNelement+1];
-    fClEnergyOR  = new Double_t[fNelement+1];
-    fClTimeOR  = new Double_t[fNelement+1];
-    fClCentFracOR  = new Double_t[fNelement+1];
-    fClRadiusOR  = new Double_t[fNelement+1];
-    fNCluster = 0;
+    TA2ClusterDetector::SetConfig(line, key);
     break;
  case EClustDetTAPSNeighbour:
-    // Nearest neighbout input
-    if(fNCluster < fNelement) fCluster[fNCluster] = new HitClusterTAPS_t(line, fNCluster);
-    fNCluster++;
+    TA2ClusterDetector::SetConfig(line, key);
     break;
    default:
     // Command not found...possible pass to next config
