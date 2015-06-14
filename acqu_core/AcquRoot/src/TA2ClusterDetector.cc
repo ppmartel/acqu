@@ -250,13 +250,13 @@ void TA2ClusterDetector::PostInit()
   switch (fClustAlgoType)
   {
     case EClustAlgoTrad:
-      PrintMessage("Cluster algorithm: Traditional");
+      PrintMessage("Cluster algorithm: Traditional\n");
       break;
     case EClustAlgoTAPS:
-      PrintMessage("Cluster algorithm: TAPS");
+      PrintMessage("Cluster algorithm: TAPS\n");
       break;
     case EClustAlgoUCLA:
-      PrintMessage("Cluster algorithm: UCLA");
+      PrintMessage("Cluster algorithm: UCLA\n");
       break;
     default:
       PrintError("Unknown or unconfigured cluster algorithm!");
