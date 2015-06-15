@@ -225,9 +225,12 @@ void TA2ClusterDetector::SetConfig( char* line, int key )
     // select cluster algorithm
     TString s(line);
     s.ReplaceAll(" ", "");
-    if (s.EqualTo("Trad")) fClustAlgoType = EClustAlgoTrad;
-    else if (s.EqualTo("TAPS")) fClustAlgoType = EClustAlgoTAPS;
-    else if (s.EqualTo("UCLA")) fClustAlgoType = EClustAlgoUCLA;
+    s.ReplaceAll("\n", "");
+    s.ToLower();
+    if (s.EqualTo("trad")) fClustAlgoType = EClustAlgoTrad;
+    else if (s.EqualTo("taps")) fClustAlgoType = EClustAlgoTAPS;
+    else if (s.EqualTo("ucla")) fClustAlgoType = EClustAlgoUCLA;
+    else PrintError(line,"<Unknown cluster algorithm specifier>");
     break;
   }
   default:
