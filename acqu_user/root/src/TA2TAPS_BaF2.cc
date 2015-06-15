@@ -179,11 +179,11 @@ void TA2TAPS_BaF2::SetConfig(Char_t* line, Int_t key)
     fSGEnergy[fNSG] = new HitD2A_t( line, fNSG, this, kTRUE );
     fNSG++;
     break;
-   case EClustDetMaxTAPSCluster:
-    TA2ClusterDetector::SetConfig(line, key);
+   case EClustDetMaxTAPSCluster:    // legacy support for old TAPS config key
+    TA2ClusterDetector::SetConfig(line, EClustDetMaxCluster);
     break;
- case EClustDetTAPSNeighbour:
-    TA2ClusterDetector::SetConfig(line, key);
+   case EClustDetTAPSNeighbour:     // legacy support for old TAPS config key
+    TA2ClusterDetector::SetConfig(line, EClustDetNeighbour);
     break;
    default:
     // Command not found...possible pass to next config
