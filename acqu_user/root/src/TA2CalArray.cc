@@ -35,8 +35,6 @@ static const Map_t kCalArrayKeys[] =
   {"Time-Resolution:",     ECATimeResolution},
   {"Theta-Resolution:",    ECAThetaResolution},
   {"Phi-Resolution:",      ECAPhiResolution},
-  {"Max-Cluster:",         EClustDetMaxCluster},
-  {"Next-Neighbour:",      EClustDetNeighbour},
   {"Scale-File:",          ECAScaleFile},
   {NULL,            -1}
 };
