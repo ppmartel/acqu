@@ -36,7 +36,6 @@
 static const Map_t kClustDetKeys[] = {
   {"Max-Cluster:",          EClustDetMaxCluster},
   {"Next-Neighbour:",       EClustDetNeighbour},
-  {"All-Neighbour:",        EClustDetAllNeighbour},
   {"Split-Off:",            EClustDetSplitOff},
   {"Iterate-Neighbours:",   EClustDetIterate},
   {"Energy-Weight:",        EClustEnergyWeight},
@@ -177,27 +176,6 @@ void TA2ClusterDetector::SetConfig( char* line, int key )
           break;
       }
       fNCluster++;
-    }
-    break;
-  case EClustDetAllNeighbour:
-    // All nearest neighbours (for diagnostics only)
-    for(fNCluster=0; fNCluster < fNelement; fNCluster++)
-    {
-      switch (fClustAlgoType)
-      {
-        case EClustAlgoTrad:
-          fCluster[fNCluster] = new HitClusterTrad_t(line,fNCluster,fClustSizeFactor,fEWgt,fLEWgt);
-          break;
-        case EClustAlgoTAPS:
-          fCluster[fNCluster] = new HitClusterTAPS_t(line,fNCluster);
-          break;
-        case EClustAlgoUCLA:
-          fCluster[fNCluster] = new HitClusterUCLA_t(line,fNCluster,fClustSizeFactor);
-          break;
-        default:
-          PrintError("Unknown or unconfigured cluster algorithm!");
-          break;
-      }
     }
     break;
   case EClustDetSplitOff:

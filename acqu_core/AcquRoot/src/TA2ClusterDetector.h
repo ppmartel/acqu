@@ -37,7 +37,7 @@
 
 // constants for command-line maps
 enum {
-  EClustDetMaxCluster = 100, EClustDetNeighbour,  EClustDetAllNeighbour,
+  EClustDetMaxCluster = 100, EClustDetNeighbour,
   EClustDetSplitOff, EClustDetIterate, EClustEnergyWeight,
   EClustDetEnergy, EClustDetTime, EClustDetCentFrac, EClustDetRadius,
   EClustDetHits, EClustDetMulti, EClustAlgo,
