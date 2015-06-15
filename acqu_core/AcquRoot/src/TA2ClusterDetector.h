@@ -39,6 +39,7 @@
 enum {
   EClustDetMaxCluster = 100, EClustDetNeighbour,
   EClustDetSplitOff, EClustDetIterate, EClustEnergyWeight,
+  EClustDetMoliereRadius, EClustDetWeighting, EClustDetShowerDepthCorr,
   EClustDetEnergy, EClustDetTime, EClustDetCentFrac, EClustDetRadius,
   EClustDetHits, EClustDetMulti, EClustAlgo,
 };
@@ -49,6 +50,7 @@ enum EClustAlgoType {
   EClustAlgoTrad,
   EClustAlgoTAPS,
   EClustAlgoUCLA,
+  EClustAlgoNextGen,
 };
 typedef EClustAlgoType ClustAlgoType_t;
 
@@ -85,6 +87,10 @@ class TA2ClusterDetector : public TA2Detector {
   Int_t* fIJSplit;                      // for sorting cluster opening angles
   Int_t fMaxSplitPerm;                  // for sorting cluster opening angles
   Bool_t fIsIterate;                    // cluster member find iteration ON/OFF
+  UInt_t   fClusterWeightingType;       // type of weighting (NextGen)
+  Double_t fClusterWeightingPar1;       // weighting parameter 1 (NextGen)
+  Double_t fClusterWeightingPar2;       // weighting parameter 2 (NextGen)
+  Double_t fShowerDepthCorrection;      // if non-nan, shower depth correction is applied
   ClustAlgoType_t fClustAlgoType;       // type of cluster algorithm
 
   Bool_t fDispClusterEnable;
@@ -104,6 +110,7 @@ class TA2ClusterDetector : public TA2Detector {
   virtual void DecodeCluster( );       // determine clusters
   virtual void DecodeClusterTrad( );   // determine clusters
   virtual void DecodeClusterUCLA( );   // determine clusters
+  virtual void DecodeClusterNextGen( );// determine clusters
   virtual void DecodeSaved( );         // decode previously written data
   virtual void Cleanup( );             // end-of-event cleanup
   virtual void SaveDecoded( ) = 0;     // specialist

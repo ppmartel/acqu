@@ -30,6 +30,7 @@
 #include "HitClusterTrad_t.h"
 #include "HitClusterTAPS_t.h"
 #include "HitClusterUCLA_t.h"
+#include "HitClusterNextGen_t.h"
 #include "TMarker.h"
 
 // Command-line key words which determine what to read in
@@ -39,6 +40,9 @@ static const Map_t kClustDetKeys[] = {
   {"Split-Off:",            EClustDetSplitOff},
   {"Iterate-Neighbours:",   EClustDetIterate},
   {"Energy-Weight:",        EClustEnergyWeight},
+  {"Moliere-Radius:",        EClustDetMoliereRadius},
+  {"Cluster-Weighting:",     EClustDetWeighting},
+  {"ShowerDepthCorrection:", EClustDetShowerDepthCorr},
   {"Cluster-Algorithm:",    EClustAlgo},
   {NULL,          -1}
 };
@@ -73,12 +77,18 @@ TA2ClusterDetector::TA2ClusterDetector( const char* name,
   fISplit = fIJSplit = NULL;
   fMaxSplitPerm = 0;
   fIsIterate = kFALSE;
+  fClusterWeightingType = EClustDetWeightingTypeLog;
+  // see calc_energy_weight for meaning of Par1/Par2
+  // depends on type
+  fClusterWeightingPar1 = 4.0;
+  fClusterWeightingPar2 = 100;
+  fShowerDepthCorrection = numeric_limits<double>::quiet_NaN();
   fClustAlgoType = EClustAlgoEmpty;
 
   fDispClusterEnable = kFALSE; // config stuff missing...
   // will be set by child class
   fDispClusterHitsAll    = NULL;
-  fDispClusterHitsSingle = NULL;  
+  fDispClusterHitsSingle = NULL;
   fDispClusterHitsEnergy = NULL;
 
   fIsPos = ETrue;          // override standard detector, must have position
@@ -171,6 +181,9 @@ void TA2ClusterDetector::SetConfig( char* line, int key )
         case EClustAlgoUCLA:
           fCluster[fNCluster] = new HitClusterUCLA_t(line,fNCluster,fClustSizeFactor);
           break;
+        case EClustAlgoNextGen:
+          fCluster[fNCluster] = new HitClusterNextGen_t(line,fNCluster);
+          break;
         default:
           PrintError("Unknown or unconfigured cluster algorithm!");
           break;
@@ -198,6 +211,72 @@ void TA2ClusterDetector::SetConfig( char* line, int key )
       PrintError(line,"<Parse energy weighting factor>");
     }
     break;
+  case EClustDetMoliereRadius:
+    UInt_t i1, i2;
+    Double_t moliere;
+    int n;
+    n = sscanf(line, "%lf%d%d", &moliere,&i1,&i2);
+    if(n==1) {
+      // indices not provided, assume global value
+      i1 = 0;
+      i2 = fNelement-1;
+    }
+    else if(n != 3) {
+      PrintError(line,"<Moliere Radius format wrong>");
+      break;
+    }
+    for(UInt_t i=i1;i<=i2;i++) {
+      ((HitClusterNextGen_t*)fCluster[i])->SetMoliereRadius(moliere);
+    }
+    break;
+  case EClustDetWeighting: {
+    stringstream s_line(line);
+    string type;
+    if(!(s_line >> type)) {
+      PrintError(line,"<Cluster Weighting no type given>");
+      break;
+    }
+    // all weighting types need at least one parameter
+    if(!(s_line >> fClusterWeightingPar1)) {
+      PrintError(line,"<Cluster Weighting first parameter not given/not parsable>");
+      break;
+    }
+    if(type == "Log") {
+      fClusterWeightingType = EClustDetWeightingTypeLog;
+    }
+    else if(type == "ScaledLog") {
+      fClusterWeightingType = EClustDetWeightingTypeScaledLog;
+      // scaled log needs energy scale
+      if(!(s_line >> fClusterWeightingPar2)) {
+        PrintError(line,"<Cluster Weighting second parameter not given/not parsable>");
+        break;
+      }
+    }
+    else if(type == "Power" ) {
+      fClusterWeightingType = EClustDetWeightingTypePower;
+      // power needs energy scale
+      if(!(s_line >> fClusterWeightingPar2)) {
+        PrintError(line,"<Cluster Weighting second parameter not given/not parsable>");
+        break;
+      }
+    }
+    else if(type == "RelPower" ) {
+      fClusterWeightingType = EClustDetWeightingTypeRelPower;
+    }
+    else {
+      PrintError(line,"<Cluster Weighting type not Log/Power/RelPower>");
+      break;
+    }
+  }
+  break;
+  case EClustDetShowerDepthCorr: {
+    stringstream s_line(line);
+    if(!(s_line >> fShowerDepthCorrection)) {
+      PrintError(line,"<Shower Depth Correction parameter non-parsable>");
+      break;
+    }
+  }
+  break;
   case EClustAlgo:
   {
     // select cluster algorithm
@@ -208,6 +287,7 @@ void TA2ClusterDetector::SetConfig( char* line, int key )
     if (s.EqualTo("trad")) fClustAlgoType = EClustAlgoTrad;
     else if (s.EqualTo("taps")) fClustAlgoType = EClustAlgoTAPS;
     else if (s.EqualTo("ucla")) fClustAlgoType = EClustAlgoUCLA;
+    else if (s.EqualTo("nextgen")) fClustAlgoType = EClustAlgoNextGen;
     else PrintError(line,"<Unknown cluster algorithm specifier>");
     break;
   }
@@ -238,6 +318,9 @@ void TA2ClusterDetector::PostInit()
       break;
     case EClustAlgoUCLA:
       PrintMessage("Cluster algorithm: UCLA\n");
+      break;
+    case EClustAlgoNextGen:
+      PrintMessage("Cluster algorithm: NextGen\n");
       break;
     default:
       PrintError("Unknown or unconfigured cluster algorithm!");
@@ -367,17 +450,17 @@ void TA2ClusterDetector::DisplayClusters() {
   // clear histograms
   fDispClusterHitsEnergy->GetListOfFunctions()->Clear();
   for(UInt_t i=0;i<fNelement;i++) {
-    fDispClusterHitsAll->SetElement(i,0);    
-    fDispClusterHitsEnergy->SetElement(i,0);     
+    fDispClusterHitsAll->SetElement(i,0);
+    fDispClusterHitsEnergy->SetElement(i,0);
     for(int i=0;i<MAX_DISP_CLUSTERS;i++) {
-      fDispClusterHitsSingle[i]->SetElement(i,0);           
+      fDispClusterHitsSingle[i]->SetElement(i,0);
     }
   }
-  
+
   for(UInt_t i=0;i<fNhits;i++) {
     fDispClusterHitsEnergy->SetElement(fHits[i],fEnergy[fHits[i]]);
   }
-  
+
   for(UInt_t i=0;i<fNCluster;i++) {
     HitCluster_t* cl = fCluster[fClustHit[i]];
     UInt_t* hits = cl->GetHits();
@@ -394,7 +477,7 @@ void TA2ClusterDetector::DisplayClusters() {
       if(i>=MAX_DISP_CLUSTERS)
         continue;
       //Double_t energy = energies[j]<0.1 ? 0 : energies[j];
-      fDispClusterHitsSingle[i]->SetElement(hits[j],energies[j]);      
+      fDispClusterHitsSingle[i]->SetElement(hits[j],energies[j]);
       /*cout << "i="<<i<<" j="<<j<<" energy="<<energies[j]
               <<" hit=" << hits[j]
               <<endl;*/
@@ -421,6 +504,9 @@ void TA2ClusterDetector::DecodeCluster( )
       break;
     case EClustAlgoUCLA:
       DecodeClusterUCLA();
+      break;
+    case EClustAlgoNextGen:
+      DecodeClusterNextGen();
       break;
     default:
       PrintError("Unknown or unconfigured cluster algorithm!");
@@ -721,5 +807,135 @@ void TA2ClusterDetector::DecodeClusterUCLA()
   }
 }
 
+//---------------------------------------------------------------------------
+void TA2ClusterDetector::DecodeClusterNextGen( )
+{
+
+  // build the hit crystals from the available hits
+  // including the neighbour information...
+
+  HitClusterNextGen_t** cst_fCluster = (HitClusterNextGen_t**) fCluster;
+
+  list<crystal_t> crystals;
+  for(UInt_t i=0;i<fNhits;i++) {
+    UInt_t idx = fHits[i];
+    crystals.push_back(
+          crystal_t(idx,
+                    fEnergy[idx],
+                    fTime[idx],
+                    fElement[idx]->GetNhit(),
+                    *(fPosition[idx]),
+                    cst_fCluster[idx]->GetNNeighbour(),
+                    cst_fCluster[idx]->GetNeighbour(),
+                    cst_fCluster[idx]->GetMoliereRadius()
+                    )
+          );
+  }
+  // build the config
+  const cluster_config_t cfg(fClusterWeightingType, fClusterWeightingPar1, fClusterWeightingPar2);
+
+  // sort hits with highest energy first
+  // makes the cluster building faster hopefully
+  crystals.sort();
+
+  vector< vector<crystal_t> > clusters; // contains the final truly split clusters
+  while(crystals.size()>0) {
+    vector<crystal_t> cluster;
+    HitClusterNextGen_t::build_cluster(crystals, cluster); // already sorts it by energy
+
+    // check if cluster contains bumps
+    // if not, cluster is simply added to clusters
+    HitClusterNextGen_t::split_cluster(cluster, clusters, cfg);
+  }
+
+
+  // calculate cluster properties and fill the many arrays of this detector...
+  // assume that each cluster is sorted by fEnergy
+  fNCluster = 0;
+  for(size_t i=0 ; i < clusters.size() ; i++) {
+    vector<crystal_t> cluster = clusters[i];
+
+    // kick out really large clusters already here...
+    if(cluster.size()>(UInt_t)fCluster[0]->GetMaxHits())
+      continue;
+
+    fClEnergyOR[fNCluster] = HitClusterNextGen_t::calc_total_energy(cluster);
+    // kick out low energetic clusters...
+    if(fClEnergyOR[fNCluster]<fEthresh)
+      continue;
+
+    // kmax is crystal index with highest energy in cluster
+    // cluster is sorted, so it's the first crystal
+    UInt_t kmax = cluster[0].Index;
+    fClustHit[fNCluster] = kmax;
+    fClTimeOR[fNCluster] = fIsTime ? fTime[kmax] : 0;
+    fNClustHitOR[fNCluster] = cluster.size();
+    fClCentFracOR[fNCluster] = cluster[0].Energy / fClEnergyOR[fNCluster];
+
+    // go over cluster once more
+    TVector3 weightedPosition(0,0,0);
+    Double_t weightedSum = 0;
+    Double_t weightedRadius = 0;
+    Double_t avgRadius = 0;
+    Double_t avgOpeningAngle = 0;
+    for(size_t j=0;j<cluster.size();j++) {
+
+      // energy weighting
+      Double_t energy = cluster[j].Energy;
+      Double_t wgtE = HitClusterNextGen_t::calc_energy_weight(energy, fClEnergyOR[fNCluster], cfg);
+      weightedSum += wgtE;
+
+      // position/radius weighting
+      TVector3 pos = cluster[j].Position;
+      TVector3 diff = cluster[0].Position - pos;
+      weightedPosition += pos * wgtE;
+      weightedRadius += diff.Mag() * wgtE;
+
+      avgRadius += diff.Mag();
+      avgOpeningAngle += HitClusterNextGen_t::opening_angle(cluster[0], cluster[j]);
+    }
+
+    avgRadius /= cluster.size();
+    avgOpeningAngle /= cluster.size();
+
+    weightedPosition *= 1.0/weightedSum;
+
+    if(isfinite(fShowerDepthCorrection)) {
+      // correct for the shower depth
+      // this is copied from acqu_user/root/src/MyHitCluster_TAPS.cc
+      // the parameter fShowerDepthCorrection was 1.2 in this code
+      Double_t sh_dep = 2.05 * (TMath::Log(fClEnergyOR[fNCluster] / 12.7) + fShowerDepthCorrection);
+      if (sh_dep > 0)
+      {
+          Double_t sh_corr = weightedPosition.Mag() / sh_dep + 1.;
+          weightedPosition.SetX(weightedPosition.X() - weightedPosition.X() / sh_corr);
+          weightedPosition.SetY(weightedPosition.Y() - weightedPosition.Y() / sh_corr);
+      }
+    }
+
+    fPhi[fNCluster] = TMath::RadToDeg() * weightedPosition.Phi();
+    fTheta[fNCluster] = TMath::RadToDeg() * weightedPosition.Theta();
+    fClRadiusOR[fNCluster] = weightedRadius / weightedSum;
+
+    cst_fCluster[kmax]->SetFields(cluster,
+                              fClEnergyOR[fNCluster],
+                              weightedPosition);
+
+    fNCluster++;
+    // just discard more clusters
+    if(fNCluster==fMaxCluster)
+      break;
+  }
+
+  // mark ends in those stupid c-arrays...
+  fClustHit[fNCluster] = EBufferEnd;
+  fTheta[fNCluster] = EBufferEnd;
+  fPhi[fNCluster] = EBufferEnd;
+  fNClustHitOR[fNCluster] = EBufferEnd;
+  fClEnergyOR[fNCluster] = EBufferEnd;
+  fClTimeOR[fNCluster] = EBufferEnd;
+  fClCentFracOR[fNCluster] = EBufferEnd;
+  fClRadiusOR[fNCluster] = EBufferEnd;
+}
 
 ClassImp(TA2ClusterDetector)
