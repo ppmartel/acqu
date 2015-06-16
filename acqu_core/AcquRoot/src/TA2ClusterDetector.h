@@ -95,6 +95,7 @@ class TA2ClusterDetector : public TA2Detector {
   Double_t fClusterWeightingPar1;       // weighting parameter 1 (NextGen)
   Double_t fClusterWeightingPar2;       // weighting parameter 2 (NextGen)
   Double_t fShowerDepthCorrection;      // if non-nan, shower depth correction is applied (NextGen)
+  Double_t* fMoliereRadii;              // value array for Moliere radius overwriting (NextGen)
 
   Bool_t fDispClusterEnable;
   TH2Crystals*  fDispClusterHitsAll;

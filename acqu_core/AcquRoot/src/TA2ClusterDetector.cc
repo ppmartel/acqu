@@ -86,6 +86,7 @@ TA2ClusterDetector::TA2ClusterDetector( const char* name,
   fClusterWeightingPar1 = 4.0;
   fClusterWeightingPar2 = 100;
   fShowerDepthCorrection = numeric_limits<double>::quiet_NaN();
+  fMoliereRadii = NULL;
 
   fDispClusterEnable = kFALSE; // config stuff missing...
   // will be set by child class
@@ -151,6 +152,8 @@ void TA2ClusterDetector::SetConfig( char* line, int key )
     fClTimeOR  = new Double_t[fNelement+1];
     fClCentFracOR  = new Double_t[fNelement+1];
     fClRadiusOR  = new Double_t[fNelement+1];
+    fMoliereRadii = new Double_t[fNelement];
+    for (Int_t i = 0; i < fNelement; i++) fMoliereRadii[i] = 0;
     fNCluster = 0;
     break;
   case EClustAlgo:
@@ -199,6 +202,8 @@ void TA2ClusterDetector::SetConfig( char* line, int key )
           break;
         case EClustAlgoNextGen:
           fCluster[fNCluster] = new HitClusterNextGen_t(line,fNCluster);
+          if (fMoliereRadii[fNCluster])
+            ((HitClusterNextGen_t*)fCluster[fNCluster])->SetMoliereRadius(fMoliereRadii[fNCluster]);
           break;
         default:
           PrintError("Unknown or unconfigured cluster algorithm!");
@@ -242,7 +247,7 @@ void TA2ClusterDetector::SetConfig( char* line, int key )
       break;
     }
     for(UInt_t i=i1;i<=i2;i++) {
-      ((HitClusterNextGen_t*)fCluster[i])->SetMoliereRadius(moliere);
+      fMoliereRadii[i] = moliere;
     }
     break;
   case EClustDetWeighting: {
