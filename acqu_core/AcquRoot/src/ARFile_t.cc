@@ -170,11 +170,9 @@ Int_t ARFile_t::ReadKey( const Map_t** keylist )
     for( j=0; ; j++ ){
       list = keylist[j];
       if( !list ){
-        printf("WARNING: Key '%s' in file %s not found!\n", keyword, fName);
-        // return -2 instead of -1 to prevent skipping the rest of the
-        // config file if the key is not specified in any config-key map;
-        // this will only result in an error entry in the Analysis.log
-        return -2;
+        printf("ERROR: Key '%s' in file %s not found!\n", keyword, fName);
+        printf("  I'm exiting now...\n");
+        exit(1);
       }
       for( i=0; ; i++){
 	k = list[i].fFnName;
