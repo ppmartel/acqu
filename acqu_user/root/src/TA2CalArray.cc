@@ -26,7 +26,7 @@
 enum
 {
   ECAEnergyResolution=1900, ECATimeResolution, ECAThetaResolution, ECAPhiResolution,
-  ECAClusterUCLA
+  ECAClusterUCLA, ECAOffsetTime
 };
 
 static const Map_t kCalArrayKeys[] =
@@ -38,6 +38,7 @@ static const Map_t kCalArrayKeys[] =
   {"Max-Cluster:",         EClustDetMaxCluster},
   {"Next-Neighbour:",      EClustDetNeighbour},
   {"Cluster-UCLA:",        ECAClusterUCLA},
+  {"Offset-Time:",         ECAOffsetTime},
   {NULL,            -1}
 };
 
@@ -60,6 +61,7 @@ TA2CalArray::TA2CalArray(const char* name, TA2System* apparatus)
   fSigmaEnergyFactor    = -1.0;
   fSigmaEnergyPower     = -1.0;
   fSigmaTime            = -1.0;
+  fOffsetTime           = 0.0;
   fSigmaTheta           = -1.0;
   fSigmaPhi             = -1.0;
   fEthresh              = 0.0;
@@ -161,6 +163,11 @@ void TA2CalArray::SetConfig(char* line, int key)
   fNCluster++;
       }
     else TA2ClusterDetector::SetConfig(line, key);
+    break;
+  case ECAOffsetTime:
+    // Time offset read-in line
+    if(sscanf(line, "%lf", &fOffsetTime) < 1)
+      PrintError(line,"<TA2CalArray Time Offset>");
     break;
   default:
     // Command not found...possible pass to next config

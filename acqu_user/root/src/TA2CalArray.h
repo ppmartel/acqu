@@ -24,7 +24,7 @@
 #include "HitClusterUCLA_t.h"
 #include "TA2ClusterDetector.h"
 #include "TA2UserControl.h"
-//#include <iostream>
+#include <iostream>
 
 class TA2CalArray : public TA2ClusterDetector
 {
@@ -38,6 +38,7 @@ class TA2CalArray : public TA2ClusterDetector
   Double_t  fSigmaEnergyFactor;     // Factor in Energy Resolution Equation
   Double_t  fSigmaEnergyPower;      // Power in energy Resolution Equation
   Double_t  fSigmaTime;             // Sigma for time resolution
+  Double_t  fOffsetTime;            // MC time offset
   Double_t  fSigmaTheta;            // Theta resolution for CB
   Double_t  fSigmaPhi;              // Phi Resolution for CB
   UInt_t*   fTryHits;               // Element-Hit store - Sergey
@@ -422,68 +423,73 @@ inline void TA2CalArray::Decode()
 
 inline void TA2CalArray::ReadDecoded()
 {
-  // Read Crystal Ball energies from  GEANT-3 simulation output
-  // See MCBranchID.h for GEANT-3 output details.
-  // Add energy thresholds 25/10/05
-  // D.Glazier addition of time decoding from A2 Geant4 model 24/08/07
+  // Read from MC or reduced file.
 
-  Double_t T, E;
-  Double_t Lo, Hi;
-  UInt_t k = 0;
-  Int_t j;
-  Int_t* Index;
-  Float_t* Energy;
-  Float_t* Time = NULL;
+  // connect branches
+  Int_t nHits = *(Int_t*)(fEvent[EI_nhits]);
+  Int_t* hit = (Int_t*)(fEvent[EI_icryst]);
+  Float_t* energy = (Float_t*)(fEvent[EI_ecryst]);
+  Float_t* time = NULL;
+  if (fIsTime) time = (Float_t*)(fEvent[EI_tcryst]);
 
-  fNhits = *(Int_t*)(fEvent[EI_nhits]);                 //# crystals fired
-  Index = (Int_t*)(fEvent[EI_icryst]);                  //Crystal indices
-  Energy = (Float_t*)(fEvent[EI_ecryst]);               //Energies in crystals
-  if(fIsTime) Time = (Float_t*)(fEvent[EI_tcryst]);     //Time in crystals
-
-  for(UInt_t t=0; t<fNelem; t++)
+  fNhits = 0;  // init valid hits
+  Double_t total = 0;  // total energy
+  for (UInt_t t=0; t<fNelem; t++)
     fEnergyAll[t] = 0.0;
-  fTotalEnergy = 0.0;
 
-  for(UInt_t i=0; i<fNhits; i++) //Loop over hits
+  // loop over hits
+  for (Int_t i = 0; i < nHits; i++)
   {
-    //Slightly less ugly decoding of icryst
-    j = Index[i] % 10000;                                //AcquRoot index
-    if(j==-1) continue;                                  //Check spurious index
+    // slightly less ugly decoding of icryst
+    Int_t elem = hit[i] % 10000;
 
-    E = Energy[i] * fEnergyScale;                        //G3/4 output in GeV
-    if(fUseSigmaEnergy) E+=fRandom->Gaus(0.0, GetSigmaEnergyGeV(E));
-    E*=1000.0;                                           //G3/4 output in MeV
-    fEnergyAll[j] = E;
-    Lo = fElement[j]->GetEnergyLowThr();
-    Hi = fElement[j]->GetEnergyHighThr();
-    //Lo = fElement[j]->GetADCcut()->GetLowThr();
-    //Hi = fElement[j]->GetADCcut()->GetHighThr();
-    if((E < Lo) || (E > Hi)) continue;
-    fEnergy[j] = E;                                      //Save energy
-    fEnergyOR[k] = E;
-    fTotalEnergy+=E;
+    // check spurious index
+    if (elem == -1) continue;
 
-    if(fIsTime)
+    // check for ignored element
+    if (fElement[elem]->IsIgnored()) continue;
+
+    // convert energy and smear
+    Double_t e = energy[i] * fEnergyScale * fElement[elem]->GetA1();
+    if (fUseSigmaEnergy) e += fRandom->Gaus(0.0, GetSigmaEnergyGeV(e));
+    e *= 1000;
+    fEnergyAll[i] = e;
+
+    // check energy thresholds
+    if ((e < fElement[elem]->GetEnergyLowThr()) ||
+        (e > fElement[elem]->GetEnergyHighThr())) continue;
+
+    // convert time and smear
+    Double_t t = 0;
+    if (fIsTime)
     {
-      //T = Time[i] - 1.6;
-      T = Time[i];
-      if(fUseSigmaTime) T+=fRandom->Gaus(0.0, fSigmaTime);
-      Lo = fElement[j]->GetTimeLowThr();
-      Hi = fElement[j]->GetTimeHighThr();
-      //Lo = fElement[j]->GetTDCcut()->GetLowThr();
-      //Hi = fElement[j]->GetTDCcut()->GetHighThr();
-      if((T < Lo) || (T > Hi)) continue;
-      fTime[j] = T;
-      fTimeOR[k] = T;
+      t = time[i] - fElement[elem]->GetT0() - fOffsetTime;
+      if (fSigmaTime > 0) t += fRandom->Gaus(0.0, fSigmaTime);
+
+      // check time range
+      if ((t < fElement[elem]->GetTimeLowThr()) ||
+          (t > fElement[elem]->GetTimeHighThr())) continue;
     }
 
-    fHits[k] = j;                                        //Store hit
-    k++;                                                 //Update # good hits
+    // register valid hit
+    fEnergy[elem] = e;
+    fEnergyOR[fNhits] = e;
+    total += e;
+    if (fIsTime)
+    {
+      fTime[elem] = t;
+      fTimeOR[fNhits] = t;
+    }
+    fHits[fNhits] = elem;
+    fNhits++;
   }
-  fNhits = k;                                            //# hits inside thresh
-  fHits[k] = EBufferEnd;                                 //End markers
-  fEnergyOR[k] = EBufferEnd;
-  if(fIsTime) fTimeOR[k] = EBufferEnd;
+
+  fTotalEnergy = total;
+
+  // terminate arrays
+  fHits[fNhits] = EBufferEnd;
+  fEnergyOR[fNhits] = EBufferEnd;
+  if (fIsTime) fTimeOR[fNhits] = EBufferEnd;
 
   if(fIsRawHits)
   {
