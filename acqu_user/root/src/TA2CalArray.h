@@ -26,8 +26,6 @@
 #include "TA2UserControl.h"
 //#include <iostream>
 
-#define MAXRUNS 2047
-
 class TA2CalArray : public TA2ClusterDetector
 {
  private:
@@ -44,17 +42,6 @@ class TA2CalArray : public TA2ClusterDetector
   Double_t  fSigmaPhi;              // Phi Resolution for CB
   UInt_t*   fTryHits;               // Element-Hit store - Sergey
   UInt_t*   fTempHits2;             // Element-Hit store - Sergey
-
-  //For run-by-run energy scale factor handling:
-  Bool_t UseScales;
-  Int_t iRun;
-  Int_t ScaleRuns;
-  Char_t RunName[1024];
-  Char_t CurrentRun[1024];
-  Char_t ScaleFile[1024];
-  Char_t ScaleRun[MAXRUNS+1][256];
-  Double_t ScaleVal[MAXRUNS+1];
-  Double_t fEnergyGlobal;
 
  public:
   TA2CalArray(const char*, TA2System*);// Normal use
@@ -407,22 +394,6 @@ inline void TA2CalArray::Decode()
   // Decode raw TDC and Scaler information into
   // Hit pattern, "Energy" pattern, aligned OR etc.
 
-  if(UseScales)
-  {
-    //Get name of file being analysed
-    gUAN->ReadRunName(RunName);
-    //Check if file name has changed since last event (i.e. are we analysing a new file)
-    if(strcmp(RunName, CurrentRun))
-    {
-      strcpy(CurrentRun, RunName);
-      //Find current run in energy scale table
-      for(iRun=0; iRun<ScaleRuns; iRun++)
-        if(!strcmp(RunName, ScaleRun[iRun])) break;
-      //Apply additional run-dependent correction for global energy scale value
-      fEnergyScale = fEnergyGlobal*ScaleVal[iRun];
-    }
-  }
-
   if(fUseClusterDecodeUCLA)
   {
     TA2ClusterDetector::DecodeBasic();
@@ -455,22 +426,6 @@ inline void TA2CalArray::ReadDecoded()
   // See MCBranchID.h for GEANT-3 output details.
   // Add energy thresholds 25/10/05
   // D.Glazier addition of time decoding from A2 Geant4 model 24/08/07
-
-  if(UseScales)
-  {
-    //Get name of file being analysed
-    gUAN->ReadRunName(RunName);
-    //Check if file name has changed since last event (i.e. are we analysing a new file)
-    if(strcmp(RunName, CurrentRun))
-    {
-      strcpy(CurrentRun, RunName);
-      //Find current run in energy scale table
-      for(iRun=0; iRun<ScaleRuns; iRun++)
-        if(!strcmp(RunName, ScaleRun[iRun])) break;
-      //Apply additional run-dependent correction for global energy scale value
-      fEnergyScale = fEnergyGlobal*ScaleVal[iRun];
-    }
-  }
 
   Double_t T, E;
   Double_t Lo, Hi;

@@ -26,8 +26,7 @@
 enum
 {
   ECAEnergyResolution=1900, ECATimeResolution, ECAThetaResolution, ECAPhiResolution,
-  ECAClusterUCLA,
-  ECAScaleFile
+  ECAClusterUCLA
 };
 
 static const Map_t kCalArrayKeys[] =
@@ -39,7 +38,6 @@ static const Map_t kCalArrayKeys[] =
   {"Max-Cluster:",         EClustDetMaxCluster},
   {"Next-Neighbour:",      EClustDetNeighbour},
   {"Cluster-UCLA:",        ECAClusterUCLA},
-  {"Scale-File:",          ECAScaleFile},
   {NULL,            -1}
 };
 
@@ -65,11 +63,6 @@ TA2CalArray::TA2CalArray(const char* name, TA2System* apparatus)
   fSigmaTheta           = -1.0;
   fSigmaPhi             = -1.0;
   fEthresh              = 0.0;
-
-  ScaleRuns = 0;
-  ScaleVal[0] = 1.0;
-  UseScales = false;
-  CurrentRun[0] = '\0';
 
   fRandom = new TRandom();
 
@@ -104,30 +97,10 @@ TA2CalArray::~TA2CalArray()
 
 void TA2CalArray::SetConfig(char* line, int key)
 {
-  FILE* ScalFile;
-
   // Load CalArray parameters from file or command line
   // CalArray specific configuration
   switch(key)
   {
-  case ECAScaleFile:
-    if(sscanf(line, "%s", ScaleFile) < 1)
-    {
-      PrintError(line,"<TA2CalArray Scale File>");
-      break;
-    }
-    printf("NaI energy scale values from:\n %s\n", ScaleFile);
-    ScalFile = fopen(ScaleFile, "r");
-    ScaleRuns = 0;
-    while(!feof(ScalFile))
-      if(fscanf(ScalFile, "%s %lf", ScaleRun[ScaleRuns], &ScaleVal[ScaleRuns])==2)
-      {
-        ScaleRuns++;
-        if(ScaleRuns > MAXRUNS) break;
-      }
-    fclose(ScalFile);
-    UseScales = true;
-    break;
   case ECAClusterUCLA:
     // Set Clustering Algorithm to UCLA version
     fUseClusterDecodeUCLA = 1;
@@ -226,9 +199,6 @@ void TA2CalArray::PostInit()
   if(fUseClusterDecodeUCLA) printf("Using UCLA ClusterDecode for Crystal Ball NaI array\n");
 
   fEnergyAll = new Double_t[fNelem+1];
-
-  //Store global energy scale value
-  fEnergyGlobal = fEnergyScale;
 
   TA2ClusterDetector::PostInit();
 }
