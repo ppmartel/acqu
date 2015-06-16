@@ -35,15 +35,17 @@
 
 // Command-line key words which determine what to read in
 static const Map_t kClustDetKeys[] = {
-  {"Max-Cluster:",          EClustDetMaxCluster},
-  {"Next-Neighbour:",       EClustDetNeighbour},
-  {"Split-Off:",            EClustDetSplitOff},
-  {"Iterate-Neighbours:",   EClustDetIterate},
-  {"Energy-Weight:",        EClustEnergyWeight},
+  {"Max-Cluster:",           EClustDetMaxCluster},
+  {"Next-Neighbour:",        EClustDetNeighbour},
+  {"Cluster-Algorithm:",     EClustAlgo},
+  // keys for traditional cluster algorithm
+  {"Split-Off:",             EClustDetSplitOff},
+  {"Iterate-Neighbours:",    EClustDetIterate},
+  {"Energy-Weight:",         EClustEnergyWeight},
+  // keys for NextGen cluster algorithm
   {"Moliere-Radius:",        EClustDetMoliereRadius},
   {"Cluster-Weighting:",     EClustDetWeighting},
   {"ShowerDepthCorrection:", EClustDetShowerDepthCorr},
-  {"Cluster-Algorithm:",    EClustAlgo},
   {NULL,          -1}
 };
 
@@ -59,6 +61,7 @@ TA2ClusterDetector::TA2ClusterDetector( const char* name,
   // Set private variables to zero/false/undefined state
   // Add further commands to the default list given by TA2Detector
   AddCmdList( kClustDetKeys );
+  fClustAlgoType = EClustAlgoEmpty;
   fCluster = NULL;
   fClustHit = NULL;
   fIsSplit = NULL;
@@ -83,7 +86,6 @@ TA2ClusterDetector::TA2ClusterDetector( const char* name,
   fClusterWeightingPar1 = 4.0;
   fClusterWeightingPar2 = 100;
   fShowerDepthCorrection = numeric_limits<double>::quiet_NaN();
-  fClustAlgoType = EClustAlgoEmpty;
 
   fDispClusterEnable = kFALSE; // config stuff missing...
   // will be set by child class
@@ -151,6 +153,20 @@ void TA2ClusterDetector::SetConfig( char* line, int key )
     fClRadiusOR  = new Double_t[fNelement+1];
     fNCluster = 0;
     break;
+  case EClustAlgo:
+  {
+    // select cluster algorithm
+    TString s(line);
+    s.ReplaceAll(" ", "");
+    s.ReplaceAll("\n", "");
+    s.ToLower();
+    if (s.EqualTo("trad")) fClustAlgoType = EClustAlgoTrad;
+    else if (s.EqualTo("taps")) fClustAlgoType = EClustAlgoTAPS;
+    else if (s.EqualTo("ucla")) fClustAlgoType = EClustAlgoUCLA;
+    else if (s.EqualTo("nextgen")) fClustAlgoType = EClustAlgoNextGen;
+    else PrintError(line,"<Unknown cluster algorithm specifier>");
+    break;
+  }
   case EClustDetIterate:
     // Enable iterative cluster-member determination
     // Must be done before any next-neighbour setup
@@ -268,7 +284,7 @@ void TA2ClusterDetector::SetConfig( char* line, int key )
       break;
     }
   }
-  break;
+    break;
   case EClustDetShowerDepthCorr: {
     stringstream s_line(line);
     if(!(s_line >> fShowerDepthCorrection)) {
@@ -276,21 +292,7 @@ void TA2ClusterDetector::SetConfig( char* line, int key )
       break;
     }
   }
-  break;
-  case EClustAlgo:
-  {
-    // select cluster algorithm
-    TString s(line);
-    s.ReplaceAll(" ", "");
-    s.ReplaceAll("\n", "");
-    s.ToLower();
-    if (s.EqualTo("trad")) fClustAlgoType = EClustAlgoTrad;
-    else if (s.EqualTo("taps")) fClustAlgoType = EClustAlgoTAPS;
-    else if (s.EqualTo("ucla")) fClustAlgoType = EClustAlgoUCLA;
-    else if (s.EqualTo("nextgen")) fClustAlgoType = EClustAlgoNextGen;
-    else PrintError(line,"<Unknown cluster algorithm specifier>");
     break;
-  }
   default:
     // Command not found...try standard detector
     TA2Detector::SetConfig( line, key );
@@ -404,23 +406,23 @@ void TA2ClusterDetector::ParseDisplay( char* line )
     }
     for( l=j; l<=k; l++ ){
       if( l >= fNCluster ){
-  PrintError(line,"<Cluster display - element outwith range>");
-  return;
+        PrintError(line,"<Cluster display - element outwith range>");
+        return;
       }
       sprintf( histline, "%s%d %d  %lf %lf",name,l,chan,low,high );
       switch( i ){
       case EClustDetEnergy:
-  Setup1D( histline, fCluster[l]->GetEnergyPtr() );
-  break;
+        Setup1D( histline, fCluster[l]->GetEnergyPtr() );
+        break;
       case EClustDetHits:
-  Setup1D( histline, fCluster[l]->GetHits(), EHistMultiX );
-  break;
+        Setup1D( histline, fCluster[l]->GetHits(), EHistMultiX );
+        break;
       case EClustDetTime:
-  Setup1D( histline, fCluster[l]->GetTimePtr() );
-  break;
+        Setup1D( histline, fCluster[l]->GetTimePtr() );
+        break;
       case EClustDetMulti:
-  Setup1D( histline, fCluster[l]->GetNhitsPtr() );
-  break;
+        Setup1D( histline, fCluster[l]->GetNhitsPtr() );
+        break;
       }
     }
     break;
@@ -500,7 +502,7 @@ void TA2ClusterDetector::DecodeCluster( )
       DecodeClusterTrad();
       break;
     case EClustAlgoTAPS:
-      DecodeClusterTrad();
+      DecodeClusterTrad();  // no own method needed here
       break;
     case EClustAlgoUCLA:
       DecodeClusterUCLA();

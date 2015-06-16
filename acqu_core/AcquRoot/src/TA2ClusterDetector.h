@@ -37,11 +37,14 @@
 
 // constants for command-line maps
 enum {
-  EClustDetMaxCluster = 100, EClustDetNeighbour,
+  EClustDetMaxCluster = 100, EClustDetNeighbour, EClustAlgo,
+  // keys for traditional cluster algorithm
   EClustDetSplitOff, EClustDetIterate, EClustEnergyWeight,
+  // keys for NextGen cluster algorithm
   EClustDetMoliereRadius, EClustDetWeighting, EClustDetShowerDepthCorr,
+  // keys for cluster display
   EClustDetEnergy, EClustDetTime, EClustDetCentFrac, EClustDetRadius,
-  EClustDetHits, EClustDetMulti, EClustAlgo,
+  EClustDetHits, EClustDetMulti
 };
 
 // constants for cluster algorithms
@@ -56,16 +59,17 @@ typedef EClustAlgoType ClustAlgoType_t;
 
 class TA2ClusterDetector : public TA2Detector {
  protected:
+  ClustAlgoType_t fClustAlgoType;       // type of cluster algorithm
   HitCluster_t** fCluster;              // Clusters of hits
   UInt_t* fClustHit;                    // Cluster indices
-  Bool_t* fIsSplit;                     // Indices split-off clusters
-  UInt_t* fTempHits;                    // Element-Hit store
+  Bool_t* fIsSplit;                     // Indices split-off clusters (Trad)
+  UInt_t* fTempHits;                    // Element-Hit store (Trad)
   UInt_t* fTempHits2;                   // Element-Hit store (UCLA)
   UInt_t* fTryHits;                     // Element-Hit store (UCLA)
   UInt_t fNCluster;                     // # of clusters
   Int_t fClustSizeFactor;               // enlarge factor, hit cluster buffers
-  UInt_t fNSplit;                       // # low energy clusters
-  UInt_t fNSplitMerged;                 // # split-offs merged
+  UInt_t fNSplit;                       // # low energy clusters (Trad)
+  UInt_t fNSplitMerged;                 // # split-offs merged (Trad)
   UInt_t fMaxCluster;                   // Max # of clusters
   UInt_t* fNClustHitOR;                 // OR of #hits in individuyal clusters
   Double_t* fTheta;                     // theta of cluster hit
@@ -76,26 +80,25 @@ class TA2ClusterDetector : public TA2Detector {
   Double_t* fClRadiusOR;                // OR E-weighted cluster radii
   Double_t fClEthresh;                  // threshold energy for main cluster
   Double_t fEthresh;                    // generic threshold energy for cluster
-  Double_t fEthreshSplit;               // threshold energy for split-off
-  Double_t fMaxThetaSplitOff;           // max split-off opening angle
-  Double_t fMinPosDiff;                 // min acceptable neighbour pos diff.
-  Double_t fMaxPosDiff;                 // max acceptable neighbour pos diff.
-  Double_t* fSplitAngle;                // opening angles detween clusters
-  Double_t fEWgt;                       // energy weighting factor
-  Int_t fLEWgt;                         // energy weighting factor switch
-  Int_t* fISplit;                       // for sorting cluster opening angles
-  Int_t* fIJSplit;                      // for sorting cluster opening angles
-  Int_t fMaxSplitPerm;                  // for sorting cluster opening angles
-  Bool_t fIsIterate;                    // cluster member find iteration ON/OFF
+  Double_t fEthreshSplit;               // threshold energy for split-off (Trad)
+  Double_t fMaxThetaSplitOff;           // max split-off opening angle (Trad)
+  Double_t fMinPosDiff;                 // min acceptable neighbour pos diff. (Trad)
+  Double_t fMaxPosDiff;                 // max acceptable neighbour pos diff. (Trad)
+  Double_t* fSplitAngle;                // opening angles detween clusters (Trad)
+  Double_t fEWgt;                       // energy weighting factor (Trad)
+  Int_t fLEWgt;                         // energy weighting factor switch (Trad)
+  Int_t* fISplit;                       // for sorting cluster opening angles (Trad)
+  Int_t* fIJSplit;                      // for sorting cluster opening angles (Trad)
+  Int_t fMaxSplitPerm;                  // for sorting cluster opening angles (Trad)
+  Bool_t fIsIterate;                    // cluster member find iteration ON/OFF (Trad)
   UInt_t   fClusterWeightingType;       // type of weighting (NextGen)
   Double_t fClusterWeightingPar1;       // weighting parameter 1 (NextGen)
   Double_t fClusterWeightingPar2;       // weighting parameter 2 (NextGen)
-  Double_t fShowerDepthCorrection;      // if non-nan, shower depth correction is applied
-  ClustAlgoType_t fClustAlgoType;       // type of cluster algorithm
+  Double_t fShowerDepthCorrection;      // if non-nan, shower depth correction is applied (NextGen)
 
   Bool_t fDispClusterEnable;
   TH2Crystals*  fDispClusterHitsAll;
-  TH2Crystals** fDispClusterHitsSingle;  
+  TH2Crystals** fDispClusterHitsSingle;
   TH2Crystals*  fDispClusterHitsEnergy;
   void DisplayClusters();
 
