@@ -44,7 +44,7 @@ public:
   virtual void     Cleanup();
   virtual void     ClusterDetermine(TA2ClusterDetector*);
   virtual Bool_t   ClusterDetermine2(TA2ClusterDetector*);
-  virtual Double_t ClusterRadiusUCLA(TA2ClusterDetector*);
+  virtual Double_t ClusterRadius(TA2ClusterDetector*);
   TVector3* GetMeanPosUp(){ return fMeanPosUp; }
   TVector3* GetMeanPosDn(){ return fMeanPosDn; }
   Double_t  GetSqrtEtUp() { return fSqrtEtUp; }
