@@ -137,7 +137,7 @@ public:
     
     TCContainer* LoadContainer(const Char_t* filename);
     
-    Int_t DumpRuns(TCContainer* container, Int_t first_run = 0, Int_t last_run = 0);
+    Int_t DumpRuns(TCContainer* container, Int_t first_run = -1, Int_t last_run = -1);
     Int_t DumpAllCalibrations(TCContainer* container, const Char_t* calibration);
     Int_t DumpCalibrations(TCContainer* container, const Char_t* calibration, 
                            const Char_t* data);
