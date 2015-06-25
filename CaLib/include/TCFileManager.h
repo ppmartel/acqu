@@ -18,7 +18,9 @@
 
 #include <dirent.h>
 #include <string.h>
+#include <limits.h>
 #include <list>
+#include <libgen.h>  // basename(), dirname()
 
 #include "TFile.h"
 #include "TH1.h"
@@ -43,6 +45,7 @@ private:
     const char* join_path(const char* path1, const char* path2, const char* path_sep);
     void list_files(const char* path, std::list<std::string>& file_list);
     void filter_list(std::list<std::string>& list, const char* pattern);
+    const char* get_real_path(const char* path);
 
 public:
     TCFileManager() : fInputFilePatt(0), fFiles(0),

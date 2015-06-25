@@ -79,27 +79,29 @@ void TCFileManager::BuildFileList()
     if (TCReadConfig::GetReader()->GetConfigInt("File.Input.MC"))
     {
         const char* path = TCReadConfig::GetReader()->GetConfig("File.MC.Directory")->Data();
-        const int run_number = TCReadConfig::GetReader()->GetConfigInt("File.MC.RunNumber");
         const char ext[8] = ".root";
         std::list<std::string> files;
 
-        list_files(path, files);
+        const char* _path = get_real_path(path);
+        if (!_path) {
+            fprintf(stderr, "Directory '%s' couldn't be found!\n", path);
+            fprintf(stderr, "Please make sure the directory exists and is readable.\n");
+            exit(EXIT_FAILURE);
+        }
+
+        // get a list of all files
+        list_files(_path, files);
         if (files.empty()) {
-            fprintf(stderr, "Directory '%s' doesn't contain any files!\n", path);
+            fprintf(stderr, "Directory '%s' doesn't contain any files!\n", _path);
             exit(EXIT_FAILURE);
         }
 
         // filter the list for root files
         filter_list(files, ext);
         if (files.empty()) {
-            fprintf(stderr, "Directory '%s' doesn't contain any %s-files!\n", ext, path);
+            fprintf(stderr, "Directory '%s' doesn't contain any %s-files!\n", _path, ext);
             exit(EXIT_FAILURE);
         }
-
-        for (std::list<std::string>::iterator it = files.begin(); it != files.end(); ++it)
-            printf("%s\n", *it);
-
-        exit(EXIT_SUCCESS);
 
         // user information
         Info("BuildFileList", "Adding MC files");
@@ -114,7 +116,7 @@ void TCFileManager::BuildFileList()
             // check for nonexisting or bad file
             if (!f || f->IsZombie())
             {
-                Warning("BuildFileList", "Could not open file '%s'", *it);
+                Warning("BuildFileList", "Could not open file '%s'", (*it).c_str());
                 continue;
             }
 
@@ -274,7 +276,7 @@ void TCFileManager::list_files(const char* path, std::list<std::string>& file_li
 
 		closedir(dir);
 	} else {
-		fprintf(stderr, "The directory '%s' could not be read!\n", std::string(ent->d_name));
+		fprintf(stderr, "The directory '%s' could not be read!\n", path);
 		exit(EXIT_FAILURE);
 	}
 
@@ -290,6 +292,52 @@ void TCFileManager::filter_list(std::list<std::string>& list, const char* patter
 			it = list.erase(it);
 		else
 			it++;
+}
+
+// get the real path of the given char array if it contains any special chars
+const char* TCFileManager::get_real_path(const char* path)
+{
+	DIR *dir;
+
+	// check if the directory could be opened
+	dir = opendir(path);
+	if (dir) {
+		closedir(dir);
+		return path;
+	}
+
+	char* _path = (char*)malloc(PATH_MAX+1);  // allocate memory for new path
+	// if not, try to resolve the path if it contains a tilde
+	if (*path == '~') {
+		// build the new path by replacing the home directory
+		strcpy(_path, getenv("HOME"));
+		strcat(_path, path+1);
+
+		// check if the directory could be opened
+		dir = opendir(_path);
+		if (dir) {  // check if we can open this new path
+			closedir(dir);
+			return _path;
+		} else {  // if not, let's assume it might be a file and get the dirname of it
+			const char* new_path = dirname(_path);
+			return new_path;
+		}
+	}
+
+	// if the above doesn't work, let's give realpath() a try to do it
+	// it should resolve the path (~, symlinks, ...), but often doesn't work as expected...
+	realpath(path, _path);
+	// get the dirname in case a file is appended or a tilde in some strange cases
+	const char* new_path = dirname(_path);
+
+	// check if the directory could be opened
+	dir = opendir(new_path);
+	if (dir) {
+		closedir(dir);
+		return new_path;
+	}
+
+	return NULL;
 }
 
 ClassImp(TCFileManager)
