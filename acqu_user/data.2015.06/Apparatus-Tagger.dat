@@ -6,10 +6,12 @@
 #       NMR field       Beam Energy
 #
 Magnet:	0.53745			450.0
+#Magnet:	1.88821			1557.0
 #
 #         Name          Class Name      Setup file
 #Detector: FPD		TA2Ladder 	Detector-FPD-450.dat
 Detector: FPD		TA2Ladder 	Detector-FPD-450-New.dat
+#Detector: FPD		TA2Ladder 	Detector-FPD-1557-New.dat
 #
 Reconstruct:
 Initialise:
