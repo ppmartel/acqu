@@ -12,7 +12,7 @@ BaseSetup:	0		0		ADC    	    9000
 ##
 ##
 ## Turn off pedestal suppression
-#No-threshold:
+No-threshold:
 ##
 ######Set Threshold to 256 to disable channel
 ###### Valid thresholds up to 255
