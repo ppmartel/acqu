@@ -29,7 +29,8 @@ void CheckTAPSPbWO4(TCanvas* canv){
     "PbWO4_EnergyOR_v_TimeOR",
     "PbWO4_Hits_v_EnergyOR",
     "PbWO4_Hits_v_TimeOR",
-    "PbWO4_ClPhi_v_ClTheta"
+    //"PbWO4_ClPhi_v_ClTheta"
+    "PbWO4_Etot"
   };
   Int_t log[] = { 0,0,0,1,1,1,1,0,0,0,0,0 };
   Int_t col[] = { 2,2,2,4,4,4,3,3,1,1,1,1 };
@@ -45,7 +46,8 @@ void CheckTAPSPbWO4(TCanvas* canv){
     "TAPS-PbWO4 Energy (MeV) vs Time (ns)",
     "TAPS-PbWO4 Pulse-Height vs Hits",
     "TAPS-PbWO4 Time vs Hits",
-    "TAPS-PbWO4 #theta vs #phi distribution of Cluster Hits"
+    //"TAPS-PbWO4 #theta vs #phi distribution of Cluster Hits"
+    "TAPS-PbWO4 Total Energy"
   };
 
   TH1F* h1;

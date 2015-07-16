@@ -549,4 +549,5 @@ Initialise:
 ########################################################################
 #
 Display:	1D	Nhits  			100 	0 	100
-Display:	1D	Hits			528	0	528
+#Display:	1D	Hits			528	0	528
+Display:	1D	Hits			232	0	232

@@ -18,7 +18,7 @@ CheckTagger(TCanvas* canv){
 		TaggerClear();
 		return;
 	}
-	
+
   Char_t* hname[] = {
     "FPD_Nhits", "FPD_NhitsPrompt", "FPD_NhitsRand",  
     "FPD_Hits", "FPD_ScalerCurr", "FPD_ScalerAcc",
@@ -43,13 +43,19 @@ CheckTagger(TCanvas* canv){
     "Microscope Hits vs Tagger Hits",
   };
   TH1* h1;
+  Int_t npads = 0;
   canv->SetFillStyle(4000);
-  if( (gROOT->FindObject(hname[10])) || (gROOT->FindObject(hname[10])))
+  if( (gROOT->FindObject(hname[10])) || (gROOT->FindObject(hname[11]))){
     canv->Divide(3,4,0.01,0.01);
-  else canv->Divide(3,3,0.01,0.01);
+    npads = 12;
+  }
+  else{
+    canv->Divide(3,3,0.01,0.01);
+    npads = 9;
+  }
 
   TString cname;
-  for( Int_t i=0; i<12; i++ ){
+  for( Int_t i=0; i<npads; i++ ){
     h1 = (TH1*)(gROOT->FindObject(hname[i]));
     if( !h1 ){
       printf("No root histogram %s\n",hname[i]);

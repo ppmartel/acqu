@@ -36,7 +36,7 @@ BitPattern:  ./data/monitor/Trig-Pattern.dat
 ##
 ## Apparatus setup....
 ##              Name            Class           	Setup file
-Apparatus:      TAGG            TA2Tagger   		Apparatus-Tagger1557.dat
+Apparatus:      TAGG            TA2Tagger   		Apparatus-Tagger450.dat
 Apparatus:      CB              TA2CrystalBall		Apparatus-CB.dat
 Apparatus:      TAPS            TA2Calorimeter          Apparatus-TAPS.dat 
 Apparatus:      MWPC	        TA2GenericApp  		Apparatus-MWPC.dat
@@ -55,7 +55,7 @@ Physics-Analysis:	PHYS	TA2OnlinePhys	Physics-Online.dat
 Initialise:
 ##
 ## Macros
-Period:  5000	PeriodMacro.C	PeriodMacro()
+Period:  10000	PeriodMacro.C	PeriodMacro()
 #EndFile:	EndFileMacro.C  EndFileMacro()
 #Finish:	FinishMacro.C	FinishMacro()
 ##
