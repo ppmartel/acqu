@@ -145,7 +145,7 @@ void PeriodMacro() {
 	Proj_NaI = (TH1D*)NaI_Hits_v_TimeOR->ProjectionX("Proj_NaI",i+1,i+8);
 	
 	Double_t dTime = Proj_NaI->GetMean();
-	if((dTime < 0) || (dTime > 40)){
+	if((dTime < 10) || (dTime > 50)){
 	  if(!bShift) printf("Possible problem in NaI_Hits_v_TimeOR - Event %d\n",gAN->GetNDAQEvent());
 	  printf("\t\t\tPeak at %f ns (Channels %3d-%3d)\n",dTime,i,i+7);
 	  if(!bShift) dError += 4000;
