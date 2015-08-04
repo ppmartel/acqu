@@ -1,13 +1,15 @@
 #include "TA2CB.h"
+#include "TA2MarcCB_NaICalib.h"
 
 //Default list of detector classes that the TA2CB apparatus may contain
-enum { ECylMWPC, EPlasticPID, ECalArray };
+enum { ECylMWPC, EPlasticPID, ECalArray, EMarcCB_NaICalib };
 
 static Map_t kValidDetectors[] =
 {
   {"TA2CylMWPC",        ECylMWPC},
   {"TA2PlasticPID",     EPlasticPID},
   {"TA2CalArray",       ECalArray},
+  {"TA2MarcCB_NaICalib",EMarcCB_NaICalib},
   {NULL,                -1}
 };
 
@@ -65,6 +67,9 @@ TA2DataManager* TA2CB::CreateChild(const char* name, Int_t dclass)
     return fPID;
    case ECalArray:
     fCal = new TA2CalArray(name, this);
+    return fCal;
+   case EMarcCB_NaICalib:
+    fCal = new TA2MarcCB_NaICalib(name, this);
     return fCal;
   }
 }
