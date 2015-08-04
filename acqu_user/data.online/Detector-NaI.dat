@@ -1494,3 +1494,4 @@ Display: 2D ClTheta  180 0 180 -1    ClPhi   180 -180 180 -1
 Display: 2D EnergyOR 100 0 400 -1    Hits   720 0 720 -1
 Display: 2D TimeOR   200 -100 100 -1    Hits   720 0 720 -1
 #Display: 1D 3015M1 200 0 400
+
