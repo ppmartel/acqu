@@ -3,7 +3,8 @@
 #
 ## Specify list of detectors which constitute the Crystal Ball apparatus
 ##	  	Name    Class Name   	Setup file
-Detector:       NaI     TA2CalArray     Detector-NaI.dat
+#Detector:       NaI     TA2CalArray     Detector-NaI.dat
+Detector:       NaI     TA2MarcCB_NaICalib     Detector-NaI-uncal.dat
 Detector:       PID     TA2PlasticPID   Detector-PID.dat
 ##
 ## Data reconstruction method for Crystal Ball
