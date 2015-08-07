@@ -47,9 +47,11 @@ Display:	1D	NADChits 24 0 24
 Display:	1D	ADCHits	 24 0 24
 Display:	1D	NTDChits 24 0 24
 Display:	1D	TDCHits	 24 0 24
-Display:	1D	Etot	 400 0 200			   
+Display:	1D	Etot	 400 0 200
+#Display:	1D	DeltaE	 100 0 5			   
 #Display:	1D	Energy	200 0 5	0 23				   
 Display:	1D	TimeOR 300 -50. 100.				   
 #Display:	1D	Time   120 0. 120. 0 24			   
 Display:	2D	TimeOR 150 -50. 100 -1 Hits 24 0 24 -1
 Display:	2D	EnergyOR 100 0 10 -1 Hits 24 0 24 -1
+

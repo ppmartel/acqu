@@ -28,7 +28,7 @@ Initialise:
 ##		#Cuts	#Sectors
 #ParticleID-Cut: 48	24
 ##
-Display: 2D PID_Hits 24 0 24 -1              NaI_ClPhi 180 -180 180 -1
+Display: 2D PID_Hits 24 0 24 -1    NaI_ClPhi 180 -180 180 -1
 #Display: 1D PID_Hits 24 0 24 -1
 ##
 ########################################################################

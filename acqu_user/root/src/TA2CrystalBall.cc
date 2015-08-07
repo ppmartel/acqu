@@ -19,14 +19,18 @@
 
 #include "TA2CrystalBall.h"
 
-// Default list of detector classes that the TA2CrystalBall
-// apparatus may contain
-enum { ECB_PlasticPID, ECB_CalArray, ECB_CylMWPC };
-static Map_t kValidDetectors[] = {
+#include "TA2MarcCB_NaICalib.h"
+
+//Default list of detector classes that the TA2CB apparatus may contain
+enum { ECB_CylMWPC, ECB_PlasticPID, ECB_CalArray, ECB_MarcCB_NaICalib };
+
+static Map_t kValidDetectors[] =
+{
+  {"TA2CylMWPC",        ECB_CylMWPC},
   {"TA2PlasticPID",     ECB_PlasticPID},
   {"TA2CalArray",       ECB_CalArray},
-  {"TA2CylMWPC",        ECB_CylMWPC},
-  {NULL, 		-1}
+  {"TA2MarcCB_NaICalib",ECB_MarcCB_NaICalib},
+  {NULL,                -1}
 };
 
 enum {ECB_Photon, ECB_Pi0, ECB_PiPlus, ECB_PiMinus, ECB_Proton, ECB_Neutron};
@@ -101,6 +105,9 @@ TA2DataManager* TA2CrystalBall::CreateChild(const char* name, Int_t dclass)
    case ECB_CylMWPC:
     fMWPC = new TA2CylMwpc(name, this);
     return fMWPC;
+  case ECB_MarcCB_NaICalib:
+   fNaI = new TA2MarcCB_NaICalib(name, this);
+   return fNaI;
    default:
     return NULL;
   }
