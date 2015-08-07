@@ -35,8 +35,8 @@ BitPattern:  ./data/monitor/Trig-Pattern.dat
 Apparatus:      TAGG            TA2Tagger   		Apparatus-Tagger450.dat
 #Apparatus:      TAGG            TA2Tagger   		Apparatus-EPT.dat
 Apparatus:      CB              TA2CrystalBall		Apparatus-CB.dat
-#Apparatus:      MWPC	        TA2GenericApp  		Apparatus-MWPC.dat
-#Apparatus:      BeamPolMon      TA2BeamPolMon           Apparatus-BeamPolMon.dat
+Apparatus:      MWPC	        TA2GenericApp  		Apparatus-MWPC.dat
+Apparatus:      BeamPolMon      TA2BeamPolMon           Apparatus-BeamPolMon.dat
 ##
 ## Turn on apparatus-level reconstruction
 #Reconstruct-Analysis:
@@ -82,7 +82,7 @@ Display: MultiHit 2032 2752 5000 -7000 3000 0
 ########################################################################
 ##
 ## PID - ADCs
-#Display: ADC 100 131
+Display: ADC 100 131
 ##
 ## PID - TDCs
 #Display: MultiHit 2008 2031 1000 -5000 -2000 0
@@ -92,7 +92,7 @@ Display: MultiHit 2032 2752 5000 -7000 3000 0
 ########################################################################
 ##
 ## MWPC Wires - TDCs
-#Display: MultiHit 4000 4559 1000 -7000 3000 0
+Display: MultiHit 4000 4559 1000 -7000 3000 0
 ##
 ## MWPC Strips - ADCs
 #Display: MultiHit 5000 5351 2000 -1000 1000 0
