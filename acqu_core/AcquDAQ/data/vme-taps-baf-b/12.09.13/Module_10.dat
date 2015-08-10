@@ -1,7 +1,7 @@
 ##
 ##              Hex Base    #Registers  Module type MapSize
 BaseSetup:  0       0       ADC     4000
-Hardware-ID: 0405
+Hardware-ID: 0404
 #
 Enable-Thresholds:
 #Suppress-Overflow:
