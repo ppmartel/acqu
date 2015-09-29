@@ -398,6 +398,6 @@ Initialise:
 ########################################################################
 #
 Display:	1D	Nhits  			100 	0 	100
-#Display:	1D	Hits			332	0	332
-Display:	1D	Hits			146	0	146
+Display:	1D	Hits			332	0	332
+#Display:	1D	Hits			146	0	146
 

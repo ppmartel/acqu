@@ -36,7 +36,7 @@ File-Name:	mwpca	0	0
 Stream-Spec:	Network	Mk2	0	vme-mwpc-adc-b 3025 128	400
 File-Name:	mwpcb	0	0
 #
-Stream-Spec:	Network	Mk2	0	vme-cb-tdc-a   3026 128	400
+Stream-Spec:	Network	Mk2	0	vme-cb-tdc-a   3026 512	400
 File-Name:	tdca	0	0
 #
 Stream-Spec:	Network	Mk2	0	vme-cb-tdc-b   3027 128	400

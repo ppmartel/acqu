@@ -96,7 +96,7 @@ Display: MultiHit 4000 4559 1000 -7000 3000 0
 ##
 ## MWPC Strips - ADCs
 #Display: MultiHit 5000 5351 2000 -1000 1000 0
-#Display: MultiHit 5000 5351 2000 -1000 1000 1
+Display: MultiHit 5000 5351 2000 -1000 1000 1
 #Display: MultiHit 5000 5351 2000 -1000 1000 2
 ##
 ## Cherenkov - TDCs
