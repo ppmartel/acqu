@@ -88,7 +88,8 @@ void PeriodMacro() {
       
       Int_t iPeak = Temp_FPD->GetMaximumBin();
       Double_t dTime = Temp_FPD->GetBinCenter(iPeak);
-      if(dTime < -10 || dTime > 30){
+      //Double_t dTime = Temp_FPD->GetMean();
+      if(dTime < 0 || dTime > 20){
 	printf("Possible problem in FPD_TimeOR - Event %d\n\t\t\tPeak at %f ns\n\n",gAN->GetNDAQEvent(),dTime);
 	dError += 2000;
       }	  
@@ -145,7 +146,7 @@ void PeriodMacro() {
 	Proj_NaI = (TH1D*)NaI_Hits_v_TimeOR->ProjectionX("Proj_NaI",i+1,i+8);
 	
 	Double_t dTime = Proj_NaI->GetMean();
-	if((dTime < 10) || (dTime > 50)){
+	if((dTime < 30) || (dTime > 60)){
 	  if(!bShift) printf("Possible problem in NaI_Hits_v_TimeOR - Event %d\n",gAN->GetNDAQEvent());
 	  printf("\t\t\tPeak at %f ns (Channels %3d-%3d)\n",dTime,i,i+7);
 	  if(!bShift) dError += 4000;

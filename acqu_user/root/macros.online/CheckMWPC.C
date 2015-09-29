@@ -47,19 +47,19 @@ CheckMWPC(TCanvas* canv){
       h1->Draw();
   }
   return;
-//   TH2F* h2;
-//   for( Int_t i=2; i<28; i++ ){
-//     h2 = (TH2F*)(gROOT->FindObjectAny(hname[i]));
-//     if( !h2 ){
-//       printf("No root histogram %s\n",hname[i]);
-//       continue;
-//     }
-//     canv->cd(i+1);
-//     if( log[i] ) canv->GetPad(i+1)->SetLogz();
-//     h2->GetXaxis()->SetTitle(xname[i]);
-//     h2->Draw("colz");
-//   }
-//   return;
+   TH2F* h2;
+   for( Int_t i=2; i<28; i++ ){
+     h2 = (TH2F*)(gROOT->FindObjectAny(hname[i]));
+     if( !h2 ){
+       printf("No root histogram %s\n",hname[i]);
+       continue;
+     }
+     canv->cd(i+1);
+     if( log[i] ) canv->GetPad(i+1)->SetLogz();
+     h2->GetXaxis()->SetTitle(xname[i]);
+     h2->Draw("colz");
+   }
+   return;
 }
 
 
