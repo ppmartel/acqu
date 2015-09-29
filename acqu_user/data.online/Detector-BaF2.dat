@@ -834,8 +834,8 @@ Display: 1D     ClNhitsOR       16 0 16
 Display: 1D     Nhits           32 0 32
 Display: 1D     Etot            500 0 1000 
 Display: 1D     TimeOR          500 -250 250
-Display: 2D     ClEnergyOR      500 0 1000 -1        ClNhitsOR   12 0 12 -1
-Display: 2D     EnergyOR        300 0 600 -1         Hits   384  0 384 -1
+Display: 2D     ClEnergyOR      1000 0 1000 -1        ClNhitsOR   12 0 12 -1
+Display: 2D     EnergyOR        600 0 600 -1         Hits   384  0 384 -1
 Display: 2D     TimeOR          250 -250 250 -1      Hits   384  0 384 -1
 Display: 2D     ClTheta         100 0 25 -1          ClPhi  180 -180 180 -1
 
