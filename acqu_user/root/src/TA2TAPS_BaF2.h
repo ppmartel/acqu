@@ -345,7 +345,7 @@ inline void TA2TAPS_BaF2::ReadDecoded()
     if (fIsTime)
     {
       T = time[i] - fElement[elem]->GetT0() - fOffsetTime;
-      if (fTimeResolution > 0) T += pRandoms->Gaus(0.0, fTimeResolution);
+      if (fTimeResolution > 0 && fUseTimeResolution) T += pRandoms->Gaus(0.0, fTimeResolution);
 
       // check time thresholds
       if ((T < fElement[elem]->GetTimeLowThr()) ||

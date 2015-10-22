@@ -464,7 +464,7 @@ inline void TA2CalArray::ReadDecoded()
     if (fIsTime)
     {
       t = time[i] - fElement[elem]->GetT0() - fOffsetTime;
-      if (fSigmaTime > 0) t += fRandom->Gaus(0.0, fSigmaTime);
+      if (fSigmaTime > 0 && fUseSigmaTime) t += fRandom->Gaus(0.0, fSigmaTime);
 
       // check time range
       if ((t < fElement[elem]->GetTimeLowThr()) ||
