@@ -1,0 +1,111 @@
+##-----------------------------------------------------------------------
+##--Author	JRM Annand   	29th Apr 2003
+##--Update	Ken Livingston	19th Mar 2014
+##--Description
+##                *** Acqu++ <-> Root ***
+## Online/Offline Analysis of Sub-Atomic Physics Experimental Data 
+##
+## Parameter File: LinearPolapparatus.dat (specified in LinearPolanalysis.dat)
+## or equivalent
+##
+##-----------------------------------------------------------------------
+#
+# Data reconstruction method 
+Reconstruct:
+#x1
+### Basic setup - needs changed to suit run period
+## edge can be fit|epics
+## plane can be file|epics: if file - need "runs:" lines below here.
+## scaler_ref can be overridden by specific run settings in the "runs: lines"
+#			runMin  runMax   norm_energy   edgeMin  edgeMax   tagger ladder   scaler_ref							            buffers   edge	plane  deadband(MeV)
+#for positive target polarization?					
+Misc:	app    4241    4508           700.00          790.0    870.0          TAGG    FPD     /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.05/LadderScalers/LadderScalers_4246.dat  5        	fit     epics   0.2
+#	
+#
+#
+#Specify run ranges for para perp amo, and corresponding scaler reference files.
+#Should list all the run ranges here
+#Will use plane info if "plane" is set to "file" in "Misc: app" above
+#Misc: runs     runMin  runMax          scaler_ref                                      		                                                                           plane(para|perp|amo)  edge_setting  edge_range(+-meV)
+#for positive target polarization
+Misc:   runs    4241    4250           /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.05/LadderScalers/LadderScalers_4246.dat         	perp                  850.0        50.0
+Misc:   runs    4251    4262           /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.05/LadderScalers/LadderScalers_4258.dat         	perp                  850.0        50.0
+Misc:   runs    4263    4267           /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.05/LadderScalers/LadderScalers_4267.dat         	perp                  850.0        50.0
+Misc:   runs    4268    4271           /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.05/LadderScalers/LadderScalers_4268.dat         	perp                  850.0        50.0
+Misc:   runs    4272    4276           /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.05/LadderScalers/LadderScalers_4274.dat         	perp                  850.0        50.0
+Misc:   runs    4277    4287           /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.05/LadderScalers/LadderScalers_4278.dat         	perp                  850.0        50.0
+Misc:   runs    4288    4299           /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.05/LadderScalers/LadderScalers_4296.dat         	perp                  850.0        50.0
+Misc:   runs    4300    4305           /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.05/LadderScalers/LadderScalers_4302.dat         	perp                  850.0        50.0
+Misc:   runs    4306    4316           /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.05/LadderScalers/LadderScalers_4313.dat         	perp                  850.0        50.0
+Misc:   runs    4317    4330           /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.05/LadderScalers/LadderScalers_4320.dat         	perp                  850.0        50.0
+Misc:   runs    4331    4344           /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.05/LadderScalers/LadderScalers_4341.dat         	perp                  850.0        50.0
+Misc:   runs    4345    4350           /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.05/LadderScalers/LadderScalers_4347.dat         	perp                  850.0        50.0
+Misc:   runs    4351    4357           /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.05/LadderScalers/LadderScalers_4354.dat         	perp                  850.0        50.0
+Misc:   runs    4358    4363           /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.05/LadderScalers/LadderScalers_4360.dat         	perp                  850.0        50.0
+Misc:   runs    4364    4370           /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.05/LadderScalers/LadderScalers_4367.dat         	perp                  850.0        50.0
+Misc:   runs    4371    4379           /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.05/LadderScalers/LadderScalers_4373.dat         	perp                  850.0        50.0
+Misc:   runs    4380    4410           /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.05/LadderScalers/LadderScalers_4385.dat         	perp                  850.0        50.0
+Misc:   runs    4411    4435           /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.05/LadderScalers/LadderScalers_4432.dat         	perp                  850.0        50.0
+Misc:   runs    4436    4441           /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.05/LadderScalers/LadderScalers_4437.dat         	perp                  850.0        50.0
+Misc:   runs    4442    4446           /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.05/LadderScalers/LadderScalers_4446.dat         	perp                  850.0        50.0
+Misc:   runs    4447    4454           /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.05/LadderScalers/LadderScalers_4447.dat         	perp                  850.0        50.0
+Misc:   runs    4455    4465           /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.05/LadderScalers/LadderScalers_4462.dat         	perp                  850.0        50.0
+Misc:   runs    4466    4471           /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.05/LadderScalers/LadderScalers_4468.dat         	perp                  850.0        50.0
+Misc:   runs    4472    4478           /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.05/LadderScalers/LadderScalers_4474.dat         	perp                  850.0        50.0
+Misc:   runs    4479    4486           /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.05/LadderScalers/LadderScalers_4482.dat         	perp                  850.0        50.0
+Misc:   runs    4487    4500           /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.05/LadderScalers/LadderScalers_4498.dat         	perp                  850.0        50.0
+Misc:   runs    4501    4508           /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.05/LadderScalers/LadderScalers_4503.dat         	perp                  850.0        50.0
+#
+#
+# The "pvnames" and "rads" are required if "edge" or "plane" are set to epics in the  "Misc:	app"
+### Names of the epics channels for the variables required
+#               edge            radiator            plane            goni axes ......
+#defaults to:	BEAM:CBREM:Edge BEAM:CBREM:Radiator BEAM:CBREM:Plane BEAM:GONI:Axis_1 BEAM:GONI:Axis_2 BEAM:GONI:Axis_3 BEAM:GONI:Axis_4 BEAM:GONI:Axis_5
+Misc:	pvnames BEAM:CBREM:Edge BEAM:CBREM:Radiator BEAM:CBREM:Plane BEAM:GONI:Axis_1 BEAM:GONI:Axis_2 BEAM:GONI:Axis_3 BEAM:GONI:Axis_4 BEAM:GONI:Axis_5
+#
+### Value of epics radiator variable to specify radiator
+#               	diamond		amo
+#defaults to:   4               	2
+Misc:   rads    	4               	2
+#
+#
+#
+# These lines will specify the parameters for the ploarization tables for run ranges.
+# A different set of parameters should be defined for para and perp 
+### parameter sets for polarization of beam
+#                  		run range     type   	 plane  params: 
+#paramters for 850 MeV edge
+Misc:   	poltable  4241    4508 params para  0.010370 0.000386 2.099309 0.292718 1557.000000 3.000000 2.394290 0.507880 1.491278 0.000000 2.779132 
+Misc:   	poltable  4241    4508 params perp  0.010370 0.000386 2.099309 0.292718 1557.000000 3.000000 2.394290 0.507880 1.491278 0.000000 100000.000000 
+#
+# Do some post-initialisation.
+# Should usually be done before display is setup
+Initialise:
+# Histograms of apparatus-level variables
+# histogram name should be preceeded by 1D or 2D (for dimension of spectrum)
+#
+#           Name        				chan/low/high   min/max condition(opt)
+Display: 1D Incoherent				352 0  352 -1
+Display: 1D Coherent				352 0  352 -1
+Display: 1D Enhancement			352 0  352 -1
+Display: 1D CoherentPara			352 0  352 -1
+Display: 1D EnhancementPara		352 0  352 -1
+Display: 1D CoherentPerp			352 0  352 -1
+Display: 1D EnhancementPerp		352 0  352 -1
+#Display: 1D CohEnergy				4000 0 4000 -1
+Display: 1D CohEdgePara			4000 0 4000 -1
+Display: 1D CohEdgePerp			4000 0 4000 -1
+Display: 1D CohEdgeDistPara			200  0 200 -1
+Display: 1D CohEdgeDistPerp			200  0 200 -1
+Display: 1D CohEdgeEpics			4000 0 4000 -1
+Display: 1D CohEdgeParaEpics		4000 0 4000 -1
+Display: 1D CohEdgePerpEpics		4000 0 4000 -1
+Display: 1D CohEdgeDistParaEpics		200  0 200 -1
+Display: 1D PolTableEnh				352 0  352 -1
+Display: 1D PolTablePol				352 0  352 -1
+Display: 1D PolMean				352 0  352 -1
+Display: 1D PolCount				352 0  352 -1
+#
+# 2nd pass of Init to pick up ptrs to histograms
+Initialise:
+#
