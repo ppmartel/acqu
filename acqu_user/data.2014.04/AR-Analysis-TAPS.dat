@@ -1,0 +1,106 @@
+#------------------------------------------------------------------------------
+#                       Configuration file for TA2Taps
+#             (AcquRoot 4v4 user package TAPS apparatus class)
+#------------------------------------------------------------------------------
+#
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#Detector systems in TAPS apparatus
+Detector: VETO		   TA2TAPS_Veto		/disk/user/afzal/Mainz/acqu/acqu_user/data.2014.04/AR-Analysis-TAPS-Veto.dat
+Detector: BaF2PWO          TA2TAPS_BaF2		/disk/user/afzal/Mainz/acqu/acqu_user/data.2014.04/AR-Analysis-TAPS-BaF2.dat
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#Standard AcquRoot options
+Reconstruct:
+ParticleID:   16
+Initialise:
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#Global TAPS energy scaling factor
+TAPS-Factor: 1.000
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#Reconstruction mode for TAPS. Non-zero values disable all further particle
+#identification and produce only photons.
+TAPS_SimpleReconstruct: 0
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#DeltaE vs. E between Veto and BaF2-Clusters configuration. When a cut is set
+#active, the appendant TCut with name specified below must exist in ROOT file.
+#TAPS_dEvE_Active:  1
+#TAPS_dEvE_Cuts:  data/TAPS_Cut_DeltaE-E.root
+#TAPS_dEvE_Proton:   1
+#TAPS_dEvE_ChPion:   0
+#TAPS_dEvE_Electron: 0
+#TAPS_dEvE_Proton_CutName:    CutProton
+#TAPS_dEvE_ChPion_CutName:    CutPiplus
+#TAPS_dEvE_Electron_CutName:  CutElectron
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#Time Of Flight.When a cut is set active, the appendant TCut with name
+#specified below must exist in ROOT file.
+#TAPS_TOF_TaggerTime MUST be set to the position of the prompt peak between
+#TAPS and Tagger time difference.
+#If TAPS_TOF_onlyPhoton: 1 then all uncharged hits are photons. You might
+#define a neutron-TOF-cut, then set TAPS_TOF_onlyPhoton: 0
+#TAPS_TOF_Cuts:  data/TAPS_Cut_TOF.root
+#TAPS_TOF_Cuts:  data/TAPS_Cut_TOF_Rev.root
+#TAPS_TOF_Nucleon:     1
+#TAPS_TOF_onlyPhoton:  1
+#TAPS_TOF_Nucleon_CutName:  CutNucleon
+#TAPS_TOF_TaggerTime:  0
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#Set distance between TAPS and target centre for correct TOF calculation.
+#Additional correction for longer flight path to outer rings is possible.
+#TAPSTargetDistance:  141.2
+#TAPSTargetDistance:  174.7
+#TAPSDoFlightTimeCorrection:  1
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#TAPSTimeshift: 100.0
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#A cut on prompt peak in the veto time spectrum is possible. Check if
+#the time difference (Veto,BafF) is prompt.
+#Important: Calibrate Veto & BaF2 first & check whether your cut-window is
+#set correctly.
+#                     Enable   Min.     Max.
+TAPSVetoBaF2TimeCut:  0        -6.0     +6.0
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#Second order correction factors for each TAPS Ring. Energy will be corrected
+#according to  E' = c1*E + c2*E*E. Correction factors can be obtained from
+#CalcTAPS2ndOrderFactors. For questions ask
+#boris.lemmer@exp2.physik.uni-giessen.de
+TAPSRingEnergyCorr1:  1  1  1  1  1  1  1  1  1  1  1
+TAPSRingEnergyCorr2:  0  0  0  0  0  0  0  0  0  0  0
+#TAPSRingEnergyCorr1:  1.000000  1.000000  0.979259  0.988492  0.987351  0.987491  0.983632  0.984127  0.983974  0.977034  0.934262
+#TAPSRingEnergyCorr2: -0.000000 -0.000000  0.000002 -0.000031 -0.000029 -0.000060 -0.000052 -0.000053 -0.000119 -0.000112  0.000008
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#Display histograms:
+Display: 2D Echarged         400   0   400  -1  DeltaE       300    0    10  -1
+Display: 2D Echargedcl       400   0   400  -1  DeltaE       300    0    10  -1
+#Display: 2D EchargedIndex    400   0   400  -1  DeltaE       300    0    6  -1
+#Display: 2D HitMatrix_X      280 -70    70  -1  HitMatrix_Y  280  -70   70  -1
+Display: 2D Echargedcl       400   0   400  -1  TOFparticle  400  -50    50  -1
+Display: 2D Echargedcl       400   0   400  -1  TOFproton    400  -50    50  -1
+#
+#Display: 1D VetoPromptTime  2000  -100   100
+#Display: 1D VetoBaf2Time     800  -200   200
+Display: 1D TOFproton        800  -200   200
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+#Display: 2D BaF2_Energy   400 0 400 318 Veto_Energy   300 0 6 318
+#Display: 2D BaF2_EnergyOR 400 0 400  -1 Veto_EnergyOR 300 0 6  -1
+#
