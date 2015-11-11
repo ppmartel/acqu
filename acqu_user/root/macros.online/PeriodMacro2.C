@@ -1,6 +1,7 @@
 // This code gets executed by the online analysis
 // every Nth events (see online config Period: statement)
 int x=5;
+int  bufferCounter = 0;
 
 void PeriodMacro() {
   // Dump the current FP scalers to a nfs exported file system
@@ -18,7 +19,8 @@ void PeriodMacro() {
   //replaced writing out the tagger scalers to file, with writing to EPICS.
    // write the tagger scalers to data
 
-  Double_t dError = 0;
+  cout << "Period Mac 1 " << endl;
+
 
   if(gROOT->FindObject("FPD_ScalerCurr")){
     if((FPD_ScalerCurr->Integral())>0) {
@@ -29,41 +31,6 @@ void PeriodMacro() {
       } 
       cmd << " > /dev/null";
       system(cmd.str().c_str());
-
-      if((FPD_ScalerCurr->Integral(1,32))<=32) {
-	printf("Tagger Section A appears to be off!\n");
-	dError = 500;
-      }
-      if((FPD_ScalerCurr->Integral(33,80))<=48) {
-	printf("Tagger Section B appears to be off!\n");
-	dError = 500;
-      }
-      if((FPD_ScalerCurr->Integral(81,128))<=48) {
-	printf("Tagger Section C appears to be off!\n");
-	dError = 500;
-      }
-      if((FPD_ScalerCurr->Integral(129,176))<=48) {
-	printf("Tagger Section D appears to be off!\n");
-	dError = 500;
-      }
-      if((FPD_ScalerCurr->Integral(177,224))<=48) {
-	printf("Tagger Section E appears to be off!\n");
-	dError = 500;
-      }
-      if((FPD_ScalerCurr->Integral(225,272))<=48) {
-	printf("Tagger Section F appears to be off!\n");
-	dError = 500;
-      }
-      
-      if((FPD_ScalerCurr->Integral(273,320))<=48) {
-	printf("Tagger Section G appears to be off!\n");
-	dError = 500;
-      }
-      if((FPD_ScalerCurr->Integral(321,352))<=32) {
-	printf("Tagger Section H appears to be off!\n");
-	dError = 500;
-      }
-      if(dError==500) printf("\n");
     }
   }
   
@@ -85,6 +52,8 @@ void PeriodMacro() {
       system(cmd.str().c_str());
     }
   }
+
+  Double_t dError = 0;
 
   // look for hole in MWPC
   if(gROOT->FindObject("MWPC_Wires_Hits")){
@@ -126,7 +95,7 @@ void PeriodMacro() {
       Int_t iPeak = Temp_FPD->GetMaximumBin();
       Double_t dTime = Temp_FPD->GetBinCenter(iPeak);
       //Double_t dTime = Temp_FPD->GetMean();
-      if(dTime < 0 || dTime > 25){
+      if(dTime < 5 || dTime > 25){
 	printf("Possible problem in FPD_TimeOR - Event %d\n\t\t\tPeak at %f ns\n\n",gAN->GetNDAQEvent(),dTime);
 	dError += 2000;
       }	  
@@ -230,5 +199,32 @@ void PeriodMacro() {
     cmd << "caput GEN:MON:Pi0PerScRead.A " << dNPi0 << " > /dev/null";
     system(cmd.str().c_str());
   }
+  
+  if(bufferCounter>10){
+    // calculate the background-subtracted pairspec data
+    if(gROOT->FindObject("PairSpec_Open")){
+      if((PairSpec_Open->Integral())>0) {
+	stringstream cmd;
+	cmd << "caput -a BEAM:PAIRSPEC:TaggEff 352";
+	for(int n=1; n<=352; n++) {
+	  Double_t open = PairSpec_Open->GetBinContent(n);
+	  Double_t gated = PairSpec_Gated->GetBinContent(n);
+	  Double_t gated_dly = PairSpec_GatedDly->GetBinContent(n);
+	  Double_t taggeff = (gated-gated_dly)/open;
+	  if(!TMath::Finite(taggeff))
+	    taggeff = 0;
+	  cmd << taggeff << " ";
+	}
+	cmd << " > /dev/null";
+	system(cmd.str().c_str());
+      }
+    }
+    cout << "Period Mac Buffer Couned " << endl;
+    bufferCounter=0;
+  }
+  bufferCounter++;
+  
+
+
 
 }
