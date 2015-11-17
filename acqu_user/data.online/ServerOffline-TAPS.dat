@@ -29,7 +29,7 @@ Stream-Spec:    File    Mk2     0       327680   1024      0       400
 ## Now the list of data files to analyse
 ##              File Name       1st rec Last rec
 ##
-#File-Name /mnt/rundata/2015-09_G_E_Proton/CBTaggTAPS_11167.dat.xz 0 0
+#File-Name /mnt/rundata/2015-11_G_E_Neutron/TAPS_502.dat.xz 0 0
 #File-Name: /home/a2cb/acqu/scratch/CBTaggTAPS_11167.dat 0 0
-File-Name:  /home/a2cb/acqu/scratch/TAPS_478.dat   0   0
+File-Name:  /home/a2cb/acqu/scratch/TAPS_514.dat   0   0
 ## END

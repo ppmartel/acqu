@@ -8,6 +8,8 @@
 ##              #hits   start   stop    reference
 MultiADC:       3       1401    1911    1400
 #
+MultiADC:       3       300     423    424
+#
 # Moeller ADC channels, not really an ADC value!
 MultiADC:       3       8000    8800
 ## Stuff to monitor time dependence of counting rates and the hit pattern
@@ -42,6 +44,10 @@ Period:  3000	PeriodMacro.C	PeriodMacro()
 ## Histogram QDCs
 ## Tagger QDCs
 Display: ADC 800 1183
+## New FPD test
+Display: ADC 200 231
+Display: MultiHit 300 423 5000 -20000 -10000 0
+#Display: ADC 300 427
 ## EPT - TDCs, Microscope Sector E, D, C
 #Display: MultiHit 1817 1863 6000 -4000 -2000 0
 #Display: MultiHit 1817 1863 6000 -4000 -2000 1
