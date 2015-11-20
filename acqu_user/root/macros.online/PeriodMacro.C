@@ -96,9 +96,12 @@ void PeriodMacro() {
       iThis = MWPC_Wires_Hits->GetBinContent(1);
       for(Int_t i=1; i<iNBins; i++){
 	iPrev = iThis;
+        // exclude broken channels (as of 20.11.2015)
+        if (i == 94 || i == 119 || i == 160 || i == 217 || i == 241 || i == 305 || i == 327 || i == 437)
+          continue;
 	iThis = MWPC_Wires_Hits->GetBinContent(i+1);
 	dDiff = (TMath::Abs((iThis-iPrev)/(1.*iPrev)));
-	if(dDiff > 0.5) iProb++;
+	if(dDiff > 0.6) iProb++;
       }
       if(iProb > 16){
 	printf("Possible problem in MWPC Wires - Event %d\n\t\t\t%d jumps found\n\n",gAN->GetNDAQEvent(),iProb);
