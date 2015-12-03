@@ -1,0 +1,765 @@
+#-----------------------------------------------------------------------
+#--Author	JRM Annand   13th Jan 2004
+#--Update	JRM Annand... 1st Dec 2004
+#--Description
+#                *** Acqu++ <-> Root ***
+# Online/Offline Analysis of Sub-Atomic Physics Experimental Data 
+#
+# Parameter File: FPcommServer.Offline
+# Configuration File for DataServer (data input for analysis)
+#
+#-----------------------------------------------------------------------
+# Number of Input streams (sources of data), Record length to write data
+# and switch 0/1 = no/yes to control data write
+#              Number streams	Record Len	Save Data
+Input-Streams:	1		32768		0
+#
+# Optional directory spec. If not specified File-Names must contain the full
+# directory path
+File-Directory: /disk/archive/cb-experiments/cbmami/xz-2013_11-G-E/
+#
+# Specify each input stream
+# From disk File, ACQU (Mk1) format, save any output to File (save=1)
+# Input data record length, Output data record length
+#
+#            	Source	Format	Save?	RecLen	Buffers	Swap	MarkID
+Stream-Spec:	File	Mk2	0	32768	32	0	400
+#
+# Now the list of data Files to analyse
+#		File Name	1st rec	Last rec
+#
+# Some December G and E polarization Obsevables
+# Positive polarization of the target
+#
+#Diamond
+#PERP peak 350
+File-Name:  CBTaggTAPS_326.dat.xz  0 	0
+#File-Name:  CBTaggTAPS_334.dat.xz  0 	0
+#File-Name:  CBTaggTAPS_335.dat.xz  0 	0
+#File-Name:  CBTaggTAPS_356.dat.xz  0 	0
+#File-Name:  CBTaggTAPS_357.dat.xz  0 	0
+#File-Name:  CBTaggTAPS_358.dat.xz  0 	0
+#File-Name:  CBTaggTAPS_359.dat.xz  0	0
+#File-Name:  CBTaggTAPS_360.dat.xz  0 	0
+#File-Name:  CBTaggTAPS_361.dat.xz  0 	0
+#File-Name:  CBTaggTAPS_377.dat.xz  0 	0
+#File-Name:  CBTaggTAPS_378.dat.xz  0 	0
+#File-Name:  CBTaggTAPS_381.dat.xz  0 	0
+#File-Name:  CBTaggTAPS_383.dat.xz  0 	0
+#File-Name:  CBTaggTAPS_391.dat.xz  0 	0
+#File-Name:  CBTaggTAPS_393.dat.xz  0 	0
+#File-Name:  CBTaggTAPS_395.dat.xz  0 	0
+#File-Name:  CBTaggTAPS_397.dat.xz  0	0
+#File-Name:  CBTaggTAPS_406.dat.xz  0 	0
+#File-Name:  CBTaggTAPS_407.dat.xz  0 	0
+#File-Name:  CBTaggTAPS_408.dat.xz  0 	0
+#File-Name:  CBTaggTAPS_409.dat.xz  0 	0
+#
+# Peak 650
+#
+#File-Name:  CBTaggTAPS_438.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_439.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_441.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_443.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_451.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_454.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_455.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_462.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_463.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_464.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_465.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_486.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_488.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_491.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_492.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_499.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_500.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_501.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_503.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_512.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_515.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_516.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_517.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_522.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_523.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_524.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_525.dat.xz	0 	0
+##
+#Peak 750
+#
+#File-Name:  CBTaggTAPS_544.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_545.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_549.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_551.dat.xz  	0	0
+#File-Name:  CBTaggTAPS_556.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_558.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_559.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_560.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_565.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_566.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_567.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_568.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_573.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_574.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_575.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_576.dat.xz	0 	0
+#
+# Peak 450
+#
+#File-Name:  CBTaggTAPS_612.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_613.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_614.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_615.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_616.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_623.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_624.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_625.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_632.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_633.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_634.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_635.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_656.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_657.dat.xz 	0 	0
+#
+# 550 peak
+#
+#File-Name:  CBTaggTAPS_665.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_666.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_667.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_668.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_673.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_674.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_675.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_676.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_684.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_706.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_708.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_709.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_710.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_715.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_716.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_717.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_718.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_719.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_725.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_726.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_727.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_728.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_733.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_735.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_736.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_757.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_759.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_760.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_761.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_766.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_767.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_768.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_770.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_776.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_777.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_778.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_779.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_784.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_785.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_786.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_787.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_807.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_808.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_809.dat.xz	0 	0
+#
+#Radiator: Diamond
+#PARA peak 350
+#
+#File-Name:  CBTaggTAPS_322.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_324.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_330.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_354.dat.xz  	0 	0
+#File-Name:  CBTaggTAPS_355.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_362.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_365.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_372.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_376.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_384.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_385.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_388.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_389.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_401.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_402.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_404.dat.xz 	0 	0
+#
+# Peak 650
+#
+#File-Name:  CBTaggTAPS_430.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_433.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_445.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_447.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_449.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_450.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_456.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_457.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_459.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_467.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_468.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_469.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_470.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_493.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_494.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_496.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_498.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_504.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_506.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_508.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_509.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_518.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_519.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_520.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_521.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_526.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_527.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_529.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_531.dat.xz 	0 	0
+#
+## Peak 750
+#
+#File-Name:  CBTaggTAPS_552.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_553.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_554.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_555.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_561.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_562.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_563.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_564.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_571.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_572.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_577.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_578.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_580.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_581.dat.xz 	0 	0
+#
+## Peak 450
+#
+#File-Name:  CBTaggTAPS_617.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_618.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_621.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_622.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_627.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_628.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_629.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_631.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_647.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_648.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_649.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_650.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_662.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_663.dat.xz 	0	0
+#
+#Peak 550
+#
+#File-Name:  CBTaggTAPS_669.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_671.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_672.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_678.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_679.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_680.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_700.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_702.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_703.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_704.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_711.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_712.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_713.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_714.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_720.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_721.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_722.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_723.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_724.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_729.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_730.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_731.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_732.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_751.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_753.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_754.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_755.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_756.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_762.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_763.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_764.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_765.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_771.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_772.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_773.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_774.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_775.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_780.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_781.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_782.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_783.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_803.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_804.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_805.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_806.dat.xz	0 	0
+#
+# Moeller:Amo : 
+#
+#File-Name:	CBTaggTAPS_343.dat.xz	0	0
+#File-Name:	CBTaggTAPS_347.dat.xz	0	0
+#File-Name:	CBTaggTAPS_485.dat.xz	0	0
+#File-Name:	CBTaggTAPS_539.dat.xz	0	0
+#File-Name:	CBTaggTAPS_540.dat.xz	0	0
+#File-Name:	CBTaggTAPS_541.dat.xz	0	0
+#File-Name:	CBTaggTAPS_542.dat.xz	0	0
+#File-Name:	CBTaggTAPS_589.dat.xz	0	0
+#File-Name:	CBTaggTAPS_590.dat.xz	0	0
+#File-Name:	CBTaggTAPS_591.dat.xz	0	0
+#File-Name:	CBTaggTAPS_592.dat.xz	0	0
+#File-Name:	CBTaggTAPS_593.dat.xz	0	0
+#File-Name:	CBTaggTAPS_641.dat.xz	0	0
+#File-Name:	CBTaggTAPS_646.dat.xz	0	0
+#File-Name:	CBTaggTAPS_693.dat.xz	0	0
+#File-Name:	CBTaggTAPS_695.dat.xz	0	0
+#File-Name:	CBTaggTAPS_696.dat.xz	0	0
+#File-Name:	CBTaggTAPS_697.dat.xz	0	0
+#File-Name:	CBTaggTAPS_743.dat.xz	0	0
+#File-Name:	CBTaggTAPS_744.dat.xz	0	0
+#File-Name:	CBTaggTAPS_745.dat.xz	0	0
+#File-Name:	CBTaggTAPS_746.dat.xz	0	0
+#File-Name:	CBTaggTAPS_796.dat.xz	0	0
+#File-Name:	CBTaggTAPS_797.dat.xz	0	0
+#File-Name:	CBTaggTAPS_798.dat.xz	0	0
+#File-Name:	CBTaggTAPS_799.dat.xz	0	0
+#
+#
+#
+#
+# Negative polarization of the target (26.11.2013 to 6.12.2013) 
+#
+#Diamond
+#PERP
+# Peak at 350
+#File-Name:  CBTaggTAPS_860.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_861.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_862.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_863.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_868.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_869.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_870.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_871.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_878.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_882.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_883.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_885.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_886.dat.xz 	0	0
+#
+# Peak at 750
+#
+#File-Name:  CBTaggTAPS_930.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_931.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_932.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_933.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_938.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_942.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_982.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_983.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_985.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_990.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_991.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_993.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_994.dat.xz	0 	0
+#
+# Peak at 650
+#
+#File-Name:  CBTaggTAPS_1045.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1046.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1047.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1048.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_1053.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1054.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1055.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1056.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1072.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1073.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1074.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1075.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1080.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1081.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1082.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1083.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1084.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1091.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1092.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1093.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1094.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1100.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1101.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1102.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1103.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1120.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1121.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1122.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1123.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1132.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1133.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1134.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1135.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1136.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1141.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1142.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1143.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1144.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1150.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1151.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1152.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1153.dat.xz 	0 	0
+
+# Peak at 550
+#
+#File-Name:  CBTaggTAPS_1187.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1188.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1192.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1193.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1198.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1199.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1200.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1201.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1206.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1207.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1208.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1209.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1214.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1215.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_1216.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1217.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1224.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1242.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1243.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1246.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1251.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1252.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1254.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1256.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1263.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1264.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1265.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1266.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1280.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_1281.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1282.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1283.dat.xz 	0 	0
+
+# Peak at 450
+#
+#File-Name:  CBTaggTAPS_1297.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1298.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1299.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1300.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1305.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1306.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1307.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1308.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1327.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1328.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1330.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1331.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1336.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1337.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_1338.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1339.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1340.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1346.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1347.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1348.dat.xz	0 	0
+#####################
+#Radiator: Diamond                     #
+#####################
+#PARA
+#Peak at 350
+#File-Name:  CBTaggTAPS_865.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_866.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_867.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_872.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_874.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_875.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_876.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_887.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_888.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_889.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_890.dat.xz 	0 	0
+#
+# peak at 750
+#
+#File-Name:  CBTaggTAPS_925.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_926.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_934.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_935.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_936.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_937.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_978.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_979.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_980.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_981.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_986.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_987.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_988.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_989.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_995.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_996.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_997.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_998.dat.xz	0 	0
+#
+# Peak 650
+#
+#File-Name:  CBTaggTAPS_1006.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1007.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1049.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1050.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1051.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_1052.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1057.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1058.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1060.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1076.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1077.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1078.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1079.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1085.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_1086.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1087.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1089.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1096.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1097.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1098.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1099.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1104.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1106.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1107.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1108.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1125.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1126.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1127.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1128.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_1131.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1137.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1138.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1139.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1140.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1147.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_1148.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1149.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1154.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1155.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1156.dat.xz      0 	0
+#
+# Peak at 550
+#
+#File-Name:  CBTaggTAPS_1194.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1195.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1196.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1197.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1202.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1203.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1204.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1205.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1210.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1211.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1212.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1213.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_1218.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1219.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1220.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1223.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1238.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1239.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1240.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1241.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1247.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1248.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1249.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1250.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1257.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1259.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1260.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1261.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1267.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_1268.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1269.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1270.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1284.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1285.dat.xz	0 	0
+#
+# Peak at 450
+#
+#File-Name:  CBTaggTAPS_1293.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1294.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1295.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1296.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1301.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1302.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1303.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1304.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1309.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1310.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1311.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1332.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_1333.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1334.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1335.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1342.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1343.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1344.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1345.dat.xz 	0 	0
+#
+# Amo 
+#
+#File-Name:	CBTaggTAPS_905.dat.xz	0	0
+#File-Name:	CBTaggTAPS_906.dat.xz	0	0
+#File-Name:	CBTaggTAPS_907.dat.xz	0	0
+#File-Name:	CBTaggTAPS_908.dat.xz	0	0
+#File-Name:	CBTaggTAPS_941.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1004.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1043.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1044.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1067.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1068.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1070.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1115.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1116.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1118.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1119.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1178.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1179.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1180.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1182.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1185.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1232.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1234.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1235.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1236.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1286.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1287.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1288.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1289.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1290.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1321.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1322.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1323.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1324.dat.xz	0	0
+#File-Name:	CBTaggTAPS_1325.dat.xz	0	0
+#
+# November 2013 G and E polarization Obsevables
+# Carbon data. The last two days.
+#
+#Diamond
+#PERP peak 550
+#File-Name:  CBTaggTAPS_1365.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_1366.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1436.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1437.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1438.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1442.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1443.dat.xz	0 	0
+#
+# Peak 650
+#
+#File-Name:  CBTaggTAPS_1380.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1381.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1382.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1383.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1454.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1455.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_1456.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1457.dat.xz	0 	0
+#
+#Peak 750
+#
+#File-Name:  CBTaggTAPS_1391.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1392.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1395.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1465.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1466.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1468.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1469.dat.xz	0 	0
+#
+# Peak 350
+#
+#File-Name:  CBTaggTAPS_1401.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1402.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1403.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1411.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_1412.dat.xz 	0 	0
+#
+# 450 peak
+#
+#File-Name:  CBTaggTAPS_1417.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1418.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1421.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1424.dat.xz	0 	0
+#
+#Radiator: Diamond
+#PARA peak 550
+#File-Name:  CBTaggTAPS_1370.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1371.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_1372.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1373.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1428.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1429.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1430.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1432.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1433.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1434.dat.xz	0 	0
+#
+# Peak 650
+#
+#File-Name:  CBTaggTAPS_1375.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1376.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1377.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1378.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1448.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1452.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1453.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1458.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1459.dat.xz 	0	0
+#
+# Peak 750
+#
+#File-Name:  CBTaggTAPS_1386.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1387.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1389.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1390.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1463.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1464.dat.xz 	0 	0
+#
+# Peak 350
+#
+#File-Name:  CBTaggTAPS_1398.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1399.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1400.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_1414.dat.xz     0	0 
+#File-Name:  CBTaggTAPS_1415.dat.xz 	0 	0
+#
+#Peak 450
+#
+#File-Name:  CBTaggTAPS_1420.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1425.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1426.dat.xz 	0 	0
+#
+# Moeller:Amo : 
+#File-Name:  CBTaggTAPS_1358.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1359.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_1360.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1361.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1471.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1472.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1473.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1474.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1476.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1477.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1479.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1480.dat.xz 	0	0
+#File-Name:  CBTaggTAPS_1482.dat.xz 	0 	0
+#File-Name:  CBTaggTAPS_1483.dat.xz	0 	0
+#File-Name:  CBTaggTAPS_1484.dat.xz 	0 	0
+#
+# END
