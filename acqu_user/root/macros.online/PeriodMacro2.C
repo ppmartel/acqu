@@ -71,7 +71,7 @@ void PeriodMacro() {
       }
       if(iProb > 16){
 	printf("Possible problem in MWPC Wires - Event %d\n\t\t\t%d jumps found\n\n",gAN->GetNDAQEvent(),iProb);
-	dError += 1000;
+	//dError += 1000;
       }
     }
     if((MWPC_Wires_Hits->Integral()) > (400*iNBins)) MWPC_Wires_Hits->Reset();
