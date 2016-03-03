@@ -57,7 +57,7 @@ Module: GSI_VUPROM_Moeller vup24 vup_moe_cfg04.dat  04000000  0 0 0
 ##
 ## Tagger New FPD Test
 Module: CAEN_V792  v792_0 v792_0.dat		    0e000000 200    32      12
-Module: CAEN_V1190 v1190_0  v1190_0.dat             0f000000 300    128      14
+Module: CAEN_V1190 v1190_0  v1190_0.dat             0f000000 232    128      14
 ##
 ## Interrupt control module
 IRQ-Ctrl: vit0
