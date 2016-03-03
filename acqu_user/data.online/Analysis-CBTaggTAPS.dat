@@ -8,6 +8,8 @@
 ##              #hits   start   stop    reference
 MultiADC:       3       1401    1911    1400
 MultiADC:       3       2001    2767    2000
+## Tagger/Target test TDC in Beampolmon
+MultiADC:       3       232     355    356
 ## MWPC TDCS
 MultiADC:       3       4000    4639    2000
 ## TAPS Multihit
@@ -161,6 +163,14 @@ Display: ADC 23000 23499
 #Display: ADC 28000 28239
 ## Block F
 #Display: ADC 28256 28495
+##
+########################################################################
+## New FPD/Active Target Tests
+########################################################################
+##
+Display: ADC 200 231
+Display: ADC 356 356
+Display: MultiHit 232 355 5000 -25000 -5000 0
 ##
 ########################################################################
 ## Display Scalers

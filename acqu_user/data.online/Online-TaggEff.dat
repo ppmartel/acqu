@@ -18,6 +18,6 @@ Directory: /scratch/jrma/
 Analysis: TA2UserAnalysis
 ##
 ## Analysis setup file
-AnalysisSetup: Analysis-TaggEff.dat
+AnalysisSetup: Analysis-TaggEffN.dat
 ##
 ServerSetup: Server-TaggEff.dat
