@@ -80,6 +80,7 @@ TA2GoAT::TA2GoAT(const char* Name, TA2Analysis* Analysis) : TA2AccessSQL(Name, A
                                                                     errorModuleID(0),
                                                                     errorModuleIndex(0),
                                                                     errorCode(0),
+                                                                    nChannels(0),
                                                                     eventNumber(0),
                                                                     eventID(0),
                                                                     moellerRead(0),
@@ -200,6 +201,10 @@ void    TA2GoAT::SetConfig(Char_t* line, Int_t key)
         return;
         case EG_TAGGED_ENERGY:
             sscanf(line, "%i", &saveTaggedEnergy);
+        return;
+        case EG_SAVE_CHANNEL:
+            if(sscanf(line, "%s%s", channelIndex[nChannels], channelName[nChannels]) == 1) strcpy(channelName[nChannels],channelIndex[nChannels]);
+            nChannels++;
         return;
         default:
         	TA2AccessSQL::SetConfig(line, key);
@@ -372,6 +377,8 @@ void    TA2GoAT::PostInit()
         if(fVeto->IsEnergy()) treeDetectorHits->Branch("VetoEnergy", VetoEnergy, "VetoEnergy[nVetoHits]/D");
         if(fVeto->IsTime()) treeDetectorHits->Branch("VetoTime", VetoTime, "VetoTime[nVetoHits]/D");
     }
+
+    for(Int_t i=0; i<nChannels; i++) treeDetectorHits->Branch(channelName[i],&channelValue[i],Form("%s/I",channelName[i]));
 
     if(fNaI && fMWPC)
     {
@@ -982,6 +989,19 @@ void    TA2GoAT::Reconstruct()
             if(fVeto->IsTime()) VetoTime[i] = fVeto->GetTime(VetoHits[i]);
         }
 	}
+
+    for(Int_t i=0; i<nChannels; i++)
+    {
+        TString index = channelIndex[i];
+        if(index.Contains("M"))
+        {
+            TString mult = channelIndex[i];
+            index.Remove(index.First("M"));
+            mult.Remove(0,mult.First("M")+1);
+            channelValue[i] = fMulti[index.Atoi()]->GetHit(mult.Atoi());
+        }
+        else channelValue[i] = fADC[index.Atoi()];
+    }
 
     // Get two track vertex information from CentralApparatus
     if(fNaI && fMWPC)

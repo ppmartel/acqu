@@ -18,6 +18,7 @@ enum {
     EG_FILE_NAME,
     EG_BEAM_HELICITY,
     EG_TAGGED_ENERGY,
+    EG_SAVE_CHANNEL,
 };
 
 static const Map_t RootTreeConfigKeys[] = {
@@ -27,6 +28,7 @@ static const Map_t RootTreeConfigKeys[] = {
     {"RootTree-File-Name:"           	, EG_FILE_NAME},
     {"Beam-Helicity:"               	, EG_BEAM_HELICITY},
     {"Save-Tagged-Energy:"          	, EG_TAGGED_ENERGY},
+    {"Save-Channel:"                 	, EG_SAVE_CHANNEL},
     // Termination
     {NULL       	 		, -1           }
 };
@@ -150,7 +152,12 @@ private:
         Int_t* 		errorModuleID;
         Int_t* 		errorModuleIndex;
         Int_t* 		errorCode;
-    
+
+        Int_t       nChannels;
+        Char_t      channelName[128][128];
+        Char_t      channelIndex[128][8];
+        Int_t       channelValue[128];
+
     	//Scalers
     	Int_t		eventNumber;
     	Int_t		eventID;    
