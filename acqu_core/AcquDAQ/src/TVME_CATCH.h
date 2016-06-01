@@ -131,6 +131,28 @@ inline void TVME_CATCH::SpyReset( )
 //---------------------------------------------------------------------------
 inline Int_t TVME_CATCH::SpyRead( void** outBuff )
 {
+  UInt_t status = Read(ECATCH_IStatus);            // status register
+  UInt_t nWordStatus = status & 0xffff;            // # words currently in spy
+  if( nWordStatus == 0 ){
+    ErrorStore( outBuff, 6 ); // error code 6
+    fData[ECATCH_ISpyCtrl] = ECATCH_SpyReset;
+    Write(ECATCH_ISpyCtrl);                         // ensure spy buffer reset
+    return 0;
+  }
+
+  /*
+  UInt_t nWordTries = 0;
+  while(nWordStatus == 0){
+    status = Read(ECATCH_IStatus);
+    nWordStatus = status & 0xffff;    
+    if(nWordTries>200) {
+      ErrorStore( outBuff, 7 );                    // error code 7
+      return 0;
+    }
+    nWordTries++;
+  }
+  */
+
   // Transfer data from Spy buffer to local data buffer
   //  UInt_t* spydata = creg->Data;
   UInt_t header = Read(ECATCH_ISpyData);          // could be zero
@@ -139,26 +161,43 @@ inline Int_t TVME_CATCH::SpyRead( void** outBuff )
     ErrorStore( outBuff, 1);                      // error code 1
     return 0;
   }
-  UInt_t nword = header & 0xffff;                 // # words stored in spy
-  if( nword > fMaxSpy ){                          // overflow ?
+
+  UInt_t nWordHeader = header & 0xffff;           // # words expected in spy
+  nWordStatus--;
+
+  if( !header ){                                  // header still zero, why?
+    ErrorStore( outBuff, 5 );                     // error code 5
+    return 0;
+  }
+
+  if(nWordHeader != nWordStatus) fprintf(fLogStream,"CATCH - %d words in header, %d words in status\n",nWordHeader,nWordStatus);
+
+  if( nWordHeader > fMaxSpy ){                          // overflow ?
     ErrorStore( outBuff, 2 );                     // error code 2
     return 0;
   }
-  // Make nword reads from the spy buffer
-  for( UInt_t n=0; n<nword; n++ ) fSpyData[n] = Read(ECATCH_ISpyData);
+  // Make nWordHeader reads from the spy buffer
+  for( UInt_t n=0; n<nWordHeader; n++ ) fSpyData[n] = Read(ECATCH_ISpyData);
 
-  // Further error check
-  if((fSpyData[nword-1] != ECATCH_Trailer) || ((fSpyData[1]&0x00ff0000)>>16)){
+  // Check that trailer is the last word in buffer
+  if(fSpyData[nWordHeader-1] != ECATCH_Trailer){
     ErrorStore( outBuff, 3 );                     // error code 3
     return 0;
   }
+
+  // Further error check
+  if((fSpyData[1]&0x00ff0000)>>16){
+    ErrorStore( outBuff, 4 );                     // error code 4
+    return 0;
+  }
+
   fData[ECATCH_ISpyCtrl] = ECATCH_SpyReset;
   Write(ECATCH_ISpyCtrl);                         // ensure spy buffer reset
   fTCSEventID = fSpyData[0];                      // 1st word = TCS event ID
   // if the system specifies that this catch sends the event ID to a remote
   // system do it here
   if( fEventSendMod ) fEventSendMod->SendEventID( fTCSEventID );
-  return nword;
+  return nWordHeader;
 }
 
 //---------------------------------------------------------------------------
