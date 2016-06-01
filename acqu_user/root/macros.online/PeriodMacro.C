@@ -87,29 +87,29 @@ void PeriodMacro() {
   }
 
   // look for hole in MWPC
-//  if(gROOT->FindObject("MWPC_Wires_Hits")){
-//    Int_t iNBins = MWPC_Wires_Hits->GetNbinsX();
-//    if((MWPC_Wires_Hits->Integral()) > (100*iNBins)){
-//      Int_t iPrev, iThis;
-//      Double_t dDiff;
-//      Int_t iProb = 0;
-//      iThis = MWPC_Wires_Hits->GetBinContent(1);
-//      for(Int_t i=1; i<iNBins; i++){
-//	iPrev = iThis;
-//        // exclude broken channels (as of 20.11.2015)
-//        if (i == 94 || i == 119 || i == 160 || i == 217 || i == 241 || i == 305 || i == 327 || i == 437)
-//          continue;
-//	iThis = MWPC_Wires_Hits->GetBinContent(i+1);
-//	dDiff = (TMath::Abs((iThis-iPrev)/(1.*iPrev)));
-//	if(dDiff > 0.5) iProb++;
-//      }
-//      if(iProb > 16){
-//	printf("Possible problem in MWPC Wires - Event %d\n\t\t\t%d jumps found\n\n",gAN->GetNDAQEvent(),iProb);
-//	dError += 1000;
-//      }
-//    }
-//    if((MWPC_Wires_Hits->Integral()) > (400*iNBins)) MWPC_Wires_Hits->Reset();
-//  }
+  if(gROOT->FindObject("MWPC_Wires_Hits")){
+    Int_t iNBins = MWPC_Wires_Hits->GetNbinsX();
+    if((MWPC_Wires_Hits->Integral()) > (100*iNBins)){
+      Int_t iPrev, iThis;
+      Double_t dDiff;
+      Int_t iProb = 0;
+      iThis = MWPC_Wires_Hits->GetBinContent(1);
+      for(Int_t i=1; i<iNBins; i++){
+	iPrev = iThis;
+        // exclude broken channels (as of 20.11.2015)
+        if (i == 94 || i == 119 || i == 160 || i == 217 || i == 241 || i == 305 || i == 327 || i == 437)
+          continue;
+	iThis = MWPC_Wires_Hits->GetBinContent(i+1);
+	dDiff = (TMath::Abs((iThis-iPrev)/(1.*iPrev)));
+	if(dDiff > 0.5) iProb++;
+      }
+      if(iProb > 16){
+	printf("Possible problem in MWPC Wires - Event %d\n\t\t\t%d jumps found\n\n",gAN->GetNDAQEvent(),iProb);
+	dError += 1000;
+      }
+    }
+    if((MWPC_Wires_Hits->Integral()) > (400*iNBins)) MWPC_Wires_Hits->Reset();
+  }
 
 
   // look for shift in FPD
@@ -129,7 +129,7 @@ void PeriodMacro() {
       Int_t iPeak = Temp_FPD->GetMaximumBin();
       Double_t dTime = Temp_FPD->GetBinCenter(iPeak);
       //Double_t dTime = Temp_FPD->GetMean();
-      if(dTime < 0 || dTime > 25){
+      if(dTime < 5 || dTime > 30){
 	printf("Possible problem in FPD_TimeOR - Event %d\n\t\t\tPeak at %f ns\n\n",gAN->GetNDAQEvent(),dTime);
 	dError += 2000;
       }	  

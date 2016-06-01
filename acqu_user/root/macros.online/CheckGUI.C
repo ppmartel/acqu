@@ -134,21 +134,29 @@ void CheckGUI()
 		cout << "CheckSystem already loaded..." << endl;
 		return;
 	}
+	Int_t isCB = gROOT->ProcessLine("TString s1 = gAR->GetFileName();s1.Contains(\"CB\")");
+	Int_t isTAPS = gROOT->ProcessLine("TString s1 = gAR->GetFileName();s1.Contains(\"TAPS\")");
 	// init the list of macros to be called
 	items = new TObjArray();
-	items->Add(MacroEntry::Make("CheckCB.C","Crystal_Ball"));
-	items->Add(MacroEntry::Make("CheckTAPSBaF2.C","TAPS_BaF2"));
-	items->Add(MacroEntry::Make("CheckTAPSPbWO4.C","TAPS_PbWO4"));
-	items->Add(MacroEntry::Make("CheckTAPSVeto.C","TAPS_Veto"));
+	if(isCB){
+	  items->Add(MacroEntry::Make("CheckCB.C","Crystal_Ball"));
+	  items->Add(MacroEntry::Make("CheckPID.C","PID"));
+	  items->Add(MacroEntry::Make("CheckMWPC.C","MWPC"));
+	}
+	if(isTAPS){
+	  items->Add(MacroEntry::Make("CheckTAPSBaF2.C","TAPS_BaF2"));
+	  items->Add(MacroEntry::Make("CheckTAPSPbWO4.C","TAPS_PbWO4"));
+	  items->Add(MacroEntry::Make("CheckTAPSVeto.C","TAPS_Veto"));
+	}
 	items->Add(MacroEntry::Make("CheckTagger.C","Tagger"));
-	items->Add(MacroEntry::Make("CheckPID.C","PID"));
-	items->Add(MacroEntry::Make("CheckMWPC.C","MWPC"));
-	items->Add(MacroEntry::Make("CheckTrigger.C","Trigger"));
-	items->Add(MacroEntry::Make("CheckLiveTimes.C","LiveTimes"));
-	items->Add(MacroEntry::Make("CheckPhysics.C","Physics"));	
-	//	items->Add(MacroEntry::Make("CheckActiveADC.C","Active_ADC"));	
-	//	items->Add(MacroEntry::Make("CheckActiveTDC.C","Active_TDC"));	
-	
+	if(isCB || isTAPS){
+	  items->Add(MacroEntry::Make("CheckTrigger.C","Trigger"));
+	  items->Add(MacroEntry::Make("CheckLiveTimes.C","LiveTimes"));
+	  items->Add(MacroEntry::Make("CheckPhysics.C","Physics"));	
+	  //	items->Add(MacroEntry::Make("CheckActiveADC.C","Active_ADC"));	
+	  //	items->Add(MacroEntry::Make("CheckActiveTDC.C","Active_TDC"));	
+	}
+
 	// main frame
 	fMainFrame = new TGMainFrame(gClient->GetRoot(), 1240, 890, kMainFrame | kVerticalFrame);
 	fMainFrame->SetName("fMainFrame");
