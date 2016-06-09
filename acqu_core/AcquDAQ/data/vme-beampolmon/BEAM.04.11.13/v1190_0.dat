@@ -8,7 +8,8 @@
 ## Registers...512 data memory, 34 control, 32 threshold, 9 ROM
 ##              Hex Base        #Registers      Module type Mapsize
 BaseSetup:      0               0               ADC         9000
-Hardware-ID: a0500
+Hardware-ID: a60400
+#Hardware-ID: a0500
 Window: 0xffd8 0x28
 #Window: 0xfff6 0x28
 ## TDC fires on....
