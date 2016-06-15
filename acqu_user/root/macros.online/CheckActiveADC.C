@@ -6,7 +6,7 @@ CheckActiveADC(TCanvas* canv){
 
   Char_t* hname[] = {
     "ADC216",
-    "ADC217",
+    "ADC215",
     "ADC218",
     "ADC219",
     "ADC220",
@@ -19,7 +19,7 @@ CheckActiveADC(TCanvas* canv){
     "ADC227",
     "ADC228",
     "ADC229",
-    "ADC230",
+    "ADC214",
     "ADC231",
   };
   Int_t log[] = { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0 };

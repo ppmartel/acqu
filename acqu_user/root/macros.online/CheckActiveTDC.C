@@ -6,23 +6,23 @@ CheckActiveTDC(TCanvas* canv){
 
   Char_t* hname[] = {
     "ADC232M0",
-    "ADC296M0",
+    "ADC233M0",
+    "ADC234M0",
+    "ADC235M0",
+    "ADC236M0",
+    "ADC237M0",
+    "ADC238M0",
+    "ADC239M0",
     "ADC240M0",
+    "ADC241M0",
+    "ADC242M0",
+    "ADC243M0",
     "ADC244M0",
-    "ADC248M0",
-    "ADC252M0",
-    "ADC256M0",
-    "ADC260M0",
-    "ADC264M0",
-    "ADC268M0",
-    "ADC272M0",
-    "ADC276M0",
-    "ADC280M0",
-    "ADC284M0",
-    "ADC300M0",
-    "ADC304M0",
+    "ADC245M0",
+    "ADC246M0",
+    "ADC247M0",
   };
-  Int_t log[] = { 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0 };
+  Int_t log[] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
   Int_t col[] = { 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,0,0,0,0,0,0,0,0,0,0,0,0 };
   Char_t* xname[] = {
     "Active Target - TDC 1",
