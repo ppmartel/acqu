@@ -136,14 +136,20 @@ void TVME_V792::ReadIRQ( void** outBuffer )
   // This version decodes a single event and then resets the data buffer
   //
   UShort_t status1 = Read(EV7XX_Status1);    // read status reg. for data avail
-  if( !(status1 & 0x1) || (status1 & 0x4) ){ // is there any data?
-    /*
-    fprintf(fLogStream,"<V7XX QDC/TDC no data or busy, Status = %x (hex)>\n",
-	    status1);
-    ErrorStore(outBuffer, EErrDataFormat);
-    */
-    ResetData();
-    return;
+  Bool_t hasData = status1 & 0x1;
+  Bool_t isBusy = status1 & 0x4;
+  UInt_t nTries = 0;
+  while(isBusy || !hasData){
+    status1 = Read(EV7XX_Status1);
+    hasData = status1 & 0x1;
+    isBusy = status1 & 0x4;
+    if(nTries>100){
+      if(isBusy) ErrorStore(outBuffer, 1);
+      if(!hasData) ErrorStore(outBuffer, 2);
+      ResetData();
+      return;
+    }
+    nTries++;
   }
   Int_t i = EV7XX_Outbuff;
   UInt_t datum = Read(i++);                 // data header
