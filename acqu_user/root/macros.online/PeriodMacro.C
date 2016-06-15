@@ -1,31 +1,17 @@
 // This code gets executed by the online analysis
 // every Nth events (see online config Period: statement)
-int x=5;
+//int x=5;
 
 void PeriodMacro() {
-  // Dump the current FP scalers to a nfs exported file system
-  // if(gROOT->FindObject("FPD_ScalerCurr")){
-  //   if((FPD_ScalerCurr->Integral()) > 0){
-  //     FILE  *fp=fopen("scratch/tagscaler.txt","w");
-  //     //FILE  *fp=fopen("/exports/a2raid5/tagscaler.txt","w");
-  //     for(int n=1;n<=352;n++){
-  // 	fprintf(fp,"%d\n", FPD_ScalerCurr->GetBinContent(n));
-  //     }
-  //     fclose(fp);
-  //   }
-  // }
-
-  //replaced writing out the tagger scalers to file, with writing to EPICS.
-   // write the tagger scalers to data
-
   Double_t dError = 0;
+  //printf("Period Macro - %d\n",gAN->GetNDAQEvent());
 
   if(gROOT->FindObject("FPD_ScalerCurr")){
     if((FPD_ScalerCurr->Integral())>0) {
       stringstream cmd;
       cmd << "caput -a TAGGER:RAW_SCALER 352";
       for(int n=352; n>=1; n--) {
-	cmd << FPD_ScalerCurr->GetBinContent(n) << " ";
+	cmd << " " << FPD_ScalerCurr->GetBinContent(n);
       } 
       cmd << " > /dev/null";
       system(cmd.str().c_str());
@@ -54,15 +40,16 @@ void PeriodMacro() {
 	printf("Tagger Section F appears to be off!\n");
 	dError = 500;
       }
-      
-      //if((FPD_ScalerCurr->Integral(273,320))<=48) {
-      //printf("Tagger Section G appears to be off!\n");
-      //dError = 500;
-      //}
-      //if((FPD_ScalerCurr->Integral(321,352))<=32) {
-      //printf("Tagger Section H appears to be off!\n");
-      //dError = 500;
-      //}
+      /*
+      if((FPD_ScalerCurr->Integral(273,320))<=48) {
+	printf("Tagger Section G appears to be off!\n");
+	dError = 500;
+      }
+      if((FPD_ScalerCurr->Integral(321,352))<=32) {
+	printf("Tagger Section H appears to be off!\n");
+	dError = 500;
+      }
+      */
       if(dError==500) printf("\n");
     }
   }
@@ -79,7 +66,7 @@ void PeriodMacro() {
 	Double_t taggeff = (gated-gated_dly)/open;
 	if(!TMath::Finite(taggeff))
           taggeff = 0;
-	cmd << taggeff << " ";
+	cmd << " " << taggeff;
       }
       cmd << " > /dev/null";
       system(cmd.str().c_str());
@@ -136,45 +123,7 @@ void PeriodMacro() {
       delete Temp_FPD;
     }
   }
-  /*
-  // look for shift in NaI
-  Bool_t bShift = false;
-  if(gROOT->FindObject("NaI_Hits_v_TimeOR")){
-    Int_t iNBins = ((NaI_Hits_v_TimeOR->GetNbinsX())*(NaI_Hits_v_TimeOR->GetNbinsX()));
-    if((NaI_Hits_v_TimeOR->Integral()) > (10000*720/8)){
-      TH2D *Temp_NaI = (TH2D*)NaI_Hits_v_TimeOR->Clone("Temp_NaI");
-      if(gROOT->FindObject("Prev_NaI")){
-	Temp_NaI->Add(Prev_NaI,-1);  
-	if((Temp_NaI->Integral()) > (10000*720/8)){
-	  delete Prev_NaI;
-	  TH2D *Prev_NaI = (TH2D*)NaI_Hits_v_TimeOR->Clone("Prev_NaI");
-	}
-      }
-      else TH2D *Prev_NaI = (TH2D*)NaI_Hits_v_TimeOR->Clone("Prev_NaI");
-	
-      TH1D *Proj_NaI;
-      for(Int_t i=0; i<720; i+=8){
-	if((i==32) || (i==352) || (i==360) || (i==680)) continue;
-	Proj_NaI = (TH1D*)Temp_NaI->ProjectionX("Proj_NaI",i+1,i+8);
-	
-	Double_t dTime = Proj_NaI->GetMean();
-	if((dTime < 0) || (dTime > 40)){
-	  if(!bShift) printf("Possible problem in NaI_Hits_v_TimeOR - Event %d\n",gAN->GetNDAQEvent());
-	  printf("\t\t\tPeak at %f ns (Channels %3d-%3d)\n",dTime,i,i+7);
-	  if(!bShift) dError += 4000;
-	  bShift = true;
-	}
-      }
-      if(gROOT->FindObject("Error_NaI")) delete Error_NaI;
-      if(bShift){
-	TH2D *Error_NaI = (TH2D*)Temp_NaI->Clone("Error_NaI");
-	printf("\n");
-      }
-      delete Proj_NaI;
-      delete Temp_NaI;
-    }
-  }
-  */
+
   // look for shift in NaI
   Bool_t bShift = false;
   if(gROOT->FindObject("NaI_Hits_v_TimeOR")){
@@ -208,6 +157,44 @@ void PeriodMacro() {
   stringstream cmd;
   cmd << "caput GEN:MON:EventsWithError.A " << dError << " > /dev/null";
   system(cmd.str().c_str());
+
+  // Perform some online asymmetry
+  if(gROOT->FindObject("PHYS_Pi0P_Hel0") && gROOT->FindObject("PHYS_Pi0P_Hel1")){
+    TH1D *hel0P = (TH1D*)PHYS_Pi0P_Hel0->ProjectionX("hel0P",96,105,50,89);
+    TH1D *hel0L = (TH1D*)PHYS_Pi0P_Hel0->ProjectionX("hel0L",1,95,50,89);
+    TH1D *hel0R = (TH1D*)PHYS_Pi0P_Hel0->ProjectionX("hel0R",106,200,50,89);
+
+    TH1D *hel1P = (TH1D*)PHYS_Pi0P_Hel1->ProjectionX("hel1P",96,105,50,89);
+    TH1D *hel1L = (TH1D*)PHYS_Pi0P_Hel1->ProjectionX("hel1L",1,95,50,89);
+    TH1D *hel1R = (TH1D*)PHYS_Pi0P_Hel1->ProjectionX("hel1R",106,200,50,89);
+
+    TH1D *hel0S = (TH1D*)hel0P->Clone("hel0S");
+    hel0S->Sumw2();
+    hel0S->Add(hel0L,(-5/95.));
+    hel0S->Add(hel0R,(-5/95.));
+
+    TH1D *hel1S = (TH1D*)hel1P->Clone("hel1S");
+    hel1S->Sumw2();
+    hel1S->Add(hel1L,(-5/95.));
+    hel1S->Add(hel1R,(-5/95.));
+
+    TH1D *helNum = (TH1D*)hel0S->Clone("helNum");
+    helNum->Add(hel1S,-1);
+    helNum->Scale(TMath::Sqrt(2));
+    TH1D *helDen = (TH1D*)hel0S->Clone("helDen");
+    helDen->Add(hel1S,1);
+
+    helNum->Rebin(4);
+    helDen->Rebin(4);
+
+    TH1D *helAsy = (TH1D*)helNum->Clone("helAsy");
+    helAsy->Divide(helDen);
+    //printf("g+p->pi0+p - F = %0.3f +/- %0.3f\n",helAsy->GetBinContent(7),helAsy->GetBinError(7));
+
+    stringstream cmd;
+    cmd << "caput GEN:MON:Pi0Asymmetry.A " << helAsy->GetBinContent(7) << " > /dev/null";
+    system(cmd.str().c_str());
+  }
 
   // read out pi0 counts from 
   if(gROOT->FindObject("PHYS_IM_2g")){

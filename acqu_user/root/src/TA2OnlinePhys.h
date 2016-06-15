@@ -65,7 +65,18 @@ class TA2OnlinePhys : public TA2Physics {
 	
 	TLorentzVector* fParticleP4;
 	Int_t*			fParticleApp;
-	
+    Double_t*		fParticleTime;
+
+    Int_t  	 	fNHelicityBits;
+    Bool_t  	fHelicity;
+    Bool_t  	fHelicityInverted;
+    Bool_t  	fHelicitySet;
+    Int_t  	 	fHelicityADC;
+
+    Char_t  	fHelicityBits[8][8];
+    Bool_t  	fHelicityInhibit[8];
+    Bool_t  	fHelicityBeam[8];
+
 // Histograms 
 	TH1* 	IM_2g;
 	TH1*	IM_2g_CB;
@@ -78,7 +89,9 @@ class TA2OnlinePhys : public TA2Physics {
 	
 	TH1*	IM_6g;
 	TH1*	IM_6g_CB;
-	
+
+    TH3*	Pi0P_Hel0;
+    TH3*	Pi0P_Hel1;
 	
 	protected:
 		void ZeroCounters();
@@ -87,6 +100,8 @@ class TA2OnlinePhys : public TA2Physics {
 		void GetTagger();
 		void DefineHistograms();
 		void BasicPhysCheck();
+		void BeamHelicCheck();
+		void FAsymPi0PCheck();
 
 	public:
 

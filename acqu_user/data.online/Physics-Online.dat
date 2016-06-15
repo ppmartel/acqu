@@ -7,6 +7,11 @@
 # Set Target parameters (used by TA2Physics.cc)
 Target:	0. 0. 0.	938.271  
 #
+# Old helicity setting
+#Beam-Helicity: 6 I H L L H
+# New helicity setting
+Beam-Helicity: 7 H I H L
+#
 #############################################################
 Initialise:
 ############################################################

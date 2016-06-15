@@ -2,9 +2,10 @@
 
 #include "TA2OnlinePhys.h"
 
-enum {};
+enum {EG_HELICITY};
 static const Map_t kInputs[] = {
-	{NULL,          -1}
+    {"Beam-Helicity:", EG_HELICITY},
+    {NULL,          -1}
 };
 
 ClassImp(TA2OnlinePhys)
@@ -30,6 +31,12 @@ TA2OnlinePhys::TA2OnlinePhys( const char* name, TA2Analysis* analysis )
 	fParticleP4		= NULL;
 	fParticleApp	= NULL;
 
+	fNHelicityBits = 0;
+	fHelicity = 0;
+	fHelicityInverted = 0;
+	fHelicitySet = 0;
+	fHelicityADC = 0;
+
 	AddCmdList(kInputs);
 }
 
@@ -45,11 +52,29 @@ void TA2OnlinePhys::SetConfig(Char_t* line, Int_t key)
 	// Any special command-line input for Crystal Ball apparatus
 
 	switch (key){
-		default:
-		// default main apparatus SetConfig()
-		TA2Physics::SetConfig( line, key );
-		break;
-	}
+    case EG_HELICITY:
+        fNHelicityBits = sscanf(line, "%i%s%s%s%s%s%s%s%s", &fHelicityADC, fHelicityBits[0], fHelicityBits[1], fHelicityBits[2], fHelicityBits[3], fHelicityBits[4], fHelicityBits[5], fHelicityBits[6], fHelicityBits[7]);
+        fNHelicityBits--;
+        if(fNHelicityBits < 2) Error("SetConfig", "Not enough information to construct beam helicity!");
+        else
+        {
+            //printf("Helicity");
+            for(Int_t i=0; i<fNHelicityBits; i++)
+            {
+                fHelicityInhibit[i] = false;
+                if(!strcmp(fHelicityBits[i],"I") || !strcmp(fHelicityBits[i],"i")) fHelicityInhibit[i] = true;
+                else if(!strcmp(fHelicityBits[i],"L") || !strcmp(fHelicityBits[i],"l")) fHelicityBeam[i] = false;
+                else if(!strcmp(fHelicityBits[i],"H") || !strcmp(fHelicityBits[i],"h")) fHelicityBeam[i] = true;
+                //printf(" - %s %i %i",fHelicityBits[i], fHelicityInhibit[i], fHelicityBeam[i]);
+            }
+            //printf("\n");
+        }
+        break;
+    default:
+        // default main apparatus SetConfig()
+        TA2Physics::SetConfig( line, key );
+        break;
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -90,6 +115,7 @@ void TA2OnlinePhys::PostInit()
 	// Create arrays to hold Particles
 	fParticleP4		= new TLorentzVector[fMaxNParticle];
 	fParticleApp	= new Int_t[fMaxNParticle];
+    fParticleTime	= new Double_t[fMaxNParticle];
 
 	// Make 2x the room (enough) for tagger for multi-hit
 
@@ -126,6 +152,8 @@ void TA2OnlinePhys::Reconstruct()
 	GetTagger();
 	
 	BasicPhysCheck();
+    if(fNHelicityBits>=2) BeamHelicCheck();
+	FAsymPi0PCheck();
 
 }
 
@@ -146,8 +174,95 @@ void TA2OnlinePhys::DefineHistograms()
 	IM_6g 		= new TH1D("PHYS_IM_6g", 		"IM of 6 photon events", 1000, 0, 1000);
 	IM_6g_CB 	= new TH1D("PHYS_IM_6g_CB", 	"IM of 6 photon events - CB only", 1000, 0, 1000);
 
+    Pi0P_Hel0	= new TH3D("PHYS_Pi0P_Hel0",	"Pi0P Events;#theta_{#pi0} (deg);t_{#pi0} (ns);m_{miss} (MeV)", 36, 0, 180, 200, -200, 200, 150, 800, 1100);
+    Pi0P_Hel1	= new TH3D("PHYS_Pi0P_Hel1",	"Pi0P Events;#theta_{#pi0} (deg);t_{#pi0} (ns);m_{miss} (MeV)", 36, 0, 180, 200, -200, 200, 150, 800, 1100);
+
 		
 }
+
+void TA2OnlinePhys::FAsymPi0PCheck()
+{
+    TLorentzVector p4Beam(0,0,0,0);
+    TLorentzVector p4Target(0,0,0,938.27);
+    TLorentzVector p4Pi0(0,0,0,0);
+    TLorentzVector p4Miss(0,0,0,0);
+
+    Double_t timePi0 = 0;
+
+    // Possible pi0 candidate with two tracks (lost recoil)
+    if(fNParticle == 2)
+    {
+        p4Pi0 = fParticleP4[0] + fParticleP4[1];
+        timePi0 = 0.5*(fParticleTime[0] + fParticleTime[1]);
+    }
+    // Possible pi0 candidate with three tracks (detect recoil)
+    else if(fNParticle == 3)
+    {
+        TLorentzVector p4_1 = fParticleP4[0] + fParticleP4[1];
+        TLorentzVector p4_2 = fParticleP4[0] + fParticleP4[2];
+        TLorentzVector p4_3 = fParticleP4[1] + fParticleP4[2];
+
+        Double_t md_1 = TMath::Abs(p4_1.M()-134.98);
+        Double_t md_2 = TMath::Abs(p4_2.M()-134.98);
+        Double_t md_3 = TMath::Abs(p4_3.M()-134.98);
+
+        if(md_1 < md_2 && md_1 < md_3)
+        {
+            p4Pi0 = p4_1;
+            timePi0 = 0.5*(fParticleTime[0] + fParticleTime[1]);
+        }
+        else if(md_2 < md_1 && md_2 < md_3)
+        {
+            p4Pi0 = p4_2;
+            timePi0 = 0.5*(fParticleTime[0] + fParticleTime[2]);
+        }
+        else if(md_3 < md_1 && md_3 < md_2)
+        {
+            p4Pi0 = p4_3;
+            timePi0 = 0.5*(fParticleTime[1] + fParticleTime[2]);
+        }
+    }
+    // Reasonable pi0 candidate, and helicity bit is set correctly
+    if(TMath::Abs(p4Pi0.M()-134.98) < 20 && fHelicitySet)
+    {
+        for(UInt_t i=0; i<fNTagg; i++)
+        {
+            p4Beam = fTaggedPhoton[i]->GetP4();
+            if(p4Beam.E()<145 || p4Beam.E()>=300) continue;
+            if((TMath::Abs(p4Pi0.Phi()*TMath::RadToDeg())<45) || (TMath::Abs(p4Pi0.Phi()*TMath::RadToDeg())>=135)) continue;
+	    p4Miss = p4Beam+p4Target-p4Pi0;
+	    if((fHelicity && (p4Pi0.Phi()>0)) || (!fHelicity && (p4Pi0.Phi()<0))) Pi0P_Hel1->Fill((p4Pi0.Theta()*TMath::RadToDeg()),(timePi0-fTaggerTime[i]),p4Miss.M());
+            else Pi0P_Hel0->Fill((p4Pi0.Theta()*TMath::RadToDeg()),(timePi0-fTaggerTime[i]),p4Miss.M());
+        }
+    }
+}
+
+
+void TA2OnlinePhys::BeamHelicCheck()
+{
+    Bool_t fHelicityBit;
+    fHelicity = true;
+    fHelicityInverted = true;
+    fHelicitySet = true;
+    for(Int_t i=0; i<fNHelicityBits; i++)
+    {
+        fHelicityBit = (fADC[fHelicityADC] & 1<<i);
+        if(fHelicityInhibit[i] && fHelicityBit)
+        {
+            fHelicitySet = false;
+            break;
+        }
+        else if(fHelicityInhibit[i]) continue;
+        fHelicity = (fHelicity && (fHelicityBeam[i] == fHelicityBit));
+        fHelicityInverted = (fHelicityInverted && (fHelicityBeam[i] != fHelicityBit));
+        if(fHelicity == fHelicityInverted)
+        {
+            fHelicitySet = false;
+            break;
+        }
+    }
+}
+
 
 void TA2OnlinePhys::BasicPhysCheck()
 {
@@ -220,6 +335,7 @@ void TA2OnlinePhys::GetCBParticles()
 		 
 		fParticleP4[fNParticle+i]  = p4cb[i];
 		fParticleApp[fNParticle+i] = 1;
+        fParticleTime[fNParticle+i] = fCB->GetParticles(i).GetTime();
 	}
 	
 	// update # of particles
@@ -235,7 +351,8 @@ void TA2OnlinePhys::GetTAPSParticles()
 		 
 		fParticleP4[fNParticle+i]  = p4taps[i];
 		fParticleApp[fNParticle+i] = 2;
-	}
+        fParticleTime[fNParticle+i] = (fTAPS->GetCal()->GetClTimeOR())[i];
+    }
 	
 	// update # of particles
 	fNParticle+=fTAPSNParticle;	
