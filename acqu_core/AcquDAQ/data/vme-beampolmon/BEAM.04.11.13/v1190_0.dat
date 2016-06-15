@@ -10,7 +10,8 @@
 BaseSetup:      0               0               ADC         9000
 Hardware-ID: a60400
 #Hardware-ID: a0500
-Window: 0xffd8 0x28
+Window: 0xffdc 0x28
+#Window: 0xffd8 0x28
 #Window: 0xfff6 0x28
 ## TDC fires on....
 ## 2: leading edge only, 3: leading and trailing edge
