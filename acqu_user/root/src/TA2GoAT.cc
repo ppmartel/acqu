@@ -333,11 +333,11 @@ void    TA2GoAT::PostInit()
     errorCode        = new Int_t[TA2GoAT_MAX_ERROR];
 
     activeHits       = new Int_t[10];
-    activeEnergy     = new Float_t[10];
-    activeTime       = new Float_t[10];
-    activePosX       = new Float_t[10];
-    activePosY       = new Float_t[10];
-    activePosZ       = new Float_t[10];
+    activeEnergy     = new Double_t[10];
+    activeTime       = new Double_t[10];
+    activePosX       = new Double_t[10];
+    activePosY       = new Double_t[10];
+    activePosZ       = new Double_t[10];
 
 	// Default SQL-physics initialisation
         TA2AccessSQL::PostInit();
@@ -862,12 +862,22 @@ void    TA2GoAT::Reconstruct()
 
     if(gAR->GetProcessType() == EMCProcess ) { 
         nActiveHits = *(Int_t*) (fEvent[EI_nscin]);
-        activeHits = (Int_t*) (fEvent[EI_iscin]);
-        activeEnergy = (Float_t*) (fEvent[EI_escin]);
-        activeTime = (Float_t*) (fEvent[EI_tscin]);
-        activePosX = (Float_t*) (fEvent[EI_xscin]);
-        activePosY = (Float_t*) (fEvent[EI_yscin]);
-        activePosZ = (Float_t*) (fEvent[EI_zscin]);
+        Int_t *tempActiveHits = (Int_t*) (fEvent[EI_iscin]);
+        Float_t *tempActiveEnergy = (Float_t*) (fEvent[EI_escin]);
+        Float_t *tempActiveTime = (Float_t*) (fEvent[EI_tscin]);
+        Float_t *tempActivePosX = (Float_t*) (fEvent[EI_xscin]);
+        Float_t *tempActivePosY = (Float_t*) (fEvent[EI_yscin]);
+        Float_t *tempActivePosZ = (Float_t*) (fEvent[EI_zscin]);
+
+        for(Int_t i=0; i<nActiveHits; i++)
+        {
+            activeHits[i] = tempActiveHits[i];
+            activeEnergy[i] = 1000*tempActiveEnergy[i];
+            activeTime[i] = tempActiveTime[i];
+            activePosX[i] = tempActivePosX[i];
+            activePosY[i] = tempActivePosY[i];
+            activePosZ[i] = tempActivePosZ[i];
+        }
 
         if(EI_mc_evt_id < gAR->GetNbranch()) MCEventID = *(Long64_t*) (fEvent[EI_mc_evt_id]);
         if(EI_mc_rnd_id < gAR->GetNbranch()) MCRndID   = *(Long64_t*) (fEvent[EI_mc_rnd_id]);

@@ -213,11 +213,11 @@ private:
         //MC
         Int_t       nActiveHits;
         Int_t*      activeHits;
-        Float_t*    activeEnergy;
-        Float_t*    activeTime;
-        Float_t*    activePosX;
-        Float_t*    activePosY;
-        Float_t*    activePosZ;
+        Double_t*    activeEnergy;
+        Double_t*    activeTime;
+        Double_t*    activePosX;
+        Double_t*    activePosY;
+        Double_t*    activePosZ;
 
         Long64_t    MCEventID;
         Long64_t    MCRndID;

@@ -12,7 +12,7 @@
 #
 #
 #         Tree Name     No. of branches   Process Type
-Name:     h12           34                MC
+Name:     h12           41                MC
 #         Branch Name   Buffer size (bytes)
 Branch:   npart         4
 Branch:   dircos        4096
