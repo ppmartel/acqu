@@ -117,6 +117,13 @@ TA2GoAT::TA2GoAT(const char* Name, TA2Analysis* Analysis) : TA2AccessSQL(Name, A
                                                                     eventID(0),
                                                                     moellerRead(0),
                                                                     moellerPairs(0),
+                                                                    nActiveHits(0),
+                                                                    activeHits(0),
+                                                                    activeEnergy(0),
+                                                                    activeTime(0),
+                                                                    activePosX(0),
+                                                                    activePosY(0),
+                                                                    activePosZ(0),
                                                                     MCEventID(0),
                                                                     MCRndID(0)
 {
@@ -324,6 +331,13 @@ void    TA2GoAT::PostInit()
     errorModuleID 	 = new Int_t[TA2GoAT_MAX_ERROR];
     errorModuleIndex = new Int_t[TA2GoAT_MAX_ERROR];
     errorCode        = new Int_t[TA2GoAT_MAX_ERROR];
+
+    activeHits       = new Int_t[10];
+    activeEnergy     = new Float_t[10];
+    activeTime       = new Float_t[10];
+    activePosX       = new Float_t[10];
+    activePosY       = new Float_t[10];
+    activePosZ       = new Float_t[10];
 
 	// Default SQL-physics initialisation
         TA2AccessSQL::PostInit();
@@ -546,6 +560,14 @@ void    TA2GoAT::PostInit()
 
     if (gAR->GetProcessType() == EMCProcess)
     {
+        treeDetectorHits->Branch("nActiveHits", &nActiveHits, "nActiveHits/I");
+        treeDetectorHits->Branch("activeHits", activeHits, "activeHits[nActiveHits]/I");
+        treeDetectorHits->Branch("activeEnergy", activeEnergy, "activeEnergy[nActiveHits]/D");
+        treeDetectorHits->Branch("activeTime", activeTime, "activeTime[nActiveHits]/D");
+        treeDetectorHits->Branch("activePosX", activePosX, "activePosX[nActiveHits]/D");
+        treeDetectorHits->Branch("activePosY", activePosY, "activePosY[nActiveHits]/D");
+        treeDetectorHits->Branch("activePosZ", activePosZ, "activePosZ[nActiveHits]/D");
+
         // Store MC event id for MC process
         if(EI_mc_evt_id < gAR->GetNbranch()) treeTrigger->Branch("mc_evt_id", &MCEventID, "mc_event_id/L");
         if(EI_mc_rnd_id < gAR->GetNbranch()) treeTrigger->Branch("mc_rnd_id", &MCRndID, "mc_rnd_id/L");
@@ -839,6 +861,14 @@ void    TA2GoAT::Reconstruct()
 	DataCheckHistograms();
 
     if(gAR->GetProcessType() == EMCProcess ) { 
+        nActiveHits = *(Int_t*) (fEvent[EI_nscin]);
+        activeHits = (Int_t*) (fEvent[EI_iscin]);
+        activeEnergy = (Float_t*) (fEvent[EI_escin]);
+        activeTime = (Float_t*) (fEvent[EI_tscin]);
+        activePosX = (Float_t*) (fEvent[EI_xscin]);
+        activePosY = (Float_t*) (fEvent[EI_yscin]);
+        activePosZ = (Float_t*) (fEvent[EI_zscin]);
+
         if(EI_mc_evt_id < gAR->GetNbranch()) MCEventID = *(Long64_t*) (fEvent[EI_mc_evt_id]);
         if(EI_mc_rnd_id < gAR->GetNbranch()) MCRndID   = *(Long64_t*) (fEvent[EI_mc_rnd_id]);
     }
@@ -1316,6 +1346,13 @@ void    TA2GoAT::Reconstruct()
     errorModuleID[nErrors] 	  = EBufferEnd;
     errorModuleIndex[nErrors] = EBufferEnd;
     errorCode[nErrors] 	      = EBufferEnd;
+
+    activeHits[nActiveHits]   = EBufferEnd;
+    activeEnergy[nActiveHits] = EBufferEnd;
+    activeTime[nActiveHits]   = EBufferEnd;
+    activePosX[nActiveHits]   = EBufferEnd;
+    activePosY[nActiveHits]   = EBufferEnd;
+    activePosZ[nActiveHits]   = EBufferEnd;
 
 	//Fill Trees
     if(treeTracks) 	treeTracks->Fill();

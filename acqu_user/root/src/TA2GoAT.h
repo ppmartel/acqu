@@ -211,6 +211,14 @@ private:
         UInt_t**    moellerPairs;
         
         //MC
+        Int_t       nActiveHits;
+        Int_t*      activeHits;
+        Float_t*    activeEnergy;
+        Float_t*    activeTime;
+        Float_t*    activePosX;
+        Float_t*    activePosY;
+        Float_t*    activePosZ;
+
         Long64_t    MCEventID;
         Long64_t    MCRndID;
 

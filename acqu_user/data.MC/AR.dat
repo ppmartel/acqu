@@ -46,6 +46,13 @@ Branch:   mposx         1024
 Branch:   mposy         1024
 Branch:   mposz         1024
 Branch:   emwpc         1024
+Branch:   scintillatorhits 4
+Branch:   escint        1024
+Branch:   tscint        1024
+Branch:   iscint        1024
+Branch:   xposition     1024
+Branch:   yposition     1024
+Branch:   zposition     1024
 Branch:   mc_evt_id     8
 Branch:   mc_rnd_id     8
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
