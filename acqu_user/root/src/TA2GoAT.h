@@ -112,22 +112,66 @@ private:
     	Double_t	edgeSetting;
              
     	//Hits
+        Int_t       nNaIADCs;
+        Int_t*      NaIADCs;
+        Int_t*      NaIADCsRaw;
+        Bool_t*     NaIADCsHit;
+
+        Int_t       nNaITDCs;
+        Int_t*      NaITDCs;
+        Int_t*      NaITDCsRaw;
+        Bool_t*     NaITDCsHit;
+
         Int_t		nNaIHits;
         Int_t*		NaIHits;
         Int_t*		NaICluster;
         Double_t*   NaIEnergy;
         Double_t*   NaITime;
+
+        Int_t       nPIDADCs;
+        Int_t*      PIDADCs;
+        Int_t*      PIDADCsRaw;
+        Bool_t*     PIDADCsHit;
+
+        Int_t       nPIDTDCs;
+        Int_t*      PIDTDCs;
+        Int_t*      PIDTDCsRaw;
+        Bool_t*     PIDTDCsHit;
+
         Int_t		nPIDHits;
         Int_t*		PIDHits;
         Double_t*   PIDEnergy;
         Double_t*   PIDTime;
+
         Int_t		nMWPCHits;
         Int_t*		MWPCHits;
+
+        Int_t       nBaF2ADCs;
+        Int_t*      BaF2ADCs;
+        Int_t*      BaF2ADCsRaw;
+        Bool_t*     BaF2ADCsHit;
+
+        Int_t       nBaF2TDCs;
+        Int_t*      BaF2TDCs;
+        Int_t*      BaF2TDCsRaw;
+        Bool_t*     BaF2TDCsHit;
+
         Int_t		nBaF2Hits;
         Int_t*		BaF2Hits;
         Int_t*		BaF2Cluster;
         Double_t*   BaF2Energy;
         Double_t*   BaF2Time;
+
+        Int_t       nVetoADCs;
+        Int_t*      VetoADCs;
+        Int_t*      VetoADCsRaw;
+        Bool_t*     VetoADCsHit;
+
+        Int_t       nVetoTDCs;
+        Int_t*      VetoTDCs;
+        Int_t*      VetoTDCsRaw;
+        Bool_t*     VetoTDCsHit;
+
         Int_t		nVetoHits;
         Int_t*		VetoHits;
         Double_t*   VetoEnergy;

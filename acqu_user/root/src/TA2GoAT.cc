@@ -48,22 +48,54 @@ TA2GoAT::TA2GoAT(const char* Name, TA2Analysis* Analysis) : TA2AccessSQL(Name, A
                                                                     plane(0),
                                                                     edge(0),
                                                                     edgeSetting(0),
+                                                                    nNaIADCs(0),
+                                                                    NaIADCs(0),
+                                                                    NaIADCsRaw(0),
+                                                                    NaIADCsHit(0),
+                                                                    nNaITDCs(0),
+                                                                    NaITDCs(0),
+                                                                    NaITDCsRaw(0),
+                                                                    NaITDCsHit(0),
                                                                     nNaIHits(0),
                                                                     NaIHits(0),
                                                                     NaICluster(0),
                                                                     NaIEnergy(0),
                                                                     NaITime(0),
+                                                                    nPIDADCs(0),
+                                                                    PIDADCs(0),
+                                                                    PIDADCsRaw(0),
+                                                                    PIDADCsHit(0),
+                                                                    nPIDTDCs(0),
+                                                                    PIDTDCs(0),
+                                                                    PIDTDCsRaw(0),
+                                                                    PIDTDCsHit(0),
                                                                     nPIDHits(0),
                                                                     PIDHits(0),
                                                                     PIDEnergy(0),
                                                                     PIDTime(0),
                                                                     nMWPCHits(0),
                                                                     MWPCHits(0),
+                                                                    nBaF2ADCs(0),
+                                                                    BaF2ADCs(0),
+                                                                    BaF2ADCsRaw(0),
+                                                                    BaF2ADCsHit(0),
+                                                                    nBaF2TDCs(0),
+                                                                    BaF2TDCs(0),
+                                                                    BaF2TDCsRaw(0),
+                                                                    BaF2TDCsHit(0),
                                                                     nBaF2Hits(0),
                                                                     BaF2Hits(0),
                                                                     BaF2Cluster(0),
                                                                     BaF2Energy(0),
                                                                     BaF2Time(0),
+                                                                    nVetoADCs(0),
+                                                                    VetoADCs(0),
+                                                                    VetoADCsRaw(0),
+                                                                    VetoADCsHit(0),
+                                                                    nVetoTDCs(0),
+                                                                    VetoTDCs(0),
+                                                                    VetoTDCsRaw(0),
+                                                                    VetoTDCsHit(0),
                                                                     nVetoHits(0),
                                                                     VetoHits(0),
                                                                     VetoEnergy(0),
@@ -247,18 +279,42 @@ void    TA2GoAT::PostInit()
     taggedTime       = new Double_t[TA2GoAT_MAX_TAGGER];
     taggedEnergy     = new Double_t[TA2GoAT_MAX_TAGGER];
 
+    NaIADCs          = new Int_t[TA2GoAT_MAX_HITS];
+    NaIADCsRaw       = new Int_t[720];
+    NaIADCsHit       = new Bool_t[TA2GoAT_MAX_HITS];
+    NaITDCs          = new Int_t[TA2GoAT_MAX_HITS];
+    NaITDCsRaw       = new Int_t[720];
+    NaITDCsHit       = new Bool_t[TA2GoAT_MAX_HITS];
     NaIHits	         = new Int_t[TA2GoAT_MAX_HITS];
     NaICluster       = new Int_t[TA2GoAT_MAX_HITS];
     NaIEnergy        = new Double_t[TA2GoAT_MAX_HITS];
     NaITime          = new Double_t[TA2GoAT_MAX_HITS];
+    PIDADCs          = new Int_t[TA2GoAT_MAX_HITS];
+    PIDADCsRaw       = new Int_t[24];
+    PIDADCsHit       = new Bool_t[TA2GoAT_MAX_HITS];
+    PIDTDCs          = new Int_t[TA2GoAT_MAX_HITS];
+    PIDTDCsRaw       = new Int_t[24];
+    PIDTDCsHit       = new Bool_t[TA2GoAT_MAX_HITS];
     PIDHits	         = new Int_t[TA2GoAT_MAX_HITS];
     PIDEnergy        = new Double_t[TA2GoAT_MAX_HITS];
     PIDTime          = new Double_t[TA2GoAT_MAX_HITS];
     MWPCHits		 = new Int_t[TA2GoAT_MAX_HITS];
+    BaF2ADCs         = new Int_t[TA2GoAT_MAX_HITS];
+    BaF2ADCsRaw      = new Int_t[438];
+    BaF2ADCsHit      = new Bool_t[TA2GoAT_MAX_HITS];
+    BaF2TDCs         = new Int_t[TA2GoAT_MAX_HITS];
+    BaF2TDCsRaw      = new Int_t[438];
+    BaF2TDCsHit      = new Bool_t[TA2GoAT_MAX_HITS];
     BaF2Hits	     = new Int_t[TA2GoAT_MAX_HITS];
     BaF2Cluster      = new Int_t[TA2GoAT_MAX_HITS];
     BaF2Energy       = new Double_t[TA2GoAT_MAX_HITS];
     BaF2Time         = new Double_t[TA2GoAT_MAX_HITS];
+    VetoADCs         = new Int_t[TA2GoAT_MAX_HITS];
+    VetoADCsRaw      = new Int_t[438];
+    VetoADCsHit      = new Bool_t[TA2GoAT_MAX_HITS];
+    VetoTDCs         = new Int_t[TA2GoAT_MAX_HITS];
+    VetoTDCsRaw      = new Int_t[438];
+    VetoTDCsHit      = new Bool_t[TA2GoAT_MAX_HITS];
     VetoHits         = new Int_t[TA2GoAT_MAX_HITS];
     VetoEnergy       = new Double_t[TA2GoAT_MAX_HITS];
     VetoTime         = new Double_t[TA2GoAT_MAX_HITS];
@@ -344,6 +400,17 @@ void    TA2GoAT::PostInit()
 	
     if(fNaI)
     {
+        if (fNaI->IsRawHits())
+        {
+            treeDetectorHits->Branch("nNaIADCs", &nNaIADCs, "nNaIADCs/I");
+            treeDetectorHits->Branch("NaIADCs", NaIADCs, "NaIADCs[nNaIADCs]/I");
+            treeDetectorHits->Branch("NaIADCsRaw", NaIADCsRaw, "NaIADCsRaw[720]/I");
+            treeDetectorHits->Branch("NaIADCsHit", NaIADCsHit, "NaIADCsHit[nNaIADCs]/O");
+            treeDetectorHits->Branch("nNaITDCs", &nNaITDCs, "nNaITDCs/I");
+            treeDetectorHits->Branch("NaITDCs", NaITDCs, "NaITDCs[nNaITDCs]/I");
+            treeDetectorHits->Branch("NaITDCsRaw", NaITDCsRaw, "NaITDCsRaw[720]/I");
+            treeDetectorHits->Branch("NaITDCsHit", NaITDCsHit, "NaITDCsHit[nNaITDCs]/O");
+        }
         treeDetectorHits->Branch("nNaIHits", &nNaIHits, "nNaIHits/I");
         treeDetectorHits->Branch("NaIHits", NaIHits, "NaIHits[nNaIHits]/I");
         treeDetectorHits->Branch("NaICluster", NaICluster, "NaICluster[nNaIHits]/I");
@@ -352,6 +419,17 @@ void    TA2GoAT::PostInit()
     }
     if(fPID)
     {
+        if (fPID->IsRawHits())
+        {
+            treeDetectorHits->Branch("nPIDADCs", &nPIDADCs, "nPIDADCs/I");
+            treeDetectorHits->Branch("PIDADCs", PIDADCs, "PIDADCs[nPIDADCs]/I");
+            treeDetectorHits->Branch("PIDADCsRaw", PIDADCsRaw, "PIDADCsRaw[24]/I");
+            treeDetectorHits->Branch("PIDADCsHit", PIDADCsHit, "PIDADCsHit[nPIDADCs]/O");
+            treeDetectorHits->Branch("nPIDTDCs", &nPIDTDCs, "nPIDTDCs/I");
+            treeDetectorHits->Branch("PIDTDCs", PIDTDCs, "PIDTDCs[nPIDTDCs]/I");
+            treeDetectorHits->Branch("PIDTDCsRaw", PIDTDCsRaw, "PIDTDCsRaw[24]/I");
+            treeDetectorHits->Branch("PIDTDCsHit", PIDTDCsHit, "PIDTDCsHit[nPIDTDCs]/O");
+        }
         treeDetectorHits->Branch("nPIDHits", &nPIDHits, "nPIDHits/I");
         treeDetectorHits->Branch("PIDHits", PIDHits, "PIDHits[nPIDHits]/I");
         if(fPID->IsEnergy()) treeDetectorHits->Branch("PIDEnergy", PIDEnergy, "PIDEnergy[nPIDHits]/D");
@@ -364,6 +442,17 @@ void    TA2GoAT::PostInit()
     }
     if(fBaF2PWO)
     {
+        if (fBaF2PWO->IsRawHits())
+        {
+            treeDetectorHits->Branch("nBaF2ADCs", &nBaF2ADCs, "nBaF2ADCs/I");
+            treeDetectorHits->Branch("BaF2ADCs", BaF2ADCs, "BaF2ADCs[nBaF2ADCs]/I");
+            treeDetectorHits->Branch("BaF2ADCsRaw", BaF2ADCsRaw, "BaF2ADCsRaw[438]/I");
+            treeDetectorHits->Branch("BaF2ADCsHit", BaF2ADCsHit, "BaF2ADCsHit[nBaF2ADCs]/O");
+            treeDetectorHits->Branch("nBaF2TDCs", &nBaF2TDCs, "nBaF2TDCs/I");
+            treeDetectorHits->Branch("BaF2TDCs", BaF2TDCs, "BaF2TDCs[nBaF2TDCs]/I");
+            treeDetectorHits->Branch("BaF2TDCsRaw", BaF2TDCsRaw, "BaF2TDCsRaw[438]/I");
+            treeDetectorHits->Branch("BaF2TDCsHit", BaF2TDCsHit, "BaF2TDCsHit[nBaF2TDCs]/O");
+        }
         treeDetectorHits->Branch("nBaF2Hits", &nBaF2Hits, "nBaF2Hits/I");
         treeDetectorHits->Branch("BaF2Hits", BaF2Hits, "BaF2Hits[nBaF2Hits]/I");
         treeDetectorHits->Branch("BaF2Cluster", BaF2Cluster, "BaF2Cluster[nBaF2Hits]/I");
@@ -372,6 +461,17 @@ void    TA2GoAT::PostInit()
     }
     if(fVeto)
     {
+        if (fVeto->IsRawHits())
+        {
+            treeDetectorHits->Branch("nVetoADCs", &nVetoADCs, "nVetoADCs/I");
+            treeDetectorHits->Branch("VetoADCs", VetoADCs, "VetoADCs[nVetoADCs]/I");
+            treeDetectorHits->Branch("VetoADCsRaw", VetoADCsRaw, "VetoADCsRaw[438]/I");
+            treeDetectorHits->Branch("VetoADCsHit", VetoADCsHit, "VetoADCsHit[nVetoADCs]/O");
+            treeDetectorHits->Branch("nVetoTDCs", &nVetoTDCs, "nVetoTDCs/I");
+            treeDetectorHits->Branch("VetoTDCs", VetoTDCs, "VetoTDCs[nVetoTDCs]/I");
+            treeDetectorHits->Branch("VetoTDCsRaw", VetoTDCsRaw, "VetoTDCsRaw[438]/I");
+            treeDetectorHits->Branch("VetoTDCsHit", VetoTDCsHit, "VetoTDCsHit[nVetoTDCs]/O");
+        }
         treeDetectorHits->Branch("nVetoHits", &nVetoHits, "nVetoHits/I");
         treeDetectorHits->Branch("VetoHits", VetoHits, "VetoHits[nVetoHits]/I");
         if(fVeto->IsEnergy()) treeDetectorHits->Branch("VetoEnergy", VetoEnergy, "VetoEnergy[nVetoHits]/D");
@@ -905,6 +1005,7 @@ void    TA2GoAT::Reconstruct()
 	HitCluster_t *cl;
 	UInt_t *hits;
 	Int_t clindex[720];
+    Int_t *rhits;
 
 	// Get Detector Hits
 	if(fNaI)
@@ -924,6 +1025,27 @@ void    TA2GoAT::Reconstruct()
 			}
 		}
 			
+        if(fNaI->IsRawHits())
+        {
+            nNaIADCs = fNaI->GetNADChits();
+            rhits = fNaI->GetRawEnergyHits();
+            for(Int_t i=0; i<720; i++) NaIADCsRaw[i] = 0;
+            for(Int_t i=0; i<nNaIADCs; i++)
+            {
+                NaIADCs[i] = rhits[i];
+                NaIADCsRaw[NaIADCs[i]] = (Int_t)fNaI->GetElement(NaIADCs[i])->GetRawADCValue();
+                NaIADCsHit[i] = fNaI->GetElement(NaIADCs[i])->CheckEnergy();
+            }
+            nNaITDCs = fNaI->GetNTDChits();
+            rhits = fNaI->GetRawTimeHits();
+            for(Int_t i=0; i<720; i++) NaITDCsRaw[i] = 0;
+            for(Int_t i=0; i<nNaITDCs; i++)
+            {
+                NaITDCs[i] = rhits[i];
+                NaITDCsRaw[NaITDCs[i]] = (Int_t)fNaI->GetElement(NaITDCs[i])->GetRawTDCValue();
+                NaITDCsHit[i] = fNaI->GetElement(NaITDCs[i])->CheckTime();
+            }
+        }
         nNaIHits = fNaI->GetNhits();
         for(Int_t i=0; i<nNaIHits; i++)
 		{
@@ -936,6 +1058,27 @@ void    TA2GoAT::Reconstruct()
 
 	if(fPID)
 	{
+        if(fPID->IsRawHits())
+        {
+            nPIDADCs = fPID->GetNADChits();
+            rhits = fPID->GetRawEnergyHits();
+            for(Int_t i=0; i<24; i++) PIDADCsRaw[i] = 0;
+            for(Int_t i=0; i<nPIDADCs; i++)
+            {
+                PIDADCs[i] = rhits[i];
+                PIDADCsRaw[PIDADCs[i]] = (Int_t)fPID->GetElement(PIDADCs[i])->GetRawADCValue();
+                PIDADCsHit[i] = fPID->GetElement(PIDADCs[i])->CheckEnergy();
+            }
+            nPIDTDCs = fPID->GetNTDChits();
+            rhits = fPID->GetRawTimeHits();
+            for(Int_t i=0; i<24; i++) PIDTDCsRaw[i] = 0;
+            for(Int_t i=0; i<nPIDTDCs; i++)
+            {
+                PIDTDCs[i] = rhits[i];
+                PIDTDCsRaw[PIDTDCs[i]] = (Int_t)fPID->GetElement(PIDTDCs[i])->GetRawTDCValue();
+                PIDTDCsHit[i] = fPID->GetElement(PIDTDCs[i])->CheckTime();
+            }
+        }
         nPIDHits = fPID->GetNhits();
         for(Int_t i=0; i<nPIDHits; i++)
         {
@@ -954,7 +1097,7 @@ void    TA2GoAT::Reconstruct()
 
 	if(fBaF2PWO)
 	{
-            for(Int_t i=0; i<720; i++)
+            for(Int_t i=0; i<438; i++)
 		{
 		        clindex[i] = -1;
 		}
@@ -969,6 +1112,27 @@ void    TA2GoAT::Reconstruct()
 			}
 		}
 			
+        if(fBaF2PWO->IsRawHits())
+        {
+            nBaF2ADCs = fBaF2PWO->GetNADChits();
+            rhits = fBaF2PWO->GetRawEnergyHits();
+            for(Int_t i=0; i<438; i++) BaF2ADCsRaw[i] = 0;
+            for(Int_t i=0; i<nBaF2ADCs; i++)
+            {
+                BaF2ADCs[i] = rhits[i];
+                BaF2ADCsRaw[BaF2ADCs[i]] = (Int_t)fBaF2PWO->GetElement(BaF2ADCs[i])->GetRawADCValue();
+                BaF2ADCsHit[i] = fBaF2PWO->GetElement(BaF2ADCs[i])->CheckEnergy();
+            }
+            nBaF2TDCs = fBaF2PWO->GetNTDChits();
+            rhits = fBaF2PWO->GetRawTimeHits();
+            for(Int_t i=0; i<438; i++) BaF2TDCsRaw[i] = 0;
+            for(Int_t i=0; i<nBaF2TDCs; i++)
+            {
+                BaF2TDCs[i] = rhits[i];
+                BaF2TDCsRaw[BaF2TDCs[i]] = (Int_t)fBaF2PWO->GetElement(BaF2TDCs[i])->GetRawTDCValue();
+                BaF2TDCsHit[i] = fBaF2PWO->GetElement(BaF2TDCs[i])->CheckTime();
+            }
+        }
         nBaF2Hits = fBaF2PWO->GetNhits();
         for(Int_t i=0; i<nBaF2Hits; i++)
 		{
@@ -981,6 +1145,27 @@ void    TA2GoAT::Reconstruct()
 
 	if(fVeto)
 	{
+        if(fVeto->IsRawHits())
+        {
+            nVetoADCs = fVeto->GetNADChits();
+            rhits = fVeto->GetRawEnergyHits();
+            for(Int_t i=0; i<438; i++) VetoADCsRaw[i] = 0;
+            for(Int_t i=0; i<nVetoADCs; i++)
+            {
+                VetoADCs[i] = rhits[i];
+                VetoADCsRaw[VetoADCs[i]] = (Int_t)fVeto->GetElement(VetoADCs[i])->GetRawADCValue();
+                VetoADCsHit[i] = fVeto->GetElement(VetoADCs[i])->CheckEnergy();
+            }
+            nVetoTDCs = fVeto->GetNTDChits();
+            rhits = fVeto->GetRawTimeHits();
+            for(Int_t i=0; i<438; i++) VetoTDCsRaw[i] = 0;
+            for(Int_t i=0; i<nVetoTDCs; i++)
+            {
+                VetoTDCs[i] = rhits[i];
+                VetoTDCsRaw[VetoTDCs[i]] = (Int_t)fVeto->GetElement(VetoTDCs[i])->GetRawTDCValue();
+                VetoTDCsHit[i] = fVeto->GetElement(VetoTDCs[i])->CheckTime();
+            }
+        }
         nVetoHits = fVeto->GetNhits();
         for(Int_t i=0; i<nVetoHits; i++)
         {
@@ -1096,18 +1281,34 @@ void    TA2GoAT::Reconstruct()
     taggedTime[nTagged] 	  = EBufferEnd;
     taggedEnergy[nTagged] 	  = EBufferEnd;
 
+    NaIADCs[nNaIADCs] 	      = EBufferEnd;
+    NaIADCsHit[nNaIADCs]      = EBufferEnd;
+    NaITDCs[nNaITDCs] 	      = EBufferEnd;
+    NaITDCsHit[nNaITDCs]      = EBufferEnd;
     NaIHits[nNaIHits] 	      = EBufferEnd;
     NaICluster[nNaIHits] 	  = EBufferEnd;
     NaIEnergy[nNaIHits] 	  = EBufferEnd;
     NaITime[nNaIHits]         = EBufferEnd;
+    PIDADCs[nPIDADCs] 	      = EBufferEnd;
+    PIDADCsHit[nPIDADCs]      = EBufferEnd;
+    PIDTDCs[nPIDTDCs] 	      = EBufferEnd;
+    PIDTDCsHit[nPIDTDCs]      = EBufferEnd;
     PIDHits[nPIDHits] 	      = EBufferEnd;
     PIDEnergy[nPIDHits] 	  = EBufferEnd;
     PIDTime[nPIDHits]         = EBufferEnd;
     MWPCHits[nMWPCHits] 	  = EBufferEnd;
+    BaF2ADCs[nBaF2ADCs]       = EBufferEnd;
+    BaF2ADCsHit[nBaF2ADCs]    = EBufferEnd;
+    BaF2TDCs[nBaF2TDCs] 	  = EBufferEnd;
+    BaF2TDCsHit[nBaF2TDCs]    = EBufferEnd;
     BaF2Hits[nBaF2Hits] 	  = EBufferEnd;
     BaF2Cluster[nBaF2Hits] 	  = EBufferEnd;
     BaF2Energy[nBaF2Hits] 	  = EBufferEnd;
     BaF2Time[nBaF2Hits]       = EBufferEnd;
+    VetoADCs[nVetoADCs] 	  = EBufferEnd;
+    VetoADCsHit[nVetoADCs]    = EBufferEnd;
+    VetoTDCs[nVetoTDCs] 	  = EBufferEnd;
+    VetoTDCsHit[nVetoTDCs]    = EBufferEnd;
     VetoHits[nVetoHits] 	  = EBufferEnd;
     VetoEnergy[nVetoHits] 	  = EBufferEnd;
     VetoTime[nVetoHits]       = EBufferEnd;
