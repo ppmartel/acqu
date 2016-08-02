@@ -16,6 +16,11 @@ CAMAC-CNAF:	fffff	25	0	0	Init
 #CAMAC-CNAF:     64      17      0       0       Init
 #CAMAC-CNAF:     1F4      17      0       0       Init
 #
+# Same as ESum Lo
+CAMAC-CNAF:     30      17      0       0       Init
+#
+#CAMAC-CNAF:     8C      17      0       0       Init
+#
 # ~43.5 MeV
 #
 #CAMAC-CNAF:     64      17      0       0       Init
@@ -33,7 +38,7 @@ CAMAC-CNAF:	fffff	25	0	0	Init
 # 50 MeV ? 60 mV
 #CAMAC-CNAF:     3c      17      0       0       Init
 # 60 MeV ?  100 mV
-CAMAC-CNAF:      64      17      0       0       Init
+#CAMAC-CNAF:      64      17      0       0       Init
 #
 # 250MeV
 #
