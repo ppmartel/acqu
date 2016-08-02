@@ -40,7 +40,6 @@ void PeriodMacro() {
 	printf("Tagger Section F appears to be off!\n");
 	dError = 500;
       }
-      /*
       if((FPD_ScalerCurr->Integral(273,320))<=48) {
 	printf("Tagger Section G appears to be off!\n");
 	dError = 500;
@@ -49,7 +48,6 @@ void PeriodMacro() {
 	printf("Tagger Section H appears to be off!\n");
 	dError = 500;
       }
-      */
       if(dError==500) printf("\n");
     }
   }
@@ -116,7 +114,7 @@ void PeriodMacro() {
       Int_t iPeak = Temp_FPD->GetMaximumBin();
       Double_t dTime = Temp_FPD->GetBinCenter(iPeak);
       //Double_t dTime = Temp_FPD->GetMean();
-      if(dTime < 5 || dTime > 30){
+      if(dTime < -10 || dTime > 20){
 	printf("Possible problem in FPD_TimeOR - Event %d\n\t\t\tPeak at %f ns\n\n",gAN->GetNDAQEvent(),dTime);
 	dError += 2000;
       }	  
@@ -135,7 +133,7 @@ void PeriodMacro() {
 	Proj_NaI = (TH1D*)NaI_Hits_v_TimeOR->ProjectionX("Proj_NaI",i+1,i+8);
 	
 	Double_t dTime = Proj_NaI->GetMean();
-	if((dTime < 30) || (dTime > 60)){
+	if((dTime < 20) || (dTime > 50)){
 	  if(!bShift) printf("Possible problem in NaI_Hits_v_TimeOR - Event %d\n",gAN->GetNDAQEvent());
 	  printf("\t\t\tPeak at %f ns (Channels %3d-%3d)\n",dTime,i,i+7);
 	  if(!bShift) dError += 4000;
@@ -219,6 +217,29 @@ void PeriodMacro() {
     stringstream cmd;
     cmd << "caput GEN:MON:Pi0PerScRead.A " << dNPi0 << " > /dev/null";
     system(cmd.str().c_str());
+  }
+
+  // fill array for CB display
+  if(gROOT->FindObject("PHYS_CB_Display_R")){
+  stringstream cmdR, cmdG, cmdB, cmdT;
+      cmdR << "caput -a CB:CB:NaI_Hits:R 720";
+      cmdG << "caput -a CB:CB:NaI_Hits:G 720";
+      cmdB << "caput -a CB:CB:NaI_Hits:B 720";
+      cmdT << "caput -a CB:CB:NaI_Hits:T 720";
+      for(int n=1; n<=720; n++) {
+	cmdR << " " << PHYS_CB_Display_R->GetBinContent(n);
+	cmdG << " " << PHYS_CB_Display_G->GetBinContent(n);
+	cmdB << " " << PHYS_CB_Display_B->GetBinContent(n);
+	cmdT << " " << PHYS_CB_Display_T->GetBinContent(n);
+      }
+      cmdR << " > /dev/null";
+      cmdG << " > /dev/null";
+      cmdB << " > /dev/null";
+      cmdT << " > /dev/null";
+      system(cmdR.str().c_str());
+      system(cmdG.str().c_str());
+      system(cmdB.str().c_str());
+      system(cmdT.str().c_str());
   }
 
 }
