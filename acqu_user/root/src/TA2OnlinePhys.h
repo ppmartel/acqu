@@ -49,6 +49,7 @@ class TA2OnlinePhys : public TA2Physics {
 	UInt_t 			fMaxNParticle;		// Max # Particle (CB + TAPS)
 
 	TA2Particle* 	fTAGGParticles;	   	// Particles from Tagger
+    TA2Particle* 	fCBParticles;	   	// Particles from CB
 
 	UInt_t 			fCBNParticle;    	// # Particle from CentApp
 	UInt_t			fTAPSNParticle;    	// # Particle from TAPS
@@ -90,6 +91,11 @@ class TA2OnlinePhys : public TA2Physics {
 	TH1*	IM_6g;
 	TH1*	IM_6g_CB;
 
+    TH1*    CB_Display_R;
+    TH1*    CB_Display_G;
+    TH1*    CB_Display_B;
+    TH1*    CB_Display_T;
+
     TH3*	Pi0P_Hel0;
     TH3*	Pi0P_Hel1;
 	
@@ -100,7 +106,8 @@ class TA2OnlinePhys : public TA2Physics {
 		void GetTagger();
 		void DefineHistograms();
 		void BasicPhysCheck();
-		void BeamHelicCheck();
+        void CBDisplayCheck();
+        void BeamHelicCheck();
 		void FAsymPi0PCheck();
 
 	public:
