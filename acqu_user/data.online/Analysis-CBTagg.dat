@@ -72,6 +72,7 @@ Period:  5000	PeriodMacro.C	PeriodMacro()
 ## CB - SADCs signal
 #Display: MultiHit 3000 3720 1000 0000 4000 1
 #Display: MultiHit 3000 3720 250 0000 1000 1
+#Display: MultiHit 3000 3720 250 0000 250 1
 ##
 ## CB - SADCs tail
 #Display: MultiHit 3000 3720 500 -800 200 2
@@ -95,11 +96,11 @@ Display: ADC 100 131
 ########################################################################
 ##
 ## MWPC Wires - TDCs
-#Display: MultiHit 4000 4559 1000 -7000 3000 0
+Display: MultiHit 4000 4559 1000 -7000 3000 0
 ##
 ## MWPC Strips - ADCs
 #Display: MultiHit 5000 5351 2000 -1000 1000 0
-#Display: MultiHit 5000 5351 2000 -1000 1000 1
+Display: MultiHit 5000 5351 2000 -1000 1000 1
 #Display: MultiHit 5000 5351 2000 -1000 1000 2
 ##
 ## Cherenkov - TDCs

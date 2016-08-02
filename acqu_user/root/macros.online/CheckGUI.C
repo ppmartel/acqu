@@ -94,7 +94,7 @@ void OnBtnSaveAllClicked() {
 	Long_t runNum = gROOT->ProcessLine("gAR->GetRunNumber()");
 	elog_cmd << "echo Run " << runNum << " Online Spectra | ";
 	elog_cmd << "elog -h elog.office.a2.kph -u a2online a2messung ";
-	elog_cmd << "-l 'Main Logbook 2016' -a Experiment='2016_06 Active Target' ";
+	elog_cmd << "-l 'Main Logbook 2016' -a Experiment='2016_08_Recoil_Polarimeter' ";
 	elog_cmd << "-a Author='PLEASE FILL IN' -a Type=Routine ";
 	elog_cmd << "-a Subject='Online Spectra Run " << runNum << "' ";
 
@@ -153,8 +153,8 @@ void CheckGUI()
 	  items->Add(MacroEntry::Make("CheckTrigger.C","Trigger"));
 	  items->Add(MacroEntry::Make("CheckLiveTimes.C","LiveTimes"));
 	  items->Add(MacroEntry::Make("CheckPhysics.C","Physics"));	
-	  items->Add(MacroEntry::Make("CheckActiveADC.C","Active_ADC"));	
-	  items->Add(MacroEntry::Make("CheckActiveTDC.C","Active_TDC"));	
+	  // items->Add(MacroEntry::Make("CheckActiveADC.C","Active_ADC"));	
+	  // items->Add(MacroEntry::Make("CheckActiveTDC.C","Active_TDC"));	
 	}
 
 	// main frame
