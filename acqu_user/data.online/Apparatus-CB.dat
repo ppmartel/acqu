@@ -5,7 +5,7 @@
 ##	  	Name    Class Name   	Setup file
 Detector:       NaI     TA2CalArray     Detector-NaI.dat
 #Detector:       PID     TA2PlasticPID   Detector-PID.dat
-Detector:       PID     TA2PlasticPID   Detector-PID-EqGain.dat
+Detector:       PID     TA2PlasticPID   Detector-PID-V3_v0.dat
 ##
 ## Data reconstruction method for Crystal Ball
 Reconstruct:
