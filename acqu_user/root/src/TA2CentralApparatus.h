@@ -17,6 +17,7 @@ using std::make_pair;
 #include "TA2CentralTrack.h"
 #include "HitCluster_t.h"
 #include "TA2Particle.h"
+#include "TOLoader.h"
 
 class TA2CalArray;
 class TA2TrackLine;
@@ -46,6 +47,14 @@ protected:
   Int_t	 	 fNpointsDroopPid;// TODO Must be moved into TA2PlasticPID
   Double_t	*fLostCorrPosPid;// TODO Must be moved into TA2PlasticPID
   Double_t	*fLostCorrFacPid;// TODO Must be moved into TA2PlasticPID
+  Double_t	 fPidRadius;// TODO Must be moved into TA2PlasticPID
+  Double_t	 fPidTargetPos;// TODO Must be moved into TA2PlasticPID
+  Int_t          iDroopParam; // TODO Must be moved into TA2PlasticPID
+  Int_t          iPidDirection; // TODO Must be moved into TA2PlasticPID
+  Int_t          iPidType; // TODO Must be moved into TA2PlasticPID
+  Int_t          iPidEl; // TODO Must be moved into TA2PlasticPID
+  TGraph**       gPidDroopP;  // array of PID droop correction graphs
+  Int_t         fUsePidDroopP;
   //
 public:
   virtual const Int_t	 &GetMaxTrack() const { return fMaxTrack; }
@@ -259,6 +268,19 @@ inline Double_t TA2CentralApparatus::CalcEhitPid(const Int_t iHitPid, const TVec
       if ( lPath >= fLostCorrPosPid[iPos] && lPath <= fLostCorrPosPid[iPos+1] ) break;
     }
     factorDroop = (lPath-fLostCorrPosPid[iPos])*(fLostCorrFacPid[iPos+1]-fLostCorrFacPid[iPos])/(fLostCorrPosPid[iPos+1]-fLostCorrPosPid[iPos]) + fLostCorrFacPid[iPos];
+  }
+  if(fUsePidDroopP>0){
+   
+    Double_t lPidPath;
+    Int_t iPidEL=*(fPid->GetHits());
+    if(iPidEL<iPidEl){
+      lPidPath = fPidTargetPos + orig.Z() + iPidDirection*fPidRadius/TMath::Tan(dir.Theta());
+      if(lPidPath<0)lPidPath=0;
+      if(lPidPath>fLengthPid)lPidPath=fLengthPid;
+      factorDroop=1.0/gPidDroopP[iPidEL]->Eval(lPidPath);
+      if(factorDroop<0.1)	factorDroop=1;				
+      if(factorDroop>10)	factorDroop=1;
+    }
   }
   
   // Geom correction factor TODO Calc correction taking into account x-y shift
