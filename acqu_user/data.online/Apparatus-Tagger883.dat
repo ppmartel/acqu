@@ -6,7 +6,8 @@ Magnet:	1.05696		883.0
 #
 ## Specify list of detectors which constitute the Tagger apparatus
 ##	  	  Name    		Class Name   	Setup file
-Detector: FPD        	TA2Ladder   	Detector-FPD883.dat
+#Detector: FPD        	TA2Ladder   	Detector-FPD883.dat
+Detector: FPD        	TA2Ladder   	Detector-FPD883.dat.NewScIndex
 #
 ## Do some post-initialisation.
 Initialise:

@@ -10,7 +10,7 @@ MultiADC:       3       1401    1911    1400
 MultiADC:       3       2001    2767    2000
 ##
 ## Tagger/Target test TDC in Beampolmon
-MultiADC:       3       232     294    295
+#MultiADC:       3       232     294    295
 ##
 ## MWPC TDCS
 MultiADC:       3       4000    4639    2000
@@ -171,9 +171,9 @@ Display: ADC 100 131
 ## New FPD/Active Target Tests
 ########################################################################
 ##
-Display: ADC 200 231
-Display: ADC 295 295
-Display: MultiHit 232 294 10000 -7500 2500 0
+#Display: ADC 200 231
+#Display: ADC 295 295
+#Display: MultiHit 232 294 10000 -7500 2500 0
 ##
 ########################################################################
 ## Display Scalers
