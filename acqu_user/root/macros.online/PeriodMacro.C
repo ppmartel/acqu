@@ -45,10 +45,25 @@ void PeriodMacro() {
 	dError = 500;
       }
       if((FPD_ScalerCurr->Integral(321,352))<=32) {
-	printf("Tagger Section H appears to be off!\n");
-	dError = 500;
+      	printf("Tagger Section H appears to be off!\n");
+      	dError = 500;
       }
       if(dError==500) printf("\n");
+
+      /*
+      if(gROOT->FindObject("ScInt4")){
+	if((ScInt4->Integral())>0) {
+	  Int_t maxBin = FPD_ScalerCurr->GetMaximumBin();
+	  Double_t maxSca = FPD_ScalerCurr->GetBinContent(maxBin);
+	  maxBin = ScInt4->GetEntries();
+	  Double_t intrpt = ScInt4->GetBinContent(maxBin-1);
+	  Double_t tgRate = (intrpt*maxSca/10000.0);
+	  stringstream cmd;
+	  cmd << "caput GEN:MON:MaxTaggRate " << tgRate << " > /dev/null";
+	  system(cmd.str().c_str());
+	}
+      }
+      */
     }
   }
   
@@ -114,7 +129,7 @@ void PeriodMacro() {
       Int_t iPeak = Temp_FPD->GetMaximumBin();
       Double_t dTime = Temp_FPD->GetBinCenter(iPeak);
       //Double_t dTime = Temp_FPD->GetMean();
-      if(dTime < -10 || dTime > 20){
+      if(dTime < -10 || dTime > 10){
 	printf("Possible problem in FPD_TimeOR - Event %d\n\t\t\tPeak at %f ns\n\n",gAN->GetNDAQEvent(),dTime);
 	dError += 2000;
       }	  
@@ -218,10 +233,56 @@ void PeriodMacro() {
     cmd << "caput GEN:MON:Pi0PerScRead.A " << dNPi0 << " > /dev/null";
     system(cmd.str().c_str());
   }
-
+  /*/
   // fill array for CB display
   if(gROOT->FindObject("PHYS_CB_Display_R")){
-  stringstream cmdR, cmdG, cmdB, cmdT;
+    Int_t minB = 0;
+    Int_t maxB = 0;
+    Double_t maxE = 0;
+    maxB = (PHYS_CB_Display_R->GetMaximumBin());
+    maxE = TMath::Max(maxE,PHYS_CB_Display_R->GetBinContent(maxB));
+    maxB = (PHYS_CB_Display_G->GetMaximumBin());
+    maxE = TMath::Max(maxE,PHYS_CB_Display_G->GetBinContent(maxB));
+    maxB = (PHYS_CB_Display_B->GetMaximumBin());
+    maxE = TMath::Max(maxE,PHYS_CB_Display_B->GetBinContent(maxB));
+
+    minB = PHYS_CB_Display_T->GetMinimumBin();
+    maxB = PHYS_CB_Display_T->GetMaximumBin();
+
+    Double_t minT = PHYS_CB_Display_T->GetBinContent(minB);
+    Double_t maxT = PHYS_CB_Display_T->GetBinContent(maxB);
+
+    stringstream cmdR, cmdG, cmdB, cmdT;
+    cmdR << "caput -a CB:CB:NaI_Hits:R 720";
+    cmdG << "caput -a CB:CB:NaI_Hits:G 720";
+    cmdB << "caput -a CB:CB:NaI_Hits:B 720";
+    cmdT << "caput -a CB:CB:NaI_Hits:T 720";
+
+    for(int n=1; n<=720; n++) {
+      if((PHYS_CB_Display_R->GetBinContent(n)) == 0) cmdR << " 0";
+      else cmdR << " " << TMath::Nint(255*TMath::Log10(PHYS_CB_Display_R->GetBinContent(n))/TMath::Log10(maxE));
+      if((PHYS_CB_Display_G->GetBinContent(n)) == 0) cmdG << " 0";
+      else cmdG << " " << TMath::Nint(255*TMath::Log10(PHYS_CB_Display_G->GetBinContent(n))/TMath::Log10(maxE));
+      if((PHYS_CB_Display_B->GetBinContent(n)) == 0) cmdB << " 0";
+      else cmdB << " " << TMath::Nint(255*TMath::Log10(PHYS_CB_Display_B->GetBinContent(n))/TMath::Log10(maxE));
+      if((PHYS_CB_Display_T->GetBinContent(n)) == 0) cmdT << " 0";
+      else cmdT << " " << TMath::Nint(50*((PHYS_CB_Display_T->GetBinContent(n))-minT)/(maxT-minT));
+    }
+    
+    cmdR << " > /dev/null";
+    cmdG << " > /dev/null";
+    cmdB << " > /dev/null";
+    cmdT << " > /dev/null";
+    
+    system(cmdR.str().c_str());
+    system(cmdG.str().c_str());
+    system(cmdB.str().c_str());
+    system(cmdT.str().c_str());
+  }
+  /*/
+  // fill array for CB display
+  if(gROOT->FindObject("PHYS_CB_Display_R")){
+    stringstream cmdR, cmdG, cmdB, cmdT;
       cmdR << "caput -a CB:CB:NaI_Hits:R 720";
       cmdG << "caput -a CB:CB:NaI_Hits:G 720";
       cmdB << "caput -a CB:CB:NaI_Hits:B 720";
@@ -241,5 +302,31 @@ void PeriodMacro() {
       system(cmdB.str().c_str());
       system(cmdT.str().c_str());
   }
-
+  /*/
+  // fill array for CB display
+  if(gROOT->FindObject("PHYS_CB_Display_R")){
+    stringstream cmdR, cmdG, cmdB, cmdT;
+      cmdR << "caput -a CB:CB:NaI_Hits:R 720";
+      cmdG << "caput -a CB:CB:NaI_Hits:G 720";
+      cmdB << "caput -a CB:CB:NaI_Hits:B 720";
+      cmdT << "caput -a CB:CB:NaI_Hits:T 720";
+      for(int n=1; n<=720; n++) {
+	if((PHYS_CB_Display_R->GetBinContent(n)) > 0) cmdR << " 255";
+	else cmdR << " 0";
+	if((PHYS_CB_Display_G->GetBinContent(n)) > 0) cmdG << " 255";
+	else cmdG << " 0";
+	if((PHYS_CB_Display_B->GetBinContent(n)) > 0) cmdB << " 255";
+	else cmdB << " 0";
+	cmdT << " 0";
+      }
+      cmdR << " > /dev/null";
+      cmdG << " > /dev/null";
+      cmdB << " > /dev/null";
+      cmdT << " > /dev/null";
+      system(cmdR.str().c_str());
+      system(cmdG.str().c_str());
+      system(cmdB.str().c_str());
+      system(cmdT.str().c_str());
+  }
+  /*/
 }

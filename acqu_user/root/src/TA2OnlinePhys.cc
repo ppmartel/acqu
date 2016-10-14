@@ -154,9 +154,9 @@ void TA2OnlinePhys::Reconstruct()
 	GetTagger();
 	
 	BasicPhysCheck();
-    CBDisplayCheck();
-    if(fNHelicityBits>=2) BeamHelicCheck();
-	FAsymPi0PCheck();
+	if( (fCB->GetNaI()->GetNhits()) > 20 ) CBDisplayCheck();
+    //if(fNHelicityBits>=2) BeamHelicCheck();
+    //FAsymPi0PCheck();
 
 }
 
@@ -177,10 +177,10 @@ void TA2OnlinePhys::DefineHistograms()
 	IM_6g 		= new TH1D("PHYS_IM_6g", 		"IM of 6 photon events", 1000, 0, 1000);
 	IM_6g_CB 	= new TH1D("PHYS_IM_6g_CB", 	"IM of 6 photon events - CB only", 1000, 0, 1000);
 
-    CB_Display_R = new TH1D("PHYS_CB_Display_R",	"CB Hit Pattern for Display - Red", 720, 0, 719);
-    CB_Display_G = new TH1D("PHYS_CB_Display_G",	"CB Hit Pattern for Display - Green", 720, 0, 719);
-    CB_Display_B = new TH1D("PHYS_CB_Display_B",	"CB Hit Pattern for Display - Blue", 720, 0, 719);
-    CB_Display_T = new TH1D("PHYS_CB_Display_T",	"CB Hit Pattern for Display - Time", 720, 0, 719);
+    CB_Display_R = new TH1S("PHYS_CB_Display_R",	"CB Hit Pattern for Display - Red", 720, 0, 719);
+    CB_Display_G = new TH1S("PHYS_CB_Display_G",	"CB Hit Pattern for Display - Green", 720, 0, 719);
+    CB_Display_B = new TH1S("PHYS_CB_Display_B",	"CB Hit Pattern for Display - Blue", 720, 0, 719);
+    CB_Display_T = new TH1S("PHYS_CB_Display_T",	"CB Hit Pattern for Display - Time", 720, 0, 719);
 
     Pi0P_Hel0	= new TH3D("PHYS_Pi0P_Hel0",	"Pi0P Events;#theta_{#pi0} (deg);t_{#pi0} (ns);m_{miss} (MeV)", 36, 0, 180, 200, -200, 200, 150, 800, 1100);
     Pi0P_Hel1	= new TH3D("PHYS_Pi0P_Hel1",	"Pi0P Events;#theta_{#pi0} (deg);t_{#pi0} (ns);m_{miss} (MeV)", 36, 0, 180, 200, -200, 200, 150, 800, 1100);
@@ -282,8 +282,11 @@ void TA2OnlinePhys::BasicPhysCheck()
 		IM_2g->Fill(p4.M());
 		
 		if((fParticleApp[0] == 1) && (fParticleApp[1] == 1)) 
-		IM_2g_CB->Fill(p4.M());
-		
+		{
+			IM_2g_CB->Fill(p4.M());
+			//CBDisplayCheck();
+		}
+
 		else if((fParticleApp[0] == 2) && (fParticleApp[1] == 2)) 
 		IM_2g_TAPS->Fill(p4.M());
 		
@@ -303,8 +306,11 @@ void TA2OnlinePhys::BasicPhysCheck()
 		if((fParticleApp[0] == 1) 
 		&& (fParticleApp[1] == 1) 
 		&& (fParticleApp[2] == 1) )
-		IM_3g_CB->Fill(p4.M());
-		
+		{
+		        IM_3g_CB->Fill(p4.M());
+			//CBDisplayCheck();
+		}
+
 		if((fParticleP4[0].T() >= 300.0) 
 		&& (fParticleP4[1].T() >= 300.0) 
 		&& (fParticleP4[2].T() >= 300.0) )
@@ -324,7 +330,10 @@ void TA2OnlinePhys::BasicPhysCheck()
 		if((fParticleApp[0] == 1) && (fParticleApp[1] == 1) 
 		&& (fParticleApp[2] == 1) && (fParticleApp[3] == 1)
 		&& (fParticleApp[4] == 1) && (fParticleApp[5] == 1)	)
-		IM_6g_CB->Fill(p4.M());
+		{
+		        IM_6g_CB->Fill(p4.M());
+			//CBDisplayCheck();
+		}
 		
 	}	
 }
@@ -350,7 +359,7 @@ void TA2OnlinePhys::GetCBParticles()
 	// update # of particles
 	fNParticle+=fCBNParticle;
 }
-
+/*
 void TA2OnlinePhys::CBDisplayCheck()
 {
     // For CB Display purposes
@@ -369,10 +378,58 @@ void TA2OnlinePhys::CBDisplayCheck()
         hits = cluster->GetHits();
         for (UInt_t j = 0; j < (cluster->GetNhits()); j++ ) {
             //cout << "\t\t" << hits[j] << "\t" << fCB->GetNaI()->GetTime(hits[j]) << endl;
-            if((fCBParticles[i].GetVetoIndex() > 0) && (fCBParticles[i].GetVetoEnergy() > 1.5)) CB_Display_R->SetBinContent(hits[j]+1,255);
-            else if((fCBParticles[i].GetVetoIndex() > 0) && (fCBParticles[i].GetVetoEnergy() > 0)) CB_Display_G->SetBinContent(hits[j]+1,255);
-            else CB_Display_B->SetBinContent(hits[j]+1,255);
+            if((fCBParticles[i].GetVetoIndex() > 0) && (fCBParticles[i].GetVetoEnergy() > 1.5)) CB_Display_R->SetBinContent(hits[j]+1,fCB->GetNaI()->GetEnergy(hits[j]));
+            else if((fCBParticles[i].GetVetoIndex() > 0) && (fCBParticles[i].GetVetoEnergy() > 0)) CB_Display_G->SetBinContent(hits[j]+1,fCB->GetNaI()->GetEnergy(hits[j]));
+            else CB_Display_B->SetBinContent(hits[j]+1,fCB->GetNaI()->GetEnergy(hits[j]));
             CB_Display_T->SetBinContent(hits[j]+1,fCB->GetNaI()->GetTime(hits[j]));
+        }
+    }
+}
+*/
+void TA2OnlinePhys::CBDisplayCheck()
+{
+    // For CB Display purposes
+    //cout << "New Event" << endl;
+
+    CB_Display_R->Reset();
+    CB_Display_G->Reset();
+    CB_Display_B->Reset();
+    CB_Display_T->Reset();
+
+    HitCluster_t *cluster;
+    UInt_t *hits;
+
+    Double_t curE;
+    Double_t maxE = 0;
+    Double_t curT;
+    Double_t minT = 5000;
+    Double_t maxT = -5000;
+
+    for (UInt_t i = 0; i < fCBNParticle; i++ ) {
+        cluster = fCB->GetNaI()->GetCluster(fCBParticles[i].GetCentralIndex());
+        hits = cluster->GetHits();
+        for (UInt_t j = 0; j < (cluster->GetNhits()); j++ ) {
+	    curE = fCB->GetNaI()->GetEnergy(hits[j]);
+	    maxE = TMath::Max(maxE,curE);
+	    curT = fCB->GetNaI()->GetTime(hits[j]);
+	    minT = TMath::Min(minT,curT);
+	    maxT = TMath::Max(maxT,curT);
+        }
+    }
+
+    maxE = TMath::Log10(maxE);
+    Double_t ratT = (50.0/(maxT-minT));
+
+    for (UInt_t i = 0; i < fCBNParticle; i++ ) {
+        cluster = fCB->GetNaI()->GetCluster(fCBParticles[i].GetCentralIndex());
+        hits = cluster->GetHits();
+        for (UInt_t j = 0; j < (cluster->GetNhits()); j++ ) {
+            curE = TMath::Nint(255*(TMath::Log10(fCB->GetNaI()->GetEnergy(hits[j]))/maxE));
+            curT = TMath::Nint(ratT*((fCB->GetNaI()->GetTime(hits[j]))-minT));
+            if((fCBParticles[i].GetVetoIndex() > 0) && (fCBParticles[i].GetVetoEnergy() > 1.5)) CB_Display_R->SetBinContent(hits[j]+1,curE);
+            else if((fCBParticles[i].GetVetoIndex() > 0) && (fCBParticles[i].GetVetoEnergy() > 0)) CB_Display_G->SetBinContent(hits[j]+1,curE);
+            else CB_Display_B->SetBinContent(hits[j]+1,curE);
+            CB_Display_T->SetBinContent(hits[j]+1,curT);
         }
     }
 }
