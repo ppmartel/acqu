@@ -81,6 +81,22 @@ private:
         Double_t*   vertexY;
         Double_t*   vertexZ;
 
+	//Wire Chamber Hits Info
+	Int_t       nChamberHitsin1;
+        const TA2MwpcIntersection *Chamber1Hits;
+
+
+	Int_t       nChamberHitsin2; 
+	const TA2MwpcIntersection *Chamber2Hits;
+	Double_t* MWPC0PosX;
+	Double_t* MWPC1PosX;
+	Double_t* MWPC0PosY;
+	Double_t* MWPC1PosY;
+	Double_t* MWPC0PosZ;
+	Double_t* MWPC1PosZ;
+
+
+
     	//Tagger
     	Int_t		nTagged;
         Double_t*	taggedEnergy;
