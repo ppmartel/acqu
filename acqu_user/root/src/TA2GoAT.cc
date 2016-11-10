@@ -311,11 +311,11 @@ void    TA2GoAT::PostInit()
     treeTracks->Branch("pseudoVertexZ", pseudoVertexZ, "pseudoVertexZ[nTracks]/D");
 
     treeTracks->Branch("MWPC0PosX",MWPC0PosX, "MWPC0PosX[nTracks]/D");
-    treeTracks->Branch("MWPC1PosX",MWPC0PosX, "MWPC1PosX[nTracks]/D");
+    treeTracks->Branch("MWPC1PosX",MWPC1PosX, "MWPC1PosX[nTracks]/D");
     treeTracks->Branch("MWPC0PosY",MWPC0PosY, "MWPC0PosY[nTracks]/D");
-    treeTracks->Branch("MWPC1PosY",MWPC0PosY, "MWPC1PosY[nTracks]/D");
+    treeTracks->Branch("MWPC1PosY",MWPC1PosY, "MWPC1PosY[nTracks]/D");
     treeTracks->Branch("MWPC0PosZ",MWPC0PosZ, "MWPC0PosZ[nTracks]/D");
-    treeTracks->Branch("MWPC1PosZ",MWPC0PosZ, "MWPC1PosZ[nTracks]/D");
+    treeTracks->Branch("MWPC1PosZ",MWPC1PosZ, "MWPC1PosZ[nTracks]/D");
 
 
 	treeTagger->Branch("nTagged", &nTagged,"nTagged/I");
