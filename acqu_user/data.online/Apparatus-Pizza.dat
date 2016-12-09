@@ -1,0 +1,11 @@
+########################################################################
+#
+##	  	  Name    		Class Name   			Setup file
+Detector:         Pizza                 TA2GenericDetector              Detector-Pizza.dat
+##
+## Turn on apparatus reconstruction 
+#Reconstruct:
+##
+## Do some post-initialisation.
+Initialise:
+##

@@ -40,6 +40,7 @@ void PeriodMacro() {
 	printf("Tagger Section F appears to be off!\n");
 	dError = 500;
       }
+      /*
       if((FPD_ScalerCurr->Integral(273,320))<=48) {
 	printf("Tagger Section G appears to be off!\n");
 	dError = 500;
@@ -48,6 +49,7 @@ void PeriodMacro() {
       	printf("Tagger Section H appears to be off!\n");
       	dError = 500;
       }
+      */
       if(dError==500) printf("\n");
 
       /*
@@ -87,6 +89,7 @@ void PeriodMacro() {
   }
 
   // look for hole in MWPC
+  
   if(gROOT->FindObject("MWPC_Wires_Hits")){
     Int_t iNBins = MWPC_Wires_Hits->GetNbinsX();
     if((MWPC_Wires_Hits->Integral()) > (100*iNBins)){
@@ -94,10 +97,14 @@ void PeriodMacro() {
       Double_t dDiff;
       Int_t iProb = 0;
       iThis = MWPC_Wires_Hits->GetBinContent(1);
-      for(Int_t i=1; i<iNBins; i++){
+      for(Int_t i=1; i<iNBins/2; i++){ //TODO: only check first half (broken MWPC Oct 28th 2016)
 	iPrev = iThis;
-        // exclude broken channels (as of 20.11.2015)
-        if (i == 94 || i == 119 || i == 160 || i == 217 || i == 241 || i == 305 || i == 327 || i == 437)
+        //TODO: exclude broken channels (as of 19.10.2016)
+        if (i == 119 || i == 160 ||  
+            i == 230 || i == 241 || i == 305 || 
+            i == 327 || i == 423 || i == 437 ||
+            i == 175 || i == 217 || i == 226 ||  //TODO: added Oct 25th 2016
+            i == 228 || i == 296 || i == 375)    //TODO: added Oct 25th 2016
           continue;
 	iThis = MWPC_Wires_Hits->GetBinContent(i+1);
 	dDiff = (TMath::Abs((iThis-iPrev)/(1.*iPrev)));
@@ -110,6 +117,7 @@ void PeriodMacro() {
     }
     if((MWPC_Wires_Hits->Integral()) > (400*iNBins)) MWPC_Wires_Hits->Reset();
   }
+  
 
 
   // look for shift in FPD
@@ -148,7 +156,7 @@ void PeriodMacro() {
 	Proj_NaI = (TH1D*)NaI_Hits_v_TimeOR->ProjectionX("Proj_NaI",i+1,i+8);
 	
 	Double_t dTime = Proj_NaI->GetMean();
-	if((dTime < 20) || (dTime > 50)){
+	if((dTime < 20) || (dTime > 52)){ //TODO: changed upper limit to from 50 to 52 on 06.11.2016 (mean around 50.x for several channels)
 	  if(!bShift) printf("Possible problem in NaI_Hits_v_TimeOR - Event %d\n",gAN->GetNDAQEvent());
 	  printf("\t\t\tPeak at %f ns (Channels %3d-%3d)\n",dTime,i,i+7);
 	  if(!bShift) dError += 4000;
@@ -158,6 +166,13 @@ void PeriodMacro() {
       if(bShift) printf("\n");
       else NaI_Hits_v_TimeOR->Reset();
     }
+  }
+
+  // Check Target DAQ status
+  TString sDAQ = gSystem->GetFromPipe("caget TARGET:HE:DAQ_Status");
+  if(sDAQ.EndsWith("0")){
+    printf("Possible problem with Target DAQ - Event %d\n\n",gAN->GetNDAQEvent());
+    dError += 8000;
   }
 
   // determine number of events with a hardware error

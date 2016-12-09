@@ -3,47 +3,58 @@
 //                *** Acqu++ <-> Root ***
 // Online/Offline Analysis of Sub-Atomic Physics Experimental Data
 //
-// Check plots of Tagger spectra
+// Check plots of Pizza detector spectra
 //
-// Ken Temp
-
 
 void PizzaClear(){
+	TA2Detector* t = (TA2Detector*)(gAN->GetGrandChild("Pizza"));
+	TA2Apparatus* a = (TA2Apparatus*)(gAN->GetChild("PizzaApp"));
+	if( t ) t->ZeroAll();
+	else printf("Pizza detector class not found\n");
+	if( a ) a->ZeroAll();
+	else printf("Pizza apparatus class not found\n");
 }
 
 CheckPizza(TCanvas* canv){
-  
-  if(canv==NULL) {
-    PizzaClear();
-    return;
-  }
-  
-
-  TH1* h1;
-  canv->SetFillStyle(4000);
-  canv->Divide(4,4,0.01,0.01);
-  
+	if(canv==NULL) {
+		PizzaClear();
+		return;
+	}
+ 
   Char_t* hname[] = {
-    "BaF2_LG_001", "BaF2_LG_002", "BaF2_LG_129", "BaF2_LG_130", "BaF2_LG_193", "BaF2_LG_194", "BaF2_LG_257", "BaF2_LG_258", 
-    "BaF2_Time_001", "BaF2_Time_002", "BaF2_Time_129", "BaF2_Time_130", "BaF2_Time_193", "BaF2_Time_194", "BaF2_Time_257", "BaF2_Time_258", 
+    "Pizza_NADChits",
+    "Pizza_NTDChits",
+    "Pizza_Nhits",
+    "Pizza_ADCHits",
+    "Pizza_TDCHits",
+    "Pizza_Hits"
+  };
+  Int_t log[] = { 1,0,0,1,1,1 };
+  Int_t col[] = { 2,2,2,4,4,4 };
+  Char_t* xname[] = {
+    "Number of Pizza RAW ADC Hits per Event",
+    "Number of Pizza TDC Hits per Event",
+    "Number of Pizza Hits (ADC and TDC) per Event",
+    "Pizza RAW ADC Hits distribution",
+    "Pizza TDC Hits distribution",
+    "Pizza Hits (ADC and TDC) distribution",
+  };
+  TH1F* h1;
+  canv->SetFillStyle(4000);
+  canv->Divide(3,3,0.01,0.01);
+  for( Int_t i=0; i<6; i++ ){
+      h1 = (TH1F*)(gROOT->FindObjectAny(hname[i]));
+      if( !h1 ){
+	printf("No root histogram %s\n",hname[i]);
+	continue;
+      }
+      h1->SetLineColor( 1 );
+      h1->SetFillColor( col[i] );
+      canv->cd(i+1);
+      if( log[i] ) canv->GetPad(i+1)->SetLogy();
+      h1->GetXaxis()->SetTitle(xname[i]);
+      h1->Draw();
   }
-  printf("Doing root histogram %s\n",hname[i]);
-  
-  for( Int_t i=0; i<16; i++ ){
-    printf("Doing root histogram %s\n",hname[i]);
-    h1 = (TH1*)(gROOT->FindObject(hname[i]));
-    if( !h1 ){
-      printf("No root histogram %s\n",hname[i]);
-      continue;
-    }
-    
-    canv->cd(i+1);
-    if(i<8)h1->SetAxisRange(50,350);
-    else h1->SetAxisRange(1500,2500);
-    h1->Draw();
-    
-  }
-  return;
+  //  return;
 }
-
 

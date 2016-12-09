@@ -150,6 +150,7 @@ void CheckGUI()
 	}
 	items->Add(MacroEntry::Make("CheckTagger.C","Tagger"));
 	if(isCB || isTAPS){
+	  items->Add(MacroEntry::Make("CheckPizza.C","Pizza"));
 	  items->Add(MacroEntry::Make("CheckTrigger.C","Trigger"));
 	  items->Add(MacroEntry::Make("CheckLiveTimes.C","LiveTimes"));
 	  items->Add(MacroEntry::Make("CheckPhysics.C","Physics"));	
