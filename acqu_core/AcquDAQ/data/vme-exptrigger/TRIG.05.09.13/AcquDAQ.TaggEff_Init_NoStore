@@ -4,7 +4,7 @@ Description: NoStore mode! Use Go to start
 #File-Name: scratch/NewDAQtest  32	500000	32768	ENet  32768  3030
 File-Name: scratch/NewDAQtest  32	500000	32768	No-Store  32768  3030
 # Frequency            Scaler	Slow-Control
-Event-Counters:	       10000	200000			
+Event-Counters:	       1000	200000			
 Start-Run: 0
 #
 #Control:  Local    0     0

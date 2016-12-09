@@ -30,9 +30,9 @@ Reconstruct-Analysis:
 Initialise:
 ##
 # Macros
-#Period: 100000	PeriodMacro.C	PeriodMacro()
-Period:  3000	PeriodMacro.C	PeriodMacro()
-#Period:   1000	PeriodMacro.C	PeriodMacro()
+#Period: 100000	PeriodMacroTaggEff.C	PeriodMacroTaggEff()
+Period:  3000	PeriodMacroTaggEff.C	PeriodMacroTaggEff()
+#Period:   1000	PeriodMacroTaggEff.C	PeriodMacroTaggEff()
 #EndFile:	EndFileMacro.C  EndFileMacro()
 #Finish:	FinishMacro.C	FinishMacro()
 ##
