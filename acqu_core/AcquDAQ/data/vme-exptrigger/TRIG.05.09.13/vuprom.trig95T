@@ -24,8 +24,8 @@ Int-Delay:  11 2000
 Int-Delay:  12 0
 Int-Delay:  13 0
 FC-Delay: 100
-RAM-Download: 93
-Input-Mask: 80c1
+RAM-Download: 95
+Input-Mask: 8081
 L1-Width: 14
 Strobe-Delay: 0 8
 Enable-TAPS: 0
@@ -33,9 +33,9 @@ Enable-TAPS: 0
 Helicity-Inhibit: 0
 Set-M-Threshold: 0 1 2 3
 #L2-Prescale: 65535 65535 65535 65535 0 0 0 65535
-L2-Prescale: 65535 65535 0 0 65535 0 0 65535
+L2-Prescale: 65535 65535 65535 65535 65535 0 0 0
 GUI-permit:
 #	End of File
 #
-L1-Prescale: 65535 65535 65535 0 0 0 0 65535
-Input-Prescale: 0 15 15 15 15 15 0 0 15 15 15 15 15 15 15 0
+L1-Prescale: 65535 65535 65535 0 0 0 0 0
+Input-Prescale: 0 15 15 15 15 15 15 0 15 15 15 15 15 15 15 0
