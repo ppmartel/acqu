@@ -97,20 +97,19 @@ void PeriodMacro() {
       Double_t dDiff;
       Int_t iProb = 0;
       iThis = MWPC_Wires_Hits->GetBinContent(1);
-      for(Int_t i=1; i<iNBins/2; i++){ //TODO: only check first half (broken MWPC Oct 28th 2016)
+      for(Int_t i=1; i<iNBins; i++){
 	iPrev = iThis;
-        //TODO: exclude broken channels (as of 19.10.2016)
-        if (i == 119 || i == 160 ||  
-            i == 230 || i == 241 || i == 305 || 
-            i == 327 || i == 423 || i == 437 ||
-            i == 175 || i == 217 || i == 226 ||  //TODO: added Oct 25th 2016
-            i == 228 || i == 296 || i == 375)    //TODO: added Oct 25th 2016
+        //TODO: exclude broken/noisy channels (as of 20.01.2017)
+        if (i == 140 || i == 142 || i == 159 ||
+	    i == 192 || i == 232 || i == 233 ||
+	    i == 327 || i == 423 || i == 526 ||
+	    i == 527)
           continue;
 	iThis = MWPC_Wires_Hits->GetBinContent(i+1);
 	dDiff = (TMath::Abs((iThis-iPrev)/(1.*iPrev)));
 	if(dDiff > 0.5) iProb++;
       }
-      if(iProb > 16){
+      if(iProb > 8){
 	printf("Possible problem in MWPC Wires - Event %d\n\t\t\t%d jumps found\n\n",gAN->GetNDAQEvent(),iProb);
 	dError += 1000;
       }
@@ -166,6 +165,13 @@ void PeriodMacro() {
       if(bShift) printf("\n");
       else NaI_Hits_v_TimeOR->Reset();
     }
+  }
+
+  // Check Target DAQ status
+  TString sArchive = gSystem->GetFromPipe("echo 'http://slowcontrol:4812/main' | wget -O- -i- -q | grep -A 1 '>State<' | grep -v State | sed 's/ /_/g' | sed 's/>/ /g' | sed 's/</ /g' | awk '{print $3}'");
+  if(!sArchive.Contains("RUNNING")){
+    printf("Possible problem with EPICS Archiver - Event %d\n\n",gAN->GetNDAQEvent());
+    dError += 16000;
   }
 
   // Check Target DAQ status
