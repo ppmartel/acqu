@@ -29,6 +29,8 @@ Input-Mask: 8081
 L1-Width: 14
 Strobe-Delay: 0 8
 Enable-TAPS: 0
+Set-Debug-Out: 0 63
+Set-Debug-Out: 1 123
 #Set-Debug-Out: 3 65
 Helicity-Inhibit: 0
 Set-M-Threshold: 0 1 2 3
