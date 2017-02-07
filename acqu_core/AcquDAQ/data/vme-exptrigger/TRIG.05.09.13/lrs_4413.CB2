@@ -23,10 +23,10 @@ CAMAC-CNAF:	fffff	25	0	0	Init
 #
 # ~43.5 MeV
 #
-CAMAC-CNAF:     64      17      0       0       Init
+#CAMAC-CNAF:     64      17      0       0       Init
 #
 # 70 MeV - 130 mV
-#CAMAC-CNAF:     82      17      0       0       Init
+CAMAC-CNAF:     82      17      0       0       Init
 # 90 MeV
 #CAMAC-CNAF:     B4      17      0       0       Init
 # 100 MeV
@@ -50,7 +50,7 @@ CAMAC-CNAF:     64      17      0       0       Init
 # 350
 #CAMAC-CNAF:     2B6      17      0       0       Init
 # 300
-CAMAC-CNAF:     1F4      17      0       0       Init
+#CAMAC-CNAF:     1F4      17      0       0       Init
 # 200
 #CAMAC-CNAF:     187      17      0       0       Init
 # ~240 MeV
