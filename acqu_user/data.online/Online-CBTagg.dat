@@ -29,3 +29,5 @@ AnalysisSetup: Analysis-CBTagg.dat
 #
 ## Set Server file
 ServerSetup: Server-CBTagg.dat
+#
+Log-Hard-Error:
