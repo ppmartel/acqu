@@ -1,0 +1,79 @@
+####
+Description: Tagging Efficiency and Diagnostics
+Mk1-Format:
+#
+File-Name: scratch/GoniScans 32	500000	32768	ENet  32768  3020
+#File-Name: scratch/TaggEff 32	500000	32768	No-Store  32768  3020
+#
+#                      Freq
+Event-Counters:	       2000	20000
+Start-Run: 0
+#
+#Control:  Local    0     0
+Control:   ENet	    taggerdaq1 4020
+#
+#	module	   Name		configFile
+Module:	KPH_I686   kphi686_0	kphi686.dat	0	0
+Module: CBD_8210   cbd0		cbd8210_0.dat	800000	0	0
+# ----------------------------------------	crate	station
+Module: CAMAC	      a2_0	a2ctrl_0.dat	  1	30
+Module: CAMAC	      vucam	vucam.trig	  1	1
+Module: CAMAC	      caen_208	caen_208.trig	  1	2
+Module: LRS_4508      mlu_0	lrs_4508.trig	  1	5
+
+Module: CAMAC	      scal0	lrs_2551.dat	  1	11
+Module: LRS_4413SPILL spill	lrs_4413SPILL.dat 1	10
+#
+# following are added BY BAYA to set the delay
+Module: LRS_2323      lrs_2323  lrs_2323.trig      1	15
+#	   	   
+# -----------------------------------------             fIndex  fNcha Notread
+Module: CATCH_TDC    cat0 catchTDC.d 	e0300000	1400    128 	14
+Module: CATCH_TDC    cat1 catchTDC.d 	e0310000	1528    128 	14
+Module: CATCH_TDC    cat2 catchTDC.d 	e0320000	1656    128 	14
+Module: CATCH_TDC    cat3 catchTDC.d 	e0330000	1784    128 	14
+##
+Module: CATCH_TCS    tcs0       catchTCS.d      00e00000	0    1	12
+##
+## Interrupt control module
+IRQ-Ctrl: cbd0
+##
+## Trigger enable and TCS start/stop module, 
+## and delay in usec after CATCH reset
+Start-Ctrl: spill 75000
+##
+## Event Synchronisation info provider module and event ID index
+Synch-Ctrl: cat0 400
+##
+Module: KPH_SMI		kph0		kphSMIs.dat	c0f000	0	0
+Module: LRS_1821	smi0		smi1821_0.dat 
+#
+#	
+#Module: LRS_1885	lrs1885_0	lrs_1885.dat	9	b	800
+#Module: LRS_1885	lrs1885_1	lrs_1885.dat	8	b	896
+#Module: LRS_1885	lrs1885_2	lrs_1885.dat	7	b	992
+#Module: LRS_1885	lrs1885_3	lrs_1885.dat	6	b	1088
+#Module: LRS_1885	lrs1885_4	lrs_1885.dat	4	b	1184
+#
+##Module: LRS_1875	lrs1875_0	lrs_1875a.d	3	b	600
+#
+Module: STR_200         strsca_0	str_200_clr.d     21	z	152
+Module: STR_200         strsca_1	str_200_clr.d     20	z	184
+Module: STR_200         strsca_2	str_200_clr.d     19	z	216
+Module: STR_200         strsca_3	str_200_clr.d     18	z	248
+Module: STR_200         strsca_4	str_200_clr.d     17	z	280
+Module: STR_200         strsca_5	str_200_clr.d     16	z	312
+Module: STR_200         strsca_6	str_200_clr.d     15	z	344
+Module: STR_200         strsca_7	str_200_clr.d     14	z	376
+Module: STR_200         strsca_8	str_200_clr.d     13	z	408
+Module: STR_200         strsca_9	str_200_clr.d     12	z	440
+Module: STR_200         strsca_10	str_200_clr.d     11	z	472
+#
+Reset-Ctrl: kphi686_0
+#Module: CATCH_SCA    cas0 catchScaler.d e0200000	504	128	32 
+#Module: CATCH_SCA    cas1 catchScaler.d e0210000	504	128	32 
+#Module: CATCH_SCA    cas2 catchScaler.d e0220000	504	128	32 
+#
+########### End of File #######################
+
+

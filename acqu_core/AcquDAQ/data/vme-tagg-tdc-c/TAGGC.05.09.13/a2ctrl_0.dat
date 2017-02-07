@@ -1,0 +1,23 @@
+##--Author	JRM Annand	 3rd Mar 2006
+##--Update	JRM Annand...
+##--Description
+##                *** AcquDAQ++ <-> Root ***
+## DAQ for Sub-Atomic Physics Experiments.
+##
+##              Dummy Base	#Registers	Module type
+BaseSetup:	0		3		SlowCtrl
+##
+## Enter CNAFS
+## NB if you want to force a read operation
+## set the value of datum > 0xffff
+## The A2 NAFs 30,9,24 etc. must be read 
+##		Datum	F	A0	A1	Register Type
+## Set Inhibit
+CAMAC-CNAF:	fffff	26	9	9	Init
+## Remove Inhibit:	
+CAMAC-CNAF:	fffff	24	9	9	Init
+## Test Inhibit	
+CAMAC-CNAF:	fffff	27	9	9	Init
+##
+#	End of File
+#

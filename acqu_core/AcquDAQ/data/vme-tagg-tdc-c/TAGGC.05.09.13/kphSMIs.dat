@@ -1,0 +1,162 @@
+##--Rev 	Baya Oussena... 17th Jul 2009  New DAQ software
+##--Update	Baya oussena..
+##--Description for KPHSMI
+##                *** AcquDAQ++ <-> Root ***
+## DAQ for Sub-Atomic Physics Experiments.
+#
+## Force hardware initialisation at config stage
+#	End of File
+#
+##              Hex Base	#Registers	Module type	MapSize  
+BaseSetup:	0		128		S-Ctrl		1000
+##
+
+##		Hex Offset	DW	AM	Datum
+##	First SMI 0	
+Register:	0e00		16	39	0
+Register:	0e02		16	39	0
+Register:	0e04		16	39	0
+Register:	0e06		16	39	0
+Register:	0e08		16	39	0
+Register:	0e0a		16	39	0
+Register:	0e0c		16	39	0
+Register:	0e0e		16	39	0
+##	Next SMI 1	
+Register:	0e20		16	39	0
+Register:	0e22		16	39	0
+Register:	0e24		16	39	0
+Register:	0e26		16	39	0
+Register:	0e28		16	39	0
+Register:	0e2a		16	39	0
+Register:	0e2c		16	39	0
+Register:	0e2e		16	39	0
+##	Next SMI 2	
+Register:	0e40		16	39	0
+Register:	0e42		16	39	0
+Register:	0e44		16	39	0
+Register:	0e46		16	39	0
+Register:	0e48		16	39	0
+Register:	0e4a		16	39	0
+Register:	0e4c		16	39	0
+Register:	0e4e		16	39	0
+##	Next SMI 3	
+Register:	0e60		16	39	0
+Register:	0e62		16	39	0
+Register:	0e64		16	39	0
+Register:	0e66		16	39	0
+Register:	0e68		16	39	0
+Register:	0e6a		16	39	0
+Register:	0e6c		16	39	0
+Register:	0e6e		16	39	0
+##	Next SMI 4	
+Register:	0e80		16	39	0
+Register:	0e82		16	39	0
+Register:	0e84		16	39	0
+Register:	0e86		16	39	0
+Register:	0e88		16	39	0
+Register:	0e8a		16	39	0
+Register:	0e8c		16	39	0
+Register:	0e8e		16	39	0
+##	Next SMI 5		
+Register:	0ea0		16	39	0
+Register:	0ea2		16	39	0
+Register:	0ea4		16	39	0	
+Register:	0ea6		16	39	0
+Register:	0ea8		16	39	0
+Register:	0eaa		16	39	0
+Register:	0eac		16	39	0
+Register:	0eae		16	39	0	
+##	Next SMI 6	
+Register:	0ec0		16	39	0
+Register:	0ec2		16	39	0
+Register:	0ec4		16	39	0
+Register:	0ec6		16	39	0
+Register:	0ec8		16	39	0
+Register:	0eca		16	39	0
+Register:	0ecc		16	39	0
+Register:	0ece		16	39	0
+##	Next SMI 7	
+Register:	0ee0		16	39	0
+Register:	0ee2		16	39	0
+Register:	0ee4		16	39	0
+Register:	0ee6		16	39	0
+Register:	0ee8		16	39	0
+Register:	0eea		16	39	0
+Register:	0eec		16	39	0
+Register:	0eee		16	39	0
+##	Next SMI 8	
+Register:	0f00		16	39	0
+Register:	0f02		16	39	0
+Register:	0f04		16	39	0
+Register:	0f06 		16	39	0
+Register:	0f08		16	39	0
+Register:	0f0a		16	39	0
+Register:	0f0c		16	39	0
+Register:	0f0e		16	39	0
+##	Next SMI 9	
+Register:	0f20		16	39	0
+Register:	0f22		16	39	0
+Register:	0f24		16	39	0
+Register:	0f26		16	39	0
+Register:	0f28		16	39	0
+Register:	0f2a		16	39	0
+Register:	0f2c		16	39	0
+Register:	0f2e		16	39	0
+##	Next SMI 10 (a)		
+Register:	0f40		16	39	0
+Register:	0f42		16	39	0
+Register:	0f44		16	39	0
+Register:	0f46		16	39	0
+Register:	0f48		16	39	0
+Register:	0f4a		16	39	0
+Register:	0f4c		16	39	0
+Register:	0f4e		16	39	0
+##	Next SMI 11 (b)		
+Register:	0f60		16	39	0
+Register:	0f62		16	39	0
+Register:	0f64		16	39	0
+Register:	0f66		16	39	0
+Register:	0f68		16	39	0
+Register:	0f6a		16	39	0
+Register:	0f6c		16	39	0
+Register:	0f6e		16	39	0
+##	Next SMI 12 (c)		
+Register:	0f80		16	39	0
+Register:	0f82		16	39	0
+Register:	0f84		16	39	0
+Register:	0f86		16	39	0
+Register:	0f88		16	39	0
+Register:	0f8a		16	39	0
+Register:	0f8c		16	39	0
+Register:	0f8e		16	39	0
+##	Next SMI 13 (d)	
+Register:	0fa0		16	39	0
+Register:	0fa2		16	39	0
+Register:	0fa4		16	39	0
+Register:	0fa6		16	39	0
+Register:	0fa8		16	39	0
+Register:	0faa		16	39	0
+Register:	0fac		16	39	0
+Register:	0fae		16	39	0
+##	Next SMI 13 (e)	
+Register:	0fc0		16	39	0
+Register:	0fc2		16	39	0
+Register:	0fc4		16	39	0
+Register:	0fc6		16	39	0
+Register:	0fc8		16	39	0
+Register:	0fca		16	39	0
+Register:	0fcc		16	39	0
+Register:	0fce		16	39	0
+##	Next SMI 15 (f)	
+Register:	0fe0		16	39	0
+Register:	0fe2		16	39	0
+Register:	0fe4		16	39	0
+Register:	0fe6		16	39	0
+Register:	0fe8		16	39	0
+Register:	0fea		16	39	0
+Register:	0fec		16	39	0
+Register:	0fee		16	39	0
+## 
+##  
+MapReg:
+

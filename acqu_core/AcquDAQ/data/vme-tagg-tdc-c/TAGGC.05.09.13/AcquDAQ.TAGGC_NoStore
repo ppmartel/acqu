@@ -1,0 +1,66 @@
+####
+##Mk1-Format:
+File-Name: scratch/AcquDAQ 32	5000000	32768 No-Store  32768  3028
+#Freq	   	Scaler	   	SlowCtrl
+Event-Counters:	10000		200000
+Start-Run: 0
+#
+#Control:  Slave    0     0
+#Control:   ENet	    localhost 4028
+#Control:   ENetSlave	    localhost 4028
+Control:  Slave    0     0
+#
+#	module	   Name		configFile
+Module:	KPH_I686   kphi686_0	kphi686.dat	0	0
+Module: KPH_VITEC   vit0        vitec_0.dat     0000    0       0
+Module: CBD_8210   cbd0		cbd8210_0.dat	800000	0	0
+#
+# Microscope/EPT Electronics
+#Module: CAMAC	      a2_4	a2ctrl_0.dat	  4	30
+#Module: GSI_4800      uscal_0  	gsi_4800.dat0     4	20
+#Module: GSI_4800      uscal_1		gsi_4800.dat1     4	21
+#Module: CAMAC	      caen_208_A	caen_208.EPT      4	4
+#Module: CAMAC	      caen_208_B	caen_208.EPT      4	7
+#Module: CAMAC	      caen_208_C	caen_208.EPT      4	10
+#Module: CAMAC	      caen_208_D	caen_208.EPT	  4	13
+#Module: CAMAC	      caen_208_E	caen_208.EPT	  4	16
+#Module: CAMAC	      caen_208_F	caen_208.EPT	  4	19
+#
+# -----------------------------------------              fIndex  fNcha  Bits 
+Module: CATCH_TDC    cat0 	catchTDC.d 	e0300000  1400    128 	14
+Module: CATCH_TDC    cat1 	catchTDC.d 	e0310000  1528    128 	14
+#Module: CATCH_TDC    cat2 	catchTDC.d 	e0320000  1656    128 	14
+#Module: CATCH_TDC    cat3       catchTDC.d    e0330000  1784    128  14
+## Interrupt control module
+IRQ-Ctrl: vit0
+## Trigger enable and TCS start/stop module, and delay in usec after CATCH reset
+#Start-Ctrl: spill 0
+## Event Synchronisation info provider module and event ID index
+Synch-Ctrl: vit0 400
+#
+#Module: KPH_SMI		kph0		kphSMIs.dat c0f000	0	0
+#Module: LRS_1821	smi0		smi1821_0.dat 
+#
+#	
+#Module: LRS_1885	lrs1885_0	lrs_1885.dat	9	b	800
+#Module: LRS_1885	lrs1885_1	lrs_1885.dat	8	b	896
+#Module: LRS_1885	lrs1885_2	lrs_1885.dat	7	b	992
+#Module: LRS_1885	lrs1885_3	lrs_1885.dat	6	b	1088
+#Module: LRS_1885	lrs1885_4	lrs_1885.datott 4	b	1184
+#
+##Module: LRS_1875	lrs1875_0	lrs_1875a.d	3	b	600
+#
+#Module: STR_200         strsca_0	str_200_clr.d     21	z	400
+#Module: STR_200         strsca_1	str_200_clr.d     20	z	432
+#Module: STR_200         strsca_2	str_200_clr.d     19	z	464
+#Module: STR_200         strsca_3	str_200_clr.d     18	z	496
+#Module: STR_200         strsca_4	str_200_clr.d     17	z	528
+#Module: STR_200         strsca_5	str_200_clr.d     16	z	560
+#Module: STR_200         strsca_6	str_200_clr.d     15	z	592
+#Module: STR_200         strsca_7	str_200_clr.d     14	z	624
+#Module: STR_200         strsca_8	str_200_clr.d     13	z	656
+#Module: STR_200         strsca_9	str_200_clr.d     12	z	688
+#Module: STR_200         strsca_10	str_200_clr.d     11	z	720
+#
+Reset-Ctrl: kphi686_0
+########### End of File #######################

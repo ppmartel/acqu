@@ -1,0 +1,162 @@
+##--Rev 	Baya Oussena... 17th Jul 2009  New DAQ software
+##--Update	Baya oussena..
+##--Description for KPHSMI
+##                *** AcquDAQ++ <-> Root ***
+## DAQ for Sub-Atomic Physics Experiments.
+#
+## Force hardware initialisation at config stage
+#	End of File
+#
+##              Hex Base	#Registers	Module type	MapSize  
+BaseSetup:	0		128		S-Ctrl		1000
+##
+
+##		Hex Offset	DW	AM	Datum
+##	First SMI 0	
+Register:	0000		16	39	0
+Register:	0002		16	39	0
+Register:	0004		16	39	0
+Register:	0006		16	39	0
+Register:	0008		16	39	0
+Register:	000a		16	39	0
+Register:	000c		16	39	0
+Register:	000e		16	39	0
+##	Next SMI 1	
+Register:	0020		16	39	0
+Register:	0022		16	39	0
+Register:	0024		16	39	0
+Register:	0026		16	39	0
+Register:	0028		16	39	0
+Register:	002a		16	39	0
+Register:	002c		16	39	0
+Register:	002e		16	39	0
+##	Next SMI 2	
+Register:	0040		16	39	0
+Register:	0042		16	39	0
+Register:	0044		16	39	0
+Register:	0046		16	39	0
+Register:	0048		16	39	0
+Register:	004a		16	39	0
+Register:	004c		16	39	0
+Register:	004e		16	39	0
+##	Next SMI 3	
+Register:	0060		16	39	0
+Register:	0062		16	39	0
+Register:	0064		16	39	0
+Register:	0066		16	39	0
+Register:	0068		16	39	0
+Register:	006a		16	39	0
+Register:	006c		16	39	0
+Register:	006e		16	39	0
+##	Next SMI 4	
+Register:	0080		16	39	0
+Register:	0082		16	39	0
+Register:	0084		16	39	0
+Register:	0086		16	39	0
+Register:	0088		16	39	0
+Register:	008a		16	39	0
+Register:	008c		16	39	0
+Register:	008e		16	39	0
+##	Next SMI 5		
+Register:	00a0		16	39	0
+Register:	00a2		16	39	0
+Register:	00a4		16	39	0	
+Register:	00a6		16	39	0
+Register:	00a8		16	39	0
+Register:	00aa		16	39	0
+Register:	00ac		16	39	0
+Register:	00ae		16	39	0	
+##	Next SMI 6	
+Register:	00c0		16	39	0
+Register:	00c2		16	39	0
+Register:	00c4		16	39	0
+Register:	00c6		16	39	0
+Register:	00c8		16	39	0
+Register:	00ca		16	39	0
+Register:	00cc		16	39	0
+Register:	00ce		16	39	0
+##	Next SMI 7	
+Register:	00e0		16	39	0
+Register:	00e2		16	39	0
+Register:	00e4		16	39	0
+Register:	00e6		16	39	0
+Register:	00e8		16	39	0
+Register:	00ea		16	39	0
+Register:	00ec		16	39	0
+Register:	00ee		16	39	0
+##	Next SMI 8	
+Register:	0100		16	39	0
+Register:	0102		16	39	0
+Register:	0104		16	39	0
+Register:	0106 		16	39	0
+Register:	0108		16	39	0
+Register:	010a		16	39	0
+Register:	010c		16	39	0
+Register:	010e		16	39	0
+##	Next SMI 9	
+Register:	0120		16	39	0
+Register:	0122		16	39	0
+Register:	0124		16	39	0
+Register:	0126		16	39	0
+Register:	0128		16	39	0
+Register:	012a		16	39	0
+Register:	012c		16	39	0
+Register:	012e		16	39	0
+##	Next SMI 10 (a)		
+Register:	0140		16	39	0
+Register:	0142		16	39	0
+Register:	0144		16	39	0
+Register:	0146		16	39	0
+Register:	0148		16	39	0
+Register:	014a		16	39	0
+Register:	014c		16	39	0
+Register:	014e		16	39	0
+##	Next SMI 11 (b)		
+Register:	0160		16	39	0
+Register:	0162		16	39	0
+Register:	0164		16	39	0
+Register:	0166		16	39	0
+Register:	0168		16	39	0
+Register:	016a		16	39	0
+Register:	016c		16	39	0
+Register:	016e		16	39	0
+##	Next SMI 12 (c)		
+Register:	0180		16	39	0
+Register:	0182		16	39	0
+Register:	0184		16	39	0
+Register:	0186		16	39	0
+Register:	0188		16	39	0
+Register:	018a		16	39	0
+Register:	018c		16	39	0
+Register:	018e		16	39	0
+##	Next SMI 13 (d)	
+Register:	01a0		16	39	0
+Register:	01a2		16	39	0
+Register:	01a4		16	39	0
+Register:	01a6		16	39	0
+Register:	01a8		16	39	0
+Register:	01aa		16	39	0
+Register:	01ac		16	39	0
+Register:	01ae		16	39	0
+##	Next SMI 13 (e)	
+Register:	01c0		16	39	0
+Register:	01c2		16	39	0
+Register:	01c4		16	39	0
+Register:	01c6		16	39	0
+Register:	01c8		16	39	0
+Register:	01ca		16	39	0
+Register:	01cc		16	39	0
+Register:	01ce		16	39	0
+##	Next SMI 15 (f)	
+Register:	01e0		16	39	0
+Register:	01e2		16	39	0
+Register:	01e4		16	39	0
+Register:	01e6		16	39	0
+Register:	01e8		16	39	0
+Register:	01ea		16	39	0
+Register:	01ec		16	39	0
+Register:	01ee		16	39	0
+## 
+##  
+MapReg:
+

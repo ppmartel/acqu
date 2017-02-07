@@ -1,0 +1,112 @@
+##    File for LRS 1885 QDC.....should contain pedestal values
+##    ROOT Macro Ped1885, JRM Annand 29/9/06
+##              Dummy Base	#Registers	Module type
+BaseSetup:	0		3		VADC
+##		Dummy Index	#Channels	#Bits
+BaseIndex:	0		96		12
+##		HardwareID	
+Hardware-ID:	0x1045	
+##
+Register: 0x0	  80000000
+Register: 0x0	  08000000
+Register: 0x1     5f
+Register: pd0     0
+Register: pd1     0
+Register: pd2     0
+Register: pd3     0
+Register: pd4     0
+Register: pd5     0
+Register: pd6     0
+Register: pd7     0
+Register: pd8     0
+Register: pd9     0
+Register: pd10    0
+Register: pd11    0
+Register: pd12    0
+Register: pd13    0
+Register: pd14    0
+Register: pd15    0
+Register: pd16    0
+Register: pd17    0
+Register: pd18    0	
+Register: pd19    0
+Register: pd20    0
+Register: pd21    0
+Register: pd22    0
+Register: pd23    0
+Register: pd24    0
+Register: pd25    0
+Register: pd26    0
+Register: pd27    0
+Register: pd28    0
+Register: pd29    0
+Register: pd30    0
+Register: pd31    0
+Register: pd32    0
+Register: pd33    0
+Register: pd34    0
+Register: pd35    0
+Register: pd36    0
+Register: pd37    0
+Register: pd38    0
+Register: pd39    0
+Register: pd40    0
+Register: pd41    0
+Register: pd42    0
+Register: pd43    0
+Register: pd44    0
+Register: pd45    0
+Register: pd46    0
+Register: pd47    0
+Register: pd48    0
+Register: pd49    0
+Register: pd50    0
+Register: pd51    0
+Register: pd52    0
+Register: pd53    0
+Register: pd54    0
+Register: pd55    0
+Register: pd56    0
+Register: pd57    0
+Register: pd58    0
+Register: pd59    0
+Register: pd60    0
+Register: pd61    0
+Register: pd62    0
+Register: pd63    0
+Register: pd64    0
+Register: pd65    0
+Register: pd66    0
+Register: pd67    0
+Register: pd68    0
+Register: pd69    0
+Register: pd70    0
+Register: pd71    0
+Register: pd72    0
+Register: pd73    0
+Register: pd74    0
+Register: pd75    0
+Register: pd76    0
+Register: pd77    0
+Register: pd78    0
+Register: pd79    0
+Register: pd80    0
+Register: pd81    0
+Register: pd82    0
+Register: pd83    0
+Register: pd84    0
+Register: pd85    0
+Register: pd86    0
+Register: pd87    0
+Register: pd88    0
+Register: pd89    0
+Register: pd90    0
+Register: pd91    0
+Register: pd92    0
+Register: pd93    0
+Register: pd94    0
+Register: pd95    0
+## Set Read MOde of the module
+RD-Mode:
+
+

@@ -1,0 +1,15 @@
+##--Author	Baya Oussena	 6 Jul  2010
+##--Update	Baya Oussena     13 Jul 2010
+##--Description
+##                *** AcquDAQ++ <-> Root ***
+## DAQ for Sub-Atomic Physics Experiments.
+##
+##              Dummy Base	#Registers	Module type
+BaseSetup:	0		5		Scaler
+##
+BaseIndex:	12		48		24
+##
+## No CNAFS entered...hard wired
+##
+#	End of File
+#

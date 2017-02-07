@@ -1,0 +1,38 @@
+##--Author	Baya Oussena	 6 Jul  2010
+##--Update	Baya Oussena     13 Jul 2010
+##--Description
+##                *** AcquDAQ++ <-> Root ***
+## DAQ for Sub-Atomic Physics Experiments.
+##
+## CAMAC_CAEN 208 CFD
+## Tagger Microscope
+##
+##              Dummy Base	#Registers	Module type
+BaseSetup:	0		22		SlowCtrl
+##
+## Enter CNAFS
+##		Datum	F	A0	A1	Register Type
+CAMAC-CNAF:	fffff	9	0	0	Init	
+CAMAC-CNAF:	16	16	0	0	Init	
+CAMAC-CNAF:	16	16	1	1	Init	
+CAMAC-CNAF:	19	16	2	2	Init	
+CAMAC-CNAF:	20	16	3	3	Init	
+CAMAC-CNAF:	40	16	4	4	Init	
+CAMAC-CNAF:	40	16	5	5	Init	
+CAMAC-CNAF:	40	16	6	6	Init	
+CAMAC-CNAF:	40	16	7	7	Init	
+CAMAC-CNAF:	40	16	8	8	Init	
+CAMAC-CNAF:	40	16	9	9	Init	
+CAMAC-CNAF:	40	16	10	10	Init	
+CAMAC-CNAF:	40	16	11	11	Init	
+CAMAC-CNAF:	20	16	12	12	Init	
+CAMAC-CNAF:	12	16	13	13	Init	
+CAMAC-CNAF:	1e	16	14	14	Init	
+CAMAC-CNAF:	40	16	15	15	Init	
+CAMAC-CNAF:	0000	17	0	0	Init	
+CAMAC-CNAF:	ff	17	1	1	Init	
+CAMAC-CNAF:	ff	17	2	2	Init	
+CAMAC-CNAF:	00	17	3	3	Init	
+##
+#	End of File
+#

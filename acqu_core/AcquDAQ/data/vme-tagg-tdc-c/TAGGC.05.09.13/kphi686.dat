@@ -1,0 +1,10 @@
+##--Rev 	Baya Oussena... 17th Jul 2009  New DAQ software
+##--Update	Baya oussena..
+##--Description for KPHI386
+##                *** AcquDAQ++ <-> Root ***
+## DAQ for Sub-Atomic Physics Experiments.
+#
+## Force hardware initialisation at config stage
+Board:
+#	End of File
+#
