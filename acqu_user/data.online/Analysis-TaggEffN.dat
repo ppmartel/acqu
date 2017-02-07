@@ -31,7 +31,7 @@ Initialise:
 ##
 # Macros
 #Period: 100000	PeriodMacroTaggEff.C	PeriodMacroTaggEff()
-Period:  3000	PeriodMacroTaggEff.C	PeriodMacroTaggEff()
+#Period:  3000	PeriodMacroTaggEff.C	PeriodMacroTaggEff()
 #Period:   1000	PeriodMacroTaggEff.C	PeriodMacroTaggEff()
 #EndFile:	EndFileMacro.C  EndFileMacro()
 #Finish:	FinishMacro.C	FinishMacro()
@@ -42,11 +42,11 @@ Period:  3000	PeriodMacroTaggEff.C	PeriodMacroTaggEff()
 #Display: All
 ## Histogram QDCs
 ## Tagger QDCs
-Display: ADC 800 1183
+#Display: ADC 800 1183
 ## New FPD test
-Display: ADC 200 231
-Display: ADC 356 356
-Display: MultiHit 232 355 5000 -25000 -5000 0
+#Display: ADC 200 231
+#Display: ADC 356 356
+#Display: MultiHit 232 355 5000 -25000 -5000 0
 #Display: ADC 300 427
 ## EPT - TDCs, Microscope Sector E, D, C
 #Display: MultiHit 1817 1863 6000 -4000 -2000 0
@@ -62,8 +62,8 @@ Display: MultiHit 232 355 5000 -25000 -5000 0
 ##
 ## Display Reference TDC
 Display: ADC 1400 1400
-## CB CATCH TDC's, 1st hit
-#Display: MultiHit 1432 1948 1000 -10000 0 0
+## Tagger CATCH TDC's, 1st hit
+Display: MultiHit 1432 1783 1000 -10000 0 0
 #
 ## Display blocks of scalers
 Display: Scaler 000 191
