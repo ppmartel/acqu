@@ -928,8 +928,8 @@ void TDAQsupervise::SetTCSRunMode(UInt_t runmode)
   while( (mod = (TDAQmodule*)nextM()) ){
     if( mod->InheritsFrom("TVME_CATCH_TCS") ){
       ((TVME_CATCH_TCS*)mod)->SetRunMode(runmode);
-      stringstream ss;
-      ss << " Set TCS runmode to " << runmode << endl;
+      std::stringstream ss;
+      ss << " Set TCS runmode to " << runmode << std::endl;
       PutString(ss.str().c_str());         // output message
       return;
     }
