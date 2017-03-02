@@ -32,8 +32,8 @@ public:
   
 // Parameters
 protected:
-  static const Int_t    kNullHit   = static_cast<Int_t>(ENullHit);
-  static const Double_t kNullFloat = ENullFloat; // TODO Think better about global consts
+  static const Int_t    kNullHit;
+  static const Double_t kNullFloat; // TODO Think better about global consts
   Bool_t	 fUseTracksBestMwpc;
   Int_t		 fMaxTrack;	// Max tracks number
   Double_t	 fFactorTrackLengthNaI; // TEST

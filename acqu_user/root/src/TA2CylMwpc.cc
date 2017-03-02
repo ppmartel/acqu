@@ -57,7 +57,11 @@ static const Map_t kWCKeys[] = {
   const Double_t MWPClength = 650.;
   const Double_t targetLength = 100.;
   const Double_t targetDiameter = 21.5;
-  
+
+  const Int_t TA2CylMwpc::kNullHit = static_cast<Int_t>(ENullHit);
+  const Double_t TA2CylMwpc::kNullFloat = ENullFloat;
+  const UInt_t TA2CylMwpc::kMaxNsolIE = 3;
+
 //_________________________________________________________________________________________
 //  TA2CylMwpc
 //

@@ -42,7 +42,7 @@ private:
 
 // automatic procedure for MWPC calibration
   Bool_t fIfCalib;
-  ifstream parfile;
+  std::ifstream parfile;
 
 protected:
   // Geometrical constants
@@ -53,9 +53,9 @@ protected:
   Double_t	*fC2;	// some const
   
   // Parametrs of the analysis
-  static const Int_t kNullHit = static_cast<Int_t>(ENullHit);
-  static const Double_t kNullFloat = ENullFloat; // TODO Think better about global consts
-  static const UInt_t kMaxNsolIE = 3;	// Max number of the strip-strip solutions
+  static const Int_t kNullHit;
+  static const Double_t kNullFloat;     // TODO Think better about global consts
+  static const UInt_t kMaxNsolIE;	// Max number of the strip-strip solutions
   Double_t	fMaxDphiWIE;		// max w-ie intersections dPhi
   Double_t	fMaxDr;			// max distance between 2 intersections forming a track
 public:

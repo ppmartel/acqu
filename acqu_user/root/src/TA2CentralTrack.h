@@ -7,8 +7,8 @@
 
 class TA2CentralTrack : public TA2TrackLine {
   protected:
-    static const Int_t kNullHit = ENullHit;
-    static const Double_t kNullFloat = ENullFloat; // TODO Think better about global consts
+    static const Int_t kNullHit;
+    static const Double_t kNullFloat; // TODO Think better about global consts
     Int_t    fIhitPid;		// Index of a hit in the PID
     Double_t fEhitPid;		// Pulse amplitude of the Pid hit
     Double_t fEhitPidCorr;	// Corrected pulse amplitude of the Pid hit
