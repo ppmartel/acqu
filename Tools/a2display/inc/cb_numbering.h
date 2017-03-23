@@ -5,6 +5,9 @@
   * http://wwwa2.kph.uni-mainz.de/intern/daqwiki/detectors/cb
   */
 
+#ifndef __cb_numbering__
+#define __cb_numbering__
+
 #include "Rtypes.h"
 
 // stores the crystal number for a given element number
@@ -1453,3 +1456,6 @@ static const Int_t element_number[720] = {
 620,
 622,
 621 };
+
+#endif
+
