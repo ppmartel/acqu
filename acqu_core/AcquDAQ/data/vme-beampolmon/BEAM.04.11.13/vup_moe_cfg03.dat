@@ -9,6 +9,9 @@ Hardware-ID: 02000025
 #         left    right
 #         EF      ST
 
+# 1604 MeV
+#CfgMode:  1       1
+
 # 1557 MeV
 CfgMode:  1       3
 
