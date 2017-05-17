@@ -744,6 +744,9 @@ void TDAQsupervise::CreateHeader( void* buff )
   h->fNADCModule = fEXP->GetNADC();               // # ADC modules
   h->fNScalerModule = fEXP->GetNScaler();         // # Scaler modules
   h->fRecLen = fEXP->GetOutBuff()->GetLenBuff();  // Data record length
+  // Just in case these get initialised with crap
+  h->fNADC = 0;
+  h->fNScaler = 0;
   //
   TIter nextm( fEXP->GetModuleList() );           // list of modules
   //  TIter nexta( fEXP->GetADCList() );              // list of ADCs
