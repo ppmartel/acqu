@@ -139,6 +139,19 @@ $runsets->{NewTaggEff} =
    'TCS' => 'vme-tagg-tdc-b'
   };
 
+# define runset Moeller
+$runsets->{Moeller} =
+  {
+   'Description' => 'Moeller standalone measurement without Tagger, TAPS or CB',
+   'DefaultTriggerId' => 67,
+   'Hosts' => [
+               ['vme-exptrigger',   'Moeller'], # first, the host where the AcquDAQ GUI is started
+               ['vme-beampolmon',   'BEAM_Scan']
+              ],
+   'TCS' => undef # a bit unnecessary for the whole system
+#   'TCS' => 'vme-tagg-tdc-b'
+  };
+
 # define runset GoniScan
 $runsets->{GoniScan} =
   {
