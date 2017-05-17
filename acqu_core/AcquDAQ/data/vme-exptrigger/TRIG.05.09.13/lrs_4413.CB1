@@ -12,10 +12,17 @@ BaseSetup:	0		4		NULL
 ##		Datum	F	A0	A1	Register Type
 CAMAC-CNAF:	fffff	26	0	0	Init	
 CAMAC-CNAF:	0	16	0	0	Init	
-CAMAC-CNAF:	fffff	25	0	0	Init	
-CAMAC-CNAF:     30      17      0       0       Init
+CAMAC-CNAF:	fffff	25	0	0	Init
+#
+#
+#
+# standard ESum low -- use 30!!!	
+#CAMAC-CNAF:     30      17      0       0       Init
 # 40mV
 #CAMAC-CNAF:     28      17      0       0       Init
 #CAMAC-CNAF:	60	17	0	0	Init
+# 200mV
+CAMAC-CNAF:	c8	17	0	0	Init
+##
 ##
 #	End of File

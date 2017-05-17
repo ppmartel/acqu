@@ -94,7 +94,7 @@ void OnBtnSaveAllClicked() {
 	Long_t runNum = gROOT->ProcessLine("gAR->GetRunNumber()");
 	elog_cmd << "echo Run " << runNum << " Online Spectra | ";
 	elog_cmd << "elog -h elog.office.a2.kph -u a2online a2messung ";
-	elog_cmd << "-l 'Main Logbook 2017' -a Experiment='4He-CohPi0' ";
+	elog_cmd << "-l 'Main Logbook 2017' -a Experiment='2017_05_E2M1' ";
 	elog_cmd << "-a Author='PLEASE FILL IN' -a Type=Routine ";
 	elog_cmd << "-a Subject='Online Spectra Run " << runNum << "' ";
 

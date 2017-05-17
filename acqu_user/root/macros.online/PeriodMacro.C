@@ -90,32 +90,32 @@ void PeriodMacro() {
 
   // look for hole in MWPC
   
-  if(gROOT->FindObject("MWPC_Wires_Hits")){
-    Int_t iNBins = MWPC_Wires_Hits->GetNbinsX();
-    if((MWPC_Wires_Hits->Integral()) > (100*iNBins)){
-      Int_t iPrev, iThis;
-      Double_t dDiff;
-      Int_t iProb = 0;
-      iThis = MWPC_Wires_Hits->GetBinContent(1);
-      for(Int_t i=1; i<iNBins; i++){
-	iPrev = iThis;
-        //TODO: exclude broken/noisy channels (as of 20.01.2017)
-        if (i == 140 || i == 142 || i == 159 ||
-	    i == 192 || i == 232 || i == 233 ||
-	    i == 327 || i == 423 || i == 526 ||
-	    i == 527)
-          continue;
-	iThis = MWPC_Wires_Hits->GetBinContent(i+1);
-	dDiff = (TMath::Abs((iThis-iPrev)/(1.*iPrev)));
-	if(dDiff > 0.5) iProb++;
-      }
-      if(iProb > 8){
-	printf("Possible problem in MWPC Wires - Event %d\n\t\t\t%d jumps found\n\n",gAN->GetNDAQEvent(),iProb);
-	dError += 1000;
-      }
-    }
-    if((MWPC_Wires_Hits->Integral()) > (400*iNBins)) MWPC_Wires_Hits->Reset();
-  }
+  // if(gROOT->FindObject("MWPC_Wires_Hits")){
+  //   Int_t iNBins = MWPC_Wires_Hits->GetNbinsX();
+  //   if((MWPC_Wires_Hits->Integral()) > (100*iNBins)){
+  //     Int_t iPrev, iThis;
+  //     Double_t dDiff;
+  //     Int_t iProb = 0;
+  //     iThis = MWPC_Wires_Hits->GetBinContent(1);
+  //     for(Int_t i=1; i<iNBins; i++){
+  // 	iPrev = iThis;
+  //       //TODO: exclude broken/noisy channels (as of 20.01.2017)
+  //       if (i == 140 || i == 142 || i == 159 ||
+  // 	    i == 192 || i == 232 || i == 233 ||
+  // 	    i == 327 || i == 423 || i == 526 || ((i>=168)&&(i<=174))||
+  // 	    i == 527)
+  //         continue;
+  // 	iThis = MWPC_Wires_Hits->GetBinContent(i+1);
+  // 	dDiff = (TMath::Abs((iThis-iPrev)/(1.*iPrev)));
+  // 	if(dDiff > 0.5) iProb++;
+  //     }
+  //     if(iProb > 8){
+  // 	printf("Possible problem in MWPC Wires - Event %d\n\t\t\t%d jumps found\n\n",gAN->GetNDAQEvent(),iProb);
+  // 	dError += 1000;
+  //     }
+  //   }
+  //   if((MWPC_Wires_Hits->Integral()) > (400*iNBins)) MWPC_Wires_Hits->Reset();
+  // }
   
 
 
@@ -168,23 +168,36 @@ void PeriodMacro() {
   }
 
   // Check Target DAQ status
-  TString sArchive = gSystem->GetFromPipe("echo 'http://slowcontrol:4812/main' | wget -O- -i- -q | grep -A 1 '>State<' | grep -v State | sed 's/ /_/g' | sed 's/>/ /g' | sed 's/</ /g' | awk '{print $3}'");
-  if(!sArchive.Contains("RUNNING")){
-    printf("Possible problem with EPICS Archiver - Event %d\n\n",gAN->GetNDAQEvent());
-    dError += 16000;
-  }
-
-  // Check Target DAQ status
   TString sDAQ = gSystem->GetFromPipe("caget TARGET:HE:DAQ_Status");
   if(sDAQ.EndsWith("0")){
     printf("Possible problem with Target DAQ - Event %d\n\n",gAN->GetNDAQEvent());
     dError += 8000;
   }
 
+  // Check Archiver
+  TString sArchive = gSystem->GetFromPipe("echo 'http://slowcontrol:4812/main' | wget -O- -i- -q | grep -A 1 '>State<' | grep -v State | sed 's/ /_/g' | sed 's/>/ /g' | sed 's/</ /g' | awk '{print $3}'");
+  if(!sArchive.Contains("RUNNING")){
+    printf("Possible problem with EPICS Archiver - Event %d\n\n",gAN->GetNDAQEvent());
+    dError += 16000;
+  }
+
   // determine number of events with a hardware error
   if((gROOT->FindObject("NHardwareError")) && (dError == 0)){
-    if((gAN->GetNDAQEvent()) < 3000) NHardwareError->Reset();
-    dError = (NHardwareError->Integral(2,-1));
+    if(gROOT->FindObject("Prev_Error")){
+      Double_t dRatio = ((NHardwareError->Integral(2,-1))-(Prev_Error->Integral(2,-1)))/((NHardwareError->GetEntries())-(Prev_Error->GetEntries()));
+      //printf("Total Errors = %d\tPrev Errors = %d\tTotal Events = %d\tPrev Events = %d\tRatio = %.3f\n",(NHardwareError->Integral(2,-1)),(Prev_Error->Integral(2,-1)),(NHardwareError->GetEntries()),(Prev_Error->GetEntries()),dRatio);
+      if(dRatio > 0.00){ // Report when any of the events have an error
+      //if(dRatio > 0.1){ // Report when more than 10% of the events have an error
+	dError = (NHardwareError->Integral(2,-1));
+      }
+
+      delete Prev_Error;
+      TH1D *Prev_Error = (TH1D*)NHardwareError->Clone("Prev_Error");
+    }
+    else{
+      NHardwareError->Reset();
+      TH1D *Prev_Error = (TH1D*)NHardwareError->Clone("Prev_Error");
+    }
   }
 
   // now write the resulting errors to epics
@@ -323,31 +336,4 @@ void PeriodMacro() {
       system(cmdB.str().c_str());
       system(cmdT.str().c_str());
   }
-  /*/
-  // fill array for CB display
-  if(gROOT->FindObject("PHYS_CB_Display_R")){
-    stringstream cmdR, cmdG, cmdB, cmdT;
-      cmdR << "caput -a CB:CB:NaI_Hits:R 720";
-      cmdG << "caput -a CB:CB:NaI_Hits:G 720";
-      cmdB << "caput -a CB:CB:NaI_Hits:B 720";
-      cmdT << "caput -a CB:CB:NaI_Hits:T 720";
-      for(int n=1; n<=720; n++) {
-	if((PHYS_CB_Display_R->GetBinContent(n)) > 0) cmdR << " 255";
-	else cmdR << " 0";
-	if((PHYS_CB_Display_G->GetBinContent(n)) > 0) cmdG << " 255";
-	else cmdG << " 0";
-	if((PHYS_CB_Display_B->GetBinContent(n)) > 0) cmdB << " 255";
-	else cmdB << " 0";
-	cmdT << " 0";
-      }
-      cmdR << " > /dev/null";
-      cmdG << " > /dev/null";
-      cmdB << " > /dev/null";
-      cmdT << " > /dev/null";
-      system(cmdR.str().c_str());
-      system(cmdG.str().c_str());
-      system(cmdB.str().c_str());
-      system(cmdT.str().c_str());
-  }
-  /*/
 }
