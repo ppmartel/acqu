@@ -9,7 +9,7 @@ BaseSetup:	0		0		ADC		4000
 Hardware-ID: 0600000d
 TAPS-FrontEnd:
 ##		E LED      E LED      F LED      F LED
-Set-Front-Veto:	0xfffffff8 0xffffffff 0xfffffff8 0xffffffff
+Set-Front-Veto:	0x7ffffff8 0xffffffff 0xffffff71 0xffffffff
 ##               EF PbWO4
 Set-Front-PbWO4: 0x3fffffff
 ##	End of File
