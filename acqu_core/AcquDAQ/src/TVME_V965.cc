@@ -57,8 +57,12 @@ void TVME_V965::ReadIRQ( void** outBuffer )
   Int_t nword = (datum & 0x3f00) >> 8;      // # data words
   //
   UShort_t adcVal, adcIndex;                // adc value and index
+  UInt_t range;
   for( i=1; i<=nword; i++ ){
     datum = Read(i);
+    range = (datum & 0x10000) >> 17;        // high/low range QDC
+    if(range)
+      continue;                             // take only high range for now
     adcVal = datum & 0xfff;                 // ADC value
     adcIndex = (datum & 0x1f0000) >> 16;    // ADC subaddress
     adcIndex += fBaseIndex;                 // index offset
