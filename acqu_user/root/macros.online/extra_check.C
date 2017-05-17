@@ -4,8 +4,8 @@
     Int_t isCB = gROOT->ProcessLine("TString s1 = gAR->GetFileName();s1.Contains(\"CB\")");
 
     if(isCB){
-      watcher->Divide(2,2);
-      watcher->SetWindowSize(1000,1000);
+      watcher->Divide(3,2);
+      watcher->SetWindowSize(1200,1000);
     }
     else {
       watcher->Divide(2,1);
@@ -27,6 +27,9 @@
       watcher->cd(4);
       gPad->SetLogz();
       if(NaI_Hits_v_TimeOR) NaI_Hits_v_TimeOR->Draw("colz");
+
+      watcher->cd(5);
+      TwoD2000v1400->Draw("colz");
     }
 
     TTimer* update_timer = new TTimer("watcher->Update();watcher->Draw();",4000);
