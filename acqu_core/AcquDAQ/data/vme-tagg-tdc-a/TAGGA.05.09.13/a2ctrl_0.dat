@@ -5,7 +5,7 @@
 ## DAQ for Sub-Atomic Physics Experiments.
 ##
 ##              Dummy Base	#Registers	Module type
-BaseSetup:	0		3		SlowCtrl
+BaseSetup:	0		3		NULL
 ##
 ## Enter CNAFS
 ## NB if you want to force a read operation

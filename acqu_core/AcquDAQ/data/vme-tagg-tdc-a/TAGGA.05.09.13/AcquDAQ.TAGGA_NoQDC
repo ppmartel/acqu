@@ -16,21 +16,24 @@ Module: KPH_VITEC   vit0        vitec_0.dat     0000    0       0
 Module: CBD_8210   cbd0		cbd8210_0.dat	800000	0	0
 # ----------------------------------------	crate	station
 # Microscope/EPT/Pizza Electronics
-Module: CAMAC	      a2_4	a2ctrl_0.dat	  4	30
-Module: GSI_4800      uscal_0  		gsi_4800.dat0     4	20
-Module: GSI_4800      uscal_1		gsi_4800.dat1     4	21
+Module: CAMAC	      a2_1	a2ctrl_0.dat	  1	30
+Module: CAMAC	      caen_208_0	caen_208.Pizza	  1	16
+Module: CAMAC	      caen_208_1	caen_208.Pizza	  1	18
+#Module: CAMAC	      a2_4	a2ctrl_0.dat	  4	30
+#Module: GSI_4800      uscal_0  		gsi_4800.dat0     4	20
+#Module: GSI_4800      uscal_1		gsi_4800.dat1     4	21
 #Module: CAMAC	      caen_208_A	caen_208.EPT      4	4
 #Module: CAMAC	      caen_208_B	caen_208.EPT      4	7
 #Module: CAMAC	      caen_208_C	caen_208.EPT      4	10
 #Module: CAMAC	      caen_208_D	caen_208.EPT	  4	13
 #Module: CAMAC	      caen_208_E	caen_208.EPT	  4	16
 #Module: CAMAC	      caen_208_F	caen_208.EPT	  4	19
-Module: CAMAC	      caen_208_A	caen_208.Pizza	  4	4
-Module: CAMAC	      caen_208_B	caen_208.Pizza    4	7
-Module: CAMAC	      caen_208_C	caen_208.Pizza    4	10
-Module: CAMAC	      caen_208_D	caen_208.Pizza	  4	13
-Module: CAMAC	      caen_208_E	caen_208.Pizza	  4	16
-Module: CAMAC	      caen_208_F	caen_208.Pizza	  4	19
+#Module: CAMAC	      caen_208_A	caen_208.Pizza	  4	4
+#Module: CAMAC	      caen_208_B	caen_208.Pizza    4	7
+#Module: CAMAC	      caen_208_C	caen_208.Pizza    4	10
+#Module: CAMAC	      caen_208_D	caen_208.Pizza	  4	13
+#Module: CAMAC	      caen_208_E	caen_208.Pizza	  4	16
+#Module: CAMAC	      caen_208_F	caen_208.Pizza	  4	19
 #
 # -----------------------------------------              fIndex  fNcha  Bits 
 Module: CATCH_TDC    cat0 	catchTDC.d 	e0300000  1400    128 	14
