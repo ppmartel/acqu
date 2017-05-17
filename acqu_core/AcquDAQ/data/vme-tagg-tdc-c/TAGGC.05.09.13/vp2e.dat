@@ -1,0 +1,18 @@
+##--Rev 	John Annand   13th Oct 2016  For new VP2E VMEbus SBC
+##--Update	
+##--Description for KPHI386
+##                *** AcquDAQ++ <-> Root ***
+## DAQ for Sub-Atomic Physics Experiments.
+#
+## Specify VMEbus address ranges to map
+## Range	AM	  Start	   Length
+   MAP: 	32	  0xe0000000 0x300000   0xc0100000 lsi0
+   MAP: 	24	  0x800000   0x100000   0xc0400000 lsi1
+   MAP:		16	  0x0000     0xf000   	0xc0500000 lsi2
+#   MAP: 	32	  0xe0200000 0x10000    0xc040f000 lsi3
+#   MAP: 	24	  0x800000   0x100000   0xd1500000 lsi2
+#   SWAP:	0x0
+   SWAP:	0x1c
+#   SWAP:	0x38
+#	End of File
+#

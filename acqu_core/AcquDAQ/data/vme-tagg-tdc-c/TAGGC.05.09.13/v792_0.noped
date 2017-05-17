@@ -1,0 +1,49 @@
+##--Rev 	JRM Annand...10th Feb 2007
+##--Update	JRM Annand...14th Apr 2013
+##--Update	EJ Downie....28th May 2013
+##--Description
+##                *** AcquDAQ++ <-> Root ***
+## DAQ for Sub-Atomic Physics Experiments.
+##
+## Registers...512 data memory, 34 control, 32 threshold, 9 ROM
+##              Hex Base	#Registers	Module type Mapsize
+BaseSetup:	0		0		ADC    	    9000
+##
+##
+## Turn off pedestal suppression
+#No-threshold:
+##
+##Set Threshold to 256 to disable channel
+## Valid thresholds up to 255
+Threshold: 0 256
+Threshold: 1 97
+Threshold: 2 256
+Threshold: 3 112
+Threshold: 4 123
+Threshold: 5 114
+Threshold: 6 97
+Threshold: 7 115
+Threshold: 8 123
+Threshold: 9 123
+Threshold: 10 120
+Threshold: 11 116
+Threshold: 12 120
+Threshold: 13 105
+Threshold: 14 104
+Threshold: 15 119
+Threshold: 16 107
+Threshold: 17 126
+Threshold: 18 91
+Threshold: 19 116
+Threshold: 20 107
+Threshold: 21 91
+Threshold: 22 135
+Threshold: 23 100
+Threshold: 24 256
+Threshold: 25 1
+Threshold: 26 115
+Threshold: 27 114
+Threshold: 28 256
+Threshold: 29 256
+Threshold: 30 256
+Threshold: 31 256

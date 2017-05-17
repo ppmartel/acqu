@@ -6,5 +6,5 @@
 ##
 ##              Hex Base	#Registers	Module type	MapSize
 BaseSetup:	0		0		S-Ctrl		4000
-Hardware-ID: aa02
+Hardware-ID: aa04
 ##	End of File

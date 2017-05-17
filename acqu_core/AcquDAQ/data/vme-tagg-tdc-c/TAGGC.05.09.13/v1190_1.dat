@@ -1,0 +1,14 @@
+##--Rev 	JRM Annand...10th Feb 2007
+##--Update	JRM Annand...14th Apr 2013
+##--Update	EJ Downie....28th May 2013
+##--Description
+##                *** AcquDAQ++ <-> Root ***
+## DAQ for Sub-Atomic Physics Experiments.
+##
+## Registers...512 data memory, 34 control, 32 threshold, 9 ROM
+##              Hex Base	#Registers	Module type Mapsize
+BaseSetup:	0		0		ADC    	    10000
+Window: 0xffd8 0x28
+Edge-Detect: 3
+##
+##
