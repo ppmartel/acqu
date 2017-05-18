@@ -6,9 +6,9 @@
 ## from the other specified channels
 ## CB TDC's
 ##              #hits   start   stop    reference
-MultiADC:       3       1401    1911    1400
+#MultiADC:       3       1401    1911    1400
 #
-MultiADC:       3       232     355    356
+#MultiADC:       3       232     355    356
 #
 # Moeller ADC channels, not really an ADC value!
 MultiADC:       3       8000    8800
