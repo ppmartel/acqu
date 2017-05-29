@@ -16,13 +16,16 @@ CAMAC-CNAF:	fffff	25	0	0	Init
 #
 #
 #
-# standard ESum low -- use 30!!!	
-#CAMAC-CNAF:     30      17      0       0       Init
-# 40mV
-#CAMAC-CNAF:     28      17      0       0       Init
+# STANDARD ESUM lo should be 30 (HEX) = 48 mV!!!
+# ALWAYS USE THIS ESUM LOW 	
+CAMAC-CNAF:     30      17      0       0       Init
+#
+#
+#
+# Anything other than standard value of 30 is not recommended...
+#CAMAC-CNAF:    28      17      0       0       Init
 #CAMAC-CNAF:	60	17	0	0	Init
-# 200mV
-CAMAC-CNAF:	c8	17	0	0	Init
+#CAMAC-CNAF:	c8	17	0	0	Init
 ##
 ##
 #	End of File

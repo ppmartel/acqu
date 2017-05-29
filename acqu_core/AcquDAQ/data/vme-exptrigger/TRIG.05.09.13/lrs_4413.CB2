@@ -16,6 +16,12 @@ CAMAC-CNAF:	fffff	25	0	0	Init
 #CAMAC-CNAF:     64      17      0       0       Init
 #CAMAC-CNAF:     1F4      17      0       0       Init
 #
+#
+#
+# Set ESMUM HIGH Threshold below!
+#
+#
+#
 # Same as ESum Lo
 #CAMAC-CNAF:     30      17      0       0       Init
 #
@@ -24,17 +30,15 @@ CAMAC-CNAF:	fffff	25	0	0	Init
 # ~40 MeV 55mV
 #CAMAC-CNAF:     37      17      0       0       Init
 # ~43.5 MeV
-#
 #CAMAC-CNAF:     64      17      0       0       Init
-#
 # ~40 MeV - 70 mV
 #CAMAC-CNAF:     46      17      0       0       Init
 # 50 MeV - 93 mV
-CAMAC-CNAF:     5D      17      0       0       Init
+#CAMAC-CNAF:     5D      17      0       0       Init
 # 70 MeV - 130 mV
 #CAMAC-CNAF:     82      17      0       0       Init
 # 90 MeV
-#CAMAC-CNAF:     B4      17      0       0       Init
+CAMAC-CNAF:     B4      17      0       0       Init
 # 100 MeV
 #CAMAC-CNAF:     C8      17      0       0       Init
 # 120 MeV
@@ -47,8 +51,6 @@ CAMAC-CNAF:     5D      17      0       0       Init
 #CAMAC-CNAF:     3c      17      0       0       Init
 # 60 MeV ?  100 mV
 #CAMAC-CNAF:      64      17      0       0       Init
-#
-# 250MeV
 #
 # 350 (not sure)
 #CAMAC-CNAF:     23f      17      0       0       Init
