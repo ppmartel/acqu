@@ -186,7 +186,7 @@ void PeriodMacro() {
     if(gROOT->FindObject("Prev_Error")){
       Double_t dRatio = ((NHardwareError->Integral(2,-1))-(Prev_Error->Integral(2,-1)))/((NHardwareError->GetEntries())-(Prev_Error->GetEntries()));
       //printf("Total Errors = %d\tPrev Errors = %d\tTotal Events = %d\tPrev Events = %d\tRatio = %.3f\n",(NHardwareError->Integral(2,-1)),(Prev_Error->Integral(2,-1)),(NHardwareError->GetEntries()),(Prev_Error->GetEntries()),dRatio);
-      if(dRatio > 0.00){ // Report when any of the events have an error
+      if(1){
       //if(dRatio > 0.1){ // Report when more than 10% of the events have an error
 	dError = (NHardwareError->Integral(2,-1));
       }
