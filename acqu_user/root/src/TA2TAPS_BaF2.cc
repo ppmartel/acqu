@@ -25,7 +25,7 @@
 enum {
   ETAPSSGMaxDet=510, ETAPSSG, EClustDetMaxTAPSCluster, EClustDetTAPSNeighbour,
   ETAPSEnergyResolution, ETAPSTimeResolution, ETAPSThetaResolution, ETAPSPhiResolution,
-  ETAPSVetoEnergy, ETAPSVetoEfficiency, ETAPSVetoThreshold,
+  ETAPSVetoEnergy, ETAPSVetoEfficiency, ETAPSVetoThreshold, ETAPSOffsetTime
 };
 
 // Command-line key words which determine what to read in
@@ -41,6 +41,7 @@ static const Map_t kTAPSClustDetKeys[] = {
   {"Veto-Energy:",         ETAPSVetoEnergy},
   {"Veto-Efficiency:",     ETAPSVetoEfficiency},
   {"Veto-Threshold:",      ETAPSVetoThreshold},
+  {"Offset-Time:",         ETAPSOffsetTime},
   {NULL,          -1}
 };
 
@@ -58,6 +59,7 @@ TA2TAPS_BaF2::TA2TAPS_BaF2(const char* name, TA2System* apparatus)
   fEnergyResolutionFactor = -1.0;
   fEnergyResolutionConst  = -1.0;
   fTimeResolution         = -1.0;
+  fTimeOffset             = 0.0;
   fThetaResolution        = -1.0;
   fPhiResolution          = -1.0;
 
@@ -137,12 +139,12 @@ void TA2TAPS_BaF2::SetConfig(Char_t* line, Int_t key)
       PrintError(line,"<TA2TAPS_BaF2 Time Resolution>");
     break;
    case ETAPSThetaResolution:
-    // Time resolution read-in line
+    // Theta resolution read-in line
     if(sscanf(line, "%lf", &fThetaResolution) < 1)
       PrintError(line,"<TA2TAPS_BaF2 Theta Resolution>");
     break;
    case ETAPSPhiResolution:
-    // Time resolution read-in line
+    // Phi resolution read-in line
     if(sscanf(line, "%lf", &fPhiResolution) < 1)
       PrintError(line,"<TA2TAPS_BaF2 Phi Resolution>");
     break;
@@ -185,7 +187,12 @@ void TA2TAPS_BaF2::SetConfig(Char_t* line, Int_t key)
    case EClustDetTAPSNeighbour:     // legacy support for old TAPS config key
     TA2ClusterDetector::SetConfig(line, EClustDetNeighbour);
     break;
-   default:
+  case ETAPSOffsetTime:
+    // Time offset read-in line
+    if(sscanf(line, "%lf", &fOffsetTime) < 1)
+      PrintError(line,"<TA2TAPS_BaF2 Timeoffset>");
+    break;
+  default:
     // Command not found...possible pass to next config
     TA2ClusterDetector::SetConfig(line, key);
     fIsConfigPass = ETrue;
@@ -248,170 +255,6 @@ void TA2TAPS_BaF2::PostInit()
 
   TA2ClusterDetector::PostInit();
   fLGEnergy = TA2Detector::GetElement();
-}
-
-//---------------------------------------------------------------------------
-
-inline void TA2TAPS_BaF2::ReadDecoded()
-{
-  // Read back "decoded" data for the BaF2 array
-  // In this case produced by the GEANT3 CB simulation
-
-  UInt_t j;
-  Int_t nVetos = 0;
-  Int_t nBaF2s = 0;
-  Double_t total = 0.0;
-  fNhits = *(Int_t*)(fEvent[EI_ntaps]);
-  Float_t* energy = (Float_t*)(fEvent[EI_ectapsl]);
-  Float_t* time = (Float_t*)(fEvent[EI_tctaps]);
-  UInt_t* index = (UInt_t*)(fEvent[EI_ictaps]);
-  Float_t* venergy = (Float_t*)(fEvent[EI_evtaps]);
-  Float_t* dircos = (Float_t*)(fEvent[EI_dircos]);
-  Int_t npart = *(Int_t*)(fEvent[EI_npart]);
-  Int_t* idpart = (Int_t*)(fEvent[EI_idpart]);
-  Double_t E, T;                                    //Energy, time
-  Double_t LoE, HiE, LoT, HiT;
-  Int_t proton;
-  Double_t dphi, dtheta;
-  Double_t domega2, temp2;
-  UInt_t crystal;
-  Double_t Efficiency = 0.0;
-  Double_t GammaToF;
-  Bool_t IsBaF2;
-
-  //Find proton index in simulated data
-  for(proton=0; proton<npart; proton++)
-    if(idpart[proton]==14) break; //14 = GEANT proton
-  //Move pointer to correct positions for proton data
-  for(Int_t t=0; t<proton; t++) //For all particles before proton:
-    for(Int_t i=0;i<3; i++) dircos++; //Jump over x,y,z components
-  //Read x,y,z components for proton
-  Double_t x_p = *dircos++;
-  Double_t y_p = *dircos++;
-  Double_t z_p = *dircos;
-  //Calculate theta and phi angles out of cartesian components
-  Double_t theta_p = acos(z_p);
-  Double_t phi_p = atan2(y_p, x_p);
-
-  //For each crystal: evaluate deviation from proton direction in theta-phi plane
-  domega2 = 1e38;
-  crystal = 65535;
-  if(theta_p < (TMath::DegToRad()*20.0))
-    for(UInt_t t=0; t<fNelem; t++)
-    {
-      dtheta = theta_p - theta_c[t];
-      dphi = phi_p - phi_c[t];
-      if(dphi > TMath::Pi()) dphi = TMath::TwoPi() - dphi;
-      if(dphi < -TMath::Pi()) dphi = -TMath::TwoPi() - dphi;
-       //Find crystal which fits best for proton direction in theta-phi plane
-      temp2 = dphi*dphi + dtheta*dtheta;
-      if(temp2 < domega2)
-      {
-        domega2 = temp2;
-        crystal = t;
-      }
-    }
-
-  //I want this empty...
-  if(fMaxSGElements)
-    for(UInt_t t=0; t<fMaxSGElements; t++)
-      fSGEnergyValue[t] = EBufferEnd;
-  for(UInt_t t=0; t<fNelem; t++)
-  {
-    if(fPatternHits) fPatternHits[0][t] = EBufferEnd;
-    EnergyAll[t] = 0.0;
-  }
-
-  //Evaluate all simulated hits
-  for(UInt_t i=0; i<fNhits; i++)
-  {
-    j = index[i];
-    if(!j) break;
-    //Use following line for cbsim since 2006-06-22!
-    j--; //For reasons Stefan won't tell...
-    E = energy[i] * fEnergyScale;                                   //G3/4 output in GeV
-//    if(fUseEnergyResolution) E+=pRandoms->Gaus(0.0, GetEnergyResolutionGeV(E));
-    if(fUseEnergyResolution) E+=pRandoms->Gaus(0.0, GetSigmaEnergyGeV(E));
-    E*=1000.0;                                                      //G3/4 output in MeV
-    EnergyAll[j] = E;
-    GammaToF = (Z_c[j] * TMath::Cos(theta_c[j]))/30.0;
-    T = -time[i] + GammaToF + pRandoms->Gaus(0.0, fTimeResolution);
-
-   //Fill veto stuff...
-    if(fPatternHits) //...but only if bit pattern unit is active
-      if((venergy[i] * 1000.0) > fVetoThreshold) //If energy deposited: Veto Hit
-      {
-        if(E < fVetoEnergy[0]) Efficiency = fVetoEfficiency[0];
-        else if((E > fVetoEnergy[0]) && (E < fVetoEnergy[1])) Efficiency = fVetoEfficiency[1];
-        else if((E > fVetoEnergy[1]) && (E < fVetoEnergy[2])) Efficiency = fVetoEfficiency[2];
-        else if((E > fVetoEnergy[2]) && (E < fVetoEnergy[3])) Efficiency = fVetoEfficiency[3];
-        else if(E > fVetoEnergy[3]) Efficiency = fVetoEfficiency[4];
-        if(pRandoms->Rndm() < Efficiency)
-        {
-          fPatternHits[0][nVetos] = j;
-         nVetos++;
-        }
-      }
-
-    //Fill BaF2 stuff
-    LoE = fElement[j]->GetEnergyLowThr();
-    HiE = fElement[j]->GetEnergyHighThr();
-    LoT = fElement[j]->GetTimeLowThr();
-    HiT = fElement[j]->GetTimeHighThr();
-    if((E > LoE) && (E < HiE) && (T > LoT) && (T < HiT))
-    {
-      fEnergy[j] = E;
-      fTime[j] = T;
-      fEnergyOR[nBaF2s] = E;
-      fTimeOR[nBaF2s] = T;
-      fHits[nBaF2s] = j;
-      total+=E;
-      nBaF2s++;
-
-      //PSA - reasonable?
-      if(fMaxSGElements)
-      {
-        IsBaF2 = true;
-        if((fNelem==402) && ((j % 67) <  4)) IsBaF2 = false; //If 1 PbWO ring is installed, the first 4 crystals in a TAPS block are PbWO4s
-        if((fNelem==438) && ((j % 73) < 12)) IsBaF2 = false; //If 2 PbWO rings are installed, the first 12 crystals in a TAPS block are PbWO4s
-
-        if(IsBaF2) //Do PSA information only for BaF2s
-        {
-          if((j==crystal) || fCluster[j]->IsNeighbour(crystal)) //Hit in or near crystal best fitting for proton
-            //fSGEnergyValue[j] = E * TMath::Power(E, 0.05) * 0.65; //Sven's function
-            fSGEnergyValue[j] = -0.9691614 + 0.7108238*E + 0.1819194e-2*E*E - 0.9019634e-5*E*E*E + 0.1610750e-7*E*E*E*E; //Marc's function
-          else
-            fSGEnergyValue[j] = 0.96 * E;
-          fSGEnergyValue[j]+=pRandoms->Gaus(0.0, 0.25 * TMath::Sqrt(fSGEnergyValue[j]));
-        }
-        else
-         fSGEnergyValue[j] = E;
-      }
-    }
-  }
-
-  fHits[nBaF2s] = EBufferEnd;
-  fTimeOR[nBaF2s] = EBufferEnd;
-  fEnergyOR[nBaF2s] = EBufferEnd;
-  fNhits = nBaF2s;
-  fTotalEnergy = total;
-
-  if(fPatternHits)
-  {
-    fPatternHits[0][nVetos] = EBufferEnd;
-    fNPatternHits[0] = nVetos;
-    //Note, that this may conflict with other ReadDecoded() functions later on, as this destroys the venergy[]
-    //information! So, the bit pattern veto should not be used if another veto implementation is running!
-    for(UInt_t i=0; i<fNelem; i++) venergy[i] = 0.0; //Need to cleanup, so that no data from previous event remains
-  }
-
-  if(fIsRawHits)
-  {
-    fRawEnergyHits[0] = EBufferEnd;
-    fRawTimeHits[0] = EBufferEnd;
-  }
-
-  bSimul = true;
 }
 
 //-----------------------------------------------------------------------------

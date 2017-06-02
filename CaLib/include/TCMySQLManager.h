@@ -44,6 +44,7 @@ private:
     THashList* fData;                           // calibration data
     THashList* fTypes;                          // calibration types
     static TCMySQLManager* fgMySQLManager;      // pointer to static instance of this class
+    bool MC;
     
     Bool_t ReadCaLibData();
     Bool_t ReadCaLibTypes();
@@ -137,7 +138,7 @@ public:
     
     TCContainer* LoadContainer(const Char_t* filename);
     
-    Int_t DumpRuns(TCContainer* container, Int_t first_run = 0, Int_t last_run = 0);
+    Int_t DumpRuns(TCContainer* container, Int_t first_run = -1, Int_t last_run = -1);
     Int_t DumpAllCalibrations(TCContainer* container, const Char_t* calibration);
     Int_t DumpCalibrations(TCContainer* container, const Char_t* calibration, 
                            const Char_t* data);
@@ -153,6 +154,11 @@ public:
                 const Char_t* newCalibName = 0);
     Bool_t RemoveDataSet(const Char_t* data, const Char_t* calibration, Int_t set);
 
+    void SetMC(bool _mc = true)
+    {
+        MC = _mc;
+    }
+
     static TCMySQLManager* GetManager()
     {
         // return a pointer to the static instance of this class
@@ -162,7 +168,8 @@ public:
             Error("GetManager", "No connection to the database!");
             return 0;
         }
-        else return fgMySQLManager;
+        else
+            return fgMySQLManager;
     }
     
     ClassDef(TCMySQLManager, 0) // Communication with MySQL Server

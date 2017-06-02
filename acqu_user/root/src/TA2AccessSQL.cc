@@ -60,12 +60,7 @@ void TA2AccessSQL::SetConfig(Char_t* line, Int_t key)
   switch (key)
   {
   case ESQL_USE_CALIB:
-  {   
-    if(fIsMC) {
-      Error("SetConfig", "Ignoring Calib statements due to MC run");
-      return;
-    }
-      
+  {
     Char_t tmp[5][256];
     Int_t useNumber = 0;
 
@@ -222,6 +217,13 @@ void TA2AccessSQL::SetConfig(Char_t* line, Int_t key)
       }
     }
     else Error("SetConfig", "CaLib Veto calibration could not be configured!");
+    break;
+  }
+  case ESQL_CALIB_MCRUNNR:
+  {
+    // read run number for MC files
+    if (sscanf(line, "%d", &fRunNumber) != 1)
+      Error("SetConfig", "CaLib MC run number could not be set!");
     break;
   }
   default:

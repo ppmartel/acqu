@@ -63,6 +63,12 @@ HitD2A_t::HitD2A_t(char* line, UInt_t nelem, TA2Detector* det , Bool_t ignorePos
 		    tdcstr, &fTimeLowThr, &fTimeHighThr, &fT0, &fT1,
 		    &xpos, &ypos, &zpos );
 
+  // in case we have MC data, set fA1 to 1 and fT0 to 0
+  if (gAR->GetProcessType() == EMCProcess) {
+    fA1 = 1.;
+    fT0 = 0.;
+  }
+
   if( i < 10 ){
     // Error in input line...ignore it
     printf(" Error ignore create HitD2A from input line:\n %s\n",line);

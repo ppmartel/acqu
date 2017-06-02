@@ -40,7 +40,8 @@ enum {
   ESQL_CALIB_CB,
   ESQL_CALIB_TAPS,
   ESQL_CALIB_PID,
-  ESQL_CALIB_VETO
+  ESQL_CALIB_VETO,
+  ESQL_CALIB_MCRUNNR
 };
 
 static const Map_t AccessSQLConfigKeys[] = {
@@ -51,6 +52,7 @@ static const Map_t AccessSQLConfigKeys[] = {
   {"Use-CaLib-TAPS:"               , ESQL_CALIB_TAPS},                     // key for CaLib TAPS configuration
   {"Use-CaLib-PID:"                , ESQL_CALIB_PID},                      // key for CaLib PID configuration
   {"Use-CaLib-Veto:"               , ESQL_CALIB_VETO},                     // key for CaLib Veto configuration
+  {"MC-Run-Number:"                , ESQL_CALIB_MCRUNNR},                  // key to determine run number for MC files
   // Termination
   {NULL        , -1           }
 };

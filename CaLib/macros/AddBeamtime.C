@@ -24,8 +24,8 @@ void AddBeamtime()
     // the other parts of the code unchanged
     const Int_t firstRun            = 4921;
     const Int_t lastRun             = 6008;
-    const Char_t calibName[]        = "2014-07_EPT_Prod_Neiser";
-    const Char_t calibDesc[]        = "Calibration for July 2014 EPT Beamtime";
+    const Char_t calibName[]        = "2015-MC-Init-Test";
+    const Char_t calibDesc[]        = "Calibration for MC data, test to set proper starting values";
     const Char_t calibFileTagger[]  = "../acqu_user/data/Detector-EPT.dat";
     const Char_t calibFileCB[]      = "../acqu_user/data/Detector-NaI.dat";
     const Char_t calibFileTAPS[]    = "../acqu_user/data/Detector-BaF2-PbWO4.dat";
@@ -38,6 +38,9 @@ void AddBeamtime()
     //const Char_t target[]           = "LD2";    
     //TCMySQLManager::GetManager()->AddRunFiles(rawfilePath, target);
     
+    // set MC mode to pass 0s and 1s to the database for gains, offset, pedestals, etc.
+    TCMySQLManager::GetManager()->SetMC(true);
+
     // read AcquRoot calibration of tagger
     TCMySQLManager::GetManager()->AddCalibAR(kDETECTOR_TAGG, calibFileTagger,
                                              calibName, calibDesc,

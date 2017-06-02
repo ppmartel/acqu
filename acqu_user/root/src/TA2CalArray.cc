@@ -26,7 +26,7 @@
 enum
 {
   ECAEnergyResolution=1900, ECATimeResolution, ECAThetaResolution, ECAPhiResolution,
-  ECAScaleFile
+  ECAOffsetTime
 };
 
 static const Map_t kCalArrayKeys[] =
@@ -35,7 +35,7 @@ static const Map_t kCalArrayKeys[] =
   {"Time-Resolution:",     ECATimeResolution},
   {"Theta-Resolution:",    ECAThetaResolution},
   {"Phi-Resolution:",      ECAPhiResolution},
-  {"Scale-File:",          ECAScaleFile},
+  {"Offset-Time:",         ECAOffsetTime},
   {NULL,            -1}
 };
 
@@ -56,14 +56,10 @@ TA2CalArray::TA2CalArray(const char* name, TA2System* apparatus)
   fSigmaEnergyFactor    = -1.0;
   fSigmaEnergyPower     = -1.0;
   fSigmaTime            = -1.0;
+  fOffsetTime           = 0.0;
   fSigmaTheta           = -1.0;
   fSigmaPhi             = -1.0;
   fEthresh              = 0.0;
-
-  ScaleRuns = 0;
-  ScaleVal[0] = 1.0;
-  UseScales = false;
-  CurrentRun[0] = '\0';
 
   fRandom = new TRandom();
 
@@ -98,30 +94,10 @@ TA2CalArray::~TA2CalArray()
 
 void TA2CalArray::SetConfig(char* line, int key)
 {
-  FILE* ScalFile;
-
   // Load CalArray parameters from file or command line
   // CalArray specific configuration
   switch(key)
   {
-  case ECAScaleFile:
-    if(sscanf(line, "%s", ScaleFile) < 1)
-    {
-      PrintError(line,"<TA2CalArray Scale File>");
-      break;
-    }
-    printf("NaI energy scale values from:\n %s\n", ScaleFile);
-    ScalFile = fopen(ScaleFile, "r");
-    ScaleRuns = 0;
-    while(!feof(ScalFile))
-      if(fscanf(ScalFile, "%s %lf", ScaleRun[ScaleRuns], &ScaleVal[ScaleRuns])==2)
-      {
-        ScaleRuns++;
-        if(ScaleRuns > MAXRUNS) break;
-      }
-    fclose(ScalFile);
-    UseScales = true;
-    break;
   case ECAEnergyResolution:
     // Energy Resolution Read-in Line
     if(sscanf(line, "%lf%lf%d", &fSigmaEnergyFactor, &fSigmaEnergyPower, &fUseSigmaEnergy) < 3)
@@ -177,9 +153,6 @@ void TA2CalArray::PostInit()
   // Create space for various output arrays
 
   fEnergyAll = new Double_t[fNelem+1];
-
-  //Store global energy scale value
-  fEnergyGlobal = fEnergyScale;
 
   TA2ClusterDetector::PostInit();
 }
