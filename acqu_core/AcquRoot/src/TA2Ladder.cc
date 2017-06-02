@@ -79,6 +79,13 @@ TA2Ladder::TA2Ladder( const char* name, TA2System* apparatus )
   fNRandWindows = fNhitsPrompt = fNhitsRand  = fFence = 0;
   fIsOverlap = fIsTimeWindows = fIsFence = fIsMicro = EFalse;
   AddCmdList( kLaddKeys );                  // for SetConfig()
+
+  fScalerPromptIndex = NULL;
+  fScalerPromptCurr = NULL;
+  fScalerPromptAcc = NULL;
+  fScalerRandIndex = NULL;
+  fScalerRandCurr = NULL;
+  fScalerRandAcc = NULL;
 }
 
 //---------------------------------------------------------------------------
@@ -113,6 +120,12 @@ TA2Ladder::~TA2Ladder()
   if( fScalerIndex ) delete[] fScalerIndex;
   if( fScalerCurr ) delete[] fScalerCurr;
   if( fScalerAcc ) delete[] fScalerAcc;
+  if( fScalerPromptIndex ) delete[] fScalerPromptIndex;
+  if( fScalerPromptCurr ) delete[] fScalerPromptCurr;
+  if( fScalerPromptAcc ) delete[] fScalerPromptAcc;
+  if( fScalerRandIndex )  delete[] fScalerRandIndex;
+  if( fScalerRandCurr )  delete[] fScalerRandCurr;
+  if( fScalerRandAcc )  delete[] fScalerRandAcc;
   if( fRandMin ) delete[] fRandMin;
   if( fRandMax ) delete[] fRandMax;
   if( fMuHits ) delete[] fMuHits;
@@ -146,6 +159,12 @@ void TA2Ladder::LoadVariable(  )
   if( fIsScaler ){
     TA2DataManager::LoadVariable("ScalerCurr", 	fScalerCurr, 	EIScalerX);
     TA2DataManager::LoadVariable("ScalerAcc",  	fScalerAcc,  	EDScalerX);
+  }
+  if (fIsScaler ){
+    TA2DataManager::LoadVariable("ScalerPromptCurr", fScalerPromptCurr, EIScalerX);
+    TA2DataManager::LoadVariable("ScalerPromptAcc", fScalerPromptAcc, EDScalerX);
+    TA2DataManager::LoadVariable("ScalerRandCurr", fScalerRandCurr, EIScalerX);
+    TA2DataManager::LoadVariable("ScalerRandAcc", fScalerRandAcc, EDScalerX);
   }
   TA2DataManager::LoadVariable("NDoubles",	&fNDoubles,     EISingleX);
   if( fIsECalib ){
@@ -198,6 +217,16 @@ void TA2Ladder::SetConfig( char* line, int key )
     if(fIsECalib) fECalibration[fNelem] = calib;
     fEWidth[fNelem] = width;
     if(fIsScaler) fScalerIndex[fNelem] = scaler;
+    if(fIsScaler){ // read scaler indices for prompt and rand gates
+      if(scaler<2800){
+	fScalerPromptIndex[fNelem] = scaler + 96;
+	fScalerRandIndex[fNelem] = scaler + 2*96;
+      }
+      if(scaler>2800){
+	fScalerPromptIndex[fNelem] = scaler + 64;
+	fScalerRandIndex[fNelem] = scaler + 2*64;
+      }
+    }
   }
 
   switch( key ){
@@ -225,6 +254,14 @@ void TA2Ladder::SetConfig( char* line, int key )
 	fScalerIndex = new UInt_t[fNelement];
 	fScalerCurr = new UInt_t[fNelement];
 	fScalerAcc = new Double_t[fNelement];
+      }
+      if( fIsScaler){
+	fScalerPromptIndex = new UInt_t[fNelement];
+	fScalerPromptCurr = new UInt_t[fNelement];
+	fScalerPromptAcc = new Double_t[fNelement];
+        fScalerRandIndex = new UInt_t[fNelement];
+	fScalerRandCurr = new UInt_t[fNelement];
+	fScalerRandAcc = new Double_t[fNelement];
       }
       if( fIsMicro ){
 	fNMuElem = 2*(fNelement - 1) + 1;
@@ -363,7 +400,16 @@ void TA2Ladder::Decode( )
       fScalerCurr[i] = fScaler[fScalerIndex[i]];
       fScalerAcc[i] = fScalerSum[fScalerIndex[i]];
     }
-  }	
+  }
+  // Also fill Prompt and Rand scaler buffs
+  if((fIsScaler)&&(gAR->IsScalerRead())){
+    for(i=0;i<fNelem;i++){
+      fScalerPromptCurr[i] = fScaler[fScalerPromptIndex[i]];
+      fScalerPromptAcc[i] = fScalerSum[fScalerPromptIndex[i]];
+      fScalerRandCurr[i] = fScaler[fScalerRandIndex[i]];
+      fScalerRandAcc[i] = fScalerSum[fScalerRandIndex[i]];
+    }
+  }
   // loop over all triggers
   for( i=0; i<fNtrig; i++ ){
     if( (trig = fTrigger[i]) ){

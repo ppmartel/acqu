@@ -51,7 +51,7 @@ enum { EMaxRandWindows = 16 };
 
 class TA2Ladder : public TA2Detector {
 
-private:
+ private:
  protected:
   HitD2A_t** fTrigger;         	// Trigger info array (only if separate trig)
   UInt_t* fTrigg;              	// Trigger info for each each hit
@@ -153,6 +153,22 @@ public:
   Bool_t IsTimeWindows(){return fIsTimeWindows;}
   Bool_t IsFence(){ return fIsFence; }
   Bool_t IsMicro(){ return fIsMicro; }
+
+  
+  UInt_t* fScalerPromptIndex;            // local prompt scalers indices
+  UInt_t* fScalerPromptCurr;             // local prompt scalers current buffer
+  Double_t* fScalerPromptAcc;            // local prompt scalers accumulated buffer
+  UInt_t* fScalerRandIndex;              // local rand scalers indices
+  UInt_t* fScalerRandCurr;               // local rand scalers current buffer
+  Double_t* fScalerRandAcc;              // local rand scalers accumulated buffer
+  
+  UInt_t* GetScalerPromptIndex(){ return fScalerPromptIndex; }       // local prompt scalers
+  UInt_t* GetScalerPromptCurr(){ return fScalerPromptCurr; }         // local prompt scalers
+  Double_t* GetScalerPromptAcc(){ return fScalerPromptAcc; }         // local prompt scalers
+  UInt_t* GetScalerRandIndex(){ return fScalerRandIndex; }       // local rand scalers
+  UInt_t* GetScalerRandCurr(){ return fScalerRandCurr; }         // local rand scalers
+  Double_t* GetScalerRandAcc(){ return fScalerRandAcc; }         // local rand scalers
+  
   ClassDef(TA2Ladder,1)
 };
 

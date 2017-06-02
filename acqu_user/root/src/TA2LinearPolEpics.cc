@@ -12,6 +12,20 @@
 #include "TA2LinearPolEpics.h"
 #include "TF1.h"
 #include <iostream>
+#include "TCanvas.h"
+#include <TSystem.h>
+#include "TFile.h"
+#include "TTree.h"
+#include "TLorentzVector.h"
+#include "TClonesArray.h"
+#include "TChain.h"
+#include "Math/Minimizer.h"
+#include "Math/Factory.h"
+#include "Math/Functor.h"
+#include <fstream>
+#include <TMath.h>
+#include <TF1.h>
+#include <TMinuit.h>
 
 enum { ELpInitLevel0,ELpInitLevel1,ELpInitLevel2 };  	// allow multiple calls to PostInitialise();
 enum { ELpMiscApp, // options for ParseMisc
@@ -68,6 +82,8 @@ TA2LinearPolEpics::TA2LinearPolEpics( const char* name, TA2System* fAnalysis  )
   fLastEdge = -1.0;
   fEdgeSetting = -1.0;
   fEdgeRange   = -1.0;
+  fNRunRanges   = 0;
+  fA2LinPolEpicsIndex = 0;
   sprintf(fPlaneString,"Epics"); //Assume plane information from data stream
 
   sprintf(fCurrentRunFileName,"none"); 	//set to some dummy value
@@ -82,10 +98,19 @@ TA2LinearPolEpics::TA2LinearPolEpics( const char* name, TA2System* fAnalysis  )
   fDEnhPara = EBufferEnd;
   fDCohPerp = EBufferEnd;
   fDEnhPerp = EBufferEnd;
+  fDGatedCoherent = EBufferEnd;
+  fDGatedCoherentPara = EBufferEnd;
+  fDGatedCoherentPerp = EBufferEnd;
+  fDGatedCurrEnh = EBufferEnd;
+  fDGatedCurrEnhPara = EBufferEnd;
+  fDGatedCurrEnhPerp = EBufferEnd;
   
   fDEdge = EBufferEnd;
+  fDEdgeGated = EBufferEnd;
   fDEdgePerp = EBufferEnd;
   fDEdgePara = EBufferEnd;
+  fDEdgeGatedPara = EBufferEnd;
+  fDEdgeGatedPerp = EBufferEnd;
   fDEdgeDistPara = EBufferEnd;
   fDEdgeDistPerp = EBufferEnd;
   fDEdgeEpics = EBufferEnd;
@@ -100,9 +125,9 @@ TA2LinearPolEpics::TA2LinearPolEpics( const char* name, TA2System* fAnalysis  )
 
   fDoingScalers = EFalse;
   fHaveIncScaler = EFalse;	//Flag that Inc ref scaler is not loaded
+  fHaveIncGatedScaler = EFalse;
   fHaveTaggerApp = EFalse;	//Flag that tagger apparatus is not loaded
   fHaveLadderDet = EFalse;	//Flag that ladder detector is not loaded
-  fScalerCount = 0;	       	//Running counter for scaler reads
 
   fNPolLookupEdges[ETablePara] = 0;  //init no of edge positions for which there are tables
   fNPolLookupEdges[ETablePerp] = 0;  //init no of edge positions for which there are tables
@@ -183,6 +208,9 @@ TA2LinearPolEpics::TA2LinearPolEpics( const char* name, TA2System* fAnalysis  )
   fAfterEdge       =  20.0;
   fPolMin          =   0.1;
 
+  ///Fit Enhancement
+  fLOWFIT = 400;
+  fFitInitialised = kFALSE;
 }
 
 
@@ -221,20 +249,21 @@ void TA2LinearPolEpics::LoadVariable( )
 
   //                            name        		pointer      	type-spec
   TA2DataManager::LoadVariable("Incoherent", 		&fDInc,    	EDSingleX);
+  TA2DataManager::LoadVariable("GatedIncoherent",	&fDGatedInc,   	EDSingleX);
   TA2DataManager::LoadVariable("Coherent", 		&fDCoh,       	EDSingleX);
   TA2DataManager::LoadVariable("Enhancement", 		&fDEnh,      	EDSingleX);
   TA2DataManager::LoadVariable("CoherentPara", 		&fDCohPara,    	EDSingleX);
   TA2DataManager::LoadVariable("EnhancementPara", 	&fDEnhPara,    	EDSingleX);
   TA2DataManager::LoadVariable("CoherentPerp", 		&fDCohPerp,    	EDSingleX);
   TA2DataManager::LoadVariable("EnhancementPerp", 	&fDEnhPerp,    	EDSingleX);
-  TA2DataManager::LoadVariable("CohEdge",        	&fDEdge,  EDSingleX);
-  TA2DataManager::LoadVariable("CohEdgePara",     &fDEdgePara,  	EDSingleX);
-  TA2DataManager::LoadVariable("CohEdgePerp",    &fDEdgePerp,  	EDSingleX);
+  TA2DataManager::LoadVariable("CohEdge",        	&fDEdge,        EDSingleX);
+  TA2DataManager::LoadVariable("CohEdgePara",           &fDEdgePara,  	EDSingleX);
+  TA2DataManager::LoadVariable("CohEdgePerp",           &fDEdgePerp,  	EDSingleX);
   TA2DataManager::LoadVariable("CohEdgeDistPara",      	&fDEdgeDistPara,       	EDSingleX);
   TA2DataManager::LoadVariable("CohEdgeDistPerp",      	&fDEdgeDistPerp,       	EDSingleX);
   TA2DataManager::LoadVariable("CohEdgeEpics",   	&fDEdgeEpics,  EDSingleX);
-  TA2DataManager::LoadVariable("CohEdgeParaEpics", &fDEdgeParaEpics,  	EDSingleX);
-  TA2DataManager::LoadVariable("CohEdgePerpEpics", &fDEdgePerpEpics,  	EDSingleX);
+  TA2DataManager::LoadVariable("CohEdgeParaEpics",      &fDEdgeParaEpics,  	EDSingleX);
+  TA2DataManager::LoadVariable("CohEdgePerpEpics",      &fDEdgePerpEpics,  	EDSingleX);
   TA2DataManager::LoadVariable("CohEdgeDistParaEpics",  &fDEdgeDistParaEpics,       	EDSingleX);
   TA2DataManager::LoadVariable("CohEdgeDistPerpEpics",  &fDEdgeDistPerpEpics,       	EDSingleX);
   TA2DataManager::LoadVariable("PolPlane",        	&fPolPlane,  	EDSingleX);
@@ -242,6 +271,15 @@ void TA2LinearPolEpics::LoadVariable( )
   TA2DataManager::LoadVariable("PolTablePol",        	&fDPolTablePol,  	EDSingleX);
   TA2DataManager::LoadVariable("PolMean",        	&fDPolMean,  	EDSingleX);
   TA2DataManager::LoadVariable("PolCount",        	&fDPolCount,  	EDSingleX);
+  TA2DataManager::LoadVariable("GatedCoherent",         &fDGatedCoherent, EDSingleX);
+  TA2DataManager::LoadVariable("GatedCoherentPara",     &fDGatedCoherentPara, EDSingleX);
+  TA2DataManager::LoadVariable("GatedCoherentPerp",     &fDGatedCoherentPerp, EDSingleX);    
+  TA2DataManager::LoadVariable("GatedCurrEnh",          &fDGatedCurrEnh,    EDSingleX);
+  TA2DataManager::LoadVariable("GatedCurrEnhPara",      &fDGatedCurrEnhPara,EDSingleX);
+  TA2DataManager::LoadVariable("GatedCurrEnhPerp",      &fDGatedCurrEnhPerp,EDSingleX);
+  TA2DataManager::LoadVariable("CohEdgeGated",          &fDEdgeGated,   EDSingleX);
+  TA2DataManager::LoadVariable("CohEdgeGatedPara",      &fDEdgeGatedPara, EDSingleX);
+  TA2DataManager::LoadVariable("CohEdgeGatedPerp",      &fDEdgeGatedPerp, EDSingleX);
   //
 }
 //-----------------------------------------------------------------------------
@@ -296,9 +334,17 @@ void TA2LinearPolEpics::PostInitialise( )
     }
     // to allow for summing consecutive scaler buffers to get better stats.
     fAccScaler=new Double_t*[fNScalerBuffers];
+    fAccPromptScaler=new Double_t*[fNScalerBuffers];
+    fAccRandScaler=new Double_t*[fNScalerBuffers];
     for(int n=0;n<fNScalerBuffers;n++){
       fAccScaler[n]=new Double_t[fLadder->GetNelem()];
-      for(UInt_t m=0;m<fLadder->GetNelem();m++) fAccScaler[n][m]=0.0;
+      fAccPromptScaler[n]=new Double_t[fLadder->GetNelem()];
+      fAccRandScaler[n]=new Double_t[fLadder->GetNelem()];
+      for(UInt_t m=0;m<fLadder->GetNelem();m++){
+	fAccScaler[n][m]=0.0;
+	fAccPromptScaler[n][m]=0.0;
+	fAccRandScaler[n][m]=0.0;
+      }
     }
     fScalerEvent=0;
     
@@ -326,13 +372,21 @@ void TA2LinearPolEpics::PostInitialise( )
 
     if((fDoingScalers)&&(fLadder->IsScaler())){		// If using scalers
       fIncSpectrum = new Double_t[fTaggerChannels];	// Array to hold Inc ref. spectrum
+      fIncGatedSpectrum = new Double_t[fTaggerChannels];// Array to hold Inc gated ref. spectrum
       fCohSpectrum = new Double_t[fTaggerChannels];	// Array to hold Coh spectrum
       fEnhSpectrum = new Double_t[fTaggerChannels];	// Array to hold Enhancement spectrum
-      fBadScalerChan = new Bool_t[fTaggerChannels];	// Array to hold bad scaler channels 
+      fBadScalerChan = new Bool_t[fTaggerChannels];	// Array to hold bad scaler channels
+      fBadGatedScalerChan = new Bool_t[fTaggerChannels];// Array to hold bad scaler channels of gated spectrum
+      fRandSubtraction = new Double_t[fTaggerChannels]; // Array to hold random subtraction spectrum
+      fAccPromptSpec = new Double_t[fTaggerChannels];       // Array to hold accumulated prompt spectrum of multiple buffer
+      fAccRandSpec = new Double_t[fTaggerChannels];         // Array to hold accumulated rand spectrum of multiple buffer
+      fGatedCurrEnhSpec = new Double_t[fTaggerChannels];   // Array to hold gated buffered enhancement spectrum
       
       fScalerCurr=fLadder->GetScalerCurr();
+      fLadder->fScalerPromptCurr=fLadder->GetScalerPromptCurr();
+      fLadder->fScalerRandCurr=fLadder->GetScalerRandCurr();
 
-      LoadAmoRef(fRunRefFiles[0]);					//Load reference amorphous scaler scectrum 
+      LoadAmoRef(fRunRefFiles[0]);					//Load reference amorphous scaler scectrum
     }
 
     // Only do this if we have an event
@@ -451,6 +505,12 @@ void TA2LinearPolEpics::PostInitialise( )
       fHInc->GetXaxis()->Set(fTaggerChannels,fEnergyBins);
       fHInc->GetXaxis()->SetTitle("Photon Energy (MeV)");
     }
+    sprintf(histName,"%s_GatedIncoherent",fName.Data());
+    fHGatedInc=(TH1F *)f1Dhist->FindObject(histName);
+    if(fHInc!=NULL){
+      fHGatedInc->GetXaxis()->Set(fTaggerChannels,fEnergyBins);
+      fHGatedInc->GetXaxis()->SetTitle("Photon Energy (MeV)");
+    }
     sprintf(histName,"%s_Coherent",fName.Data());
     fHCoh=(TH1F *)f1Dhist->FindObject(histName);
     if(fHCoh!=NULL){
@@ -483,7 +543,7 @@ void TA2LinearPolEpics::PostInitialise( )
       fHEnhPara->GetXaxis()->Set(fTaggerChannels,fEnergyBins);
       fHEnhPara->GetXaxis()->SetTitle("Photon Energy (MeV)");
       fHEnhPara->SetLineColor(2);
-   }
+    }
 
     sprintf(histName,"%s_CoherentPerp",fName.Data());
     fHCohPerp=(TH1F *)f1Dhist->FindObject(histName);
@@ -508,9 +568,17 @@ void TA2LinearPolEpics::PostInitialise( )
 	for(int n=0;n<fTaggerChannels;n++){
 	  fHInc->Fill(fEnergyBins[n],fIncSpectrum[n]);	//fill the histogram
 	}
+	fHInc->Sumw2();
       }
     }
-    
+    if(fHaveIncGatedScaler){	// if we have a gated reference
+      if(fHGatedInc!=NULL){	// and we have setup a histogram for it
+	for(int n=0;n<fTaggerChannels;n++){
+	  fHGatedInc->Fill(fEnergyBins[n],fIncGatedSpectrum[n]);	//fill the histogram
+	}
+	fHGatedInc->Sumw2();
+      }
+    }
     if(fHavePolTable){     //If we have pol lookup tables, make the relevant histograms
       fHistE        = new TH1F("PolTableEnhancement", "Pol Table Enhancement", fTaggerChannels,fEnergyBins );
       fHistP        = new TH1F("PolTablePol", "Pol Table Polarization",fTaggerChannels,fEnergyBins);
@@ -560,7 +628,93 @@ void TA2LinearPolEpics::PostInitialise( )
       fHPolCount->GetXaxis()->Set(fTaggerChannels,fEnergyBins);
       fHPolCount->GetXaxis()->SetTitle("Photon Energy (MeV)");
     }
-	 
+    sprintf(histName,"%s_GatedCoherent",fName.Data());
+    fHGatedCoherent=(TH1F *)f1Dhist->FindObject(histName);
+    if(fHGatedCoherent!=NULL){
+      fHGatedCoherent->SetStats(kTRUE);
+      fHGatedCoherent->SetMinimum(0.0);
+      fHGatedCoherent->GetXaxis()->Set(fTaggerChannels,fEnergyBins);
+      fHGatedCoherent->GetXaxis()->SetTitle("Photon Energy (MeV)");
+    }
+    sprintf(histName,"%s_GatedCoherentPara",fName.Data());
+    fHGatedCoherentPara=(TH1F *)f1Dhist->FindObject(histName);
+    if(fHGatedCoherentPara!=NULL){
+      fHGatedCoherentPara->SetStats(kTRUE);
+      fHGatedCoherentPara->SetMinimum(0.0);
+      fHGatedCoherentPara->GetXaxis()->Set(fTaggerChannels,fEnergyBins);
+      fHGatedCoherentPara->GetXaxis()->SetTitle("Photon Energy (MeV)");
+    }
+    sprintf(histName,"%s_GatedCoherentPerp",fName.Data());
+    fHGatedCoherentPerp=(TH1F *)f1Dhist->FindObject(histName);
+    if(fHGatedCoherentPerp!=NULL){
+      fHGatedCoherentPerp->SetStats(kTRUE);
+      fHGatedCoherentPerp->SetMinimum(0.0);
+      fHGatedCoherentPerp->GetXaxis()->Set(fTaggerChannels,fEnergyBins);
+      fHGatedCoherentPerp->GetXaxis()->SetTitle("Photon Energy (MeV)");
+    }
+    sprintf(histName,"%s_GatedCurrEnh",fName.Data());
+    fHGatedCurrEnh=(TH1F *)f1Dhist->FindObject(histName);
+    if(fHGatedCurrEnh!=NULL){
+      fHGatedCurrEnh->SetStats(kTRUE);
+      fHGatedCurrEnh->SetMinimum(0.0);
+      fHGatedCurrEnh->SetMaximum(300.0);
+      fHGatedCurrEnh->GetXaxis()->Set(fTaggerChannels,fEnergyBins);
+      fHGatedCurrEnh->GetXaxis()->SetTitle("Photon Energy (MeV)");
+    }
+    sprintf(histName,"%s_GatedCurrEnhPara",fName.Data());
+    fHGatedCurrEnhPara=(TH1F *)f1Dhist->FindObject(histName);
+    if(fHGatedCurrEnhPara!=NULL){
+      fHGatedCurrEnhPara->SetStats(kFALSE);
+      fHGatedCurrEnhPara->SetMinimum(0.0);
+      fHGatedCurrEnhPara->SetMaximum(300.0);
+      fHGatedCurrEnhPara->GetXaxis()->Set(fTaggerChannels,fEnergyBins);
+      fHGatedCurrEnhPara->GetXaxis()->SetTitle("Photon Energy (MeV)");
+      fHGatedCurrEnhPara->SetLineColor(2);
+      fHGatedCurrEnhPara->SetLineStyle(2);
+    }
+    sprintf(histName,"%s_GatedCurrEnhPerp",fName.Data());
+    fHGatedCurrEnhPerp=(TH1F *)f1Dhist->FindObject(histName);
+    if(fHGatedCurrEnhPerp!=NULL){
+      fHGatedCurrEnhPerp->SetStats(kFALSE);
+      fHGatedCurrEnhPerp->SetMinimum(0.0);
+      fHGatedCurrEnhPerp->SetMaximum(300.0);
+      fHGatedCurrEnhPerp->GetXaxis()->Set(fTaggerChannels,fEnergyBins);
+      fHGatedCurrEnhPerp->GetXaxis()->SetTitle("Photon Energy (MeV)");
+      fHGatedCurrEnhPerp->SetLineColor(4);
+      fHGatedCurrEnhPerp->SetLineStyle(2);
+    }
+    sprintf(histName,"%s_CohEdgeGated",fName.Data());
+    fHEdgeGated=(TH1F *)f1Dhist->FindObject(histName);
+    if(fHEdgeGated!=NULL){
+      fHEdgeGated->SetStats(kFALSE);
+      fHEdgeGated->GetXaxis()->SetTitle("Scaler Reads");
+      fHEdgeGated->GetYaxis()->SetTitle("Edge Position (MeV)");
+      fHEdgeGated->SetMinimum(fEdgeMin);
+      fHEdgeGated->SetMaximum(fEdgeMax);
+    }
+    sprintf(histName,"%s_CohEdgeGatedPerp",fName.Data());
+    fHEdgeGatedPerp=(TH1F *)f1Dhist->FindObject(histName);
+    if(fHEdgeGatedPerp!=NULL){
+      fHEdgeGatedPerp->SetStats(kFALSE);
+      fHEdgeGatedPerp->GetXaxis()->SetTitle("Scaler Reads");
+      fHEdgeGatedPerp->GetYaxis()->SetTitle("Edge Position (MeV)");
+      fHEdgeGatedPerp->SetMinimum(fEdgeMin);
+      fHEdgeGatedPerp->SetMaximum(fEdgeMax);
+      fHEdgeGatedPerp->SetLineColor(4);
+      fHEdgeGatedPerp->SetLineStyle(2);
+    }
+    sprintf(histName,"%s_CohEdgeGatedPara",fName.Data());
+    fHEdgeGatedPara=(TH1F *)f1Dhist->FindObject(histName);
+    if(fHEdgeGatedPara!=NULL){
+      fHEdgeGatedPara->SetStats(kFALSE);
+      fHEdgeGatedPara->GetXaxis()->SetTitle("Scaler Reads");
+      fHEdgeGatedPara->GetYaxis()->SetTitle("Edge Position (MeV)");
+      fHEdgeGatedPara->SetMinimum(fEdgeMin);
+      fHEdgeGatedPara->SetMaximum(fEdgeMax);
+      fHEdgeGatedPara->SetLineColor(2);
+      fHEdgeGatedPara->SetLineStyle(2);
+    }
+    
   default:
     break;
   }
@@ -572,14 +726,16 @@ void TA2LinearPolEpics::PostInitialise( )
 void TA2LinearPolEpics::Reconstruct( ){
   
   Double_t normValue=0.0;
+  Double_t normValueGated=0.0;
   int ncount=0;
+  int ngcount=0;
   TF1 *edgeFit=NULL;
-  Double_t fitedge;
-  Double_t maxgrad;
+  TF1 *edgeFitGated=NULL;
   Double_t coh_sum=0.0;
   int binx=0;
   Double_t xmax=0.0; 
   Double_t ymax=0.0;
+  Double_t errordummy1, errordummy2;
   
   fLastPolRangeIndex[ETablePara]=-1;
   fLastPolRangeIndex[ETablePerp]=-1;
@@ -732,15 +888,38 @@ void TA2LinearPolEpics::Reconstruct( ){
       fIsNewFile=EFalse;	                           //no longer a new file
     }
 
-    if((fDoingScalers)&&(gAR->IsScalerRead())){ 	   // only do this bit for scaler events
+
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    ///                                                                                       ///
+    ///                       only do this bit for scaler events                              ///
+    ///                                                                                       ///
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    
+    if((fDoingScalers)&&(gAR->IsScalerRead())){ 	   
       
       //Fill the various arrays in ascending E_g order
-      for(int n=0;n<fTaggerChannels;n++){	           //fill various hists (in ascending E_g order)
+      if((fScalerEvent%fNScalerBuffers)==0){
+	for(int n=0;n<fNScalerBuffers;n++){
+	  for(UInt_t m=0;m<fLadder->GetNelem();m++){
+	    fAccScaler[n][m]=0.0;
+	    fAccPromptScaler[n][m]=0.0;
+	    fAccRandScaler[n][m]=0.0;
+	  }
+	}
+      }
+      
+      for(int n=0;n<fTaggerChannels;n++){	           //fill various arrays for hists (in ascending E_g order)
 	fAccScaler[fScalerEvent%fNScalerBuffers][fTaggerChannels-1-n]=fScalerCurr[n];
+	fAccPromptScaler[fScalerEvent%fNScalerBuffers][fTaggerChannels-1-n]=fLadder->fScalerPromptCurr[n];
+	fAccRandScaler[fScalerEvent%fNScalerBuffers][fTaggerChannels-1-n]=fLadder->fScalerRandCurr[n];
       }
       
       for(int n=0;n<fTaggerChannels;n++){
 	fCohSpectrum[n]=0.0;
+	fAccPromptSpec[n]=0.0;
+	fAccRandSpec[n]=0.0;
+	fRandSubtraction[n]=0.0;
+	fGatedCurrEnhSpec[n]=0.0;
       }
       for(int b=0;b<fNScalerBuffers;b++){
 	for(int n=0;n<fTaggerChannels;n++){
@@ -748,146 +927,289 @@ void TA2LinearPolEpics::Reconstruct( ){
 	  coh_sum+=fAccScaler[b][n];
 	}
       }
-      fScalerEvent++;
-      //Fill the various arrays in ascending E_g order
-      //      for(int n=0;n<fTaggerChannels;n++){	           //fill various hists (in ascending E_g order)
-      //	fCohSpectrum[fTaggerChannels-1-n]=fScalerCurr[n];
-      //	coh_sum+=fScalerCurr[n];
-      //}
       
-      for(int v=fNormChannel-10;v<fNormChannel+10;v++){
-	if((fCohSpectrum[v]>1.0)&&(fIncSpectrum[v]>1.0)){
-	  normValue+=100.0/(fCohSpectrum[v]/fIncSpectrum[v]);
-	  ncount++;
+      for(int b=0;b<fNScalerBuffers;b++){
+	for(int n=0;n<fTaggerChannels;n++){
+	  fAccPromptSpec[n]+=fAccPromptScaler[b][n];
+	  fAccRandSpec[n]+=fAccRandScaler[b][n];
+	  fRandSubtraction[n]=fAccPromptSpec[n]-fAccRandSpec[n];
 	}
       }
-      normValue/=ncount;
+
       
-      if(fHCoh!=NULL)fHCoh->Reset("ICE");	//These have to be reset (ie zeroed) first
-      if(fHEnh!=NULL)fHEnh->Reset("ICE");
-      if((fHCohPara!=NULL)&&(fPlane==ETablePara))fHCohPara->Reset("ICE");
-      if((fHEnhPara!=NULL)&&(fPlane==ETablePara))fHEnhPara->Reset("ICE");
-      if((fHCohPerp!=NULL)&&(fPlane==ETablePerp))fHCohPerp->Reset("ICE");
-      if((fHEnhPerp!=NULL)&&(fPlane==ETablePerp))fHEnhPerp->Reset("ICE");
+      if((fScalerEvent%fNScalerBuffers)==0){                 /////only do this every N buffers
       
-      for(int n=0;n<fTaggerChannels;n++){		    		//fill various hists
-	if(fHCoh!=NULL){
-	  fHCoh->Fill(fEnergyBins[n],fCohSpectrum[n]);		//main raw one
+	for(int v=fNormChannel-10;v<fNormChannel+10;v++){
+	  if((fCohSpectrum[v]>1.0)&&(fIncSpectrum[v]>1.0)){
+	    normValue+=100.0/(fCohSpectrum[v]/fIncSpectrum[v]);
+	    ncount++;
+	  }
+	  if((fRandSubtraction[v]>1.0)&&(fIncGatedSpectrum[v]>1.0)){
+	    normValueGated+=100.0/(fRandSubtraction[v]/fIncGatedSpectrum[v]);
+	    ngcount++;
+	  }
 	}
-	if((fHCohPara!=NULL)&&(fPlane==ETablePara)){		//para raw one
-	  fHCohPara->Fill(fEnergyBins[n],fCohSpectrum[n]);	
-	}
-	if((fHCohPerp!=NULL)&&(fPlane==ETablePerp)){		//perp raw one
-	  fHCohPerp->Fill(fEnergyBins[n],fCohSpectrum[n]);	
+	normValue/=ncount;
+	normValueGated/=ngcount;
+      
+	if(fHCoh!=NULL)fHCoh->Reset("ICE");	//These have to be reset (ie zeroed) first
+	if(fHEnh!=NULL)fHEnh->Reset("ICE");
+	if((fHCohPara!=NULL)&&(fPlane==ETablePara))fHCohPara->Reset("ICE");
+	if((fHEnhPara!=NULL)&&(fPlane==ETablePara))fHEnhPara->Reset("ICE");
+	if((fHCohPerp!=NULL)&&(fPlane==ETablePerp))fHCohPerp->Reset("ICE");
+	if((fHEnhPerp!=NULL)&&(fPlane==ETablePerp))fHEnhPerp->Reset("ICE");
+	if(fHGatedCoherent!=NULL)fHGatedCoherent->Reset("ICES");
+	if(fHGatedCoherentPara!=NULL)fHGatedCoherentPara->Reset("ICES");
+	if(fHGatedCoherentPerp!=NULL)fHGatedCoherentPerp->Reset("ICES");
+	if(fHGatedCurrEnh!=NULL)fHGatedCurrEnh->Reset("ICES");
+	if(fHGatedCurrEnhPara!=NULL)fHGatedCurrEnhPara->Reset("ICE");
+	if(fHGatedCurrEnhPerp!=NULL)fHGatedCurrEnhPerp->Reset("ICE");     
+      
+	for(int n=0;n<fTaggerChannels;n++){     /////////////////////////////////////// calculate/fill various hists
+	  if(fHCoh!=NULL){
+	    fHCoh->Fill(fEnergyBins[n],fCohSpectrum[n]);		//main raw one
+	  }
+	  if((fHCohPara!=NULL)&&(fPlane==ETablePara)){		//para raw one
+	    fHCohPara->Fill(fEnergyBins[n],fCohSpectrum[n]);
+	  }
+	  if((fHCohPerp!=NULL)&&(fPlane==ETablePerp)){		//perp raw one
+	    fHCohPerp->Fill(fEnergyBins[n],fCohSpectrum[n]);
+	  }
+
+	  //random Subtraction
+	  if(fHGatedCoherent!=NULL){
+	    fHGatedCoherent->Fill(fEnergyBins[n],fRandSubtraction[n]);
+	  }
+	  if((fHGatedCoherentPara!=NULL)&&(fPlane==ETablePara)){		//para
+	    fHGatedCoherentPara->Fill(fEnergyBins[n],fRandSubtraction[n]);
+	  }
+	  if((fHGatedCoherentPerp!=NULL)&&(fPlane==ETablePerp)){		//perp
+	    fHGatedCoherentPerp->Fill(fEnergyBins[n],fRandSubtraction[n]);
+	  }
+
+	  if(fHaveIncScaler){		//Now normalise if we have reference
+	    if((fCohSpectrum[n]<1.0)||(fIncSpectrum[n]<1.0)||(fBadScalerChan[n])){
+	      if(n==0)fEnhSpectrum[n]=0;
+	      else fEnhSpectrum[n]=  fEnhSpectrum[n-1];
+	    }
+	    else{
+	      fEnhSpectrum[n]=normValue*fCohSpectrum[n]/fIncSpectrum[n];
+	    }		  
+	  }
+	  if(fHaveIncGatedScaler){             //Now normalise if we have gated reference
+	    if((fRandSubtraction[n]<1.0)||(fIncGatedSpectrum[n]<1.0)||(fBadGatedScalerChan[n])){ //calculate normalised gated enh
+	      if(n==0)fGatedCurrEnhSpec[n]=0;
+	      else fGatedCurrEnhSpec[n]=fGatedCurrEnhSpec[n-1];
+	    }
+	    else{
+	      fGatedCurrEnhSpec[n]=normValueGated*fRandSubtraction[n]/fIncGatedSpectrum[n];
+	    }
+	  }
+	} //end loop over all tagger channels for filling
+
+	// make enhancements
+	if(fHEnh!=NULL)  fHEnh->Divide(fHCoh,fHInc,normValue);
+	switch(fPlane){	//now fill hists etc according to mode
+	case ETablePara:
+	  if(fHEnhPara!=NULL){	//para enhancement one
+	    fHEnhPara->Divide(fHCoh,fHInc,normValue);	
+	  }
+	  break;
+	case ETablePerp:
+	  if(fHEnhPerp!=NULL){	//para enhancement one
+	    fHEnhPerp->Divide(fHCoh,fHInc,normValue);
+	  }
+	  break;
+	default:
+	  break;
 	}
 	
-	if(fHaveIncScaler){		//Now normalise if we have reference
-	  if((fCohSpectrum[n]<1.0)||(fIncSpectrum[n]<1.0)||(fBadScalerChan[n])){
-	    if(n==0)fEnhSpectrum[n]=0;
-	    else fEnhSpectrum[n]=  fEnhSpectrum[n-1];
+	if(fHGatedCurrEnh!=NULL)  fHGatedCurrEnh->Divide(fHGatedCoherent,fHGatedInc,normValueGated);
+	switch(fPlane){	//now fill hists etc according to mode
+	case ETablePara:
+	  if(fHGatedCurrEnhPara!=NULL){	//para enhancement one
+	    fHGatedCurrEnhPara->Divide(fHGatedCoherent,fHGatedInc,normValueGated);	
 	  }
-	  else{
-	    fEnhSpectrum[n]=normValue*fCohSpectrum[n]/fIncSpectrum[n];
+	  break;
+	case ETablePerp:
+	  if(fHGatedCurrEnhPerp!=NULL){	//para enhancement one
+	    fHGatedCurrEnhPerp->Divide(fHGatedCoherent,fHGatedInc,normValueGated);	
 	  }
-	  
-	  //	if(fHEnh!=NULL)	fHEnh->Fill(fEnergyBins[n],fEnhSpectrum[n]);	
-	  if(fHEnh!=NULL)	fHEnh->Fill(fEnergyBins[n],fEnhSpectrum[n]);	
-	  
-	  
-	  switch(fPlane){	//now fill hists etc according to mode
-	  case ETablePara:
-	    if(fHEnhPara!=NULL){	//para enhancement one
-	      fHEnhPara->Fill(fEnergyBins[n],fEnhSpectrum[n]);	
-	    }
-	    break;
-	  case ETablePerp:
-	    if(fHEnhPerp!=NULL){	//para enhancement one
-	      fHEnhPerp->Fill(fEnergyBins[n],fEnhSpectrum[n]);	
-	    }
-	    break;
-	  default:
-	    break;
-	  }
+	  break;
+	default:
+	  break;
 	}
-      }
+	
       
-      if((fHaveIncScaler)&&(fHEnh)){			//find the coherent edge
+	if((fHaveIncScaler)&&(fHEnh)){			//find the coherent edge
 		 
-		  if(fPlane == ETableAmo) fEdge = 0;
-		  else
-		  {
-			   
-	binx=0;
-	ymax=0;
-	for(int b=fHEnh->FindBin(fEdgeMin);b<fHEnh->FindBin(fEdgeMax);b++){
-	  if(fHEnh->GetBinContent(b)>ymax){
-	    ymax=fHEnh->GetBinContent(b);
-	    binx=b;
+	  if(fPlane == ETableAmo){
+	    fEdge = 0;
+	    fEdgeError = 0;
 	  }
-	}
-	xmax=fHEnh->GetBinCenter(binx);
-	ymax=fHEnh->GetBinContent(binx);
+	  else
+	    {
+	    
+	      binx=0;
+	      ymax=0;
+	      for(int b=fHEnh->FindBin(fEdgeMin);b<fHEnh->FindBin(fEdgeMax);b++){
+		if(fHEnh->GetBinContent(b)>ymax){
+		  ymax=fHEnh->GetBinContent(b);
+		  binx=b;
+		}
+	      }
+	      xmax=fHEnh->GetBinCenter(binx);
+	      ymax=fHEnh->GetBinContent(binx);
+	    
+	    
+	      if(!edgeFit)edgeFit=new TF1("edgeFit",GausOnBase,0,100,4);
+	    
+	      edgeFit->SetRange(xmax,xmax+40.0);
+	      edgeFit->SetParameter(1,xmax);
+	      edgeFit->SetParameter(2,10.0);
+	      edgeFit->SetParameter(3,100.0);
+	      fHEnh->Fit(edgeFit,"QNR");
+	 
+	    
+	      errordummy1 = edgeFit->GetParError(1);
+	      errordummy2 = edgeFit->GetParError(2); 
+	    
+	      fEdge = (edgeFit->GetParameter(1)) + abs(edgeFit->GetParameter(2));
+	      fEdgeError = sqrt(errordummy1*errordummy1 + errordummy2*errordummy2);
+
+	    }
+	  if(fHEdge){
+	    if(fScalerEvent%(fHEdge->GetNbinsX()-1)==0){
+	      fHEdge->Reset("ICE");
+	    }
+	    fHEdge->SetBinContent(fScalerEvent%(fHEdge->GetNbinsX()-1),fEdge);
+	    fHEdge->SetBinError(fScalerEvent%(fHEdge->GetNbinsX()-1),fEdgeError);
+	  }
+	  if(fHEdgePara){
+	    if(fScalerEvent%(fHEdgePara->GetNbinsX()-1)==0){
+	      fHEdgePara->Reset("ICE");
+	    }
+	    if(fPlane==ETablePara){
+	      fHEdgePara->SetBinContent(fScalerEvent%(fHEdgePara->GetNbinsX()-1),fEdge);
+	      fHEdgePara->SetBinError(fScalerEvent%(fHEdge->GetNbinsX()-1),fEdgeError);
+	    }
+	    else{
+	      fHEdgePara->Fill(fScalerEvent%(fHEdgePara->GetNbinsX()-1),0);
+	    }	  
+	  }
+	  if(fHEdgePerp){
+	    if(fScalerEvent%(fHEdgePerp->GetNbinsX()-1)==0){
+	      fHEdgePerp->Reset("ICE");
+	    }
+	    if(fPlane==ETablePerp){
+	      fHEdgePerp->SetBinContent(fScalerEvent%(fHEdgePerp->GetNbinsX()-1),fEdge);
+	      fHEdgePerp->SetBinError(fScalerEvent%(fHEdge->GetNbinsX()-1),fEdgeError);
+	    }
+	    else{
+	      fHEdgePerp->Fill(fScalerEvent%(fHEdgePerp->GetNbinsX()-1),0);
+	    }
+	  }
+	  if((fPlane==ETablePara)&&(fHEdgeDistPara)){
+	    fHEdgeDistPara->Fill(fEdge);
+	  }
+	  else if((fPlane==ETablePerp)&&(fHEdgeDistPerp)){
+	    fHEdgeDistPerp->Fill(fEdge);
+	  }
+	  if(!fForceFit){                              // if not fitting enhancements 
+	    fEdge=fA2LinPolCohEdgeEpics;               // get edge from epics
+	  }
+	  GetPolDegree(200.0);                         //force it to set up a table
+	
+	}//end find edge part
+
+	if((fHaveIncGatedScaler)&&(fHGatedCurrEnh)){	       	//find the gated coherent edge		 
+	  if(fPlane == ETableAmo){
+	    fEdgeGated = 0;
+	    fEdgeGatedError = 0;
+	  }
+	  else
+	    {
+	      binx=0;
+	      ymax=0;
+	      for(int b=fHGatedCurrEnh->FindBin(fEdgeMin);b<fHGatedCurrEnh->FindBin(fEdgeMax);b++){
+		if(fHGatedCurrEnh->GetBinContent(b)>ymax){
+		  ymax=fHGatedCurrEnh->GetBinContent(b);
+		  binx=b;
+		}
+	      }
+	      xmax=fHGatedCurrEnh->GetBinCenter(binx);
+	      ymax=fHGatedCurrEnh->GetBinContent(binx);
+	    
+	    
+	      if(!edgeFitGated)edgeFitGated=new TF1("edgeFitGated",GausOnBase,0,100,4);
+	    
+	      edgeFitGated->SetRange(xmax-5.0,xmax+40.0);
+	      edgeFitGated->SetParameter(0,ymax/10.0);
+	      edgeFitGated->SetParameter(1,xmax);
+	      edgeFitGated->SetParLimits(1,xmax-20,xmax+20);
+	      edgeFitGated->SetParameter(2,10.0);
+	      edgeFitGated->SetParLimits(2,0,50);
+	      edgeFitGated->SetParameter(3,100.0);
+	      fHGatedCurrEnh->Fit(edgeFitGated,"QNR");
+	    
+	      errordummy1 = edgeFitGated->GetParError(1);
+	      errordummy2 = edgeFitGated->GetParError(2);
+	    
+	      fEdgeGated = (edgeFitGated->GetParameter(1)) + abs(edgeFitGated->GetParameter(2));
+	      fEdgeGatedError = sqrt(errordummy1*errordummy1 + errordummy2*errordummy2);
+	    }
+	  if(fHEdgeGated){
+	    if(fScalerEvent%(fHEdgeGated->GetNbinsX()-1)==0){
+	      fHEdgeGated->Reset("ICE");
+	    }
+	    fHEdgeGated->SetBinContent(fScalerEvent%(fHEdgeGated->GetNbinsX()-1),fEdgeGated);
+	    fHEdgeGated->SetBinError(fScalerEvent%(fHEdgeGated->GetNbinsX()-1),fEdgeGatedError);
+	  }
+	  if(fHEdgeGatedPara){
+	    if(fScalerEvent%(fHEdgeGatedPara->GetNbinsX()-1)==0){
+	      fHEdgeGatedPara->Reset("ICE");
+	    }
+	    if(fPlane==ETablePara){
+	      fHEdgeGatedPara->SetBinContent(fScalerEvent%(fHEdgeGatedPara->GetNbinsX()-1),fEdgeGated);
+	      fHEdgeGatedPara->SetBinError(fScalerEvent%(fHEdgeGated->GetNbinsX()-1),fEdgeGatedError);
+	    }
+	    else{
+	      fHEdgeGatedPara->Fill(fScalerEvent%(fHEdgeGatedPara->GetNbinsX()-1),0);
+	    }	  
+	  }
+	  if(fHEdgeGatedPerp){
+	    if(fScalerEvent%(fHEdgeGatedPerp->GetNbinsX()-1)==0){
+	      fHEdgeGatedPerp->Reset("ICE");
+	    }
+	    if(fPlane==ETablePerp){
+	      fHEdgeGatedPerp->SetBinContent(fScalerEvent%(fHEdgeGatedPerp->GetNbinsX()-1),fEdgeGated);
+	      fHEdgeGatedPerp->SetBinError(fScalerEvent%(fHEdgeGated->GetNbinsX()-1),fEdgeGatedError);
+	    }
+	    else{
+	      fHEdgeGatedPerp->Fill(fScalerEvent%(fHEdgeGatedPerp->GetNbinsX()-1),0);
+	    }
+	  }
+        
+	  if(!fForceFit){                              // if not fitting enhancements 
+	    fEdgeGated=fA2LinPolCohEdgeEpics;               // get edge from epics
+	  }
+	  GetPolDegree(200.0);                         //force it to set up a table
+	
+	}//end find gated edge
+
+      
+	/////////////////////////////////
+	/////////Fit Enhancement/////////
+	/////////////////////////////////
+	/* if((fScalerEvent%30)==0){
+	   FitEnhancement(fHGatedCurrEnh, 0.006, 2);
+	   }*/
+
 	
 	
-	if(!edgeFit)edgeFit=new TF1("edgeFit",GausOnBase,0,100,4);
-	
-	edgeFit->SetRange(xmax,xmax+40.0);
-	edgeFit->SetParameter(1,xmax);
-	edgeFit->SetParameter(2,10.0);
-	edgeFit->SetParameter(3,100.0);
-	fHEnh->Fit(edgeFit,"QNR");
-	
-	maxgrad=0;
-	for(fitedge=xmax+1;fitedge<xmax+39;
-	    fitedge+=(60.0)/500.0){
-	  if(fabs(edgeFit->Derivative(fitedge))>maxgrad){
-	    maxgrad=fabs(edgeFit->Derivative(fitedge));
-	    fEdge = fitedge;
-	  }
-	}
-	}
-	if(fHEdge){
-	  if(fScalerCount%(fHEdge->GetNbinsX()-1)==0){
-	    fHEdge->Reset("ICE");
-	  }
-	  fHEdge->Fill(fScalerCount%(fHEdge->GetNbinsX()-1),fEdge);
-	}
-	if(fHEdgePara){
-	  if(fScalerCount%(fHEdgePara->GetNbinsX()-1)==0){
-	    fHEdgePara->Reset("ICE");
-	  }
-	  if(fPlane==ETablePara){
-	    fHEdgePara->Fill(fScalerCount%(fHEdgePara->GetNbinsX()-1),fEdge);
-	  }
-	  else{
-	    fHEdgePara->Fill(fScalerCount%(fHEdgePara->GetNbinsX()-1),0);
-	  }	  
-	}
-	if(fHEdgePerp){
-	  if(fScalerCount%(fHEdgePerp->GetNbinsX()-1)==0){
-	    fHEdgePerp->Reset("ICE");
-	  }
-	  if(fPlane==ETablePerp){
-	    fHEdgePerp->Fill(fScalerCount%(fHEdgePerp->GetNbinsX()-1),fEdge);
-	  }
-	  else{
-	    fHEdgePerp->Fill(fScalerCount%(fHEdgePerp->GetNbinsX()-1),0);
-	  }
-	}
-	if((fPlane==ETablePara)&&(fHEdgeDistPara)){
-	  fHEdgeDistPara->Fill(fEdge);
-	}
-	else if((fPlane==ETablePerp)&&(fHEdgeDistPerp)){
-	  fHEdgeDistPerp->Fill(fEdge);
-	}
-	if(!fForceFit){                              // if not fitting enhancements 
-	  fEdge=fA2LinPolCohEdgeEpics;               // get edge from epics
-	}
-	fScalerCount++;
-	GetPolDegree(200.0);                         //force it to set up a table
-	
-      }
-    }
+      }//end if clause for buffer size
+      fScalerEvent++;
+    } //end scaler part
   }
 
   else{
@@ -1037,20 +1359,38 @@ int TA2LinearPolEpics::LoadAmoRef(Char_t *refFileName){
   Char_t line[82];
   Int_t channel;
   Double_t content;
+  Double_t gateRef; //difference between prompt and rand ref
+  Bool_t IsFlagged; //File has a column with gated reference
 
   if((fp=fopen(refFileName,"r"))!=NULL){
     channel=0;
     for(;;){                            		// scan lines from scaler dump file
       if(fgets(line,80,fp) == NULL) break;		// check got a line from file
       if((line[0] == '*')||(line[0] == '#')) continue;
-      sscanf(line,"%*d%lf",&content);         // get chan and content
-      
-      if(channel>=fTaggerChannels) break; 		// break if past last chan
-      fIncSpectrum[fTaggerChannels-1-channel]=content; //fill array
+      if((line[0] == 'F')){
+	fprintf(stderr,"Flag detected! Collimated data in reference file!\n");
+	IsFlagged=kTRUE;
+	continue;
+      }
+      if(!IsFlagged){
+	sscanf(line,"%*d%lf",&content);         // get chan and contents
+	
+	if(channel>=fTaggerChannels) break; 		// break if past last chan
+	fIncSpectrum[fTaggerChannels-1-channel]=content; //fill array
+      }
+      if(IsFlagged){
+       	sscanf(line,"%*d%lf%lf",&content,&gateRef);
+
+	if(channel>=fTaggerChannels) break; 		// break if past last chan
+	fIncSpectrum[fTaggerChannels-1-channel]=content; //fill arrays
+        fIncGatedSpectrum[fTaggerChannels-1-channel]=gateRef;
+      }
       channel++;
     } 						 //(increasing E_g order)
     fHaveIncScaler=ETrue;	// flag that we have the Inc. scaler reference
+    if(IsFlagged) fHaveIncGatedScaler=ETrue; // flag that we have the Inc. gated scaler reference
     fclose(fp);		// close the scaler dump file
+    
     //run though the tagger scalers to find bad channels
     for(int n=0;n<fTaggerChannels-4;n++){ //flag if less that 1/9 of neighbours	
       if((18*fIncSpectrum[n])<(fIncSpectrum[n+2]+fIncSpectrum[n+3]+fIncSpectrum[n+4])){
@@ -1060,6 +1400,14 @@ int TA2LinearPolEpics::LoadAmoRef(Char_t *refFileName){
 	fBadScalerChan[n]=kFALSE;
       }
       if(fIncSpectrum[n]<10.0)fBadScalerChan[n]=ETrue; // or less than 10.0
+
+      if((18*fIncGatedSpectrum[n])<(fIncGatedSpectrum[n+2]+fIncGatedSpectrum[n+3]+fIncGatedSpectrum[n+4])){
+	fBadGatedScalerChan[n]=kTRUE;
+      }
+      else{
+	fBadGatedScalerChan[n]=kFALSE;
+      }
+      if(fIncGatedSpectrum[n]<10.0)fBadGatedScalerChan[n]=ETrue; // or less than 10.0
     }
     // work out the normalisation channel based on the norm energy
     
@@ -1154,8 +1502,7 @@ Double_t *TA2LinearPolEpics::FillPolArray(){
 void  TA2LinearPolEpics::enhFromParams(){
   //make an enhancement and corresponding polarization from some the parameters as defined in the CLAS note.
   //this function is can be called stand alone, but will also ba called many times from the fitting function
-
-  Double_t *par;
+  Double_t *par=NULL;
   Double_t xd[10];
   Double_t xc[10];
   Double_t Q[10];
@@ -1175,17 +1522,12 @@ void  TA2LinearPolEpics::enhFromParams(){
   Double_t E0=fBeamEnergy;
   Double_t Eg=fEdge;
 
-  par=fPolTableParams[fPolRangeIndex[fPlane]][fPlane];
-  //
-  //for(int p=0;p<11;p++){
-  //  cout << p << ": " << par[p] << ", ";
-  //  par[p]=fPar[p];
-  // }
-  //cout << endl;
+  if(par==NULL){
+    par=fPolTableParams[fPolRangeIndex[fPlane]][fPlane];
 
-  //get theta for the current edge position
-  par[THETA]  = k/(2.0*E0*E0*((1/Eg)-(1/E0)));                                  //theta from edge and beam energy
-
+    //get theta for the current edge position
+    par[THETA]  = k/(2.0*E0*E0*((1/Eg)-(1/E0)));        //theta from edge and beam energy
+  }
 
   //reset them all for fresh filling
   fHistE->Reset("ICE");
@@ -1282,15 +1624,407 @@ void  TA2LinearPolEpics::enhFromParams(){
     fHistP->Fill(fHistP->GetBinCenter(bin),polSum);
   } 
   //
-    for(int n=0;n<=fTaggerChannels;n++){
-      if(fHPolTableEnh) fHPolTableEnh->SetBinContent(n+1,fHistE->GetBinContent(n+1));
-      if(fHPolTablePol)fHPolTablePol->SetBinContent(n+1,fHistP->GetBinContent(n+1));
-      fCurrentPolTable[n]	=fHistP->GetBinContent(n+1);
-      fCurrentEnhTable[n]	=fHistE->GetBinContent(n+1);      
+  for(int n=0;n<=fTaggerChannels;n++){
+    if(fHPolTableEnh) fHPolTableEnh->SetBinContent(n+1,fHistE->GetBinContent(n+1));
+    if(fHPolTablePol)fHPolTablePol->SetBinContent(n+1,fHistP->GetBinContent(n+1));
+    fCurrentPolTable[n]	=fHistP->GetBinContent(n+1);
+    fCurrentEnhTable[n]	=fHistE->GetBinContent(n+1);      
+    
+    fCurrentPolTable_TC[fTaggerChannels-n]=fHistP->GetBinContent(n+1);
+    fCurrentEnhTable_TC[fTaggerChannels-n]=fHistE->GetBinContent(n+1);
+  }
+}
 
-      fCurrentPolTable_TC[fTaggerChannels-n]=fHistP->GetBinContent(n+1);
-      fCurrentEnhTable_TC[fTaggerChannels-n]=fHistE->GetBinContent(n+1);
+void  TA2LinearPolEpics::FitInit(const TH1F *histD){
+  fFitEnhData = (TH1F*) histD->Clone("FitEnhData");
+  fFitEnh = (TH1F*) fFitEnhData->Clone("FitEnh");
+  fFitPol = (TH1F*) fFitEnhData->Clone("FitPol");
+  fFitInitialised = kTRUE;
+}
+
+void  TA2LinearPolEpics::FitEnhancement(const TH1F *histD, const double scalingN, const int nVec){
+
+  Double_t beamMeV = fBeamEnergy;
+  Double_t colliDist_m = 2.5;
+  Double_t colliRad_mm = 3.0;
+
+  const Int_t VECTORS[]={2,4,6,8,10};    //list of the vectors to be included (022,044);
+
+  if(!fFitInitialised) FitInit(histD);
+  
+  if(fFitEnhData!=NULL)fFitEnhData->Reset("ICES");
+  if(fFitEnh!=NULL)fFitEnh->Reset("ICES");
+  if(fFitPol!=NULL)fFitPol->Reset("ICES");
+  
+  for(int i=0;i<=histD->GetNbinsX();i++){
+    fFitEnhData->SetBinContent(i,histD->GetBinContent(i));
+  }
+
+  
+  UInt_t nBins = fFitEnhData->GetNbinsX();
+  Double_t diff1, diff2, lowmean,scalefac;
+  Double_t par[10];
+  ROOT::Math::Minimizer* min;
+  Char_t name[30];
+  
+  TF1 *gausFit=new TF1("gausFit",GausOnBase,0,100,4);
+
+  
+  //Get rid of zeros
+  for(UInt_t n=1;n<=nBins-1;n++){
+    if(fFitEnhData->GetBinContent(n)<0.1)fFitEnhData->SetBinContent(n,fFitEnhData->GetBinContent(n+1));
+  }
+  //Get rid of zeros 2nd pass
+  for(UInt_t n=1;n<=nBins-1;n++){
+    if(fFitEnhData->GetBinContent(n)<0.1)fFitEnhData->SetBinContent(n,fFitEnhData->GetBinContent(n+1));
+  }
+  //  Get rid of spikes up and down
+  for(UInt_t n=2;n<=nBins-1;n++){
+    diff1=(fFitEnhData->GetBinContent(n)-fFitEnhData->GetBinContent(n-1))/fFitEnhData->GetBinContent(n-1);
+    diff2=(fFitEnhData->GetBinContent(n)-fFitEnhData->GetBinContent(n+1))/fFitEnhData->GetBinContent(n+1);
+
+    if (((fabs(diff1)>0.03)&&(fabs(diff2)>0.03))&&(fabs(diff1-diff2)<0.1)){
+      fFitEnhData->SetBinContent(n,0.5*(fFitEnhData->GetBinContent(n-1)+fFitEnhData->GetBinContent(n+1)));
     }
+  }
+
+  // find a reasonable minumum spot to set to 1 for the baseline.
+  // the lowest 5 channel mean between 0.2 and 0.95 of the range
+  lowmean=1000000.0;
+  for(int n=(int)(0.15*(float)nBins);n<=(int)(0.95*(float)nBins);n++){
+    if((fFitEnhData->Integral(n-2,n+2)<lowmean)){
+      lowmean=fFitEnhData->Integral(n-2,n+2);
+      std::cout << "lowmean: " << lowmean << " chan: " << n << std::endl;
+    }
+  }
+  if(lowmean<1) lowmean=500.0;
+  fFitEnhData->Scale(5.0/(lowmean));
+
+  //energy dependent scaling to improve fit
+  for(UInt_t n=1;n<=nBins-1;n++){
+    Double_t binenergy = fFitEnhData->GetBinCenter(n);
+    Double_t bintemp = fFitEnhData->GetBinContent(n);
+    if(binenergy==0) continue;
+    bintemp = bintemp*TMath::Power((1/binenergy),scalingN);
+    fFitEnhData->SetBinContent(n,bintemp);
+  }
+  
+  fFitEnhData->GetXaxis()->SetRange(100,300);
+  fFitEnhData->SetMaximum(1.2*fFitEnhData->GetMaximum());
+  fFitEnhData->SetMinimum(0.0);
+  fFitEnh->SetMaximum(1.2*fFitEnhData->GetMaximum());
+  fFitEnh->SetMinimum(0.0);
+  fFitPol->SetMaximum(1);
+  fFitEnhData->GetXaxis()->SetRange();
+  //fFitEnhData->Draw("P");
+
+  //Fit
+  //Now try to make some guesses at the initial parameters
+  fFitEnhData->GetXaxis()->SetRange(100,300);
+  gausFit->SetRange(fFitEnhData->GetBinCenter(fFitEnhData->GetMaximumBin()),fFitEnhData->GetBinCenter(fFitEnhData->GetMaximumBin())+100.0);
+  gausFit->SetParameter(1,fFitEnhData->GetBinCenter(fFitEnhData->GetMaximumBin()));
+  gausFit->SetParameter(2,10.0);
+  gausFit->SetParameter(3,1.0);
+  fFitEnhData->Fit(gausFit,"rN");
+  fFitEnhData->GetXaxis()->SetRange();
+
+  //Get the edge from the fit
+  fFitedge=(gausFit->GetParameter(1)) + abs(gausFit->GetParameter(2));
+
+
+  std::cout << beamMeV << std::endl;
+  std::cout << fFitedge << std::endl;
+  std::cout << gausFit->GetParameter(2) << std::endl;
+
+  //Now we have enough information to set the basic parameters
+  parFromHuman(fFitedge,gausFit->GetParameter(2),colliDist_m,colliRad_mm,nVec,par);
+
+  //set the intensities
+  for(int v=0;v<par[NVEC];v++){                                               //give the vectors intensities
+    par[IVEC+v] = fFitEnhData->GetMaximum()*2.0/((Double_t)VECTORS[v]*(Double_t)VECTORS[v]);      //tailing off as 1/VECTORS[v]^2
+  }
+    
+  enhFromParams(par,fFitedge);
+
+  //Redo the intensities according to a the calc / data ration
+  scalefac=fFitEnhData->GetMaximum()/fFitEnh->GetMaximum();
+  for(int v=0;v<par[NVEC];v++){                                               //give the vectors intensities
+    par[IVEC+v]*=scalefac;
+  }
+  enhFromParams(par,fFitedge);
+  fFitEnh->SetLineColor(2);
+  //fFitEnh->Draw("same");    
+
+  fFitPol->SetLineColor(2);
+  //fFitPol->Draw();
+  gSystem->ProcessEvents();
+  
+
+  min = ROOT::Math::Factory::CreateMinimizer("Minuit2", "Simple");
+
+
+  // set tolerance , etc...
+  fFitEnhData->GetXaxis()->SetRange(100,300);
+  fFitMinBin=fFitEnh->FindBin((int)fFitEnhData->GetBinCenter(fFitEnhData->GetMaximumBin())-fLOWFIT);
+  fFitMaxBin=40+fFitEnh->FindBin(par[E0MEV]/((((2.0/4.0)*((par[E0MEV]/fFitEnhData->GetBinCenter(fFitEnhData->GetMaximumBin()))-1.0))+1.0)));
+  fFitEnhData->GetXaxis()->SetRange();
+  
+  std::cout << "fitMinBin " << fFitMinBin << std::endl;
+  std::cout << "BinCenter " << fFitEnhData->GetBinCenter(fFitEnhData->GetMaximumBin()) << std::endl;
+  std::cout << "MaxBin " << fFitEnhData->GetMaximumBin() << std::endl;
+  std::cout << "fLowfit " << fLOWFIT << std::endl;
+  std::cout << "fitMaxBin " << fFitMaxBin << std::endl;
+  
+  min->SetMaxFunctionCalls(1000000); // for Minuit/Minuit2 
+  min->SetMaxIterations(10000);  // for GSL 
+  min->SetTolerance(0.001);
+  min->SetPrintLevel(1);
+    
+  ROOT::Math::Functor ft(this, &TA2LinearPolEpics::efit, IVEC+nVec);
+  min->SetFunction(ft);
+ 
+  //Now set the variables
+  min->SetLimitedVariable(THETA,   "Theta",   par[THETA],      par[THETA]/100.0,  0.95*par[THETA], 1.05*par[THETA]);
+  min->SetLimitedVariable(SIGMA,   "Sigma",   2.5*par[SIGMA],  par[SIGMA]/100.0,  par[SIGMA],  5.0*par[SIGMA]);
+  min->SetLimitedVariable(THETAR,  "Thetar",  2.0*par[THETAR],     par[THETAR]/100.0, 0.2*par[THETAR], 5.0*par[THETAR]);
+  min->SetLimitedVariable(SIGMAR,  "Sigmar",  0.5*par[SIGMAR], par[SIGMAR]/100.0, 0.1*par[SIGMAR], 20.0*par[SIGMAR]);
+  min->SetFixedVariable(E0MEV,     "E0MeV",   par[E0MEV]);  //no of vectors
+  min->SetFixedVariable(NVEC,      "Nvec",    par[NVEC]);  //no of vectors
+  for(int v=0;v<nVec;v++){
+    sprintf(name,"Vec0%d%d", VECTORS[v],VECTORS[v]);
+    min->SetVariable(v+IVEC, name, par[v+IVEC], par[v+IVEC]/100.0);
+ 
+  }
+
+  fbestChisq=100000.00;   //set this high for starters
+
+  min->Minimize(); 
+  
+  //enhFromParams(fbestPar,fFitedge);
+
+
+
+  // fFitEnhData->Draw("P");
+  fFitEnh->SetLineColor(2);
+  //  fFitEnh->Draw("same");    
+
+  fFitPol->SetLineColor(2);
+  //  fFitPol->Draw();
+  gSystem->Sleep(500);
+
+
+  std::cout << "Fit procedure done!" << std::endl;
+}
+
+void  TA2LinearPolEpics::parFromHuman(Double_t edgeMeV, Double_t spreadMeV, 
+		  Double_t colliDist_m, Double_t colliRad_mm, Int_t nVec, Double_t *par){
+
+   //takes some physical quantities and makes them into parameters, then calls the 
+  //enhFromParams function.
+  
+  Int_t g = 2;                                                                //variables used in CLAS note
+  Double_t E0 = fBeamEnergy;
+  Double_t Eg = edgeMeV;
+  
+  
+  par[THETA]  = k/(g*E0*E0*((1/Eg)-(1/E0)));                                  //theta from edge and beam energy
+  par[SIGMA]  = (par[THETA]-(k/(g*E0*E0*((1/(Eg-spreadMeV))-(1/E0)))))/3.0;   //spread in theta from spread in edge 
+  par[THETAR] = E0*0.001*5.0*colliRad_mm/colliDist_m;                         //cut from collimator
+  par[SIGMAR] = par[THETAR]*par[SIGMA]/par[THETA];                            //smear in above same fractional sigma as above
+  par[E0MEV]  = E0;                                                           //beam energy
+  par[NVEC]   = (Double_t)nVec;                                                         //no of harmonics
+
+  for(int v=0;v<par[NVEC];v++){                                               //give the vectors intensities
+    par[IVEC+v] = 2.0/(Double_t)VECTORS[v];                                   //tailing off as 1/VECTORS[v]
+    std::cout << IVEC+v << "  v   " << par[IVEC+v] << std::endl; 
+  }
+  std::cout << "Theta: " << par[THETA] << std::endl;
+  std::cout << "Sigma: " << par[SIGMA] << std::endl;
+  std::cout << "Thetar: " << par[THETAR] << std::endl;
+  std::cout << "Sigmar: " << par[SIGMAR] << std::endl;
+  std::cout << "E0: " << par[E0MEV] << std::endl;
+  std::cout << "Nvec: " << par[NVEC] << std::endl;
+}
+
+Double_t  TA2LinearPolEpics::efit(const Double_t *parms){
+
+  bool verbose = false;
+  Double_t chisq = 1.0;
+  Double_t delta;
+  Double_t b1,b2;
+  Double_t err;
+  Double_t *par = (Double_t*)parms;
+  Int_t counter=1;
+  
+
+  //call the function to make the enhancement and polarization
+  enhFromParams(par,fFitedge);
+
+  chisq = 1.0;
+  //loop over all the required bins in the histogram to work out a chisq
+  for(int n=fFitMinBin;n<=fFitMaxBin;n++){
+    b1=fFitEnh->GetBinContent(n);
+    b2=fFitEnhData->GetBinContent(n);
+    err=1.0;
+    delta=(b1-b2)/err;
+    chisq+=(delta*delta);
+    //note - not a proper chisq because its an enhancement
+  }
+   
+  fprintf(stderr,"Chisq: \t%6.2f\t\r",chisq);
+
+
+  if(chisq<fbestChisq){
+    fbestChisq=chisq;
+    for(int n=0;n<10;n++){
+       fbestPar[n]=par[n];
+    }
+    if(verbose){
+      if(10%(counter++)){
+	//if verbose, draw this on the canvas for every iteration to see how it's going
+
+	//	fFitEnhData->Draw("P");
+
+	//	fFitEnh->Draw("same");
+	
+	std::cout << "HI" << std::endl;
+
+	//	fFitPol->Draw();
+	fFitPol->SetMinimum(0);
+	fFitPol->SetMaximum(1);
+
+	gSystem->ProcessEvents();
+	counter=1;
+      }
+    }
+  }
+  return chisq; 
+}
+
+void  TA2LinearPolEpics::enhFromParams(Double_t *par, Double_t edge){
+  //make an enhancement and corresponding polarization from some the parameters as defined in the CLAS note.
+  //this function is can be called stand alone, but will also ba called many times from the fitting function
+
+  Double_t xd[10];
+  Double_t xc[10];
+  Double_t Q[10];
+  Double_t cohContrib;
+  Double_t cohTotal;
+  Double_t phiTotal;
+  Double_t etotal;
+  Double_t ptotal;
+  Double_t x=0.0;
+  Int_t    g=0;
+  Double_t weight=0.0;
+  Double_t weightSum=0.0;
+  Double_t polSum=0.0;
+  Double_t phi,chi,cd;
+  Double_t amo;
+  Int_t jbin=0;
+  Double_t E0=fBeamEnergy;
+  Double_t Eg=edge;
+
+  if(par==NULL){
+    par=fPolTableParams[fPolRangeIndex[fPlane]][fPlane];
+
+    //get theta for the current edge position
+    par[THETA]  = k/(2.0*E0*E0*((1/Eg)-(1/E0)));        //theta from edge and beam energy
+  }
+
+  //reset them all for fresh filling
+  fFitEnh->Reset("ICE");
+  fFitPol->Reset("ICE");
+  fThetaPol->Reset("ICE");
+  fThetaItot->Reset("ICE");
+  fWeightHist->Reset("ICE");
+
+
+  for(Double_t j=par[THETA]-3.0*par[SIGMA];j<=par[THETA]+3.001*par[SIGMA];j+=(6.0*par[SIGMA])/THETASTEPS){
+    
+    weight=TMath::Gaus(j,par[THETA],par[SIGMA]);   //get the weight from the gaussian
+    weightSum+=weight;                             //add to sum      
+    
+    //find the discontinuity for each vector
+    for(int v=0;v<par[NVEC];v++){
+      g=VECTORS[v];
+      xd[v]=1.0/((k/(g*par[E0MEV]*j))+1.0);
+      Q[v]=(1.0-xd[v])/xd[v];
+      xc[v]=xd[v]/(1+((par[THETAR]*par[THETAR])*(1-xd[v])));
+    }
+
+    //loop over all bins in the histogram
+    for(int bin=1;bin<=fFitEnh->GetNbinsX();bin++){
+      x=fFitEnh->GetBinCenter(bin)/par[E0MEV];            //find the value of the bin
+      amo=1/x;                                    //assume amo = inc = 1/x over regio of interest
+      
+      cohTotal=0.0;
+      phiTotal=0.0;
+      
+      //loop over all the vectors
+      for(int v=0;v<par[NVEC];v++){
+	if(x>xd[v]) continue;           //only do up to x_dg
+	 
+	//work out chi and phi
+	phi=(2*Q[v]*Q[v]*x*x)/((1-x)*(1+((1-x)*(1-x))-((4*Q[v]*Q[v]*x*x/(1-x))*(((1-x)/(Q[v]*x))-1))));
+	chi=((Q[v]*Q[v]*x)/(1-x))*(1+((1-x)*(1-x))-((4*Q[v]*Q[v]*x*x/(1-x))*(((1-x)/(Q[v]*x))-1)));
+	//	cout << j  << "  " << chi << endl;
+	cd=0.5*(1+TMath::Erf((x-xc[v])/(TMath::Sqrt(2)*par[SIGMAR])));
+
+	//get coherent contrib for the vector
+	cohContrib=cd*par[IVEC+v]*chi;
+
+	//add to the total and update the phi total
+	cohTotal+=cohContrib;
+	phiTotal+=cohContrib*phi;
+
+      }
+      if(cohTotal>0.0) {
+	phiTotal/=cohTotal;   //divide by the cohTotal to get the weighted dmean phi
+	//cout << x << " " << phiTotal << " " << cohTotal << " " << weight << endl;	 
+      }
+
+      //enhancement = coherent total + inc (or amo).
+      etotal=(amo+cohTotal)/amo;
+      //and pol like this
+      //      ptotal=phiTotal*cohTotal/(cohTotal + amo);
+      ptotal=phiTotal*cohTotal;
+
+      //add the weighted contribution to the enhancement
+      fFitEnh->Fill(x*par[E0MEV],weight*etotal);
+
+      //keep the pol for this x,theta coord
+      fThetaPol->Fill(x*par[E0MEV],jbin,ptotal);
+
+      //keep the total intensity for this x,theta coord
+      fThetaItot->Fill(x*par[E0MEV],jbin,cohTotal+amo);
+    }
+    
+    //save the weight for this theta point
+    fWeightHist->Fill(jbin,weight);
+    jbin++;
+
+  }
+  //normalize the sum of the weighted enhancements
+  fFitEnh->Scale(1.0/weightSum);
+  
+  
+  //loop over each x bin, adding the weighted contribs from each theta pos
+  for(int bin=1; bin<=fFitPol->GetNbinsX(); bin++){
+    weightSum=0.0;
+    polSum=0.0;
+    
+    for(int jb=1;jb<=fWeightHist->GetNbinsX();jb++){
+      weight=fWeightHist->GetBinContent(jb);
+
+      //      polSum+=fThetaPol->GetBinContent(bin,jb)*fThetaItot->GetBinContent(bin,jb)*weight;
+      polSum+=fThetaPol->GetBinContent(bin,jb)*weight;
+      weightSum+=fThetaItot->GetBinContent(bin,jb)*weight;
+      //polSum+=fThetaPol->GetBinContent(bin,jb)*weight;
+      //weightSum+=weight;
+    }
+    polSum/=weightSum;
+    fFitPol->Fill(fFitPol->GetBinCenter(bin),polSum);
+  } 
 }
 
 ClassImp(TA2LinearPolEpics)
