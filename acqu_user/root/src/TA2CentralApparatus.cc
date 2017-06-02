@@ -388,7 +388,7 @@ void TA2CentralApparatus::SetConfig(Char_t* line, Int_t key)
 
     case ECBDroopSet:
       // Droop correction settings for element by element droop corrections
-      if( sscanf( line, "%d%lf%lf%lf%d%d%d",
+      if( sscanf( line, "%d%lf%lf%lf%d%d%d%d",
 		  &fUsePidDroopP, &fLengthPid, &fPidRadius, &fPidTargetPos, &iDroopParam, &iPidDirection, &iPidType, &iPidEl
 		) != 8)
       {
