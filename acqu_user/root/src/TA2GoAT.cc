@@ -32,6 +32,14 @@ TA2GoAT::TA2GoAT(const char* Name, TA2Analysis* Analysis) : TA2AccessSQL(Name, A
                                                                     vertexX(0),
                                                                     vertexY(0),
                                                                     vertexZ(0),
+								    nChamberHitsin1(0),
+								    nChamberHitsin2(0),
+								    MWPC0PosX(0),
+								    MWPC1PosX(0),
+								    MWPC0PosY(0),
+								    MWPC1PosY(0),
+								    MWPC0PosZ(0),
+								    MWPC1PosZ(0),
                                                                     nTagged(0),
                                                                     taggedEnergy(0),
                                                                     taggedChannel(0),
@@ -137,6 +145,15 @@ void    TA2GoAT::LoadVariable()
 
     TA2DataManager::LoadVariable("energySum",     &energySum,    EDSingleX);
 
+    TA2DataManager::LoadVariable("MWPC0PosX",   MWPC0PosX,   EDMultiX);
+    TA2DataManager::LoadVariable("MWPC1PosX",   MWPC1PosX,   EDMultiX);
+    TA2DataManager::LoadVariable("MWPC0PosY",   MWPC0PosY,   EDMultiX);
+    TA2DataManager::LoadVariable("MWPC1PosY",   MWPC1PosY,   EDMultiX);
+    TA2DataManager::LoadVariable("MWPC0PosZ",   MWPC0PosZ,   EDMultiX);
+    TA2DataManager::LoadVariable("MWPC1PosZ",   MWPC1PosZ,   EDMultiX);
+
+
+
     return;
     
 }
@@ -208,6 +225,14 @@ void    TA2GoAT::PostInit()
     pseudoVertexX    = new Double_t[TA2GoAT_MAX_PARTICLE];
     pseudoVertexY    = new Double_t[TA2GoAT_MAX_PARTICLE];
     pseudoVertexZ    = new Double_t[TA2GoAT_MAX_PARTICLE];
+
+    MWPC0PosX         = new Double_t[TA2GoAT_MAX_PARTICLE];
+    MWPC1PosX         = new Double_t[TA2GoAT_MAX_PARTICLE];
+    MWPC0PosY         = new Double_t[TA2GoAT_MAX_PARTICLE];
+    MWPC1PosY         = new Double_t[TA2GoAT_MAX_PARTICLE];
+    MWPC0PosZ         = new Double_t[TA2GoAT_MAX_PARTICLE];
+    MWPC1PosZ         = new Double_t[TA2GoAT_MAX_PARTICLE];
+
 
     vertexX          = new Double_t[TA2GoAT_MAX_PARTICLE];
     vertexY          = new Double_t[TA2GoAT_MAX_PARTICLE];
@@ -284,6 +309,14 @@ void    TA2GoAT::PostInit()
     treeTracks->Branch("pseudoVertexX", pseudoVertexX, "pseudoVertexX[nTracks]/D");
     treeTracks->Branch("pseudoVertexY", pseudoVertexY, "pseudoVertexY[nTracks]/D");
     treeTracks->Branch("pseudoVertexZ", pseudoVertexZ, "pseudoVertexZ[nTracks]/D");
+
+    treeTracks->Branch("MWPC0PosX",MWPC0PosX, "MWPC0PosX[nTracks]/D");
+    treeTracks->Branch("MWPC1PosX",MWPC1PosX, "MWPC1PosX[nTracks]/D");
+    treeTracks->Branch("MWPC0PosY",MWPC0PosY, "MWPC0PosY[nTracks]/D");
+    treeTracks->Branch("MWPC1PosY",MWPC1PosY, "MWPC1PosY[nTracks]/D");
+    treeTracks->Branch("MWPC0PosZ",MWPC0PosZ, "MWPC0PosZ[nTracks]/D");
+    treeTracks->Branch("MWPC1PosZ",MWPC1PosZ, "MWPC1PosZ[nTracks]/D");
+
 
 	treeTagger->Branch("nTagged", &nTagged,"nTagged/I");
     treeTagger->Branch("taggedChannel", taggedChannel, "taggedChannel[nTagged]/I");
@@ -790,6 +823,11 @@ void    TA2GoAT::Reconstruct()
 
     nParticles = nCB + nTAPS;
     TA2Particle part;
+   
+	nChamberHitsin1 = fMWPC->GetNinters(0); 
+        Chamber1Hits = fMWPC->GetInters(0); 
+	Chamber2Hits = fMWPC->GetInters(1);
+	nChamberHitsin2 = fMWPC->GetNinters(1);
 
     for(Int_t i=0; i<nParticles; i++)
     {
@@ -826,6 +864,25 @@ void    TA2GoAT::Reconstruct()
 
         if(part.GetVetoIndex() == ENullHit) centralVeto[i] = -1;
         else centralVeto[i]	= part.GetVetoIndex();
+
+
+	MWPC0PosX[i]=0;
+	MWPC1PosX[i]=0;
+	MWPC0PosY[i]=0;
+	MWPC1PosY[i]=0;
+	MWPC0PosZ[i]=0;
+	MWPC1PosZ[i]=0;
+
+	if(part.GetTrackIntersect(0)>=0){
+	  MWPC0PosX[i]=(*(Chamber1Hits[part.GetTrackIntersect(0)].GetPosition())).X();
+	  MWPC0PosY[i]=(*(Chamber1Hits[part.GetTrackIntersect(0)].GetPosition())).Y();
+	  MWPC0PosZ[i]=(*(Chamber1Hits[part.GetTrackIntersect(0)].GetPosition())).Z();
+	}
+	if(part.GetTrackIntersect(1)>=0){
+	  MWPC1PosX[i]=(*(Chamber2Hits[part.GetTrackIntersect(1)].GetPosition())).X();
+	  MWPC1PosY[i]=(*(Chamber2Hits[part.GetTrackIntersect(1)].GetPosition())).Y();
+	  MWPC1PosZ[i]=(*(Chamber2Hits[part.GetTrackIntersect(1)].GetPosition())).Z();
+	}
 
         // Store other values which don't have this "no-value" option
         detectors[i]	= part.GetDetectors();

@@ -17,6 +17,7 @@
 #include "TA2CentralTrack.h"
 // #include "TA2MwpcTrack.h"
 #include "TA2Particle.h"
+#include "TOLoader.h"
 
 // Default list of detector classes that the TA2CentralApparatus
 // apparatus may contain
@@ -30,12 +31,14 @@ static Map_t kValidDetectors[] = {
 
 // Valid Keywords for command-line setup of CB apparatus
 enum { ECBAngleLimits = 1000, ECBParticleCuts,
-       ECBUseTracksBestMwpc, ECBDroop, ECBTrackLimits };
+       ECBUseTracksBestMwpc, ECBDroop, ECBDroopSet, ECBDroopP, ECBTrackLimits };
 static const Map_t kCBKeys[] = {
   {"AngleLimits:",      ECBAngleLimits},
   {"ParticleID-Cut:",   ECBParticleCuts},
   {"UseBestMwpcTracks:",ECBUseTracksBestMwpc},
   {"Droop:",             ECBDroop}, // TODO It would be better to move it to TA2PlasticPID
+  {"PidDroopSettings:",             ECBDroopSet}, // TODO It would be better to move it to TA2PlasticPID
+  {"PidDroopPositionParameters:",             ECBDroopP}, // TODO It would be better to move it to TA2PlasticPID
   {"TrackLimits:",      ECBTrackLimits},
   {NULL,            -1}
 };
@@ -101,6 +104,16 @@ static const Map_t kCBKeys[] = {
   fNpointsDroopPid = 0;
   fLostCorrPosPid = NULL;
   fLostCorrFacPid = NULL;
+
+   // Pid droop position settings
+  fLengthPid = 300.;
+  fPidRadius=33.0;
+  fPidTargetPos=100.0; //target center position relative to PID
+  iDroopParam=1; //TGraph param
+  iPidDirection=1; //+1 -backside PMT; -1 - frontside PMT
+  iPidType=3;  //PIDIII
+  iPidEl=24;  //24 elements in PID
+  fUsePidDroopP = kFALSE;
   
   // Detectors
   // PID
@@ -372,6 +385,36 @@ void TA2CentralApparatus::SetConfig(Char_t* line, Int_t key)
 	fLostCorrFacPid[i] = dparm[fNpointsDroopPid+i];
       }
     break;
+
+    case ECBDroopSet:
+      // Droop correction settings for element by element droop corrections
+      if( sscanf( line, "%d%lf%lf%lf%d%d%d",
+		  &fUsePidDroopP, &fLengthPid, &fPidRadius, &fPidTargetPos, &iDroopParam, &iPidDirection, &iPidType, &iPidEl
+		) != 8)
+      {
+	PrintError(line,"<PID Droop correction settings>");
+	return;
+      }
+      break;  
+   case ECBDroopP:
+     Char_t droop_file[256];
+            if (sscanf(line, "%s", droop_file) != 1)
+                Error("SetConfig", "Bad syntax in PID droop correction file location!");
+            else 
+            {
+                // create PID droop correction TGraph array
+                gPidDroopP = new TGraph*[iPidEl];
+                if (TOLoader::LoadObjects(gSystem->ExpandPathName(droop_file), "Droop_El_%02d", &gPidDroopP, 0, iPidEl-1, "", "q"))
+                    Info("SetConfig", "Using PID droop correction from '%s'", droop_file);
+                else
+                {
+                    delete [] gPidDroopP;
+                    gPidDroopP = 0;
+                    Error("SetConfig", "Could not load the PID droop correction from '%s'", droop_file);
+                }
+            }
+     break;  
+
   case ECBAngleLimits:
     // Angle difference limits
     if ( sscanf(line,"%lf%lf%lf%lf%lf",&fMaxPhiMwpcNaI,&fMaxPhiTrackPid,&fMaxPhiPidNaI,&fMaxPhiMwpcInterNaI,&fMaxPhiMwpcInterPid) != 5 )
@@ -725,6 +768,7 @@ void TA2CentralApparatus::MakeTracksTrue(const map<Double_t,Int_t> *tracksMwpc, 
     r[1] = fPositionsNaI + iClNaI;
     if (track.BuildTrack(*r[0],*r[1],-1.,fLimitsPsVertex))
     {
+      track=fTracksMwpc[iTrMwpc];
       // Test the track & PID combinations and find the best one
       fPhiTrackPid[fNtracks] = fMaxPhiTrackPid;
       iPid = kNullHit;
@@ -1048,7 +1092,8 @@ void TA2CentralApparatus::AddTrack(const Int_t iHitPid, const Int_t iInterMwpc0,
   // Set Pid info
   if (track.HasPid())
   {
-    track.SetEhitPidCorr(CalcEhitPid(iHitPid,orig,dircos));
+    //   track.SetEhitPidCorr(CalcEhitPid(iHitPid,orig,dircos));
+    track.SetEhitPidCorr(CalcEhitPid(iHitPid,psvertex,dircos));
     track.SetEhitPid(fPid->GetEnergy(fHitsPid[iHitPid]));
     if (fPid->IsTime()) track.SetThitPid(fPid->GetTime(fHitsPid[iHitPid]));
     track.SetPhiPid(TVector2::Phi_0_2pi(fPositionsPid[iHitPid].Phi()));

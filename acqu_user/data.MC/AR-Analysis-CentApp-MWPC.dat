@@ -24,7 +24,7 @@ Layers-In-Chamber:	4	1	5
 ## Rmax, Zmax, Zmin coordinate limits for valid track vertex (mm)
 ## dMax12 max distance between intersections of chambers 1 & 2 for track reconstruction (mm)
 ##			MI MT MV	dPhiWIE	Rmax Zmax Zmin	dMax12
-Chamber-Parameter:	16 8  4		5.	700. 500. -500.	40.
+Chamber-Parameter:	16 8  4		5.	700. 500. -500.	80.
 ##
 ## Corrections of intersection coordinates:
 ## dPhiEI(Zei,phi) = Phi0 + Phi1*Zei + Phi2*phi -- external strip layer rotation relative to internal strip layer (wire layer) [deg]
