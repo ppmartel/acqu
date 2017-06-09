@@ -40,11 +40,11 @@ void PeriodMacro() {
 	printf("Tagger Section F appears to be off!\n");
 	dError = 500;
       }
-      /*
       if((FPD_ScalerCurr->Integral(273,320))<=48) {
 	printf("Tagger Section G appears to be off!\n");
 	dError = 500;
       }
+      /*
       if((FPD_ScalerCurr->Integral(321,352))<=32) {
       	printf("Tagger Section H appears to be off!\n");
       	dError = 500;
@@ -166,14 +166,14 @@ void PeriodMacro() {
       else NaI_Hits_v_TimeOR->Reset();
     }
   }
-
+  /*
   // Check Target DAQ status
   TString sDAQ = gSystem->GetFromPipe("caget TARGET:HE:DAQ_Status");
   if(sDAQ.EndsWith("0")){
     printf("Possible problem with Target DAQ - Event %d\n\n",gAN->GetNDAQEvent());
     dError += 8000;
   }
-
+  */
   // Check Archiver
   TString sArchive = gSystem->GetFromPipe("echo 'http://slowcontrol:4812/main' | wget -O- -i- -q | grep -A 1 '>State<' | grep -v State | sed 's/ /_/g' | sed 's/>/ /g' | sed 's/</ /g' | awk '{print $3}'");
   if(!sArchive.Contains("RUNNING")){
