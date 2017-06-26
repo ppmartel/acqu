@@ -85,6 +85,25 @@ $runsets->{CBTagg} =
    'TCS' => 'vme-tagg-tdc-b' # which host has access to the Trigger Control System (TCS)
   };
 
+# define runset CB
+$runsets->{CB} =
+  {
+   'Description' => 'CB in standalone, without Tagger or TAPS',
+   'DefaultTriggerId' => 23,
+   'Hosts' => [
+               ['vme-exptrigger',   'VupromC'], # first, the host where the AcquDAQ GUI is started
+               ['vme-cb-adc-1a',    'SADC1A'],
+               ['vme-cb-adc-1b',    'SADC1B'],
+               ['vme-cb-adc-2a',    'SADC2A'],
+               ['vme-cb-adc-2b',    'SADC2B'],
+               ['vme-cb-tdc-a',     'TDCA'],
+               ['vme-cb-tdc-b',     'TDCB'],
+               ['vme-mwpc-adc-a',   'WCA'],
+               ['vme-mwpc-adc-b',   'WCB'],
+              ],
+   'TCS' => undef
+  };
+
 # define runset TAPS
 $runsets->{TAPS} = MakePedRunset(
   {
