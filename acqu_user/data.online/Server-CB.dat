@@ -1,0 +1,41 @@
+## Server file for running CB 
+########################################################################
+## Number of Input streams (sources of data), Record length to write data
+## and switch 0/1 = no/yes to control data write
+##              Number streams	Record Len	Save Data
+Input-Streams:	9		327680		1
+##
+## Optional directory spec. If not specified File-Names must contain the full
+## directory path
+File-Directory:	scratch/
+##
+## Specify each network-socket input stream
+##            	Source	Format	Save?	Node	   Port	Buffers MkID	Swap
+#
+Stream-Spec:	Network	Mk2	0	vme-exptrigger 3030 128	400
+File-Name:	trig	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-cb-adc-1a 3020 128	400
+File-Name:	adc1a	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-cb-adc-1b 3021 128	400
+File-Name:	adc1b	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-cb-adc-2a 3022 128	400
+File-Name:	adc2a	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-cb-adc-2b 3023 128	400
+File-Name:	adc2b	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-mwpc-adc-a 3024 128 400
+File-Name:	mwpca	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-mwpc-adc-b 3025 128	400
+File-Name:	mwpcb	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-cb-tdc-a   3026 512	400
+File-Name:	tdca	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-cb-tdc-b   3027 128	400
+File-Name:	tdcb	0	0
+#

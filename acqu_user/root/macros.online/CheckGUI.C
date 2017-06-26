@@ -135,6 +135,7 @@ void CheckGUI()
 		return;
 	}
 	Int_t isCB = gROOT->ProcessLine("TString s1 = gAR->GetFileName();s1.Contains(\"CB\")");
+	Int_t isTagg = gROOT->ProcessLine("TString s1 = gAR->GetFileName();s1.Contains(\"Tagg\")");
 	Int_t isTAPS = gROOT->ProcessLine("TString s1 = gAR->GetFileName();s1.Contains(\"TAPS\")");
 	// init the list of macros to be called
 	items = new TObjArray();
@@ -148,7 +149,7 @@ void CheckGUI()
 	  items->Add(MacroEntry::Make("CheckTAPSPbWO4.C","TAPS_PbWO4"));
 	  items->Add(MacroEntry::Make("CheckTAPSVeto.C","TAPS_Veto"));
 	}
-	items->Add(MacroEntry::Make("CheckTagger.C","Tagger"));
+	if(isTagg) items->Add(MacroEntry::Make("CheckTagger.C","Tagger"));
 	if(isCB || isTAPS){
 	  items->Add(MacroEntry::Make("CheckPizza.C","Pizza"));
 	  items->Add(MacroEntry::Make("CheckTrigger.C","Trigger"));
