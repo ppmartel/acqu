@@ -1,0 +1,127 @@
+##-----------------------------------------------------------------------
+##--Author	JRM Annand   13th Jan 2004
+##--Update	JRM Annand... 1st Dec 2004
+##--Description
+##                *** Acqu++ <-> Root ***
+## Online/Offline Analysis of Sub-Atomic Physics Experimental Data 
+##
+## Parameter File: FPcommServer.Offline
+## Configuration file for DataServer (data input for analysis)
+##
+##-----------------------------------------------------------------------
+## Number of Input streams (sources of data), Record length to write data
+## and switch 0/1 = no/yes to control data write
+##              Number streams	Record Len	Save Data
+Input-Streams:	1		32768		0
+##
+## Optional directory spec. If not specified File-Names must contain the full
+## directory path
+File-Directory:	scratch/TaggEff/
+##
+## Specify each input stream
+## From disk file, ACQU (Mk1) format, save any output to file (save=1)
+## Input data record length, Output data record length
+##
+##            	Source	Format	Save?	RecLen	Buffers	Swap	MarkID
+Stream-Spec:	File	Mk1	0	32768	32	0	400
+##
+## Now the list of data files to analyse
+## Tagger test data files
+##		File Name	1st rec	Last rec
+##
+## Sep2010
+##
+#File-Name:	TaggEff_27297.dat	0	0
+#File-Name:	TaggEff_27298.dat	0	0
+#File-Name:	TaggEff_27299.dat	0	0
+##
+## Jan2011
+##
+#File-Name:	TaggEff_35257.dat	0	0
+#File-Name:	TaggEff_35258.dat	0	0
+#File-Name:	TaggEff_35259.dat	0	0
+##
+#File-Name:	TaggEff_35296.dat	0	0
+#File-Name:	TaggEff_35297.dat	0	0
+#File-Name:	TaggEff_35298.dat	0	0
+##
+#File-Name:	TaggEff_35336.dat	0	0
+#File-Name:	TaggEff_35337.dat	0	0
+#File-Name:	TaggEff_35338.dat	0	0
+##
+#File-Name:	TaggEff_35376.dat	0	0
+#File-Name:	TaggEff_35377.dat	0	0
+#File-Name:	TaggEff_35378.dat	0	0
+##
+#File-Name:	TaggEff_35413.dat	0	0
+#File-Name:	TaggEff_35414.dat	0	0
+#File-Name:	TaggEff_35415.dat	0	0
+##
+## Feb2011
+##
+File-Name:	TaggEff_35542.dat	0	0
+File-Name:	TaggEff_35543.dat	0	0
+File-Name:	TaggEff_35544.dat	0	0
+##
+File-Name:	TaggEff_35583.dat	0	0
+File-Name:	TaggEff_35584.dat	0	0
+File-Name:	TaggEff_35585.dat	0	0
+##
+File-Name:	TaggEff_35625.dat	0	0
+File-Name:	TaggEff_35626.dat	0	0
+File-Name:	TaggEff_35627.dat	0	0
+##
+File-Name:	TaggEff_35743.dat	0	0
+File-Name:	TaggEff_35744.dat	0	0
+File-Name:	TaggEff_35745.dat	0	0
+##
+File-Name:	TaggEff_35816.dat	0	0
+File-Name:	TaggEff_35817.dat	0	0
+File-Name:	TaggEff_35818.dat	0	0
+##
+File-Name:	TaggEff_35854.dat	0	0
+File-Name:	TaggEff_35855.dat	0	0
+File-Name:	TaggEff_35856.dat	0	0
+##
+File-Name:	TaggEff_35892.dat	0	0
+File-Name:	TaggEff_35893.dat	0	0
+File-Name:	TaggEff_35894.dat	0	0
+##
+File-Name:	TaggEff_35927.dat	0	0
+File-Name:	TaggEff_35928.dat	0	0
+File-Name:	TaggEff_35929.dat	0	0
+##
+File-Name:	TaggEff_36024.dat	0	0
+File-Name:	TaggEff_36025.dat	0	0
+File-Name:	TaggEff_36026.dat	0	0
+File-Name:	TaggEff_36027.dat	0	0
+##
+File-Name:	TaggEff_36036.dat	0	0
+File-Name:	TaggEff_36037.dat	0	0
+File-Name:	TaggEff_36038.dat	0	0
+##
+File-Name:	TaggEff_36085.dat	0	0
+File-Name:	TaggEff_36086.dat	0	0
+File-Name:	TaggEff_36087.dat	0	0
+##
+File-Name:	TaggEff_36138.dat	0	0
+File-Name:	TaggEff_36139.dat	0	0
+File-Name:	TaggEff_36140.dat	0	0
+##
+File-Name:	TaggEff_36181.dat	0	0
+File-Name:	TaggEff_36182.dat	0	0
+File-Name:	TaggEff_36183.dat	0	0
+##
+File-Name:	TaggEff_36230.dat	0	0
+File-Name:	TaggEff_36231.dat	0	0
+File-Name:	TaggEff_36232.dat	0	0
+##
+File-Name:	TaggEff_36280.dat	0	0
+File-Name:	TaggEff_36281.dat	0	0
+File-Name:	TaggEff_36282.dat	0	0
+##
+## Dec2012
+##
+#File-Name:	TaggEff_494.dat	0	0
+##
+## END

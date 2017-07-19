@@ -1,0 +1,29 @@
+##	Scaler time dependence config file
+##	JRM Annand	 27th Jun 2004
+##
+##	Ratios of scalers as a function of time
+Number-Rates: 18
+##	     Name	Scaler	Clock	Frequency	Normalisation
+RateData: ScP2Tagger	139	343	1		100.
+RateData: ScInt4	2	0	1		1000000.
+RateData: ScFC  	3	0	1		1000000.
+RateData: ScLiveTime	1	0	1		100.
+RateData: ScG175	343	0	1		1000000.
+RateData: ScP2Faraday 	139	138	1		1000000.
+RateData: ScFarady	138	0	1		1000000.
+RateData: ScLiveCB0	15	0	1		100.
+RateData: ScLiveCB1	11	0	1		100.
+RateData: ScLiveCB2	12	0	1		100.
+RateData: ScLiveCB3	13	0	1		100.
+RateData: ScLiveTagg	14	0	1		100.
+RateData: ScLiveTAPS	10	0	1		100.
+RateData: ScEsum	5	0	1		1000000.
+RateData: ScM1		6	0	1		1000000.
+RateData: ScM2  	7	0	1		1000000.
+RateData: ScM3  	8	0	1		1000000.
+RateData: ScM4  	9	0	1		1000000.
+##
+##	End
+#RateData: ScCBSum	5	534	1		1000000.
+#RateData: ScTAPSor	6	534	1		1000000.
+#RateData: ScPIDor	7	534	1		1000000.

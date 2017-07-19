@@ -1,0 +1,157 @@
+##-----------------------------------------------------------------------
+##--Author	JRM Annand   29th Apr 2003
+##--Update	JRM Annand... 1st Dec 2004
+##--Description
+##                *** Acqu++ <-> Root ***
+## Online/Offline Analysis of Sub-Atomic Physics Experimental Data 
+##
+## Parameter File: CBanalysis.dat (specified in CB.Offline)
+## Setup basic parameters of analysis to be used
+## This one sets up an analysis of CB-TAPS-Tagger data
+##
+##-----------------------------------------------------------------------
+##
+## The following give sample specifications for
+## handlers for flash or multihit ADCs or TDCs
+##
+## Catch-TDC, where a reference TDC channel has to be specified
+## The reference TDC channel contains the trigger time which is subtracted
+## from the other specified channels
+## CB TDC's
+##              #hits   start   stop    reference
+MultiADC:       8       1401    1911    1400
+#MultiADC:       3       2001    2384    2000
+#MultiADC:       3       1017    1127    1016
+#MultiADC:       3       4000    4511    2000
+##
+## SG ADC read out in 3-sum mode (#hits is always 3)
+## DC # channels summed for the pedestal (before signal leading edge)
+## signal # channels summed for the signal region of the pulse
+## tail # channels summed for the tail region (after signal trailing edge)
+## CB S-ADC's
+#               #hits   start   stop    DC      signal  tail
+#MultiADC:       3       3000    3735    30      30      30
+## MWPC strip S-ADC's (switched to single-value read)
+#MultiADC:       3       5000    5319    30      30      30
+#
+## Stuff to monitor time dependence of counting rates and the hit pattern
+## coming from the trigger box....the parameter is the setup file name
+#RateMonitor: Trigger.Rate
+#BitPattern:  Trigger.Pat
+##
+## Apparatus setup....
+## Raw analysis may be performed without Apparati
+##              Name            Class           	Setup file
+Apparatus:      TAGG            TA2Tagger   		Apparatus-Tagger-Eff.dat
+##
+## Turn on apparatus-level reconstruction
+Reconstruct-Analysis:
+##
+## Specify physics analysis
+##		   Name	      Class		       Config File
+#Physics-Analysis:  Phys	      TA2PhysicsPMartel	       Physics-PMartel-Eff.dat
+Physics-Analysis:  Phys	      TA2GoAT	       Physics-GoAT-Eff.dat
+##
+## Do some post initialisation...usually necessary
+Initialise:
+##
+## Setup of extra procedures to run at periodic intervals
+## The procedures are usually held in macro script files
+## Period...every N events
+##		N	Macro File	Macro Procedure
+Period:		100000	root/macros/PeriodMacro.C	PeriodMacro()
+##
+## EndFile...each time an input data file is closed
+#EndFile:		root/macros/EndFileMacro.C  EndFileMacro()
+##
+## Finish...when all input data files processed
+Finish:		root/macros/FinishBatch.C	FinishBatch()
+##
+## Save all accepted events (ie those which pass all data cuts) to a
+## ROOT file. Data saved in RAW format (ie ADC indices and values)
+#Save-Event:
+##
+## Histogram ALL defined single value ADC's
+##Display: All
+## Histogram QDCs
+##Display: ADC 1000 1255
+##Display: ADC 1384 1399
+##Display: ADC 1480 1482
+##
+## Tagger QDCs
+#Display: ADC 800  1183
+## Microscope QDCs
+########### edited by Baya and Patrik
+#Display: ADC 1184 1279
+#
+## Pb-Glass, paddle QDCs
+#Display: ADC 1280 1375
+##
+## Display of multihit stuff etc.
+## CB CATCH TDC's, 1st hit
+##Display: MultiHit 2001 2287 3000 -2000 1000 0
+##Display: MultiHit 1401 1911 2000 -2000 0000 0
+##Display: MultiHit 1401 1432 2000 -2000 2000 0
+##
+########### edited by Baya and Patrik
+########### Tagger CATCH TDC's, 1st hit
+#Display: MultiHit 1400 1431 1000 -3500 3500 0
+##Display: MultiHit 1432 1948 2000 -6000 -8000 0
+#Display: MultiHit 1784 1848 100000 -70000 30000 0
+##Display: MultiHit 1784 1900 4000 -1000 1000 0
+##Display: MultiHit 2001 2007 1000 -3000 3000 0
+##########
+
+## CB CATCH TDC's, 2nd hit
+##Display: MultiHit 1000 1127 2000 -1000 1000 0
+##Display: MultiHit 4000 4383 500 -4000 2000 0
+##
+## CB SADC's pedestal
+##Display: MultiHit 3000 3720 100 6000 7000 0
+## CB SADC's signal
+##Display: MultiHit 3000 3720 1000 0000 4000 1
+## CB SADC's tail
+##Display: MultiHit 3000 3720 500 -800 200 2
+##
+## Display blocks of scalers
+Display: Scaler 0 11
+Display: SumScaler 0 11
+Display: Scaler 12 363
+Display: SumScaler 12 363
+#Display: Scaler 364 491
+#Display: SumScaler 364 491
+#
+## Time dependence of individual scaler rates and ratios
+##Display: Rate	0	2500
+##Display: Rate	1	2500
+##Display: Rate	2	2500
+##Display: Rate	3	2500
+##Display: Rate	4	2500
+##Display: Rate	5	2500
+##
+## Trigger pattern, and e-beam polarisation bits
+##Display: Pattern	0 16 0 16
+##Display: Pattern	1 8 0 8
+##
+##Display: 2D 1000 100 0 4000 2112M0 100 -1000 -400
+##Display: 2D 1001 100 0 4000 2096M0 100 -1000 -400
+##Display: 2D 1002 100 0 4000 2113M0 100 -1000 -400
+##Display: 2D 1003 100 0 4000 2097M0 100 -1000 -400
+##Display: 2D 1004 100 0 4000 2114M0 100 -1000 -400
+##Display: 2D 1005 100 0 4000 2098M0 100 -1000 -400
+##Display: 2D 1006 100 0 4000 2115M0 100 -1000 -400
+##Display: 2D 1007 100 0 4000 2099M0 100 -1000 -400
+##Display: 2D 1008 100 0 4000 2116M0 100 -1000 -400
+##Display: 2D 1009 100 0 4000 2100M0 100 -1000 -400
+##Display: 2D 1010 100 0 4000 2117M0 100 -1000 -400
+##Display: 2D 1011 100 0 4000 2101M0 100 -1000 -400
+##Display: 2D 1012 100 0 4000 2118M0 100 -1000 -400
+##Display: 2D 1013 100 0 4000 2102M0 100 -1000 -400
+##Display: 2D 1014 100 0 4000 2119M0 100 -1000 -400
+##Display: 2D 1015 100 0 4000 2103M0 100 -1000 -400
+#
+##Display: 2D 1098 200 0 4000 2010M0 200 -2600 -2200
+##Display: 2D 1098 200 0 4000 1096   200  0     4000
+##Display: 2D 1164 200 0 4000 2043M0 200 -2500 -500
+##
+## END OF FILE
