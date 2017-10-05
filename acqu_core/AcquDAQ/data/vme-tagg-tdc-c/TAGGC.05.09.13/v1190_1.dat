@@ -9,6 +9,9 @@
 ##              Hex Base	#Registers	Module type Mapsize
 BaseSetup:	0		0		ADC    	    10000
 Window: 0xffd8 0x28
-Edge-Detect: 3
+# leading and trailing edge
+#Edge-Detect: 3
+# leading edge
+Edge-Detect: 2
 ##
 ##
