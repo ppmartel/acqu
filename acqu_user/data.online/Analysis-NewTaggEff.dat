@@ -6,9 +6,10 @@
 ## from the other specified channels
 ## CB TDC's
 ##              #hits   start   stop    reference
-MultiADC:       3       1401    1911    1400
+#MultiADC:       3       1401    1911    1400
 #
-MultiADC:       3       800     830    831
+MultiADC:       3       800     926    927
+MultiADC:       3       928    1054   1055
 #
 # Moeller ADC channels, not really an ADC value!
 #MultiADC:       3       8000    8800
@@ -44,9 +45,10 @@ Initialise:
 ## Tagger QDCs
 #Display: ADC 800 1183
 ## New FPD test
-Display: ADC 900 963
+#Display: ADC 900 963
 #Display: ADC 356 356
-Display: MultiHit 800 830 5000 -30000 20000 0
+Display: MultiHit 800 926 5000 -15000 10000 0
+Display: MultiHit 928 1054 5000 -15000 10000 0
 #Display: ADC 300 427
 ## Microscope QDCs
 #Display: ADC 1184 1279
@@ -55,10 +57,11 @@ Display: MultiHit 800 830 5000 -30000 20000 0
 #Display: ADC 1280 1375
 ##
 ## Display Reference TDC
-Display: ADC 1400 1400
-Display: ADC 831 831
+#Display: ADC 1400 1400
+Display: ADC 927 927
+Display: ADC 1055 1055
 ## Tagger CATCH TDC's, 1st hit
-Display: MultiHit 1432 1783 1000 -10000 0 0
+#Display: MultiHit 1432 1783 1000 -10000 0 0
 #
 ## Display blocks of scalers
 Display: Scaler 000 191
