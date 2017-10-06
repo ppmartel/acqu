@@ -12,11 +12,12 @@ void NewFPDGen(Int_t tdcStart=800, Int_t scalerStart=2000,
   //
   // Ordering of TDC sections for V1190A
   Int_t OrderTDC[] =
-    {03, 02, 00, 01, 19, 18, 16, 17, 07, 06, 04, 05, 23, 22, 20, 21,
-     11, 10, 08, 09, 27, 26, 24, 25, 15, 14, 12, 13, 31, 30, 28, 29};
+    {19,  2,  3, 18, 17,  0,  1, 16, 23,  6,  7, 22, 21,  4,  5, 20,
+     27, 10, 11, 26, 25,  8,  9, 24, 31, 14, 15, 30, 29, 12, 13, 28};
   Int_t OrderScaler[] =
-    {03, 02, 00, 01, 19, 18, 16, 17, 07, 06, 04, 05, 23, 22, 20, 21,
-     11, 10, 08, 09, 27, 26, 24, 25, 15, 14, 12, 13, 31, 30, 28, 29};
+    { 7,  4,  6,  5,  3,  0,  2,  1, 15, 12, 14, 13, 11,  8, 10,  9,
+     23, 20, 22, 21, 19, 16, 18, 17, 31, 28, 30, 29, 27, 24, 26, 25};
+  Int_t BaseScaler[] = {864, 64, 576, 288, 0, 352, 640, 32, 320, 608, 896};
   //
   Char_t* file_name = "/home/a2cb/acqu/data/NewFPDGen.dat"; // output file name
   Double_t th = 250.0;                 // time upper limit
@@ -74,7 +75,7 @@ void NewFPDGen(Int_t tdcStart=800, Int_t scalerStart=2000,
 	    isec, ielem, ielem+jmax-1, itdc+tdcStart, itdc+tdcStart+31);
     for (j=0; j<jmax; j++){
       tdc = tdcStart + OrderTDC[j] + itdc;
-      scaler = scalerStart + OrderScaler[j] + itdc;
+      scaler = scalerStart + BaseScaler[isec] + OrderScaler[j];
       if( cfile ){
 	fscanf( cfile, "%lf%lf%lf", &goosey, &eCal, &eWidth );
 	if( (Int_t)goosey != (ielem+1) ){
