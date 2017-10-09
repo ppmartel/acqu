@@ -36,7 +36,7 @@ $runsets->{CBTaggTAPS} =
    'Description' => 'The full system including CB, Tagger, TAPS',
    'DefaultTriggerId' => 23,
    'Hosts' => [
-               ['vme-exptrigger',   'VupromT'], # first, the host where the AcquDAQ GUI is started
+               ['vme-exptrigger',   'CBTaggTAPS'], # first, the host where the AcquDAQ GUI is started
                ['vme-cb-adc-1a',    'SADC1A'],
                ['vme-cb-adc-1b',    'SADC1B'],
                ['vme-cb-adc-2a',    'SADC2A'],
@@ -63,13 +63,47 @@ $runsets->{CBTaggTAPS} =
    'TCS' => undef # a bit unnecessary for the whole system
   };
 
+# define runset CBTaggTAPS with new FPD
+$runsets->{NewCBTaggTAPS} =
+  {
+   'Description' => 'The full system including CB, Tagger, TAPS',
+   'DefaultTriggerId' => 23,
+   'Hosts' => [
+               ['vme-exptrigger',   'NewCBTaggTAPS'], # first, the host where the AcquDAQ GUI is started
+               ['vme-cb-adc-1a',    'SADC1A'],
+               ['vme-cb-adc-1b',    'SADC1B'],
+               ['vme-cb-adc-2a',    'SADC2A'],
+               ['vme-cb-adc-2b',    'SADC2B'],
+               ['vme-cb-tdc-a',     'TDCA'],
+               ['vme-cb-tdc-b',     'TDCB'],
+               ['vme-mwpc-adc-a',   'WCA'],
+               ['vme-mwpc-adc-b',   'WCB'],
+               ['vme-tagg-tdc-a',   'TAGGA'],
+               ['vme-tagg-tdc-b',   'TAGGB'],
+               ['vme-tagg-tdc-c',   'TAGGC'],
+               ['vme-taps-trigger', 'Slave'], # TAPS is in slave mode
+               ['vme-taps-baf-a',   'BaFA'],
+               ['vme-taps-baf-b',   'BaFB'],
+               ['vme-taps-baf-c',   'BaFC'],
+               ['vme-taps-baf-d',   'BaFD'],
+               ['vme-taps-baf-e',   'BaFE'],
+               ['vme-taps-baf-f',   'BaFF'],
+               ['vme-taps-veto-ab', 'VetoAB'],
+               ['vme-taps-veto-cd', 'VetoCD' ],
+               ['vme-taps-veto-ef', 'VetoEF'],
+               ['vme-taps-pwo',     'PbWO4'],
+               ['vme-beampolmon',   'BEAM']
+              ],
+   'TCS' => undef # a bit unnecessary for the whole system
+  };
+
 # define runset CBTagg
 $runsets->{CBTagg} =
   {
    'Description' => 'CB and Tagger in standalone, without TAPS',
    'DefaultTriggerId' => 23,
    'Hosts' => [
-               ['vme-exptrigger',   'Vuprom'], # first, the host where the AcquDAQ GUI is started
+               ['vme-exptrigger',   'CBTagg'], # first, the host where the AcquDAQ GUI is started
                ['vme-cb-adc-1a',    'SADC1A'],
                ['vme-cb-adc-1b',    'SADC1B'],
                ['vme-cb-adc-2a',    'SADC2A'],
@@ -85,13 +119,36 @@ $runsets->{CBTagg} =
    'TCS' => 'vme-tagg-tdc-b' # which host has access to the Trigger Control System (TCS)
   };
 
+# define runset CBTagg with new FPD
+$runsets->{NewCBTagg} =
+  {
+   'Description' => 'CB and Tagger in standalone, without TAPS',
+   'DefaultTriggerId' => 23,
+   'Hosts' => [
+               ['vme-exptrigger',   'NewCBTagg'], # first, the host where the AcquDAQ GUI is started
+               ['vme-cb-adc-1a',    'SADC1A'],
+               ['vme-cb-adc-1b',    'SADC1B'],
+               ['vme-cb-adc-2a',    'SADC2A'],
+               ['vme-cb-adc-2b',    'SADC2B'],
+               ['vme-cb-tdc-a',     'TDCA'],
+               ['vme-cb-tdc-b',     'TDCB'],
+               ['vme-mwpc-adc-a',   'WCA'],
+               ['vme-mwpc-adc-b',   'WCB'],
+               ['vme-tagg-tdc-a',   'TAGGA'],
+               ['vme-tagg-tdc-b',   'TAGGB'],
+               ['vme-tagg-tdc-c',   'TAGGC'],
+               ['vme-beampolmon',   'BEAM']
+              ],
+   'TCS' => 'vme-tagg-tdc-b' # which host has access to the Trigger Control System (TCS)
+  };
+
 # define runset CB
 $runsets->{CB} =
   {
    'Description' => 'CB in standalone, without Tagger or TAPS',
    'DefaultTriggerId' => 23,
    'Hosts' => [
-               ['vme-exptrigger',   'VupromC'], # first, the host where the AcquDAQ GUI is started
+               ['vme-exptrigger',   'CB'], # first, the host where the AcquDAQ GUI is started
                ['vme-cb-adc-1a',    'SADC1A'],
                ['vme-cb-adc-1b',    'SADC1B'],
                ['vme-cb-adc-2a',    'SADC2A'],
