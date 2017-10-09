@@ -39,9 +39,10 @@ done
 
 # TIMEOUT should be at least 1,
 if ! (( $TIMEOUT > 0 )) 2>/dev/null ; then
-    TIMEOUT=5
+    TIMEOUT=10
 fi
-
+## Hack to allow time to initialise V1190A modules
+#TIMEOUT=10
 # write everything to the syslog as well as to STDERR
 # since the logger command outputs to STDERR, we swap STDOUT
 # and STDERR permanently
