@@ -14,7 +14,7 @@ Control: ENet localhost 4029
 #
 #	module	   Name		configFile
 Module:	KPH_I686   kphi686_0	kphi686.dat		0	 0
-Module: GSI_VUPROM vup0         vuprom.trig		ea000000 0   196 32 
+Module: GSI_VUPROM vup0         vuprom.CBTagg		ea000000 0   196 32 
 Module: GSI_VUPROM vup1         vuprom.patt     	ea000000 0   6 8
 Module: GSI_VUPROM vup2         vuprom.sca_coplan 	e8000000 196 32 32
 Module: GSI_VUPROM vup3         vuprom.sca_multi  	e7000000 228 32 32
