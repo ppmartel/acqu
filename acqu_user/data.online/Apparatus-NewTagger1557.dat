@@ -13,7 +13,7 @@ Magnet:	1.8880042	1557.0
 #	  Name          Class Name    	Setup file
 #Detector: FPD        	TA2Ladder   	Detector-FPD1557.dat.NewScIndex
 #Detector: FPD        	TA2Ladder   	Detector-OldFPD.dat
-Detector: NewFPD        TA2Ladder   	Detector-NewFPD.dat
+Detector: FPD          TA2Ladder   	Detector-NewFPD.dat
 Initialise:
 Reconstruct:
 #
