@@ -1,0 +1,86 @@
+## Server file for running Tagger + CB + TAPS
+########################################################################
+## Number of Input streams (sources of data), Record length to write data
+## and switch 0/1 = no/yes to control data write
+##              Number streams	Record Len	Save Data
+Input-Streams:	24		327680		1
+##
+## Optional directory spec. If not specified File-Names must contain the full
+## directory path
+File-Directory:	scratch/
+##
+## Specify each network-socket input stream
+##            	Source	Format	Save?	Node	   Port	Buffers MkID	Swap
+#
+Stream-Spec:	Network	Mk2	0	vme-exptrigger 3030 128	400
+File-Name:	trig	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-beampolmon 3031 128	400
+File-Name:	beam	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-cb-adc-1a 3020 128	400
+File-Name:	adc1a	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-cb-adc-1b 3021 128	400
+File-Name:	adc1b	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-cb-adc-2a 3022 128	400
+File-Name:	adc2a	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-cb-adc-2b 3023 128	400
+File-Name:	adc2b	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-mwpc-adc-a 3024 128 400
+File-Name:	mwpca	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-mwpc-adc-b 3025 128	400
+File-Name:	mwpcb	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-cb-tdc-a   3026 128	400
+File-Name:	tdca	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-cb-tdc-b   3027 128	400
+File-Name:	tdcb	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-tagg-tdc-a 3028 128	400
+File-Name:	tagga	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-tagg-tdc-b 3029 128	400
+File-Name:	taggb	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-tagg-tdc-c 6032 128	400
+File-Name:	taggc	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-taps-trigger 5000 128 400
+File-Name:	tapstrig	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-taps-baf-a 5010 128	400
+File-Name:	tapsbafa	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-taps-baf-b 5011 128	400
+File-Name:	tapsbafb	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-taps-baf-c 5012 128	400
+File-Name:	tapsbafc	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-taps-baf-d 5013 128	400
+File-Name:	tapsbafd	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-taps-baf-e 5014 128 400
+File-Name:	tapsbafe	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-taps-baf-f 5015 128	400
+File-Name:	tapsbaff	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-taps-veto-ab 5016 128 400
+File-Name:	tapsvab 	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-taps-veto-cd 5017 128 400
+File-Name:	tapsvcd	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-taps-veto-ef 5018 128 400
+File-Name:	tapsvef	0	0
+#
+Stream-Spec:	Network	Mk2	0	vme-taps-pwo 5019 128	400
+File-Name:	tapspwo	0	0
+#
