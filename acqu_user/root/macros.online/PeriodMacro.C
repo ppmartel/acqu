@@ -10,12 +10,13 @@ void PeriodMacro() {
     if((FPD_ScalerCurr->Integral())>0) {
       stringstream cmd;
       cmd << "caput -a TAGGER:RAW_SCALER 352";
-      for(int n=352; n>=1; n--) {
+      for(int n=1; n<=352; n++) {   //New FPD
+      //for(int n=352; n>=1; n--) {   //Old FPD
 	cmd << " " << FPD_ScalerCurr->GetBinContent(n);
       } 
       cmd << " > /dev/null";
       system(cmd.str().c_str());
-
+      /*
       if((FPD_ScalerCurr->Integral(1,32))<=32) {
 	printf("Tagger Section A appears to be off!\n");
 	dError = 500;
@@ -44,7 +45,6 @@ void PeriodMacro() {
 	printf("Tagger Section G appears to be off!\n");
 	dError = 500;
       }
-      /*
       if((FPD_ScalerCurr->Integral(321,352))<=32) {
       	printf("Tagger Section H appears to be off!\n");
       	dError = 500;

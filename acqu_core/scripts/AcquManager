@@ -242,6 +242,21 @@ $runsets->{GoniScan} =
    'TCS' => 'vme-tagg-tdc-b'
   };
 
+# define runset GoniScan with new FPD
+$runsets->{NewGoniScan} =
+  {
+   'Description' => 'Goni scan setup without TAPS or CB',
+   'DefaultTriggerId' => 74,
+   'Hosts' => [
+               ['vme-exptrigger',   'NewGoniScan'], # first, the host where the AcquDAQ GUI is started
+               ['vme-tagg-tdc-a',   'TAGGA'],
+               ['vme-tagg-tdc-b',   'TAGGB'],
+               ['vme-tagg-tdc-c',   'TAGGC'],
+               ['vme-beampolmon',   'BEAM_Scan']
+              ],
+   'TCS' => 'vme-tagg-tdc-b'
+  };
+
 # define TaggEffBg, just another tag for the GUI host
 # commented out, not used at the moment
 #$runsets->{TaggEffBg} = dclone($runsets->{TaggEff});

@@ -1,0 +1,28 @@
+# Server file for TaggEff
+#############################################################################
+## Number of Input streams (sources of data), Record length to write data
+## and switch 0/1 = no/yes to control data write
+##              Number streams	Record Len	Save Data
+Input-Streams:	5		32768		1
+##
+## Optional directory spec. If not specified File-Names must contain the full
+## directory path
+#File-Directory:	/scratch/jrma/TaggerTest/
+##
+## Specify each input stream
+## From disk file, ACQU (Mk1) format, save any output to file (save=1)
+## Input data record length, Output data record length
+##
+##            	Source	Format	Save?	Node		Port	Buffers	MarkID
+Stream-Spec:	Network	Mk2	0	vme-exptrigger	3030	32	400
+File-Name:	Trig		0	0
+Stream-Spec:	Network	Mk2	0	vme-beampolmon	3031	32	400
+File-Name:	Beam		0	0
+Stream-Spec:	Network	Mk2	0	vme-tagg-tdc-a	3028	128	400
+File-Name:	TaggA		0	0
+Stream-Spec:	Network	Mk2	0	vme-tagg-tdc-b	3029	64	400
+File-Name:	TaggB		0	0
+Stream-Spec:	Network	Mk2	0	vme-tagg-tdc-c	6032	64	400
+File-Name:	TaggC		0	0
+##
+## END
