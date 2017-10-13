@@ -11,7 +11,7 @@ MultiADC:       3       928    1054   1055
 MultiADC:       3       2001    2767    2000
 ##
 ## Tagger/Target/Pizza test TDC in Beampolmon
-MultiADC:       3       232     294    1400
+#MultiADC:       3       232     294    1400
 ##
 ## MWPC TDCS
 MultiADC:       3       4000    4639    2000
@@ -42,12 +42,12 @@ BitPattern:  ./data/monitor/Trig-Pattern.dat
 ##
 ## Apparatus setup....
 ##              Name            Class           	Setup file
-Apparatus:      TAGG            TA2Tagger   		Apparatus-NewTagger1557.dat
+Apparatus:      TAGG            TA2Tagger   		Apparatus-NewTagger855.dat
 Apparatus:      CB              TA2CrystalBall		Apparatus-CB.dat
 Apparatus:      TAPS            TA2Calorimeter          Apparatus-TAPS.dat 
 Apparatus:      MWPC	        TA2GenericApp  		Apparatus-MWPC.dat
 Apparatus:      BeamPolMon      TA2BeamPolMon           Apparatus-BeamPolMon.dat
-Apparatus:      PizzaApp	TA2GenericApp  		Apparatus-Pizza.dat
+#Apparatus:      PizzaApp	TA2GenericApp  		Apparatus-Pizza.dat
 ##
 ## Turn on apparatus-level reconstruction
 Reconstruct-Analysis:
@@ -185,10 +185,10 @@ Display: 2D 125  100 0 4000 2001M0 100 -4000 -1000
 ## Pizza detector
 ########################################################################
 ##
-Display: ADC 200 231
-Display: MultiHit 1784 1911 5000 -50000 50000 0
-Display: MultiHit 1784 1911 5000 -50000 50000 1
-Display: MultiHit 1784 1911 5000 -50000 50000 2
+#Display: ADC 200 231
+#Display: MultiHit 1784 1911 5000 -50000 50000 0
+#Display: MultiHit 1784 1911 5000 -50000 50000 1
+#Display: MultiHit 1784 1911 5000 -50000 50000 2
 #Display: MultiHit 232 294 10000 -50000 50000 0
 #Display: MultiHit 232 294 10000 -50000 50000 1
 #Display: MultiHit 232 294 10000 -50000 50000 2

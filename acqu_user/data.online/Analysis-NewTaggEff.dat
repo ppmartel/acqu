@@ -20,7 +20,7 @@ MultiADC:       3       928    1054   1055
 ## Apparatus setup....
 ## Raw analysis may be performed without Apparati
 ##              Name            Class           	Setup file
-Apparatus:      TAGG           TA2Tagger   		Apparatus-NewTagger1557.dat
+Apparatus:      TAGG           TA2Tagger   		Apparatus-NewTagger855.dat
 #Apparatus:      LinPol          TA2LinearPol            LinearPolapparatus.dat
 #Apparatus:      BeamPolMon      TA2BeamPolMon           Apparatus-BeamPolMon.dat
 ##
