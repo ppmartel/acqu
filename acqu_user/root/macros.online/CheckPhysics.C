@@ -12,8 +12,9 @@ CheckPhysics(TCanvas* canv){
     "PHYS_IM_3g",
     "PHYS_IM_3g_CB", 
     "PHYS_IM_3g_E300", 
-    "PHYS_IM_6g",
-    "PHYS_IM_6g_CB",
+    "PHYS_IM_2g_TAGG",
+    "PHYS_IM_2g_TAGGpr",
+    "PHYS_IM_2g_TAGGr",
   };
   Int_t log[] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
   Int_t col[] = { 2,2,2,2,3,3,3,6,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
@@ -25,13 +26,13 @@ CheckPhysics(TCanvas* canv){
     "Invariant Mass - 3 gamma",
     "Invariant Mass - 3 gamma (CB only)",
     "Invariant Mass - 3 gamma (Eg > 300 MeV)",
-    "Invariant Mass - 6 gamma",
-    "Invariant Mass - 6 gamma (CB only)",
+    "Invariant Mass - 2 gamma v Tagger",
+    "Invariant Mass - 2 gamma v Tagger (|tagg t| < 10)",
   };
   TH1F* h1;
   canv->SetFillStyle(4000);
   canv->Divide(3,3);
-  for( Int_t i=0; i<9; i++ ){
+  for( Int_t i=0; i<8; i++ ){
       h1 = (TH1F*)(gROOT->FindObjectAny(hname[i]));
       if( !h1 ){
 	printf("No root histogram %s\n",hname[i]);
@@ -44,4 +45,14 @@ CheckPhysics(TCanvas* canv){
       h1->GetXaxis()->SetTitle(xname[i]);
       h1->Draw();
   }
+
+  // some hacky bit of code to do a pr sub right now
+  TH1F* hpr = (TH1F*)(gROOT->FindObjectAny(hname[8]));
+  TH1F* hr =  (TH1F*)(gROOT->FindObjectAny(hname[9])); 
+ if (hpr && hr)
+ {
+    hpr->Add(hr,-0.1);
+    canv->cd(9);
+    hpr->Draw();
+ }
 }

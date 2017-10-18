@@ -165,6 +165,10 @@ void TA2OnlinePhys::DefineHistograms()
 	// Hard coded histograms
 	gROOT->cd();
 	
+	IM_2g_TAGG    = new TH2D("PHYS_IM_2g_TAGG",   "IM of 2 photon events v. tagger hits", 400,0,400,100,0,100);
+	IM_2g_TAGGpr  = new TH2D("PHYS_IM_2g_TAGGpr", "IM of 2 photon events v. pseudo prompt tagger hits (|t| < 10)", 400,0,400,100,0,100);
+	IM_2g_TAGGr   = new TH2D("PHYS_IM_2g_TAGGr",  "IM of 2 photon events v. pseudo random tagger hits (t = 50-250)", 400,0,400,100,0,100);
+
 	IM_2g 		= new TH1D("PHYS_IM_2g", 		"IM of 2 photon events", 1000, 0, 1000);
 	IM_2g_CB 	= new TH1D("PHYS_IM_2g_CB", 	"IM of 2 photon events - CB only", 1000, 0, 1000);
 	IM_2g_TAPS 	= new TH1D("PHYS_IM_2g_TAPS", 	"IM of 2 photon events - TAPS only", 1000, 0, 1000);
@@ -280,7 +284,13 @@ void TA2OnlinePhys::BasicPhysCheck()
 		TLorentzVector p4 = fParticleP4[0] + fParticleP4[1]; 
 		
 		IM_2g->Fill(p4.M());
-		
+		for(UInt_t i=0; i<fNTagg; i++)
+		{
+			IM_2g_TAGG->Fill(p4.M(), fTaggerChannel[i]);
+			if (TMath::Abs(fTaggerTime[i]) < 10) IM_2g_TAGGpr->Fill(p4.M(), fTaggerChannel[i]);
+			if (fTaggerTime[i] > 50 && fTaggerTime[i] < 250) IM_2g_TAGGr->Fill(p4.M(), fTaggerChannel[i]);
+		}
+	
 		if((fParticleApp[0] == 1) && (fParticleApp[1] == 1)) 
 		{
 			IM_2g_CB->Fill(p4.M());

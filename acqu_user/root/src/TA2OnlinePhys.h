@@ -78,7 +78,10 @@ class TA2OnlinePhys : public TA2Physics {
     Bool_t  	fHelicityInhibit[8];
     Bool_t  	fHelicityBeam[8];
 
-// Histograms 
+// Histograms
+        TH1*    IM_2g_TAGG;
+        TH1*    IM_2g_TAGGpr;
+        TH1*    IM_2g_TAGGr;
 	TH1* 	IM_2g;
 	TH1*	IM_2g_CB;
 	TH1*	IM_2g_TAPS;	
