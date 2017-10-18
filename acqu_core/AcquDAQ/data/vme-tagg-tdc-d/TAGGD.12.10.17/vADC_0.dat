@@ -1,0 +1,12 @@
+##--Rev 	JRM Annand...10th Feb 2007
+##--Update	JRM Annand...
+##--Description
+##                *** AcquDAQ++ <-> Root ***
+## DAQ for Sub-Atomic Physics Experiments.
+##
+## Registers...512 data memory, 34 control, 32 threshold, 9 ROM
+##              Hex Base	#Registers	Module type
+#BaseSetup:	0		588		ADC
+Virtual-Random:	10	1000	xxx
+##
+

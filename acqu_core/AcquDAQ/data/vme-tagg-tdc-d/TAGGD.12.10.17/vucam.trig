@@ -1,0 +1,20 @@
+##--Author	Baya Oussena	 6 Jul  2010
+##--Update	Baya Oussena     13 Jul 2010
+##--Description
+##                *** AcquDAQ++ <-> Root ***
+## DAQ for Sub-Atomic Physics Experiments.
+##
+## TCAMAC_VUCAM
+## Trigger input prescaler control 
+## KpH design prescaler has 10 channels A=0--9
+## Values 0-ffff(hex) accepted
+##
+##              Dummy Base	#Registers	Module type
+BaseSetup:	0		6		SlowCtrl
+##
+## Enter CNAFS
+##		Datum	F	A0	A1	Register Type
+CAMAC-CNAF:	0	16	0	5	Init	
+##
+#	End of File
+#
