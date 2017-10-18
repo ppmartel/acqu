@@ -1,6 +1,7 @@
 ##--Rev 	JRM Annand...10th Feb 2007
 ##--Update	JRM Annand...14th Apr 2013
 ##--Update	EJ Downie....28th May 2013
+##--Update	JRM Annand...15th Oct 2017
 ##--Description
 ##                *** AcquDAQ++ <-> Root ***
 ## DAQ for Sub-Atomic Physics Experiments.
@@ -8,10 +9,14 @@
 ## Registers...512 data memory, 34 control, 32 threshold, 9 ROM
 ##              Hex Base	#Registers	Module type Mapsize
 BaseSetup:	0		0		ADC    	    10000
-Window: 0xffd8 0x28
+## Old setting....marginal getting reference signal in window
+#Window: 0xffd8 0x28
+## New setting....extend width by 8 x 25 ns...lets reference in reliably
+## do not extend width higher than 0x30
+Window: 0xffd8 0x30
+#Window: 0xffeb 0x14
 # leading and trailing edge
 #Edge-Detect: 3
-# leading edge
+# leading edge only
 Edge-Detect: 2
-##
 ##
