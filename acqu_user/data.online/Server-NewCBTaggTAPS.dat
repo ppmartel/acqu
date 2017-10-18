@@ -42,8 +42,8 @@ File-Name:	tdca	0	0
 Stream-Spec:	Network	Mk2	0	vme-cb-tdc-b   3027 128	400
 File-Name:	tdcb	0	0
 #
-Stream-Spec:	Network	Mk2	0	vme-tagg-tdc-a 3028 128	400
-File-Name:	tagga	0	0
+Stream-Spec:	Network	Mk2	0	vme-tagg-tdc-d 6033 128	400
+File-Name:	taggd	0	0
 #
 Stream-Spec:	Network	Mk2	0	vme-tagg-tdc-b 3029 128	400
 File-Name:	taggb	0	0
