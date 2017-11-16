@@ -15,8 +15,11 @@ BaseSetup:	0		0		ADC    	    10000
 ## do not extend width higher than 0x30
 Window: 0xffd8 0x30
 #Window: 0xffeb 0x14
+#Window: 0xffd0 0x38
 # leading and trailing edge
 #Edge-Detect: 3
 # leading edge only
 Edge-Detect: 2
+# trailing edge only
+#Edge-Detect: 1
 ##
