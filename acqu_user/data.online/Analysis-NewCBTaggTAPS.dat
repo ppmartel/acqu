@@ -6,8 +6,8 @@
 ## from the other specified channels
 ## CB TDC's
 ##              #hits   start   stop    reference
-MultiADC:       3       800     926    927
-MultiADC:       3       928    1054   1055
+MultiADC:       8       800     926     927
+MultiADC:       8       928     1054    1055
 MultiADC:       3       2001    2767    2000
 ##
 ## Tagger/Target/Pizza test TDC in Beampolmon
