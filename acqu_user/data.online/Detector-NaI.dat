@@ -1478,11 +1478,11 @@ Display: 1D	Hits		720 0 720
 Display: 1D	ADCHits		720 0 720
 Display: 1D	TDCHits		720 0 720
 Display: 1D	Etot	  	400 0 800
-#Display: 1D	Energy		200 0 400	0 719
-#Display: 1D	Time		200 -100 100	0 719
+Display: 1D	Energy		200 0 400	0 719
+Display: 1D	Time		200 -100 100	0 719
 #Display: 1D    Time            200 -200 200	90 92
 Display: 1D	EnergyOR	800 0 800
-Display: 1D	TimeOR		400 -100 100
+Display: 1D	TimeOR		800 -200 200
 Display: 1D	ClEnergyOR  	400 0 800
 #Display: 1D	ClHits		32 0 32	        0 31
 #Display: 1D	ClMulti		64 0 64	        0 31
@@ -1492,5 +1492,5 @@ Display: 1D	ClTotHits	720 0 720
 Display: 2D ClEnergyOR  200 0 400 -1    ClNhitsOR   16 0 16 -1
 Display: 2D ClTheta  180 0 180 -1    ClPhi   180 -180 180 -1
 Display: 2D EnergyOR 100 0 400 -1    Hits   720 0 720 -1
-Display: 2D TimeOR   200 -100 100 -1    Hits   720 0 720 -1
+Display: 2D TimeOR   400 -200 200 -1    Hits   720 0 720 -1
 #Display: 1D 3015M1 200 0 400
