@@ -135,11 +135,16 @@ void TVME_V1190::ReadIRQ( void** outBuffer )
   }
   //
   Int_t adcVal, adcIndex;                // adc value and index
+  Int_t errVal;
   for(Int_t i=ich; i<imax; i++ ){
     datum = Read(i);
     if( (datum & 0x08000000) ) continue;    // TDC header
     if( (datum & 0x10000000) ) continue;    // TDC trailer
-    if( (datum & 0x20000000) ) continue;    // TDC error
+    if( (datum & 0x20000000) ){             // TDC error
+      errVal = datum & 0x7fff;
+      ErrorStore(outBuffer, errVal);
+      continue;
+    }
     if( (datum & 0x80000000) ) break;       // global trailer
     adcVal = datum & 0x7ffff;               // ADC value
     adcIndex = (datum & 0x3f80000) >> 19;   // ADC subaddress
