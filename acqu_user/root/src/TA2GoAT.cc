@@ -930,11 +930,13 @@ void    TA2GoAT::Reconstruct()
 
     nParticles = nCB + nTAPS;
     TA2Particle part;
-   
+
+    if(fMWPC){
 	nChamberHitsin1 = fMWPC->GetNinters(0); 
         Chamber1Hits = fMWPC->GetInters(0); 
 	Chamber2Hits = fMWPC->GetInters(1);
 	nChamberHitsin2 = fMWPC->GetNinters(1);
+    }
 
     for(Int_t i=0; i<nParticles; i++)
     {
@@ -980,6 +982,7 @@ void    TA2GoAT::Reconstruct()
 	MWPC0PosZ[i]=0;
 	MWPC1PosZ[i]=0;
 
+	if(fMWPC){
 	if(part.GetTrackIntersect(0)>=0){
 	  MWPC0PosX[i]=(*(Chamber1Hits[part.GetTrackIntersect(0)].GetPosition())).X();
 	  MWPC0PosY[i]=(*(Chamber1Hits[part.GetTrackIntersect(0)].GetPosition())).Y();
@@ -990,7 +993,7 @@ void    TA2GoAT::Reconstruct()
 	  MWPC1PosY[i]=(*(Chamber2Hits[part.GetTrackIntersect(1)].GetPosition())).Y();
 	  MWPC1PosZ[i]=(*(Chamber2Hits[part.GetTrackIntersect(1)].GetPosition())).Z();
 	}
-
+	}
         // Store other values which don't have this "no-value" option
         detectors[i]	= part.GetDetectors();
         theta[i]		= part.GetThetaDg();
