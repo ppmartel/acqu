@@ -1,0 +1,111 @@
+##-----------------------------------------------------------------------
+##--Author	JRM Annand   	29th Apr 2003
+##--Update	Ken Livingston	19th Mar 2014
+##--Description
+##                *** Acqu++ <-> Root ***
+## Online/Offline Analysis of Sub-Atomic Physics Experimental Data 
+##
+## Parameter File: LinearPolapparatus.dat (specified in LinearPolanalysis.dat)
+## or equivalent
+##
+##-----------------------------------------------------------------------
+#
+# Data reconstruction method 
+Reconstruct:
+#x1
+### Basic setup - needs changed to suit run period
+## edge can be fit|epics
+## plane can be file|epics: if file - need "runs:" lines below here.
+## scaler_ref can be overridden by specific run settings in the "runs: lines"
+#			runMin  runMax   norm_energy   edgeMin  edgeMax   tagger ladder   scaler_ref							            buffers   edge	plane  deadband(MeV)
+#for carbon target					
+Misc:	app    3188   3205          700.00          410.0    460.0          TAGG    FPD     /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.04/LadderScalers/LadderScalers_3146.dat  5        	fit     epics   0.2
+Misc:	app    3224   3243          700.00          610.0    660.0          TAGG    FPD     /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.04/LadderScalers/LadderScalers_3215.dat  5        	fit     epics   0.2
+Misc:	app    3255   3271          700.00          250.0    400.0          TAGG    FPD     /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.04/LadderScalers/LadderScalers_3215.dat  5        	fit     epics   0.2
+Misc:	app    3274   3288          700.00          500.0    580.0          TAGG    FPD     /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.04/LadderScalers/LadderScalers_3302.dat  5        	fit     epics   0.2
+Misc:	app    3306   3346          700.00          650.0    800.0          TAGG    FPD     /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.04/LadderScalers/LadderScalers_3302.dat  5        	fit     epics   0.2
+Misc:	app    3348   3374          700.00          820.0    860.0          TAGG    FPD     /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.04/LadderScalers/LadderScalers_3302.dat  5        	fit     epics   0.2
+#	
+#
+#
+#Specify run ranges for para perp amo, and corresponding scaler reference files.
+#Should list all the run ranges here
+#Will use plane info if "plane" is set to "file" in "Misc: app" above
+#Misc: runs     runMin  runMax          scaler_ref                                      		                                                                           plane(para|perp|amo)  edge_setting  edge_range(+-meV)
+#for carbon target
+Misc:	runs    3188   3205          /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.04/LadderScalers/LadderScalers_3146.dat         	perp                  450.0        30.0
+Misc:	runs    3224   3243          /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.04/LadderScalers/LadderScalers_3215.dat         	perp                  650.0        30.0
+Misc:	runs    3255   3271          /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.04/LadderScalers/LadderScalers_3215.dat         	perp                  350.0        30.0
+Misc:	runs    3274   3288          /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.04/LadderScalers/LadderScalers_3302.dat         	perp                  550.0        30.0
+Misc:	runs    3306   3346          /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.04/LadderScalers/LadderScalers_3302.dat         	perp                  750.0        30.0
+Misc:	runs    3348   3374          /disk/user/afzal/Mainz/acqu/acqu_user/data.2014.04/LadderScalers/LadderScalers_3302.dat         	perp                  850.0        30.0
+#
+#
+# The "pvnames" and "rads" are required if "edge" or "plane" are set to epics in the  "Misc:	app"
+### Names of the epics channels for the variables required
+#               edge            radiator            plane            goni axes ......
+#defaults to:	BEAM:CBREM:Edge BEAM:CBREM:Radiator BEAM:CBREM:Plane BEAM:GONI:Axis_1 BEAM:GONI:Axis_2 BEAM:GONI:Axis_3 BEAM:GONI:Axis_4 BEAM:GONI:Axis_5
+Misc:	pvnames BEAM:CBREM:Edge BEAM:CBREM:Radiator BEAM:CBREM:Plane BEAM:GONI:Axis_1 BEAM:GONI:Axis_2 BEAM:GONI:Axis_3 BEAM:GONI:Axis_4 BEAM:GONI:Axis_5
+#Misc:	pvnames A2LinPolCohEdge A2LinPolCohRadiator A2LinPolCohPlane A2GoniAxis1 A2GoniAxis2 A2GoniAxis3 A2GoniAxis4 A2GoniAxis5
+#
+### Value of epics radiator variable to specify radiator
+#               diamond		amo
+#defaults to:   4               2
+Misc:   rads    4               2
+#
+#
+#
+# These lines will specify the parameters for the ploarization tables for run ranges.
+# A different set of parameters should be defined for para and perp 
+### parameter sets for polarization of beam
+#                  run range     type   plane  params:  
+#paramters for 450 MeV edge
+Misc:   	poltable  3188     3205    params para  0.003549 0.000118 1.574225 0.033467 1557.000000 3.000000 3.197721 0.561398 0.395149 0.000000 1.460582
+Misc:   	poltable  3188     3205    params perp  0.003132 0.000174 2.023066 0.029227 1557.000000 3.000000 3.870713 0.739285 0.246813 0.000000 1.509137
+#paramters for 650 MeV edge
+Misc:   	poltable  3224     3243    params para  0.006262 0.000176 2.020689 0.079738 1557.000000 3.000000 2.753524 0.666487 1.874891 0.000000 3.594875
+Misc:   	poltable  3224     3243    params perp  0.006142 0.000114 6.103765 0.129338 1557.000000 3.000000 2.856832 0.699230 1.865031 0.000000 3.288624
+#paramters for 350 MeV edge
+Misc:	poltable  3255   3271	params para   0.002725 0.000124 2.878148 0.032143 1557.000000 3.000000 3.437916 0.553349 0.278776 0.000000 2.140339
+Misc:	poltable  3255   3271      params perp   0.002627 0.000276 3.654144 0.451633 1557.000000 3.000000 2.018806 0.343690 0.142606 0.000000 1.572265
+#paramters for 550 MeV edge
+Misc:   	poltable  3274     3288    params para  0.004715 0.000181 1.377585 0.031266 1557.000000 3.000000 3.454178 0.561823 1.180543 0.000000 2.053776
+Misc:   	poltable  3274     3288    params perp  0.004569 0.000173 1.487413 0.032157 1557.000000 3.000000 3.485176 0.586023 1.023122 0.000000 1.989282
+#paramters for 750 MeV edge
+Misc:   	poltable  3306     3346    params para  0.008159 0.000098 6.228000 0.007661 1557.000000 3.000000 2.544789 0.955123 2.556874 0.000000 7.177802
+Misc:   	poltable  3306     3346    params perp  0.007972 0.000166 1.928568 0.009698 1557.000000 3.000000 2.414617 0.591673 1.976663 0.000000 2.922244
+#paramters for 850 MeV edge
+Misc:   	poltable  3348    3374 	params para  0.010370 0.000386 2.099309 0.292718 1557.000000 3.000000 2.394290 0.507880 1.491278 0.000000 2.779132 
+Misc:   	poltable  3348    3374 	params perp  0.010370 0.000386 2.099309 0.292718 1557.000000 3.000000 2.394290 0.507880 1.491278 0.000000 100000.000000 
+#
+# Do some post-initialisation.
+# Should usually be done before display is setup
+Initialise:
+# Histograms of apparatus-level variables
+# histogram name should be preceeded by 1D or 2D (for dimension of spectrum)
+#
+#           Name        		chan/low/high   min/max condition(opt)
+Display: 1D Incoherent			352 0  352 -1
+Display: 1D Coherent			352 0  352 -1
+Display: 1D Enhancement			352 0  352 -1
+Display: 1D CoherentPara		352 0  352 -1
+Display: 1D EnhancementPara		352 0  352 -1
+Display: 1D CoherentPerp		352 0  352 -1
+Display: 1D EnhancementPerp		352 0  352 -1
+#Display: 1D CohEnergy			4000 0 4000 -1
+Display: 1D CohEdgePara			4000 0 4000 -1
+Display: 1D CohEdgePerp			4000 0 4000 -1
+Display: 1D CohEdgeDistPara		200  0 200 -1
+Display: 1D CohEdgeDistPerp		200  0 200 -1
+Display: 1D CohEdgeEpics		4000 0 4000 -1
+Display: 1D CohEdgeParaEpics		4000 0 4000 -1
+Display: 1D CohEdgePerpEpics		4000 0 4000 -1
+Display: 1D CohEdgeDistParaEpics	200  0 200 -1
+Display: 1D PolTableEnh			352 0  352 -1
+Display: 1D PolTablePol			352 0  352 -1
+Display: 1D PolMean			352 0  352 -1
+Display: 1D PolCount			352 0  352 -1
+#
+# 2nd pass of Init to pick up ptrs to histograms
+Initialise:
+#

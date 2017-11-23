@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCCalibTAPSEnergySG.cxx 912 2011-05-18 22:09:17Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller
@@ -15,7 +15,6 @@
 
 #include "TCCalibTAPSEnergySG.h"
 
-ClassImp(TCCalibTAPSEnergySG)
 
 
 //______________________________________________________________________________
@@ -410,4 +409,4 @@ void TCCalibTAPSEnergySG::Write()
     // save overview canvas
     SaveCanvas(fCanvasResult, "Overview");
 }
-
+ClassImp(TCCalibTAPSEnergySG)

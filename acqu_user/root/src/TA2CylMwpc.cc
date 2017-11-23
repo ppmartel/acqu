@@ -58,7 +58,6 @@ static const Map_t kWCKeys[] = {
   const Double_t targetLength = 100.;
   const Double_t targetDiameter = 21.5;
   
-ClassImp(TA2CylMwpc)
 //_________________________________________________________________________________________
 //  TA2CylMwpc
 //
@@ -619,6 +618,8 @@ void TA2CylMwpc::PostInit()
   //
   Int_t nMaxIE;
   for (Int_t iCh=0; iCh<fNChamber; ++iCh) {
+    fNie[iCh] = 0;
+    fNinters[iCh] = fNintersTrue[iCh] = fNintersCandidate[iCh] = 0;
     nMaxIE = fI[iCh]->GetMaxClust()*fE[iCh]->GetMaxClust()*kMaxNsolIE;
     fIclI[iCh] = new Int_t[nMaxIE];
     fIclE[iCh] = new Int_t[nMaxIE];
@@ -1240,7 +1241,7 @@ void TA2CylMwpc::MakeVertexes(const map<Double_t,Int_t> &mapTracks)
 void TA2CylMwpc::MarkEndBuffers()
 {
   // Mark EndBuffer for the output arrays to be displayed
-  
+
   // Intersections
   for (Int_t iCh=0; iCh<fNChamber; ++iCh)
   {
@@ -1253,7 +1254,7 @@ void TA2CylMwpc::MarkEndBuffers()
     fCGclE[iCh][fNinters[iCh]] = EBufferEnd;
     fAclIE[iCh][fNinters[iCh]] = EBufferEnd;
   }
-  
+
   // Tracks
   fTypeTrack[fNTrack] = EBufferEnd;
   fMagTrack[fNTrack]  = EBufferEnd;
@@ -1769,3 +1770,5 @@ void TA2CylMwpc::InitGeometry()
   c2->Modified();
 
 }
+
+ClassImp(TA2CylMwpc)

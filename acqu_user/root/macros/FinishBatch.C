@@ -7,6 +7,7 @@ void FinishBatch(TString sInput="", TString sOutput="ARHist"){
   printf("End-of-Run macro executing\n");
 
   TString sDir = gAR->GetTreeDir();
+  if(!sDir.EndsWith("/")) sDir.Append("/");
   TString sFile;
   if (gAR->IsOnline()) sFile = gAR->GetFileName();
   else sFile = gAR->GetTreeFile()->GetName();

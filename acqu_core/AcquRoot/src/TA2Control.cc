@@ -51,7 +51,6 @@ static const Map_t kKnownAnalysis[] = {
 };
 
 
-ClassImp(TA2Control)
 
 //--------------------------------------------------------------------------
 TA2Control::TA2Control( const char* appClassName, int* argc, char** argv, 
@@ -71,28 +70,38 @@ TA2Control::TA2Control( const char* appClassName, int* argc, char** argv,
   // Default offline running, using file ROOTsetup.dat for configuring
   // analysis session
   Bool_t online = ETrue;
+  Bool_t logfiles = kTRUE;
   fBatch = EFalse;
-  char setfile[128];
+  char setfile[128] = "";
   char datafile[256] = "";
   char directory[256] = "./";
   char batchdir[256] = "./";
-  strcpy( setfile, "ROOTsetup.dat" );
 
   // Handle any command-line option here online/offline or setup file
   for( int i=1; i<*argc; i++ ){
     if( strcmp("--offline", argv[i]) == 0 ) online = EFalse;
     else if( strcmp("--rootfile", argv[i]) == 0 ) online = EFalse;
     else if( strcmp("--batch", argv[i]) == 0 ) fBatch = ETrue;
+    else if( strcmp("--nolog", argv[i]) == 0 ) logfiles = kFALSE;
     else if( strcmp("--datafile", argv[i]) == 0 ) strcpy( datafile, argv[++i] );
     else if( strcmp("--directory", argv[i]) == 0 ) strcpy( directory, argv[++i] );
     else if( strcmp("--batchdir", argv[i]) == 0 ) strcpy( batchdir, argv[++i] );
     else if( strcmp("--", argv[i]) != 0 ) strcpy( setfile, argv[i] );
   }
-
+  
+  // use some default top-level config file,
+  // depending on MC mode or not...yeah, it's weird here...
+  if(!strcmp(setfile, "")) {
+    if(online)
+      strcpy( setfile, "ROOTsetup.dat" );
+    else
+      strcpy( setfile, "ROOTsetupMC.dat" );
+  }
+  
   if( !noLogo ) PrintLogo();
   SetPrompt("Acqu-Root:%d> ");
 
-  gAR = new TAcquRoot("A2Acqu", fBatch);         // Acqu - Root interface
+  gAR = new TAcquRoot("A2Acqu", fBatch, logfiles); // Acqu - Root interface
   if( online ) gAR->SetIsOnline();               // AcquRoot online procedures
 
   // Set output and batch log files directories before
@@ -100,7 +109,8 @@ TA2Control::TA2Control( const char* appClassName, int* argc, char** argv,
   if (strcmp(directory, "./")) gAR->SetTreeDir(gAR->BuildName(directory));
   if (fBatch && strcmp(batchdir, "./")){
     gAR->SetBatchDir(gAR->BuildName(batchdir));
-    gAR->SetLogFile(gAR->BuildName(batchdir, "AcquRoot.log"));
+    if(logfiles)
+      gAR->SetLogFile(gAR->BuildName(batchdir, "AcquRoot.log"));
   }
 
   // Perform remaining config from file
@@ -111,7 +121,8 @@ TA2Control::TA2Control( const char* appClassName, int* argc, char** argv,
   // give default to avoid crashing when running batch
   if (fBatch && ((gAR->GetBatchDir()) == NULL)){
     gAR->SetBatchDir(gAR->BuildName(batchdir));
-    gAR->SetLogFile(gAR->BuildName(batchdir, "AcquRoot.log"));
+    if(logfiles)
+      gAR->SetLogFile(gAR->BuildName(batchdir, "AcquRoot.log"));
   }
 
   // "online" means receiving data from TA2DataServer which has 3 options
@@ -261,3 +272,5 @@ void TA2Control::StartAnalyser()
     //    while( !gAR->IsFinished() ) sleep(1);
   }
 }
+
+ClassImp(TA2Control)

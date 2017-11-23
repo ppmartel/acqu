@@ -1,0 +1,22 @@
+#####################################################################
+##                  ___  ____   ____    _    ____                  ##
+##                 / _ \/ ___| / ___|  / \  |  _ \                 ##
+##                | | | \___ \| |     / _ \ | |_) |                ##
+##                | |_| |___) | |___ / ___ \|  _ <                 ##
+##                 \___/|____/ \____/_/   \_\_| \_\                ##
+##                                                                 ##
+##                                                                 ##
+##         OSCAR simplifies coding and analyzing with ROOT         ##
+##                                                                 ##
+##                                                                 ##
+##                        (C) 2007-2014 by                         ##
+##      Dominik Werthmueller <dominik.werthmueller@unibas.ch>      ##
+##                                                                 ##
+#####################################################################
+
+
+INFO
+====
+
+This directory contains a minimal built-in version of OSCAR for acqu.
+

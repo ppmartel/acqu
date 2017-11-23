@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCCalib.h 912 2011-05-18 22:09:17Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller
@@ -53,14 +53,20 @@ protected:
     TH1* fMainHisto;            // main histogram 
     TH1* fFitHisto;             // fitting histogram
     TF1* fFitFunc;              // fitting function
+    TF1* fFitPeak;
+    TF1* fFitBackGround;
+
 
     TH1* fOverviewHisto;        // overview result histogram
     
     TCanvas* fCanvasFit;        // canvas containing the fits
     TCanvas* fCanvasResult;     // canvas containing the results
+    TCanvas* fExtraCanvas;
     
     TTimer* fTimer;             // slow-motion timer
     Bool_t fTimerRunning;       // timer running state
+
+    Double_t fConvergenceFactor; // used in gain/offset calculation
 
     virtual void Init() = 0;
     virtual void Fit(Int_t elem) = 0;
@@ -75,7 +81,7 @@ public:
                 fNelem(0), fCurrentElem(0),
                 fOldVal(0), fNewVal(0),
                 fAvr(0), fAvrDiff(0), fNcalc(0),
-                fMainHisto(0), fFitHisto(0), fFitFunc(0),
+                fMainHisto(0), fFitHisto(0), fFitFunc(0), fFitPeak(nullptr), fFitBackGround(nullptr),
                 fOverviewHisto(0),
                 fCanvasFit(0), fCanvasResult(0), 
                 fTimer(0), fTimerRunning(kFALSE) { }
@@ -88,10 +94,10 @@ public:
           fNelem(nElem), fCurrentElem(0),
           fOldVal(0), fNewVal(0),
           fAvr(0), fAvrDiff(0), fNcalc(0),
-          fMainHisto(0), fFitHisto(0), fFitFunc(0),
+          fMainHisto(0), fFitHisto(0), fFitFunc(0), fFitPeak(nullptr), fFitBackGround(nullptr),
           fOverviewHisto(0),
           fCanvasFit(0), fCanvasResult(0), 
-          fTimer(0), fTimerRunning(kFALSE) { }
+          fTimer(0), fTimerRunning(kFALSE), fConvergenceFactor(1) { }
     virtual ~TCCalib();
     
     virtual void Write();

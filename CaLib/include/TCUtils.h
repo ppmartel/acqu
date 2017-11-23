@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCUtils.h 899 2011-05-12 18:57:53Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller

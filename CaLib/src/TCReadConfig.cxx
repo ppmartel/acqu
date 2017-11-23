@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCReadConfig.cxx 729 2010-12-22 01:55:29Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Irakli Keshelashvili, Dominik Werthmueller
@@ -15,7 +15,6 @@
 
 #include "TCReadConfig.h"
 
-ClassImp(TCReadConfig);
 
 
 // init static class members
@@ -200,4 +199,4 @@ void TCReadConfig::GetConfigDoubleDouble(TString configKey, Double_t* out1, Doub
               v->Data());
     }
 }
-
+ClassImp(TCReadConfig)

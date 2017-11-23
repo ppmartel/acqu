@@ -1,0 +1,169 @@
+################################################################################
+##                                                                            ##
+##                --Author	JRM Annand   29th Apr 2003                    ##
+##                --Update	JRM Annand...13th Jul 2007                    ##
+##                --Update      H Berghaeuser June 2008                       ##
+##                                                                            ##
+##                         *** Acqu++ <-> Root ***                            ##
+##     Online/Offline Analysis of Sub-Atomic Physics Experimental Data        ##
+##                                                                            ##
+##        Parameter File: CBanalysis.dat (specified in CB.Offline)            ##
+##            Setup basic parameters of analysis to be used                   ##
+##         This one sets up an analysis of CB-TAPS-Tagger data                ##
+##                                                                            ##
+################################################################################
+#
+#
+#
+#
+################################################################################
+##                                                                            ##
+##           The following give sample specifications for                     ##
+##            handlers for flash or multihit ADCs or TDCs                     ##
+##                                                                            ##
+##     Catch-TDC, where a reference TDC channel has to be specified           ##
+##   The reference TDC channel contains the trigger time which is subtracted  ##
+##                  from the other specified channels                         ##
+##    CB TDC's                                                                ##
+##              #hits   start   stop    reference                             ##
+##                                                                            ##
+################################################################################
+MultiADC:       3       1401    1911    1400
+#MultiADC:	1	1400	1400	2000
+MultiADC:       3       2001    2767    2000
+#MultiADC:      3       4000    4511    2000
+## TAPS inner ring
+MultiADC:       3       30201   30224   30200
+#
+#
+#
+#################################################################################
+##                                                                             ##
+##          SG ADC read out in 3-sum mode (#hits is always 3)                  ##
+##     DC # channels summed for the pedestal (before signal leading edge)      ##
+##       signal # channels summed for the signal region of the pulse           ##
+##    tail # channels summed for the tail region (after signal trailing edge)  ##
+##         CB S-ADC's                                                          ##
+##                                                                             ##
+##               #hits   start   stop    DC      signal  tail                  ##
+##                                                                             ##
+#################################################################################
+MultiADC:       3       3000    3735    30      30      30
+##            MWPC strip S-ADC's (switched to single-value read)
+#MultiADC:       3       5000    5319    30      30      30
+#
+#
+#
+#################################################################################
+##                                                                             ##
+##    Stuff to monitor time dependence of counting rates and the hit pattern   ##
+##      coming from the trigger box....the parameter is the setup file name    ##
+##                                                                             ##
+#################################################################################
+RateMonitor: Trigger.Rate
+BitPattern:  Trigger.Pat
+#
+#
+#
+#################################################################################
+##                                                                             ##
+##                              Apparatus setup....                            ##
+##           Raw analysis may be performed without Apparati                    ##
+##                                                                             ##
+##              Name            Class           	Setup file             ##
+##                                                                             ##
+#################################################################################
+#Apparatus:      Misc	        TA2GenericApp  		TrigMisc.13.07.07.dat
+Apparatus:      CB              TA2CB2008               CBTW.dat
+Apparatus:      TAGG            TA2KensTagger   	Tagger_1508.dat
+Apparatus:      TAPS            TA2Taps2009GT	 	TAPS2009GT.dat
+#
+#
+#
+#
+###################################################################################
+##                                                                               ##
+##                Turn on apparatus-level reconstruction                         ##
+##                                                                               ##
+###################################################################################
+Reconstruct-Analysis:
+#
+#
+###################################################################################
+##                                                                               ##
+##                      Specify physics analysis                                 ##
+##			Name	Class		Config File                      ##
+##                                                                               ##
+##      To do Physics-Analysis: use   TA2PhotoReconstruction                     ##
+##                              This uses the TA2Particles                       ##
+##                              Analysis is done here:                           ##
+##                              BASIC TA2PhotoBasicAnalysis                      ##
+##                              USER  TA2PhotoAnalysis                           ##
+##                              Control/Setup Physics2009.dat -> READ IT!        ##
+##                                                                               ##
+##      To use JRM standard analysis: use TA2PhotoPhysics                        ##
+##                                                                               ##
+##      To create an ESD-file:  use   TA2CreateESD                               ##
+##                              All particles will be written as objects of      ##
+##                              TA2ESDParticle to Events (TA2ESDEvent-Objects)   ##
+##                              Then these Events are written to a ROOTfile      ##
+##                              Analysis then is easy (ESDReaderMacro) and       ##
+##                              independent of config&calib-files etc            ##
+##                                                                               ##
+###################################################################################
+#Physics-Analysis:	EtaM	TA2PhotoPhysics	        Physics2009.dat
+Physics-Analysis:	EtaM	TA2PhotoReconstruction	Physics2009.dat
+#Physics-Analysis:	EtaM	TA2CreateESD	        Physics2009.dat
+#
+#
+###################################################################################
+##                                                                               ##
+##            Do some post initialisation...usually necessary                    ##
+##                                                                               ##
+###################################################################################
+Initialise:
+#
+#
+#
+###################################################################################
+##                                                                               ##
+##        Setup of extra procedures to run at periodic intervals                 ##
+##         The procedures are usually held in macro script files                 ##
+##                           Period...every N events                             ##
+##		N	Macro File	Macro Procedure                          ##
+##                                                                               ##
+###################################################################################
+##Period:	5000	PeriodMacro.C	PeriodMacro()
+#
+#
+#
+###################################################################################
+##                                                                               ##
+##             EndFile...each time an input data file is closed                  ##
+##                                                                               ##
+###################################################################################
+EndFile:	/home/henning2/acqu/acqu/root/macros/EndFileMacro.C  EndFileMacro()
+#
+#
+#
+###################################################################################
+##                                                                               ##
+##              Finish...when all input data files processed                     ##
+##                                                                               ##
+###################################################################################
+Finish:  	/home/henning2/acqu/acqu/root/macros/FinishMacro.C	FinishMacro(0,1,0)
+#Finish:  	/home/henning2/acqu/acqu/root/macros/FinishMacro.C	FinishESD() 
+#
+#
+####################################################################################
+##
+##                        Other stuff                                             ##
+##
+####################################################################################
+## Save all accepted events (ie those which pass all data cuts) to a
+## ROOT file. Data saved in RAW format (ie ADC indices and values
+##Save-Event:
+##
+## Histogram ALL defined single value ADC's
+#Display: All
+## END OF FILE

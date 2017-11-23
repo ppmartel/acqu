@@ -1,0 +1,54 @@
+##-----------------------------------------------------------------------
+##--Author	JRM Annand   29th Apr 2003
+##--Update	JRM Annand... 1st Dec 2004
+##--Update	JRM Annand...17th May 2005
+##--Description
+##                *** Acqu++ <-> Root ***
+## Online/Offline Analysis of Sub-Atomic Physics Experimental Data
+##
+## Parameter File: FPcomm.Offline
+## Master parameter file for Acqu-Root analysis.
+## Expected to reside in directory $acqu/data/
+## To use invoke for example... AcquRoot --offline CBMC.Offline
+##-----------------------------------------------------------------------
+## Input data setup for Offline analysis...this info is ignored
+## if no offline connection is used, ie can be left in.
+## Tree name and # branches are used if storing filtered data in root tree
+## format or reading data ( --offline ) from a chain of tree files.
+## Process Type can be "Raw", "MC" or "Physics".
+## For a standard Raw analysis 3 branches would normally be used.
+## For MC input the number of branches depends on the format of the saved data
+## Physics mode isn't implmented yet
+## Ensure the buffer size is sufficient for each branch.
+## RawEvent_Hits: 32768 is the data record length...should be OK
+## RawEvent_Scalers: 4 * (number of scalers + 1) is sufficient
+## Mk1_Header: 4 * (number of ADCs + 1) is sufficient
+## NB with TAPS the number of ADCs = 29001
+##
+## Batch mode operation...redirect output directory for log files etc.
+BatchDir: /hiskp2/afzal/Mainz/test/
+##
+##        Tree Name     	# branches	Process Type
+Name:     RawEvent_AR_Save	3		Raw
+##        Branch Name		Buffer size
+Branch:   RawEvent_Hits		32768
+Branch:	  RawEvent_Scalers	4192
+Branch:	  Mk1_Header            120000
+##
+##
+## Directory to save any created ROOT files (include final / )
+Directory: /hiskp2/afzal/
+##
+##
+## User-defined analysis class
+Analysis: TA2UserAnalysis
+##
+## Analysis setup file
+AnalysisSetup: /disk/user/afzal/Mainz/acqu/acqu_user/data.2015.09/AR-Analysis.dat
+##
+##
+## Set up of data files
+#ServerSetup: /disk/user/afzal/Mainz/acqu/acqu_user/temp/AR-Server.dat
+ServerSetup: /disk/user/afzal/Mainz/acqu/acqu_user/data.2015.09/AR-Server.dat
+
+

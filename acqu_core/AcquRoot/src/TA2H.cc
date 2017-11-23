@@ -12,7 +12,6 @@
 
 #include "TA2H.h"
 
-ClassImp(TA2H)
 
 //-----------------------------------------------------------------------------
 TA2H::TA2H(TA2Cut* cut, Stat_t* wgt )
@@ -31,3 +30,5 @@ TA2H::~TA2H()
   // Free up allocated memory
   if( !fIsWeight ) delete fWeight;
 }
+
+ClassImp(TA2H)

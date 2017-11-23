@@ -14,7 +14,6 @@
 
 #include "TA2MultiCut.h"
 
-ClassImp(TA2MultiCut)
 
 //-----------------------------------------------------------------------------
 TA2MultiCut::TA2MultiCut(const char* name, UInt_t link )
@@ -34,4 +33,4 @@ TA2MultiCut::~TA2MultiCut()
   while( ( cut = (TA2Cut*)nextcut() ) ) delete cut;
   delete fCutList;;
 }
-
+ClassImp(TA2MultiCut)

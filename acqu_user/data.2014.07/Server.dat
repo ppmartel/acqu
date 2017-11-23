@@ -24,8 +24,6 @@ Stream-Spec:	File	Mk2	0	327680	32	0	400
 #
 ##############################################################################
 # Specify files
-File-Name:     	CBTaggTAPS_5141.dat 0 5000
-#File-Name:	CBTaggTAPS_4888.dat.xz 0 5000
-#File-Name:     Compton_386.dat 0 0
+File-Name:     	CBTaggTAPS_5711.dat.xz 0 0
 #
 ## END

@@ -1,0 +1,187 @@
+##################################################################################
+##                                                                              ##
+##		--Author	H Berghaeuser July 2009                         ##
+##                                                                              ##
+##                                                                              ##
+##               Config InPutFile for TA2PhotoReconstruction                    ##
+##                                                                              ##
+##                                                                              ##
+##                     Parameter File: Physics2009.dat                          ##
+##                  Last stage in event-by-event analysis                       ##
+##                                                                              ##
+##################################################################################
+#
+#
+#
+#
+#
+##################################################################################
+##                                                                              ##
+##                    Target parameters (LH2)                                   ##
+##	x,y,z		Mass(MeV)                                               ##
+##                                                                              ##
+##################################################################################
+Target:	0. 0. 0.	938.271
+#Target:	0. 0. 0.	2808.39
+## Next would be CD
+#Target: 0. 0. 0.	1875.613		11188.174
+#
+#
+#
+##################################################################################
+##                                                                              ##
+## Wild-card stuff for fitting combinations of particles to a reaction          ##
+## Not fully implemented                                                        ##
+##                                                                              ##
+##################################################################################
+Permutations: 0
+#
+#
+#
+##################################################################################
+##                                                                              ##
+## Particle data group database,	max # particles                         ##
+##                                                                              ##
+##################################################################################
+ParticleID:				16
+#
+#
+#
+#
+##################################################################################
+##                                                                              ##
+## Do some post-initialisation.                                                 ##
+## Should usually be done before display is setup                               ##
+##################################################################################
+Initialise:
+#
+#
+#
+#
+##################################################################################
+##                                                                              ##
+##      Which Basic Analysis-Functions shall be execuded?                       ##
+##                             0=not  1=active !                                ##
+##      Note: to use this you need TA2BasicPhotoAlysis & TA2PhotoAnalysis       ##
+##                                                                              ##
+##     If you don't want to use BasicPhotonAnalysis just switch                 ##
+##     DoBasicAnalysis to 0                                                     ##
+##                                                                              ##
+##     If DoBasicPhotonAnalysis is 1:  then a basic                             ##
+##     TwoPhoton, ThreePhoton, SixPhoton and AllPhoton analysis will be done    ##
+##                                                                              ##
+##################################################################################
+DoBasicPhotonAnalysis 0
+#
+#
+#
+#
+#
+##################################################################################
+##                                                                              ##
+##      Activate User-Anaylsis functions !                                      ##
+##                                                                              ##
+##      If you want AcquRoot to use your functions in TA2PhotoAnalysis, you     ##
+##      have to switch DoUserAnalysis to 1                                      ##
+##                                                                              ##
+##################################################################################
+DoUserAnalysis 1
+#
+#
+#
+#
+#
+##################################################################################
+##                                                                              ##
+##      Important: Use TAGGER-loop !                                            ##
+##                                                                              ##
+##      UseTaggerLoop = 1  All taggerphotons are used                           ##
+##      UseTaggerLoop = 0  only the first taggerphoton is used                  ##
+##                                                                              ##
+##      Note: if you use 1 -> then:                                             ##
+##      make shure you apply "bad-time-substraction later"                      ##
+##                                                                              ##
+##################################################################################
+UseTaggerLoop 1
+#
+#
+#
+#
+#
+##################################################################################
+##                                                                              ##
+##      PrintSpeedInfo                                                          ##
+##      (if active ("1")  Speed-Info will be printed to screen)                 ##
+##                                                                              ##
+##################################################################################
+PrintSpeedInfo: 0
+#
+#
+#
+#
+#
+##################################################################################
+##                                                                              ##
+##       Specify OutPutFile(s)                                                  ##
+##                                                                              ##
+##                                                                              ##
+##                                                                              ##
+##################################################################################
+OutputFile: /home/henning2/acqu/Output/HEUTETESTTWAR_Analysis.root
+#
+#
+#
+#
+#
+#
+##################################################################################
+##                                                                              ##
+##       Print information on reconstructed particles                           ##
+##                                                                              ##
+##       0 "off"   /  "1" on                                                    ##
+##                                                                              ##
+##################################################################################
+PrintParticleInfo:1
+#
+#
+#
+#
+#
+#
+##################################################################################
+##                                                                              ##
+##       Calibration      (see TA2Calibration)                                  ##
+##                                                                              ##
+##       0 "off"   1 "on"                                                       ##
+##                                                                              ##
+##       if "on", all Calibration-histograms will be filled                     ##
+##                                                                              ##
+##################################################################################
+Calibration_Active: 0
+#
+#
+#
+#
+#
+###################################################################################
+##										 ##
+## Run MODE !  Raw data '0'   Sim data '1'					 ##
+##										 ##
+###################################################################################
+SimMode: 0
+#
+#
+#
+#
+###################################################################################
+##                                                                               ##
+##         Cut specification...see apparatus setup, same syntax applies          ##
+##         1/2D Name      Link   Scope          Low/High Limits                  ##
+##                                                                               ##
+###################################################################################
+
+
+
+
+
+

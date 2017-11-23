@@ -30,7 +30,6 @@ static const Map_t kForeignFormat[] = {
   {"Module:",       EForeignModule},
   {NULL,          -1}
 };
-ClassImp(TA2Mk2Format)
 
 //---------------------------------------------------------------------------
 TA2Mk2Format::TA2Mk2Format( Char_t* n, Int_t l, Int_t nsrc ) :
@@ -253,3 +252,5 @@ void TA2Mk2Format::UpdateInfo(  )
   // probably not necessary for Mk2 format
   fModInfo = (ModuleInfoMk2_t*)(fExpInfo + 1);
 }
+
+ClassImp(TA2Mk2Format)

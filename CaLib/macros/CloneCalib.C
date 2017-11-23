@@ -1,4 +1,4 @@
-// SVN Info: $Id: CloneCalib.C 1038 2011-11-14 13:01:17Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller

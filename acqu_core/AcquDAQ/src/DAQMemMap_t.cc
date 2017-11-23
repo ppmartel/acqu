@@ -13,7 +13,6 @@ extern "C"{
 #include <sys/mman.h>
 }
 
-ClassImp(DAQMemMap_t)               // Root linkage
 
 DAQMemMap_t::DAQMemMap_t( void* addr, Int_t size, Int_t fMemFd, TA2System* sys )
 : TObject()  
@@ -44,3 +43,5 @@ DAQMemMap_t::~DAQMemMap_t()
 
   return; 
 }
+
+ClassImp(DAQMemMap_t)               // Root linkage

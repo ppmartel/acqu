@@ -7,7 +7,7 @@ Size:	720	1	1	1
 #
 #
 ## 		Max # clusters   	Clust-Thresh(MeV)
-Max-Cluster:	8			15.0
+Max-Cluster:	16			15.0
 #
 #
 ##	        ADC#    low high(MeV)	ped(ch) MeV/ch	TDC stuff       		Pos

@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCCalibPIDPhi.cxx 912 2011-05-18 22:09:17Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller
@@ -15,7 +15,6 @@
 
 #include "TCCalibPIDPhi.h"
 
-ClassImp(TCCalibPIDPhi)
 
 
 //______________________________________________________________________________
@@ -324,4 +323,4 @@ void TCCalibPIDPhi::Write()
     // save overview picture
     SaveCanvas(fCanvasResult2, "Overview2");
 }
-
+ClassImp(TCCalibPIDPhi)

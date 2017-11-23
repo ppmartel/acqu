@@ -15,6 +15,7 @@
 #define _TA2FileSource_h_
 
 #include "TA2DataSource.h"
+#include <string>
 
 class ARFile_t;
 
@@ -27,6 +28,7 @@ class TA2FileSource : public TA2DataSource
   virtual ~TA2FileSource();
   void Process();				  // main data processor
   virtual void InputList(Char_t*, UInt_t, UInt_t);// get input file list
+  void GetFileInfo(Int_t i, std::string& filename, UInt_t &start, UInt_t &stop);
   
   ClassDef(TA2FileSource,1)
 };

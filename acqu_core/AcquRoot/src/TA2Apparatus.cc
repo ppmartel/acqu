@@ -50,7 +50,6 @@ static const Map_t kAppKeys[] = {
   {NULL,              -1}
 };
 
-ClassImp(TA2Apparatus)
 
 //-----------------------------------------------------------------------------
 TA2Apparatus::TA2Apparatus( const char* name, TA2System* analysis,
@@ -294,4 +293,4 @@ void TA2Apparatus::SortParticleIDCuts()
   }
 }
 
-
+ClassImp(TA2Apparatus)

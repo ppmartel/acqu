@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCCalibPIDDroop.h 906 2011-05-17 13:42:29Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller

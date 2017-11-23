@@ -33,7 +33,6 @@ static Map_t kValidDetectors[] = {
   {NULL, 		-1}
 };
 
-ClassImp(TA2Calorimeter)
 
 //-----------------------------------------------------------------------------
 TA2Calorimeter::TA2Calorimeter( const char* name, TA2System* analysis  )
@@ -112,4 +111,4 @@ void TA2Calorimeter::PostInit( )
   fP4_Nphoton = new TLorentzVector[fMaxParticle];
   fM_Nphoton =  new Double_t[fMaxParticle];
 }
-
+ClassImp(TA2Calorimeter)

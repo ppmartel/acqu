@@ -12,7 +12,6 @@
 
 #include "TA2Track.h"
 
-ClassImp(TA2Track)
 
 //---------------------------------------------------------------------------
 TA2Track::TA2Track( const char* name )
@@ -32,4 +31,4 @@ TA2Track::~TA2Track()
   delete fDirCos;
   delete fVertex;
 }
-
+ClassImp(TA2Track)

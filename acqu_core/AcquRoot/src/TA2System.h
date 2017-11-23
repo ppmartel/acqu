@@ -55,11 +55,14 @@ class TA2System : public TNamed {
   ARFile_t* fLogFile;                      // diagnostic log file
   FILE* fLogStream;                        // file ptr for logging output
   void BaseInit( const Map_t*, const Char_t* );  // 1st-level initialisation
-  void PrintError( const Char_t*, const Char_t* = NULL, Int_t = EErrNonFatal );
-  void PrintMessage( const Char_t* );      // general message
+  void PrintError( const Char_t*, const Char_t* = NULL, Int_t = EErrNonFatal,
+                   Bool_t cntSuppr = kFALSE );
+  void PrintMessage( const Char_t*, Bool_t cntSuppr = kFALSE ); // general message
   Bool_t fIsInit;                          // initialisation complete?
   Bool_t fIsError;                         // any setup errors?
   Bool_t fIsConfigPass;                    // depreciated config handler
+  Int_t fNPrintMsg;                        // number of printed (error) messages
+  Int_t fMaxPrintMsg;                      // limit on number of printed (error) messages
  public:
   TA2System( const Char_t*, const Map_t*, const Char_t* = NULL, const Char_t* = NULL );
   TA2System( const Char_t*, const Map_t*, const Char_t*, FILE* );

@@ -34,7 +34,6 @@ static const Map_t kPhysKeys[] = {
   {NULL,            -1}
 };
 
-ClassImp(TA2Physics)
 
 //-----------------------------------------------------------------------------
 TA2Physics::TA2Physics( const char* name, TA2Analysis* analysis )
@@ -140,8 +139,8 @@ void TA2Physics::LoadVariable( )
   //           MultiX  for a multi-valued variable
   //
   TA2Apparatus::LoadVariable();
-  TA2DataManager::LoadVariable("Mmiss", fMmiss,        EDMultiX);
-  TA2DataManager::LoadVariable("Pmiss", fPmiss,        EDMultiX);
+  if( fMmiss ) TA2DataManager::LoadVariable("Mmiss", fMmiss,        EDMultiX);
+  if( fPmiss ) TA2DataManager::LoadVariable("Pmiss", fPmiss,        EDMultiX);
   TA2DataManager::LoadVariable("Ptheta",&fPtheta,      EDSingleX);
   TA2DataManager::LoadVariable("Pphi",  &fPphi,        EDSingleX);
   return;
@@ -151,4 +150,4 @@ void TA2Physics::LoadVariable( )
 void TA2Physics::Reconstruct()
 {
 }
-
+ClassImp(TA2Physics)

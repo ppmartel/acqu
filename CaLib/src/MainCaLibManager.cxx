@@ -1,4 +1,4 @@
-// SVN Info: $Id: MainCaLibManager.cxx 917 2011-05-24 16:28:19Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller
@@ -1075,8 +1075,8 @@ void ExportRuns()
 {
     // Export runs.
     
-    Int_t first_run = 0;
-    Int_t last_run = 0;
+    Int_t first_run = -1;
+    Int_t last_run = -1;
     Char_t filename[256];
     Char_t answer[16];
 
@@ -1095,15 +1095,15 @@ void ExportRuns()
     attroff(A_UNDERLINE);
   
     // ask first run, last run and file name
-    mvprintw(6, 2, "First run (enter 0 to select all)          : ");
+    mvprintw(6, 2, "First run (enter -1 to select all)          : ");
     scanw((Char_t*)"%d", &first_run);
-    mvprintw(7, 2, "Last run  (enter 0 to select all)          : ");
+    mvprintw(7, 2, "Last run  (enter -1 to select all)          : ");
     scanw((Char_t*)"%d", &last_run);
     mvprintw(8, 2, "Name of output file                        : ");
     scanw((Char_t*)"%s", filename);
 
     // ask confirmation
-    if (!first_run && !last_run)
+    if (first_run == -1 && last_run == -1)
         mvprintw(10, 2, "Saving all runs to '%s'", filename);
     else
         mvprintw(10, 2, "Saving runs %d to %d to '%s'", first_run, last_run, filename);
@@ -1746,7 +1746,7 @@ void About()
     mvprintw(8,  2, "(c) 2011 by Dominik Werthmueller");
     mvprintw(10, 2, "CaLib - calibration database");
     mvprintw(11, 2, "Version %s", TCConfig::kCaLibVersion);
-    mvprintw(12, 2, "(c) 2010-2011 by Dominik Werthmueller and Irakli Keshelashvili");
+    mvprintw(12, 2, "(c) 2010-2013 by Dominik Werthmueller and Irakli Keshelashvili");
     mvprintw(13, 2, "                 University of Basel");
 
     // user information

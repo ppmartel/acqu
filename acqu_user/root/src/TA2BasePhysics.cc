@@ -16,7 +16,6 @@ static const Map_t kTriggKeys[] =
   {NULL,            -1}
 };
 
-ClassImp(TA2BasePhysics)
 
 //-----------------------------------------------------------------------------
 
@@ -113,7 +112,7 @@ void TA2BasePhysics::SetConfig(Char_t* line, Int_t key)
         printf("Reading energy sum model from\n %s\n", SumFilename);
         TextFile = fopen(SumFilename, "r");
         for(Int_t t=0; t<2001; t++)
-          fscanf(TextFile, "%d %lf", &Dummy, &SumModel[t]);
+          if(fscanf(TextFile, "%d %lf", &Dummy, &SumModel[t]));
         fclose(TextFile);
         UseSumModel = true;
       }
@@ -125,7 +124,7 @@ void TA2BasePhysics::SetConfig(Char_t* line, Int_t key)
         TextFile = fopen(NaIFilename, "r");
         for(Int_t t=0; t<720; t++)
         {
-          fscanf(TextFile, "%lf", &GainsNaI[t]);
+          if(fscanf(TextFile, "%lf", &GainsNaI[t]));
           if(GainsNaI[t]==0.0) GainsNaI[t] = 1.0;
         }
         fclose(TextFile);
@@ -137,7 +136,7 @@ void TA2BasePhysics::SetConfig(Char_t* line, Int_t key)
         printf("Reading NaI thresholds from\n %s\n", NaIFilename);
         TextFile = fopen(NaIFilename, "r");
         for(Int_t t=0; t<720; t++)
-          fscanf(TextFile, "%d %lf %lf", &Dummy, &ThresNaI[t], &SigmaNaI[t]);
+          if(fscanf(TextFile, "%d %lf %lf", &Dummy, &ThresNaI[t], &SigmaNaI[t]));
         fclose(TextFile);
       }
       break;
@@ -153,7 +152,7 @@ void TA2BasePhysics::SetConfig(Char_t* line, Int_t key)
         printf("Reading BaF2 thresholds from\n %s\n", BaF2Filename);
         TextFile = fopen(BaF2Filename, "r");
         for(Int_t t=0; t<438; t++)
-          fscanf(TextFile, "%d %lf %lf", &Dummy, &ThresBaF2[t], &SigmaBaF2[t]);
+          if(fscanf(TextFile, "%d %lf %lf", &Dummy, &ThresBaF2[t], &SigmaBaF2[t]));
         fclose(TextFile);
       }
       break;
@@ -332,7 +331,7 @@ void TA2BasePhysics::ParseMisc(char* line)
     WinFile = fopen(WindowFilename, "r");
     for(Int_t t=1; t<NWINDOW+1; t++)
     {
-      fscanf(WinFile, "%lf %lf", &Window[t][0], &Window[t][1]);
+      if(fscanf(WinFile, "%lf %lf", &Window[t][0], &Window[t][1]));
       printf("Time window %d from %f to %f\n", t, Window[t][0], Window[t][1]);
     }
     fclose(WinFile);
@@ -508,4 +507,4 @@ Bool_t TA2BasePhysics::TriggerDecode()
 }
 
 //-----------------------------------------------------------------------------
-
+ClassImp(TA2BasePhysics)

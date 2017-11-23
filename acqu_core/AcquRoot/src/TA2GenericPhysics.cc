@@ -34,7 +34,6 @@ static const Map_t kGenPhysKeys[] = {
   {NULL,            -1}
 };
 
-ClassImp(TA2GenericPhysics)
 
 //-----------------------------------------------------------------------------
 TA2GenericPhysics::TA2GenericPhysics( const char* name, TA2Analysis* analysis )
@@ -218,4 +217,4 @@ void TA2GenericPhysics::Reconstruct()
 
   MarkEndBuffer();
 }
-
+ClassImp(TA2GenericPhysics)

@@ -1,0 +1,126 @@
+##-----------------------------------------------------------------------
+##--Author	JRM Annand   29th Apr 2003
+##--Update	JRM Annand...17th May 2005
+##--Description
+##                *** Acqu++ <-> Root ***
+## Online/Offline Analysis of Sub-Atomic Physics Experimental Data 
+##
+## Parameter File: CB.dat (specified in CBanalysis.dat)
+## or equivalent
+## Setup analysis of the Crystal Ball TA2CrystalBall apparatus
+## This one sets up an analysis of the Crystal_Ball NaI(Tl) array
+## the inner Particle ID Detector and 2-layer MWPC
+##
+##-----------------------------------------------------------------------
+##
+## Specify list of detectors which constitute the Crystal Ball apparatus
+##	  Name       Class Name		Setup file
+Detector: NaI        TA2CalArray	/disk/user/afzal/Mainz/acqu/acqu_user/data.2015.05/AR-Analysis-CB-NaI.dat
+Detector: PID        TA2PlasticPID      /disk/user/afzal/Mainz/acqu/acqu_user/data.2015.05/AR-Analysis-CB-PID.dat
+Detector: MWPC       TA2CylMwpc	        /disk/user/afzal/Mainz/acqu/acqu_user/data.2015.05/AR-Analysis-CB-MWPC.dat
+#
+## Data reconstruction method for Crystal Ball 
+Reconstruct:
+##
+## PDG database	# particles
+###ParticleID: 	16
+ParticleID: 	64
+##
+## Use best MWPC tracks
+# UseBestMwpcTracks:
+##
+## Droop correction for light attenuation inside PID strips
+##     Lpid	Npoints		DroopPosition ...		DroopFactor
+# Droop: 30.	7		0. 2. 4. 6. 10. 20. 30. 	1. 1.07 1.14 1.22 1.39 1.92 2.66
+##
+## Angle-difference limits (in rad.)  for hits correlation
+## 		MaxPhiMwpcNaI	MaxPhiMwpcPid	MaxPhiPidNaI	MaxPhiInterMwpcClNaI	MaxPhiTrSingleMwpcPid
+#AngleLimits:	20.		50.		100.		60.			50.
+#AngleLimits:	20.		50.		15.		60.			50.
+##
+##
+##		MaxTrack	MaxRpsvertex	MaxZpsvertex	MinZpsvertex
+#TrackLimits:	10		70.		500.		-500.
+##
+## Do some post-initialisation.
+## Should usually be done before display is setup
+Initialise:
+##
+#Data-Cut:  1D   NchTracks	AND     data	2	2
+#Data-Cut:  1D   NTracks	AND     data	1	1
+#
+#Data-Cut: 2D EclNaIOR AND misc EhitPidOR ProtonCut CB_Cut_NaI_PID.root 0 0 0 2212
+#Data-Cut: 2D EclNaIOR AND misc EhitPidOR ProtonCut CB_Cut_NaI_PID.root 0 0 1 2212
+#Data-Cut: 2D EclNaIOR AND misc EhitPidOR ProtonCut CB_Cut_NaI_PID.root 0 0 2 2212
+#Data-Cut: 2D EclNaIOR AND misc EhitPidOR ProtonCut CB_Cut_NaI_PID.root 0 0 3 2212
+#Data-Cut: 2D EclNaIOR AND misc EhitPidOR ProtonCut CB_Cut_NaI_PID.root 0 0 4 2212
+#Data-Cut: 2D EclNaIOR AND misc EhitPidOR ProtonCut CB_Cut_NaI_PID.root 0 0 5 2212
+#Data-Cut: 2D EclNaIOR AND misc EhitPidOR ProtonCut CB_Cut_NaI_PID.root 0 0 6 2212
+#Data-Cut: 2D EclNaIOR AND misc EhitPidOR ProtonCut CB_Cut_NaI_PID.root 0 0 7 2212
+#Data-Cut: 2D EclNaIOR AND misc EhitPidOR ProtonCut CB_Cut_NaI_PID.root 0 0 8 2212
+#Data-Cut: 2D EclNaIOR AND misc EhitPidOR ProtonCut CB_Cut_NaI_PID.root 0 0 9 2212
+#Data-Cut: 2D EclNaIOR AND misc EhitPidOR ProtonCut CB_Cut_NaI_PID.root 0 0 10 2212
+#Data-Cut: 2D EclNaIOR AND misc EhitPidOR ProtonCut CB_Cut_NaI_PID.root 0 0 11 2212
+#Data-Cut: 2D EclNaIOR AND misc EhitPidOR ProtonCut CB_Cut_NaI_PID.root 0 0 12 2212
+#Data-Cut: 2D EclNaIOR AND misc EhitPidOR ProtonCut CB_Cut_NaI_PID.root 0 0 13 2212
+#Data-Cut: 2D EclNaIOR AND misc EhitPidOR ProtonCut CB_Cut_NaI_PID.root 0 0 14 2212
+#Data-Cut: 2D EclNaIOR AND misc EhitPidOR ProtonCut CB_Cut_NaI_PID.root 0 0 15 2212
+#Data-Cut: 2D EclNaIOR AND misc EhitPidOR ProtonCut CB_Cut_NaI_PID.root 0 0 16 2212
+#Data-Cut: 2D EclNaIOR AND misc EhitPidOR ProtonCut CB_Cut_NaI_PID.root 0 0 17 2212
+#Data-Cut: 2D EclNaIOR AND misc EhitPidOR ProtonCut CB_Cut_NaI_PID.root 0 0 18 2212
+#Data-Cut: 2D EclNaIOR AND misc EhitPidOR ProtonCut CB_Cut_NaI_PID.root 0 0 19 2212
+#Data-Cut: 2D EclNaIOR AND misc EhitPidOR ProtonCut CB_Cut_NaI_PID.root 0 0 20 2212
+#Data-Cut: 2D EclNaIOR AND misc EhitPidOR ProtonCut CB_Cut_NaI_PID.root 0 0 21 2212
+#Data-Cut: 2D EclNaIOR AND misc EhitPidOR ProtonCut CB_Cut_NaI_PID.root 0 0 22 2212
+#Data-Cut: 2D EclNaIOR AND misc EhitPidOR ProtonCut CB_Cut_NaI_PID.root 0 0 23 2212
+#ParticleID-Cut: 24	24
+#
+#Data-Cut: 2D EclNaIOR AND misc EhitPidOR ProtonCut CB_Cut_NaI_PID.root 0 0 0 2212
+#Data-Cut: 2D EtrackMwpcOR AND misc EhitPidOR ProtonCut CB_Cut_DeltaE-MWPC_Proton.root 0 0 0 2212
+#ParticleID-Cut: 1	24
+#
+## Histograms of apparatus-level variables
+## histogram name should be preceeded by 1D or 2D (for dimension of spectrum)
+Display: 2D PID_Hits 24 0 24 -1              NaI_ClPhi 		180 -180 180 -1
+Display: 2D PID_Hits 24 0 24 -1              CylMWPC_Wire1Hits 	232  0   232 -1
+Display: 2D PID_Hits 24 0 24 -1              CylMWPC_Wire2Hits 	296  0   296 -1
+#
+#Display: 1D	Ntracks		10	0	10
+#Display: 1D	NchTracks	10	0	10
+#Display: 1D	NneTracks	10	0	10
+#
+Display: 1D	PhiMwpcTrackNaI		180	0	180
+Display: 1D	PhiTrackPid		180	-180	180
+Display: 1D	PhiMwpcTrackPid		180	-180	180
+Display: 1D	PhiInterSingleMwpcNaI	180	0	180
+Display: 1D	PhiTrackSingleMwpcPid	180	-180	180
+Display: 1D	PhiMwpcInterNaI		180	0	180
+Display: 1D	PhiMwpcInterPid		180	-180	180
+Display: 1D	PhiPidNaI		180	-180	180
+#
+#Display: 1D	TrackTypes	16	0	16
+Display: 1D	TrackTheta	180	0	180
+Display: 1D	TrackPhi	180	0	360
+Display: 1D	EclNaI		100	0	500
+Display: 1D	EhitPid		100	0	6
+Display: 2D	EclNaI		100	0	400	-1	EhitPid		100	0	10	-1
+Display: 1D	EtrackMwpc	100	0	2000
+Display: 2D	EhitPid		100	0	6	-1	EtrackMwpc	100	0	2000	-1
+Display: 2D	EclNaI		100	0	400	-1	EtrackMwpc	100	0	2000	-1
+#Display: 1D	PsVertexX	40	-40	40
+#Display: 1D	PsVertexY	40	-40	40
+#Display: 1D	PsVertexZ	500	-250	250
+#Display: 1D	PsVertexR	100	0	74
+#Display: 2D	PsVertexX	40	-40	40	-1	PsVertexY	40	-40	40	-1
+#Display: 2D	PsVertexZ	500	-250	250	-1	PsVertexX	40	-40	40	-1
+#Display: 2D	PsVertexZ	500	-250	250	-1	PsVertexY	40	-40	40	-1
+# Vertexes
+#Display: 1D	VertexN		5	0	5
+#Display: 1D	VertexX		40	-40	40
+#Display: 1D	VertexY		40	-40	40
+#Display: 1D	VertexZ		500	-250	250
+#Display: 1D	VertexR		70	0	70
+#
+
+
+

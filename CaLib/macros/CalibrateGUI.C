@@ -1,4 +1,4 @@
-// SVN Info: $Id: CalibrateGUI.C 976 2011-08-31 17:16:34Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller, Irakli Keshelashvili
@@ -400,6 +400,12 @@ void ButtonWindow::StartModule()
     // get the selected runsets
     TList set_list;
     fLB_RunSet->GetSelectedEntries(&set_list);
+
+    // check if a run set is actually selected
+    if(set_list.GetSize() ==0) {
+        puts("No Run Set selected!\n");
+        return;
+    }
 
     // fill sets
     Int_t nSet = set_list.GetSize();

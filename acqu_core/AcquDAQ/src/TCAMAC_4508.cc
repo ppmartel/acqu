@@ -17,7 +17,6 @@
 
 #include "TCAMAC_4508.h"
 
-ClassImp(TCAMAC_4508)
 
 enum { E4508RAM=200 };
 static Map_t k4508Keys[] = {
@@ -133,3 +132,5 @@ void TCAMAC_4508::InitRAM( Char_t* line	)
     fData[j] = addr;
   }
 }
+
+ClassImp(TCAMAC_4508)

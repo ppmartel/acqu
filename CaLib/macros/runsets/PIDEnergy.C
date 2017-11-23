@@ -1,4 +1,4 @@
-// SVN Info: $Id: PIDEnergy.C 912 2011-05-18 22:09:17Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller
@@ -12,12 +12,12 @@
 //                                                                      //
 //////////////////////////////////////////////////////////////////////////
 
+#include "Config.h"
 
 TCanvas* gCFit;
 TH1* gHOverview;
 TH1* gH;
 TH3* gH3;
-TFile* gFile;
 TF1* gFitFunc;
 TLine* gLine;
 Double_t gMin;
@@ -96,18 +96,6 @@ void PIDEnergy()
     gMin = 500;
     gMax = 1100;
 
-    // configuration (December 2007)
-    //const Char_t calibration[] = "LD2_Dec_07";
-    //const Char_t* fLoc = "/usr/puma_scratch0/werthm/A2/Dec_07/AR/out/droop";
-
-    // configuration (February 2009)
-    //const Char_t calibration[] = "LD2_Feb_09";
-    //const Char_t* fLoc = "/usr/puma_scratch0/werthm/A2/Feb_09/AR/out/droop";
-    
-    // configuration (May 2009)
-    const Char_t calibration[] = "LD2_May_09";
-    const Char_t* fLoc = "/usr/puma_scratch0/werthm/A2/May_09/AR/out/droop";
-
     // create histogram
     gHOverview = new TH1F("Overview", "Overview", 40000, 0, 40000);
     TCanvas* cOverview = new TCanvas();
@@ -127,6 +115,11 @@ void PIDEnergy()
     
     // get number of sets
     Int_t nSets = TCMySQLManager::GetManager()->GetNsets(data, calibration);
+
+    if(nSets <= 0) {
+        printf("No run sets found for calibration \"%s\"\n", calibration);
+        gSystem->Exit(1);
+    }
     
     // total number of runs
     Int_t nTotRuns = 0;
@@ -151,14 +144,12 @@ void PIDEnergy()
             // clean-up
             if (gH) delete gH;
             if (gH3) delete gH3;
-            if (gFile) delete gFile;
             gH = 0;
             gH3 = 0;
-            gFile = 0;
 
             // load ROOT file
-            sprintf(tmp, "%s/ARHistograms_CB_%d.root", fLoc, runs[j]);
-            gFile = new TFile(tmp);
+            sprintf(tmp, "%s/Hist_CBTaggTAPS_%d.root", fLoc, runs[j]);
+            TFile* gFile = new TFile(tmp, "READ");
 
             // check file
             if (!gFile) continue;
@@ -166,9 +157,15 @@ void PIDEnergy()
 
             // load histogram
             gH3 = (TH3*) gFile->Get(hName);
-            if (!gH3) continue;
+            if (!gH3) {
+                printf("%d: TH3 \"%s\" not found\n",runs[j],hName);
+                continue;
+            }
             if (!gH3->GetEntries()) continue;
-            if (gH3->GetEntries() < 5000) continue;
+             if (gH3->GetEntries() < 5000) {
+                 prtintf("%d: Not enough entires\n", gH3->GetEntries());
+                 continue;
+             }
 
             // project histogram
             gH3->GetXaxis()->SetRangeUser(40, 60);
@@ -210,9 +207,7 @@ void PIDEnergy()
     // adjust axis
     gHOverview->GetXaxis()->SetRangeUser(first_run-10, last_run+10);
 
-    TFile* fout = new TFile("runset_overview.root", "recreate");
-    cOverview->Write();
-    delete fout;
+    gHOverview->SaveAs("Calib_Overview_PIDEnergy.root");
 
     printf("%d runs analyzed.\n", nTotRuns);
 

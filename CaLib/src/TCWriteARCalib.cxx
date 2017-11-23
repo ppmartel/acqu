@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCWriteARCalib.cxx 1022 2011-10-10 14:51:59Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller
@@ -15,7 +15,6 @@
 
 #include "TCWriteARCalib.h"
 
-ClassImp(TCWriteARCalib)
 
 
 //______________________________________________________________________________
@@ -246,4 +245,4 @@ void TCWriteARCalib::Write(const Char_t* calibFile,
     delete r;
     if (rSG) delete rSG;
 }
-
+ClassImp(TCWriteARCalib)

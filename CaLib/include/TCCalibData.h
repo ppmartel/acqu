@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCCalibData.h 913 2011-05-18 22:15:42Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller

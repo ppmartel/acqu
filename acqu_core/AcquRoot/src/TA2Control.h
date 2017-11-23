@@ -28,6 +28,8 @@
 
 #include "TRint.h"
 //#include "AcquKeys.h"
+#include "TAcquRoot.h"
+
 
 // Global pointers recognised by CINT
 R__EXTERN class TAcquRoot*   gAR;         // global ptr to Acqu-Root interface

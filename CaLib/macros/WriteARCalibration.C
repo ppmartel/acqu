@@ -1,4 +1,4 @@
-// SVN Info: $Id: WriteARCalibration.C 895 2011-05-05 17:42:26Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller

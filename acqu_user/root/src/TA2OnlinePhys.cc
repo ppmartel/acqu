@@ -8,7 +8,6 @@ static const Map_t kInputs[] = {
     {NULL,          -1}
 };
 
-ClassImp(TA2OnlinePhys)
 
 //-----------------------------------------------------------------------------
 TA2OnlinePhys::TA2OnlinePhys( const char* name, TA2Analysis* analysis )
@@ -488,3 +487,5 @@ void TA2OnlinePhys::GetTagger()
 	else fNTagg = 0;	
 	
 }
+
+ClassImp(TA2OnlinePhys)

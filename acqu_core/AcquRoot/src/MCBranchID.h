@@ -62,8 +62,7 @@ enum{ EI_npart, EI_dircos, EI_plab, EI_elab, EI_idpart, EI_vertex, EI_beam,
       EI_ntaps, EI_ictaps, EI_ectapsl, EI_ectapfs, EI_tctaps, EI_evtaps,
       EI_nvtaps, EI_ivtaps, EI_tcryst, EI_tveto,
       EI_nmwpc, EI_imwpc, EI_mposx, EI_mposy, EI_mposz, EI_emwpc,
-      EI_scatt, EI_kinet,
-      EI_ntof, EI_tofi, EI_tofe, EI_toft, EI_tofx, EI_tofy, EI_tofz,
+      EI_mc_evt_id,EI_mc_rnd_id
 };
 
 #endif

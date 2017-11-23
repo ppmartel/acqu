@@ -31,7 +31,6 @@
 #include "TVME_VUPROM.h"
 #include "TDAQexperiment.h"
 
-ClassImp(TVME_VUPROM)
 
 enum { EVUP_EnCPU=200, EVUP_IntDelay, EVUP_FCDelay, EVUP_RAMDownload,
        EVUP_InputMask, EVUP_InputPrescale, EVUP_L1Prescale, EVUP_L2Prescale,
@@ -872,3 +871,5 @@ Int_t* TVME_VUPROM::GetParms(Int_t chan)
   fTrigParm[10] = fMThresh[chan];
   return fTrigParm;
 }
+
+ClassImp(TVME_VUPROM)

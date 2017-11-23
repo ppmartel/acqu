@@ -12,7 +12,6 @@
 
 #include "TMCUserGenerator.h"
 
-ClassImp(TMCUserGenerator)
 
 // Recognised User configure commands
 enum { EMCUserMisc = 200 };
@@ -62,4 +61,4 @@ void TMCUserGenerator::PostInit( )
   TMCFoamGenerator::PostInit();
 }
 
-
+ClassImp(TMCUserGenerator)

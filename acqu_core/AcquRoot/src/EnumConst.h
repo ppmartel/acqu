@@ -15,7 +15,7 @@
 
 
 enum { EMk1 = 1, EMk2 };               // Acqu data formats
-enum { EMaxCmdList = 4 };              // max number different command lists
+enum { EMaxCmdList = 32 };             // max number different command lists
 enum { ELineSize = 1024 };             // length in characters of line of text
 enum { EKeyWordSize = 256 };           // length in characters of keyword
 enum { EErrNonFatal, EErrFatal };      // error level

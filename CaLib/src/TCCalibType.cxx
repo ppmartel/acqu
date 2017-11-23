@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCCalibType.cxx 913 2011-05-18 22:15:42Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller
@@ -15,7 +15,6 @@
 
 #include "TCCalibType.h"
 
-ClassImp(TCCalibType)
 
 
 //______________________________________________________________________________
@@ -52,4 +51,4 @@ void TCCalibType::Print()
     }
     printf("\r\n");
 }
-
+ClassImp(TCCalibType)

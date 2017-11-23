@@ -27,7 +27,7 @@
 #include "TVector3.h"
 
 //---------------------------------------------------------------------------
-HitD2A_t::HitD2A_t( char* line, UInt_t nelem, TA2Detector* det )
+HitD2A_t::HitD2A_t(char* line, UInt_t nelem, TA2Detector* det , Bool_t ignorePosition)
 {
   // Create assembly of conversion-gain calibration parameters
   // to convert digital ADC (QDC,VDC) and TDC numbers to
@@ -62,6 +62,12 @@ HitD2A_t::HitD2A_t( char* line, UInt_t nelem, TA2Detector* det )
 		    adcstr, &fEnergyLowThr, &fEnergyHighThr, &fA0, &fA1,
 		    tdcstr, &fTimeLowThr, &fTimeHighThr, &fT0, &fT1,
 		    &xpos, &ypos, &zpos );
+
+  // in case we have MC data, set fA1 to 1 and fT0 to 0
+  if (gAR->GetProcessType() == EMCProcess) {
+    fA1 = 1.;
+    fT0 = 0.;
+  }
 
   if( i < 10 ){
     // Error in input line...ignore it
@@ -114,7 +120,7 @@ HitD2A_t::HitD2A_t( char* line, UInt_t nelem, TA2Detector* det )
     fMode += 2;
   }
   // Any position info
-  if( det->IsPos() ){
+  if(!ignorePosition && det->IsPos() ){
     if( i < 13 ){
       printf(" Error ignore create HitD2A from input line:\n %s\n",line);
       return;

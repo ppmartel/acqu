@@ -18,7 +18,6 @@
 #include "TDAQexperiment.h"
 //#include "TDAQmemmap.h"
 
-ClassImp(TVME_V792)
 
 enum { ECAEN_Threshold=200, ECAEN_NoThreshold, ECAEN_IPed, ECAEN_FCWind, ECAEN_HighThrRange };
 static Map_t kCAENKeys[] = {
@@ -222,3 +221,5 @@ Bool_t TVME_V792::CheckHardID( )
     PrintError("","<CAEN V7** ADC/TDC hardware ID read error>",EErrFatal);
   return kFALSE;
 }
+
+ClassImp(TVME_V792)

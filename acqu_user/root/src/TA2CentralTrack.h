@@ -24,8 +24,8 @@ class TA2CentralTrack : public TA2TrackLine {
     Double_t fEclNaI;		// Sum of crystals pulse amplitudes
     Double_t fEclNaICorr;	// Corrected sum of crystals pulse amplitudes
     Double_t fTclNaI;		// NaI cluster time
-    Double_t fMclNaI;		// Size of the NaI cluster
-    Double_t fCentralIndexNaI;	// Index of the central crystal in the cluster
+    Int_t    fMclNaI;		// Size of the NaI cluster
+    Int_t    fCentralIndexNaI;	// Index of the central crystal in the cluster
     Double_t fThetaNaI;		// Phi of the the NaI claster
     Double_t fPhiNaI;		// Phi of the the NaI claster
     Double_t fSigmaTimeNaI;
@@ -54,7 +54,7 @@ class TA2CentralTrack : public TA2TrackLine {
     void SetEclNaI(const Double_t &e) { fEclNaI = e; }
     void SetEclNaICorr(const Double_t &e) { fEclNaICorr = e; }
     void SetTclNaI(const Double_t &t) { fTclNaI = t; }
-    void SetMclNaI(const Double_t &m) { fMclNaI = m; }
+    void SetMclNaI(const Int_t &m) { fMclNaI = m; }
     void SetCentralIndexNaI(const Int_t &i) { fCentralIndexNaI = i; }
     void SetThetaNaI(const Double_t &theta) { fThetaNaI = theta; }
     void SetPhiNaI(const Double_t &phi) { fPhiNaI = phi; }
@@ -79,7 +79,7 @@ class TA2CentralTrack : public TA2TrackLine {
     Double_t GetEclNaI() const { return fEclNaI; }
     Double_t GetEclNaICorr() const { return fEclNaICorr; }
     Double_t GetTclNaI() const { return fTclNaI; }
-    Double_t GetMclNaI() const { return fMclNaI; }
+    Int_t    GetMclNaI() const { return fMclNaI; }
     Int_t    GetCentralIndexNaI() const { return fCentralIndexNaI; }
     Double_t GetThetaNaI() const { return fThetaNaI; }
     Double_t GetPhiNaI() const { return fPhiNaI; }
@@ -118,8 +118,8 @@ inline void TA2CentralTrack::Reset()
   fIclNaI = kNullHit;
   fEclNaI = kNullFloat;
   fTclNaI = kNullFloat;
-  fMclNaI = kNullFloat;
-  fCentralIndexNaI = kNullFloat;
+  fMclNaI = kNullHit;
+  fCentralIndexNaI = kNullHit;
   fSigmaTimeNaI   = kNullFloat;
   fSigmaEnergyNaI = kNullFloat;
   fSigmaPhiNaI    = kNullFloat;

@@ -25,7 +25,6 @@
 
 
 
-ClassImp(TVME_KPhSMI)
 
 enum { EKPhSMI_MapReg=200 };               
 static Map_t kKPhSMIKeys[] = {            
@@ -221,4 +220,4 @@ void TVME_KPhSMI::ReadIRQScaler(void  **P_buff)
   }
   return;
 }
-
+ClassImp(TVME_KPhSMI)

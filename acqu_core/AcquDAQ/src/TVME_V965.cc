@@ -13,7 +13,6 @@
 #include "TDAQexperiment.h"
 //#include "TDAQmemmap.h"
 
-ClassImp(TVME_V965)
 
 //-----------------------------------------------------------------------------
 TVME_V965::TVME_V965( Char_t* name, Char_t* file, FILE* log, Char_t* line )
@@ -94,3 +93,5 @@ Bool_t TVME_V965::CheckHardID( )
     PrintError("","<CAEN V965 ADC hardware ID read error>",EErrFatal);
   return kFALSE;
 }
+
+ClassImp(TVME_V965)

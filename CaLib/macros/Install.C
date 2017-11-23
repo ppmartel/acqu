@@ -1,4 +1,4 @@
-// SVN Info: $Id: Install.C 764 2011-01-25 21:16:52Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller

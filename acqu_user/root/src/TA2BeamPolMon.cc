@@ -23,7 +23,6 @@ static Map_t kValidDetectors[] = {
   {NULL, 		-1}
 };
 
-ClassImp(TA2BeamPolMon)
 
 //-----------------------------------------------------------------------------
 TA2BeamPolMon::TA2BeamPolMon( const char* name, TA2System* analysis  )
@@ -63,4 +62,4 @@ TA2DataManager*  TA2BeamPolMon::CreateChild(const char* name, Int_t dclass)
 }
 
 
-
+ClassImp(TA2BeamPolMon)

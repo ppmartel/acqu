@@ -1,7 +1,6 @@
-// SVN Info: $Id: TA2MyPhysics.cc 780 2011-02-03 13:38:26Z werthm $
-
 /*************************************************************************
- * Author: Dominik Werthmueller, 2008-2011
+ * Authors: Dominik Werthmueller, 2008-2014
+ *          Thomas Strub, 2013
  *************************************************************************/
 
 //////////////////////////////////////////////////////////////////////////
@@ -17,12 +16,11 @@
 
 #include "TA2MyPhysics.h"
 
-ClassImp(TA2MyPhysics)
 
 
 //______________________________________________________________________________
 TA2MyPhysics::TA2MyPhysics(const char* name, TA2Analysis* analysis) 
-    : TA2Physics(name, analysis)
+    : TA2AccessSQL(name, analysis)
 {
     // Constructor.
     
@@ -31,78 +29,80 @@ TA2MyPhysics::TA2MyPhysics(const char* name, TA2Analysis* analysis)
     // command-line recognition for SetConfig()
     AddCmdList(myPhysicsConfigKeys);
     
-    // init members 
-    fAnalysisMode = gAR->GetProcessType();
-    
-    if (fAnalysisMode == EMCProcess) fIsMC = kTRUE;
-    else fIsMC = kFALSE;
+    fOutputFile = 0;
 
     fMCVertX = 0;
     fMCVertY = 0;
-    fMCVertX = 0;
+    fMCVertZ = 0;
     
-    fRunNumber          = 0;
-    ExtrtactRunNumber();
+    fMCBranchDirCos = 0;
+    fMCBranchVert = 0;
+
+    fLastEvent = 0;
+
     fEventCounter       = 0;
     fEventOffset        = 0;
     fSaveEvent          = 0;
-    
-    fTagger             = 0;                 
-    fLadder             = 0;
+    fScalerReadCounter  = 0;
+    fUseBadScalerReads  = kFALSE;
+
     fTaggerPhotonNhits  = 0;                 
     fTaggerPhotonHits   = 0;                 
     fTaggerPhotonEnergy = 0;                 
     fTaggerPhotonTime   = 0;                 
 
-    fCB               = 0;  
-    fNaI              = 0;
     fNaINhits         = 0;
     fNaIHits          = 0;
     fNaIEnergy        = 0;
     fNaITime          = 0;
     fCBClTime         = 0;       
-    fCBPID_Index      = 0;
-    fCBPID_dE         = 0;
+    fCBPattern        = 0; 
+    fNaILEDPattern    = -1;
+    fNaILEDNhits      = 0;         
+    fNaILEDHits       = 0;           
     fCBClusterHit     = 0;         
     fCBNCluster       = 0;          
     fCBCluster        = 0;  
-    
-    fPID              = 0;         
+    fCBEnergyScale    = 1.;
+
     fPIDNhits         = 0;               
     fPIDHits          = 0;               
     fPIDHitPos        = 0;            
     fPIDEnergy        = 0;
     fPIDTime          = 0;
+    
+    fMWPCNtracks      = 0;
+    fMWPCtracks       = 0;
 
-    fTAPS             = 0;        
+    fTAPSType         = kTAPS_2007;
     fBaF2PWO          = 0;   
     fBaF2PWONhits     = 0;            
     fBaF2PWOHits      = 0;            
     fBaF2PWOEnergy    = 0;
     fBaF2PWOTime      = 0;         
-
-    fBaF2Pattern      = 0; 
+    fTAPSPattern      = 0; 
     fBaF2CFDPattern   = -1;
     fBaF2LED1Pattern  = -1;
     fBaF2LED2Pattern  = -1;
+    fVetoLEDPattern   = -1;
     fBaF2CFDNhits     = 0;         
     fBaF2CFDHits      = 0;           
     fBaF2LED1Nhits    = 0;           
     fBaF2LED1Hits     = 0;           
     fBaF2LED2Nhits    = 0;           
     fBaF2LED2Hits     = 0;            
-    
+    fVetoLEDNhits     = 0;           
+    fVetoLEDHits      = 0;            
     fTAPSClusterHit   = 0;          
     fTAPSNCluster     = 0;         
     fTAPSCluster      = 0;  
-    
-    fVeto             = 0;    
+    fTAPSEnergyScale  = 1.;
+
     fVetoNhits        = 0;          
     fVetoHits         = 0;          
     fVetoEnergy       = 0;
     fVetoTime         = 0;
 
-    fPbWO4            = 0;
     fPbWO4Nhits       = 0;      
     fPbWO4Hits        = 0;
     fPbWO4Energy      = 0;
@@ -111,21 +111,20 @@ TA2MyPhysics::TA2MyPhysics(const char* name, TA2Analysis* analysis)
     fCP               =  0;     
     fEBeamBitPos      = 10;
     fEBeamBitNeg      =  4;
-    fEBeamHelState    =  0;     
-    
-    fTOF              = 0;   
+    fEBeamBitADC      =  6;
+
     fTOFBarNhits      = 0;          
     fTOFBarHits       = 0;          
     fTOFBarMeanEnergy = 0;      
     fTOFBarMeanTime   = 0;      
   
-    fPbGlassApp       = 0;
-    fPbGlass          = 0;  
     fPbGlassNhits     = 0;        
     fPbGlassTime      = 0;    
 
+    fNTotal   = 0;
     fNNeutral = 0;
     fNCharged = 0;
+    fPart     = 0;
     fPartCB   = 0;
     fPartTAPS = 0;
     fPartNeutral = 0;
@@ -134,50 +133,82 @@ TA2MyPhysics::TA2MyPhysics(const char* name, TA2Analysis* analysis)
     fNMC = 0;
     for (Int_t i = 0; i < gMyPhysics_MaxMCPart; i++) fPartMC[i] = new TOMCParticle(kRootino, kFALSE);
     
-    fL1CB          = kFALSE;
-    fL1TAPS_OR     = kFALSE;
-    fL1TAPS_M2     = kFALSE;
-    fL1Pulser      = kFALSE;
-    fL1TAPS_Pulser = kFALSE;
-    fL2M1          = kFALSE;
-    fL2M2          = kFALSE;
-    fL2M3          = kFALSE;
-    fL2M4          = kFALSE;
+    fTrigger = new TOA2Trigger();
+    fL1Bit_CB          = 0x01;
+    fL1Bit_TAPS_OR     = 0x08;
+    fL1Bit_TAPS_M2     = 0x40;
+    fL1Bit_Pulser      = 0x80;
+    fL1Bit_TAPS_Pulser = 0x10;
+    fCBSumInL2         = kFALSE;
+    fL2Bit_M1          = 0x00;
+    fL2Bit_M2          = 0x00;
+    fL2Bit_M3          = 0x00;
+    fL2Bit_M4          = 0x00;
 
-    fTrigTotalMult   = 0;
-    fTrigTAPSMult    = 0;
-    fTrigCBSum       = 0;
-    fTrigCBSegThr    = 0;
-    fTrigTAPSLED1Thr = 0;  
-    fTrigTAPSLED2Thr = 0; 
+    fTrigTotalMult       = 0;
+    fTrigIsTAPSTotalMult = kTRUE;
+    fTrigTAPSMult        = 0;
+    fTrigCBSum           = 0;
+    fTrigCBMeanGain      = 1;
+    fTrigCBRelGains      = 0;
+    fTrigCBSumCDF        = 0;
+    fTrigCBSegThr        = 0;
+    fTrigTAPSLED1Thr     = 0;  
+    fTrigTAPSLED2Thr     = 0; 
+    fNTrigTAPSExclRings  = 0;
+    fTrigTAPSExclRings   = new Int_t[gMyPhysics_MaxTAPSRing];
 
-    fOldScalerSumValue = new Double_t[gMyPhysics_MaxScalers];
-    for (Int_t i = 0; i < gMyPhysics_MaxScalers; i++) fOldScalerSumValue[i] = 0.;
-    fOldP2ScalerSum = 0.;
     fNBadTaggerChannels = 0;
-    fBadTaggerChannels  = new Int_t[gMyPhysics_MaxTaggerCh];
-    
-    fNt_P2TaggerRatio = 0;
+    fBadTaggerChannels = new Int_t[gMyPhysics_MaxTaggerCh];
+    fNBadCBClusters = 0;
+    fBadCBClusters = new Int_t[gMyPhysics_MaxNaI];
+    fNBadTAPSClusters = 0;
+    fBadTAPSClusters = new Int_t[gMyPhysics_MaxBaF2PWO];
+    fNBadParticleCuts = 0;
+    fBadParticleCuts = 0;
 
-    fTargetPosition = 0;
-
-    fCBTimeOffset   = 0.;
-    fTAPSTimeOffset = 0.;
+    fOldScalerSum = new Double_t[gAR->GetMaxScaler()];
+    for (Int_t i = 0; i < gAR->GetMaxScaler(); i++) fOldScalerSum[i] = 0.;
     
+    fNBadScalerReads = 0;
+    fBadScalerReads = 0;
+    fIsBadScalerSkip = kFALSE;
+    fH_BadScR_SumScalers = 0;
+    fH_BadScR_SumFPDScalers = 0;
+
     fH_CB_PID_Coinc_Hits = new TH1*[gMyPhysics_MaxPID];
     fH_CB_PID_dE_E = new TH2*[gMyPhysics_MaxPID];
     for (Int_t i = 0; i < gMyPhysics_MaxPID; i++) 
     {
         // CB-PID coincidence plots
-        sprintf(tmp, "CB_PID_Coinc_Hits_%d", i);
+        sprintf(tmp, "CB_PID_Coinc_Hits_%02d", i);
         //fH_CB_PID_Coinc_Hits[i] = new TH1F(tmp, tmp, 360, 0, 180);
         
         // CB-PID dE vs. E plots
-        sprintf(tmp, "CB_PID_dE_E_%d", i);
-        //fH_CB_PID_dE_E[i] = new TH2F(tmp, tmp, 1000, 0, 1000, 200, 0, 10);
+        sprintf(tmp, "CB_PID_dE_E_%02d", i);
+        //fH_CB_PID_dE_E[i] = new TH2F(tmp, tmp, 1000, 0, 1000, 400, 0, 20);
     }
 
     fCBPIDPhiLimit = 15.;
+    fPIDDroopCorr = 0;
+    fPIDdEECuts = 0;
+
+    fPSA = 0;
+    
+    fPrompt_Min_CB = 0;
+    fPrompt_Max_CB = 0;
+    fPrompt_Min_TAPS = 0;
+    fPrompt_Max_TAPS = 0;
+
+    fProtonECorrCB = 0;
+    fProtonECorrTAPS = 0;
+
+    fPhotonResThetaCB = 0;
+    fPhotonResPhiCB = 0;
+    fPhotonResEnergyCB = 0;
+    fPhotonResThetaTAPS = 0;
+    fPhotonResPhiTAPS = 0;
+    fPhotonResEnergyTAPS = 0;
 
     // CaLib
     fCaLibReader = 0;
@@ -189,11 +220,8 @@ TA2MyPhysics::~TA2MyPhysics()
     // Destructor.
     
     if (fBadTaggerChannels) delete [] fBadTaggerChannels;
-    if (fNt_P2TaggerRatio)
-    {
-        for (Int_t i = 0; i < 352; i++) delete fNt_P2TaggerRatio[i];
-        delete [] fNt_P2TaggerRatio;
-    }
+    if (fBadCBClusters) delete [] fBadCBClusters;
+    if (fBadTAPSClusters) delete [] fBadTAPSClusters;
 }
 
 //______________________________________________________________________________
@@ -203,198 +231,123 @@ void TA2MyPhysics::SetConfig(Char_t* line, Int_t key)
 
     switch (key)
     {
-        case EMP_USE_CALIB:
-        {   
-            Char_t tmp[5][256];
+        case EMP_CALIB_BADSCR:
+        {
+            // declare sscanf helpers (max. 16 data names)
+            Int_t list;
+            Int_t first;
+            Int_t last;
+            Char_t* d[16];
+            for (Int_t i = 0; i < 16; i++) d[i] = new Char_t[128];
 
-            // read CaLib parameters
-            if (sscanf(line, "%s%s%s%s%s", tmp[0], tmp[1], tmp[2], tmp[3], tmp[4]) == 5) 
+            // read config line
+            Int_t nfields = sscanf(line, "%i%i%i%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s", &list, &first, &last,
+                                   d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8], d[9], d[10], d[11], d[12], d[13], d[14], d[15]);
+
+            // check whether CaLib reader exists
+            if (fCaLibReader)
             {
-                // create the CaLib reader
-                fCaLibReader = new CaLibReader_t(tmp[0], tmp[1], tmp[2], tmp[3], tmp[4], fRunNumber);
-                
-                // check database connection
-                if (fCaLibReader->IsConnected())
-                    Info("SetConfig", "Using calibration '%s' in the CaLib database '%s' on '%s@%s'"
-                                      , tmp[4], tmp[1], tmp[2], tmp[0]);
+                // set flags
+                fCaLibReader->SetBadScRlist((Bool_t) list);
+                fCaLibReader->SetBadScRfirst((Bool_t) first);
+                fCaLibReader->SetBadScRlast((Bool_t) last);
+
+                // read (from database) & configure bad scaler reads
+                if (fCaLibReader->ReadScalerReads(nfields-3, d))
+                {
+                    // set members
+                    fNBadScalerReads = fCaLibReader->GetNBadScR();
+                    fBadScalerReads = fCaLibReader->GetBadScR();
+
+                    // activate bad scaler reads
+                    fUseBadScalerReads = kTRUE;
+                }
                 else
-                    Error("SetConfig", "Could not connect to CaLib database server!");
+                {
+                    Error("SetConfig", "Bad scaler read could not be configured!");
+                }
             }
-            else Error("SetConfig", "CaLib could not be configured and is hence disabled!");
+            else
+            {
+                Error("SetConfig", "Bad scaler read cannot be configured because CaLib was not configured!");
+            }
+
+            // clean up
+            for (Int_t i = 0; i < 16; i++) delete d[i];
             break;
         }
-        case EMP_CALIB_MISC:
+        case EMP_RUN_NUMBER:
         {   
-            Int_t target_pos;
-
-            // read CaLib misc parameters
-            if (sscanf(line, "%d", &target_pos) == 1)
-            {
-                // check if CaLib reader exists
-                if (fCaLibReader) 
-                {
-                    fCaLibReader->SetTargetPosition((Bool_t) target_pos);
-                }
-                else
-                {
-                    Error("SetConfig", "Misc calibration cannot be configured because CaLib was not configured!");
-                    break;
-                }
-            }
-            else Error("SetConfig", "CaLib misc calibration could not be configured!");
-            break;
-        }
-        case EMP_CALIB_TAGG:
-        {   
-            Int_t time;
-
-            // read CaLib TAGG parameters
-            if (sscanf(line, "%d", &time) == 1)
-            {
-                // check if CaLib reader exists
-                if (fCaLibReader) 
-                {
-                    fCaLibReader->SetTAGGtime((Bool_t) time);
-                }
-                else
-                {
-                    Error("SetConfig", "TAGG cannot be configured because CaLib was not configured!");
-                    break;
-                }
-            }
-            else Error("SetConfig", "CaLib TAGG calibration could not be configured!");
-            break;
-        }
-        case EMP_CALIB_CB:
-        {   
-            Int_t energy;
-            Int_t time;
-            Int_t timewalk;
-            Int_t quadEnergy;
-
-            // read CaLib CB parameters
-            if (sscanf(line, "%d%d%d%d", &energy, &time, &timewalk, &quadEnergy) == 4)
-            {
-                // check if CaLib reader exists
-                if (fCaLibReader)
-                {
-                    fCaLibReader->SetCBenergy((Bool_t) energy);
-                    fCaLibReader->SetCBtime((Bool_t) time);
-                    fCaLibReader->SetCBwalk((Bool_t) timewalk);
-                    fCaLibReader->SetCBquadEnergy((Bool_t) quadEnergy);
-                }
-                else
-                {
-                    Error("SetConfig", "CB cannot be configured because CaLib was not configured!");
-                    break;
-                }
-            }
-            else Error("SetConfig", "CaLib CB calibration could not be configured!");
-            break;
-        }
-        case EMP_CALIB_TAPS:
-        {   
-            Int_t energy;  
-            Int_t time;  
-            Int_t quadEnergy;
-            Int_t led;
-
-            // read CaLib TAPS parameters
-            if (sscanf(line, "%d%d%d%d", &energy, &time, &quadEnergy, &led) == 4)
-            {
-                // check if CaLib reader exists
-                if (fCaLibReader)
-                {
-                    fCaLibReader->SetTAPSenergy((Bool_t) energy);
-                    fCaLibReader->SetTAPStime((Bool_t) time);
-                    fCaLibReader->SetTAPSquadEnergy((Bool_t) quadEnergy);
-                    fCaLibReader->SetTAPSled((Bool_t) led);
-                }
-                else
-                {
-                    Error("SetConfig", "TAPS cannot be configured because CaLib was not configured!");
-                    break;
-                }
-            }
-            else Error("SetConfig", "CaLib TAPS calibration could not be configured!");
-            break;
-        }
-        case EMP_CALIB_PID:
-        {   
-            Int_t phi;
-            Int_t droop;
-            Int_t energy;
-            Int_t time;
-
-            // read CaLib PID parameters
-            if (sscanf(line, "%d%d%d%d", &phi, &droop, &energy, &time) == 4)
-            {
-                // check if CaLib reader exists
-                if (fCaLibReader)
-                {
-                    fCaLibReader->SetPIDphi((Bool_t) phi);
-                    fCaLibReader->SetPIDdroop((Bool_t) droop);
-                    fCaLibReader->SetPIDenergy((Bool_t) energy);
-                    fCaLibReader->SetPIDtime((Bool_t) time);
-                }
-                else
-                {
-                    Error("SetConfig", "PID cannot be configured because CaLib was not configured!");
-                    break;
-                }
-            }
-            else Error("SetConfig", "CaLib PID calibration could not be configured!");
-            break;
-        }
-        case EMP_CALIB_VETO:
-        {   
-            Int_t energy;
-            Int_t time;
-
-            // read CaLib Veto parameters
-            if (sscanf(line, "%d%d", &energy, &time) == 2)
-            {
-                // check if CaLib reader exists
-                if (fCaLibReader)
-                {
-                    fCaLibReader->SetVetoenergy((Bool_t) energy);
-                    fCaLibReader->SetVetotime((Bool_t) time);
-                }
-                else
-                {
-                    Error("SetConfig", "Veto cannot be configured because CaLib was not configured!");
-                    break;
-                }
-            }
-            else Error("SetConfig", "CaLib Veto calibration could not be configured!");
+            // read run number
+            if (sscanf(line, "%d", &fRunNumber) == 1)
+                Info("SetConfig", "Overwriting run number with %d", fRunNumber);
+            else
+                Error("SetConfig", "Could not overwrite run number!");
             break;
         }
         case EMP_BAD_TAGG_CH:
         {   
-            /*Char_t fileName[256];
+            Char_t fileName[256];
 
-            // read number of bad tagger channels
+            // read number and list of bad tagger channels
             if (sscanf(line, "%s", fileName))
-                fNBadTaggerChannels = TOLoader::LoadBadTaggerChannels(gSystem->ExpandPathName(fileName), fBadTaggerChannels);*/
+                fNBadTaggerChannels = TOLoader::LoadBadChannels(gSystem->ExpandPathName(fileName), fBadTaggerChannels);
             break;
         }
-        case EMP_P2_TAGGER_RATIO:
-        {
-            // activate p2-tagger-ratio output
-            
-            Char_t tname[256];
-            fNt_P2TaggerRatio = new TNtupleD*[352];
-            for (Int_t i = 0; i < 352; i++) 
+        case EMP_BAD_CB_CLUSTERS:
+        {   
+            Char_t fileName[256];
+
+            // read number and list of bad CB cluster centers
+            if (sscanf(line, "%s", fileName))
+                fNBadCBClusters = TOLoader::LoadBadChannels(gSystem->ExpandPathName(fileName), fBadCBClusters);
+            break;
+        }
+        case EMP_BAD_TAPS_CLUSTERS:
+        {   
+            Char_t fileName[256];
+
+            // read number and list of bad TAPS cluster centers
+            if (sscanf(line, "%s", fileName))
+                fNBadTAPSClusters = TOLoader::LoadBadChannels(gSystem->ExpandPathName(fileName), fBadTAPSClusters);
+            break;
+        }
+        case EMP_BAD_PARTICLE_CUTS:
+        {   
+            // read number of bad particle cuts
+            if (sscanf(line, "%d", &fNBadParticleCuts) == 1)
             {
-                sprintf(tname, "P2TaggerRatio_%d", i);
-                fNt_P2TaggerRatio[i] = new TNtupleD(tname, tname, "ratio:ratio_err");
+                fBadParticleCuts = new TOKinCut*[fNBadParticleCuts];
+                Info("SetConfig", "Init %d bad particle cut(s)", fNBadParticleCuts);
             }
+            else
+                Error("SetConfig", "Bad syntax in bad particle cuts definition!");
+            break;
+        }
+        case EMP_BAD_PARTICLE_CUT_PHI:
+        {
+            Int_t id;
+            Double_t min, max;
+            // read id and min/max values of cut
+            if (sscanf(line, "%d%lf%lf", &id, &min, &max) == 3)
+            {
+                fBadParticleCuts[id] = new TOKinCut(kPhiCut, min, max);
+                Info("SetConfig", "Setting up bad particle cut %d: Exclude phi range from %.2f to %.2f degrees", id, min, max);
+            }
+            else
+                Error("SetConfig", "Bad syntax in bad particle phi cut definition!");
             break;
         }
         case EMP_TRIGGER_TOTAL_MULT:
         {
             if (sscanf(line, "%d", &fTrigTotalMult) != 1)
                 Error("SetConfig", "Bad syntax in trigger total multiplicity definition!");
+            break;
+        }
+        case EMP_TRIGGER_TOTAL_MULT_NO_TAPS:
+        {
+            fTrigIsTAPSTotalMult = kFALSE;
+            Info("SetConfig", "TAPS multiplicity will not contribute to total multiplicity in software trigger");
             break;
         }
         case EMP_TRIGGER_TAPS_MULT:
@@ -409,6 +362,43 @@ void TA2MyPhysics::SetConfig(Char_t* line, Int_t key)
                 Error("SetConfig", "Bad syntax in trigger CB thresholds definition!");
             break;
         }
+        case EMP_TRIGGER_CB_REL_GAINS:
+        {
+            Char_t fileName[256];
+            
+            // load the CB NaI relative gains
+            if (sscanf(line, "%s", fileName) != 1)
+                Error("SetConfig", "Bad syntax in trigger CB relative NaI gains definition!");
+            else 
+            {   
+                // check if not MC
+                if (!fIsMC)
+                {
+                    Error("SetConfig", "Relative CB NaI gains are only used in MC analysis - ignoring!");
+                    break;
+                }
+
+                // create array
+                fTrigCBRelGains = new Double_t[gMyPhysics_MaxNaI];
+
+                // read gains
+                TONumberReader r(gSystem->ExpandPathName(fileName), 1);
+                for (Int_t i = 0; i < gMyPhysics_MaxNaI; i++) fTrigCBRelGains[i] = r.GetData()->Get(0, i);
+            
+                Info("SetConfig", "Relative CB NaI gains were read from '%s'", gSystem->ExpandPathName(fileName));
+            }   
+            break;
+        }
+        case EMP_TRIGGER_CB_SUM_CDF:
+        {
+            Char_t fileName[256];
+            
+            // load the CB CDF TF1 from the ROOT file
+            if (sscanf(line, "%s", fileName) != 1)
+                Error("SetConfig", "Bad syntax in trigger CB sum CDF definition!");
+            else TOLoader::LoadObject(gSystem->ExpandPathName(fileName), "CDF", &fTrigCBSumCDF);
+            break;
+        }
         case EMP_TRIGGER_TAPS_LED1_THRESHOLD:
         {
             if (sscanf(line, "%lf", &fTrigTAPSLED1Thr) != 1)
@@ -421,18 +411,13 @@ void TA2MyPhysics::SetConfig(Char_t* line, Int_t key)
                 Error("SetConfig", "Bad syntax in trigger TAPS LED2 thresholds definition!");
             break;
         }
-        case EMP_CB_TIME_OFFSET:
-        {
-            if (sscanf(line, "%lf", &fCBTimeOffset) != 1)
-                Error("SetConfig", "Bad syntax in CB time offset definition!");
-            else Info("SetConfig", "Using a global CB time offset of %f ns", fCBTimeOffset);
-            break;
-        }
-        case EMP_TAPS_TIME_OFFSET:
-        {
-            if (sscanf(line, "%lf", &fTAPSTimeOffset) != 1)
-                Error("SetConfig", "Bad syntax in TAPS time offset definition!");
-            else Info("SetConfig", "Using a global TAPS time offset of %f ns", fTAPSTimeOffset);
+        case EMP_TRIGGER_TAPS_EXCLUDED_RINGS:
+        {   
+            Char_t fileName[256];
+
+            // read number and list of trigger-excluded TAPS rings
+            if (sscanf(line, "%s", fileName))
+                fNTrigTAPSExclRings = TOLoader::LoadBadChannels(gSystem->ExpandPathName(fileName), fTrigTAPSExclRings);
             break;
         }
         case EMP_CB_PID_PHI_LIMIT:
@@ -449,139 +434,257 @@ void TA2MyPhysics::SetConfig(Char_t* line, Int_t key)
             else Info("SetConfig", "Using beam helicity bit: %d (+) and %d (-)", fEBeamBitPos, fEBeamBitNeg);
             break;
         }
-		case EMP_CALIB_CBENERGY_PER_RUN:
-        {  
-			Char_t tmp[128];
-			
-			printf("try to enable CBEnergy correction per Run\n");
-			
-			if (sscanf(line, "%s", tmp) == 1) 
-            {
-				GetRunNumber();
-				FILE*	f = fopen(tmp,"r");
-				Int_t 		num;
-				Double_t 	val[4];
-				while(!feof(f))
-				{
-					if (fscanf(f, "%d %lf %lf %lf %lf\n", &num, &val[0], &val[1], &val[2], &val[3]) == 5) 
-					{
-						if(num == fRunNumber)
-						{
-							CBEnergyPerRunCorrection		= true;
-							CBEnergyPerRunCorrectionFactor	= val[0];
-							printf("CBEnergy correction factor for run %d is %lf with error %lf\n", fRunNumber, CBEnergyPerRunCorrectionFactor, val[1]);
-							break;
-						}
-					}
-				}
-				fclose(f);
-			}
-		}
-        default:
+        case EMP_BEAM_POL_ADC:
         {
-            // default main apparatus SetConfig()
-            TA2Physics::SetConfig(line, key);
+            if (sscanf(line, "%d", &fEBeamBitADC) != 1)
+                Error("SetConfig", "Bad syntax in beam helicity bit ADC definition!");
+            else Info("SetConfig", "Using beam helicity bit ADC %d", fEBeamBitADC);
             break;
         }
-    }
-}
+        case EMP_L1_BITS:
+        {
+            if (sscanf(line, "%x%x%x%x%x", &fL1Bit_CB, &fL1Bit_TAPS_OR, &fL1Bit_TAPS_M2, &fL1Bit_Pulser,
+                                           &fL1Bit_TAPS_Pulser) != 5)
+                Error("SetConfig", "Bad syntax in L1 trigger bits definition!");
+            else Info("SetConfig", "Using L1 trigger bits: CB (0x%.4x), TAPS_OR (0x%.4x), TAPS_M2 (0x%.4x), "
+                                   "Pulser (0x%.4x), TAPS Pulser (0x%.4x)",
+                      fL1Bit_CB, fL1Bit_TAPS_OR, fL1Bit_TAPS_M2, fL1Bit_Pulser, fL1Bit_TAPS_Pulser);
+            break;
+        }
+        case EMP_L1_CBSUM_L2:
+        {
+            fCBSumInL2 = kTRUE;
+            Info("SetConfig", "Reading CB sum trigger from L2 trigger pattern");
+            break;
+        }
+        case EMP_L2_MULTI_BITS:
+        {
+            if (sscanf(line, "%x%x%x%x", &fL2Bit_M1, &fL2Bit_M2, &fL2Bit_M3, &fL2Bit_M4) != 4)
+                Error("SetConfig", "Bad syntax in L2 trigger multiplicity bits definition!");
+            else Info("SetConfig", "Using L2 trigger multiplicity bits: M1+ (0x%.4x), M2+ (0x%.4x), M3+ (0x%.4x), M4+ (0x%.4x)",
+                      fL2Bit_M1, fL2Bit_M2, fL2Bit_M3, fL2Bit_M4);
+            break;
+        }
+        case EMP_PID_DROOP_CORR:
+        {
+            Char_t droop_file[256];
+            if (sscanf(line, "%s", droop_file) != 1)
+                Error("SetConfig", "Bad syntax in PID droop correction file location!");
+            else 
+            {
+                // create PID droop correction TGraph array
+                fPIDDroopCorr = new TGraph*[gMyPhysics_MaxPID];
+                if (TOLoader::LoadObjects(gSystem->ExpandPathName(droop_file), "Droop_Corr_%02d", &fPIDDroopCorr, 0, 23, "", "q"))
+                    Info("SetConfig", "Using PID droop correction from '%s'", droop_file);
+                else
+                {
+                    delete [] fPIDDroopCorr;
+                    fPIDDroopCorr = 0;
+                    Error("SetConfig", "Could not load the PID droop correction from '%s'", droop_file);
+                }
+            }
+            break;
+        }
+        case EMP_LAST_EVENT:
+        {
+            if (sscanf(line, "%lld", &fLastEvent) != 1)
+                Error("SetConfig", "Bad syntax in last event definition!");
+            else Info("SetConfig", "Aborting analysis after event %lld\n", fLastEvent);
+            break;
+        }
+        case EMP_TAPS_PSA_DATA:
+        {
+            Char_t fileName[256];
+        
+            if (sscanf(line, "%s", fileName) != 1)
+                Error("SetConfig", "Bad syntax in TAPS PSA data definition!");
+            else 
+            {
+                // create PSA object if necessary
+                if (!fPSA) fPSA = new TOA2PSA(fileName);
+                else fPSA->LoadPSAData(fileName);
+                Info("SetConfig", "Loaded PSA data from '%s'", fileName);
+            }
+            break;
+        }
+        case EMP_TAPS_PSA_CONFIG:
+        {
+            Double_t sig, min, max;
+            if (sscanf(line, "%lf%lf%lf", &sig, &min, &max) != 3)
+                Error("SetConfig", "Bad syntax in TAPS PSA configuration!");
+            else 
+            {
+                // create PSA object if necessary
+                if (!fPSA) fPSA = new TOA2PSA(sig, min, max);
+                else 
+                {
+                    fPSA->SetPhotonSigmaFactor(sig);
+                    fPSA->SetNucleonExclZone(min, max);
+                }
+                Info("SetConfig", "Setting TAPS PSA photon factor to %.2lf", sig);
+                Info("SetConfig", "Exclusion zone for PSA nucleons from %.2lf to %.2lf", min, max);
+            }
+            break;
+        }
+        case EMP_TAGGER_PROMPT:
+        {
+            Char_t fileName[256];
+        
+            if (sscanf(line, "%s", fileName) != 1)
+                Error("SetConfig", "Bad syntax in Tagger prompt definition!");
+            else 
+            {
+                // load graphs
+                if (TOLoader::LoadObject(fileName, "CB_Min", &fPrompt_Min_CB, "", "q") &&
+                    TOLoader::LoadObject(fileName, "CB_Max", &fPrompt_Max_CB, "", "q") &&
+                    TOLoader::LoadObject(fileName, "TAPS_Min", &fPrompt_Min_TAPS, "", "q") &&
+                    TOLoader::LoadObject(fileName, "TAPS_Max", &fPrompt_Max_TAPS, "", "q"))
+                    Info("SetConfig", "Loaded Tagger prompt window data");
+                else Error("SetConfig", "Could not load all Tagger prompt window data!");
+            }
+            break;
+        }
+        case EMP_PROTON_ECORR_CB:
+        {
+            Char_t fileName[256];
+        
+            if (sscanf(line, "%s", fileName) != 1)
+                Error("SetConfig", "Bad syntax in CB proton energy correction definition!");
+            else 
+            {
+                Char_t tmp[256];
 
-//______________________________________________________________________________
+                // create graph array
+                fProtonECorrCB = new TGraph*[gMyPhysics_MaxNaI];
 
-Int_t	TA2MyPhysics::ExtrtactRunNumber()
-{
-	char*	str = new char[64];
-	strcpy(str,gAR->GetFileName());
-	while(strpbrk(str+1,"."))
-		str	= strpbrk(str+1,".");
-	
-	*str	= '\0';
-	str	= str-1;
-	
-	while(*str == '0' || *str == '1' || *str == '2' || *str == '3' || *str == '4' || *str == '5' || *str == '6' || *str == '7' || *str == '8' || *str == '9')
-		str	= str-1;
-	str	= str+1;
-	
-	if(fRunNumber != atoi(str));
-	{
-		fRunNumber = atoi(str);
-		printf("RunNumber : %d\n",fRunNumber);
-	}
-	
-	return fRunNumber;
-}
+                // load graphs
+                Int_t nLoad = 0;
+                for (Int_t i = 0; i < gMyPhysics_MaxNaI; i++)
+                {
+                    sprintf(tmp, "ProtonECorr_%03d", i);
+                    if (TOLoader::LoadObject(fileName, tmp, &fProtonECorrCB[i], "", "q")) nLoad++;
+                }
+                Info("SetConfig", "Loaded proton energy correction data for %d CB detectors", nLoad);
+            }
+            break;
+        }
+        case EMP_PROTON_ECORR_TAPS:
+        {
+            Char_t fileName[256];
+        
+            if (sscanf(line, "%s", fileName) != 1)
+                Error("SetConfig", "Bad syntax in TAPS proton energy correction definition!");
+            else 
+            {
+                Char_t tmp[256];
 
-//______________________________________________________________________________ 
-void TA2MyPhysics::LoadDetectors(TA2DataManager* parent, Int_t depth)
-{
-    // Load recursively all detector components.
-    
-    Bool_t added = kFALSE;
+                // create graph array
+                fProtonECorrTAPS = new TGraph*[gMyPhysics_MaxBaF2PWO];
 
-    // get the children, leave if none found
-    TList* children = parent->GetChildren();
-    if (!children) return;
-    
-    // loop over children
-    TObjLink *lnk = children->FirstLink();
-    while (lnk)
-    {
-        TObject* obj = lnk->GetObject();
-     
-        // look for detectors
-        if (!strcmp(obj->ClassName(), "TA2Tagger"))
-        {
-            fTagger = (TA2Tagger*) obj;
-            added = kTRUE;
+                // load graphs
+                Int_t nLoad = 0;
+                for (Int_t i = 0; i < gMyPhysics_MaxBaF2PWO; i++)
+                {
+                    sprintf(tmp, "ProtonECorr_%03d", i);
+                    if (TOLoader::LoadObject(fileName, tmp, &fProtonECorrTAPS[i], "", "q")) nLoad++;
+                }
+                Info("SetConfig", "Loaded proton energy correction data for %d TAPS detectors", nLoad);
+            }
+            break;
         }
-        if (!strcmp(obj->ClassName(), "TA2Ladder"))
+        case EMP_PHOTON_RES_CB:
         {
-            fLadder = (TA2Ladder*) obj;
-            added = kTRUE;
+            Char_t fileName[256];
+        
+            if (sscanf(line, "%s", fileName) != 1)
+                Error("SetConfig", "Bad syntax in CB photon resolution file definition!");
+            else 
+            {
+                // load graphs
+                if (TOLoader::LoadObject(fileName, "ThetaRes", &fPhotonResThetaCB, "", "q") &&
+                    TOLoader::LoadObject(fileName, "PhiRes", &fPhotonResPhiCB, "", "q") &&
+                    TOLoader::LoadObject(fileName, "EnergyRes", &fPhotonResEnergyCB, "", "q"))
+                    Info("SetConfig", "Loaded CB photon resolutions");
+                else Error("SetConfig", "Could not load all CB photon resolutions!");
+            }
+            break;
         }
-        else if (!strcmp(obj->ClassName(), "TA2CentralApparatus"))
+        case EMP_PHOTON_RES_TAPS:
         {
-            fCB = (TA2CentralApparatus*) obj;
-//			fCB = (TA2CrystalBall*) obj;
-            added = kTRUE;
+            Char_t fileName[256];
+        
+            if (sscanf(line, "%s", fileName) != 1)
+                Error("SetConfig", "Bad syntax in TAPS photon resolution file definition!");
+            else 
+            {
+                // load graphs
+                if (TOLoader::LoadObject(fileName, "ThetaRes", &fPhotonResThetaTAPS, "", "q") &&
+                    TOLoader::LoadObject(fileName, "PhiRes", &fPhotonResPhiTAPS, "", "q") &&
+                    TOLoader::LoadObject(fileName, "EnergyRes", &fPhotonResEnergyTAPS, "", "q"))
+                    Info("SetConfig", "Loaded TAPS photon resolutions");
+                else Error("SetConfig", "Could not load all TAPS photon resolutions!");
+            }
+            break;
         }
-        else if (!strcmp(obj->ClassName(), "TA2CalArray"))
+//        case EMP_PARTICLE_RES:
+//        {
+//            Char_t fileName[256];
+        
+//            if (sscanf(line, "%s", fileName) != 1)
+//                Error("SetConfig", "Bad syntax in particle resolution file definition!");
+//            else 
+//            {
+//                // load resolutions
+//                if (TOLoader::LoadObject(fileName, "DetRes", &fParticleRes, "", "q"))
+//                    Info("SetConfig", "Loaded particle resolutions");
+//                else 
+//                    Error("SetConfig", "Could not load particle resolutions!");
+//            }
+//            break;
+//        }
+        case EMP_CB_TAPS_ENERGY_SCALE:
         {
-            fNaI = (TA2CalArray*) obj;
-            added = kTRUE;
+            if (sscanf(line, "%lf%lf", &fCBEnergyScale, &fTAPSEnergyScale) != 2)
+                Error("SetConfig", "Bad syntax in CB/TAPS energy scale definition!");
+            else 
+            {
+                Info("SetConfig", "Setting CB energy scaling to %lf", fCBEnergyScale);
+                Info("SetConfig", "Setting TAPS energy scaling to %lf", fTAPSEnergyScale);
+            }
+            break;
         }
-        else if (!strcmp(obj->ClassName(), "TA2PlasticPID"))
+        case EMP_PID_DE_E_CUTS:
         {
-            fPID = (TA2PlasticPID*) obj;
-            added = kTRUE;
-        }
-        else if (!strcmp(obj->ClassName(), "TA2Taps"))
-        {
-            fTAPS = (TA2Taps*) obj;
-            added = kTRUE;
-        }
-        else if (!strcmp(obj->ClassName(), "TA2TAPS_BaF2"))
-        {
-            fBaF2PWO = (TA2TAPS_BaF2*) obj;
-            added = kTRUE;
-        }
-        else if (!strcmp(obj->ClassName(), "TA2TAPS_Veto"))
-        {
-            fVeto = (TA2TAPS_Veto*) obj;
-            added = kTRUE;
-        }
+            Char_t fileName[256];
+            Char_t tmp[256];
+        
+            if (sscanf(line, "%s", fileName) != 1)
+                Error("SetConfig", "Bad syntax in PID dE-E file definition!");
+            else 
+            {
+                // load function array
+                fPIDdEECuts = new TF1*[gMyPhysics_MaxPID];
 
-        // print information if a detector was added
-        if (added)
-        {
-            for (Int_t i = 0; i < depth; i++) printf("  ");
-            printf( "   %s (%s)\n", obj->GetName(), obj->ClassName());
-            added = kFALSE;
-        }
+                // load cut functions
+                Int_t nLoad = 0;
+                for (Int_t i = 0; i < gMyPhysics_MaxPID; i++)
+                {
+                    sprintf(tmp, "cut_%d", i);
+                    if (TOLoader::LoadObject(fileName, tmp, &fPIDdEECuts[i], "", "q")) nLoad++;
+                }
 
-        // add children of child
-        LoadDetectors((TA2DataManager*) obj, depth + 1);
-        lnk = lnk->Next();
+                // check loading
+                if (nLoad == gMyPhysics_MaxPID) Info("SetConfig", "Loaded dE-E cuts for %d PID elements", nLoad);
+                else Error("SetConfig", "Could not load all PID dE-E cuts!");
+            }
+            break;
+        }
+        default:
+        {
+            // default SetConfig() of base class
+            TA2AccessSQL::SetConfig(line, key);
+            break;
+        }
     }
 }
 
@@ -603,55 +706,6 @@ Int_t TA2MyPhysics::GetPatternIndex(const Char_t* patternName, TA2BitPattern* pa
     return -1;
 }
 
-//______________________________________________________________________________ 
-void TA2MyPhysics::ApplyCaLib()
-{
-    // Update the detector calibration parameters using CaLib.
-
-    // target position
-    if (!fCaLibReader->ApplyTargetPositioncalib(&fTargetPosition))
-        Error("ApplyCaLib", "An error occured during target position calibration!");
-
-    // calibrate TAGG
-    if (fLadder)
-    {
-        if (!fCaLibReader->ApplyTAGGcalib(fLadder))
-            Error("ApplyCaLib", "An error occured during tagger calibration!");
-    }
-    else Error("ApplyCaLib", "Tagger not found - could not calibrate the tagger using CaLib!");
-
-    // calibrate CB
-    if (fNaI)
-    {
-        if (!fCaLibReader->ApplyCBcalib(fNaI))
-            Error("ApplyCaLib", "An error occured during CB calibration!");
-    }
-    else Error("ApplyCaLib", "CB not found - could not calibrate CB using CaLib!");
-
-    // calibrate TAPS
-    if (fBaF2PWO)
-    {
-        if (!fCaLibReader->ApplyTAPScalib(fBaF2PWO))
-            Error("ApplyCaLib", "An error occured during TAPS calibration!");
-    }
-    else Error("ApplyCaLib", "TAPS not found - could not calibrate TAPS using CaLib!");
-    
-    // calibrate PID
-    if (fPID)
-    {
-        if (!fCaLibReader->ApplyPIDcalib(fPID))
-            Error("ApplyCaLib", "An error occured during PID calibration!");
-    }
-    else Error("ApplyCaLib", "PID not found - could not calibrate PID using CaLib!");
-    
-    // calibrate Veto 
-    if (fVeto)
-    {
-        if (!fCaLibReader->ApplyVetocalib(fVeto))
-            Error("ApplyCaLib", "An error occured during Veto calibration!");
-    }
-    else Error("ApplyCaLib", "Veto not found - could not calibrate Veto using CaLib!");
-}
 
 //______________________________________________________________________________ 
 void TA2MyPhysics::PostInit()
@@ -659,97 +713,153 @@ void TA2MyPhysics::PostInit()
     // Do some further initialisation after all setup parameters have been read in.
  
     // call PostInit() of parent class
-    TA2Physics::PostInit();
-
-    // Show some general information
-    printf("\n\n\n  ****** GENERAL INFORMATION ******\n\n");
-    
-    if (gAR->IsOnline()) 
-    {
-        printf("   ACQU data name      : %s\n", gAR->GetFileName());
-        printf("   Analysis type       : Online\n");
-    }
-    else
-    {
-        printf("   ROOT input file #1  : %s\n", gAR->GetTreeFileList(0));
-        printf("   Analysis type       : Offline\n");
-    }
-
-    if (fAnalysisMode == EMk1Process) printf("   Analysis input      : Raw data\n");
-    else if (fAnalysisMode == EMCProcess) printf("   Analysis input      : MC data\n");
-    else if (fAnalysisMode == EPhysicsProcess) printf("   Analysis input      : Physics\n");
-    else printf("   Analysis input      : Unknown\n");
-    printf("   Analysis class      : %s\n", gAR->GetAnalysisType());
-    printf("   Analysis setup      : %s\n", gAR->GetAnalysisSetup());
-    printf("   Physics class       : %s\n", gAR->GetAnalysis()->GetPhysics()->ClassName());
-    printf("   Physics name        : %s\n", gAR->GetAnalysis()->GetPhysics()->GetName());
-    printf("   Max ADC             : %d\n", gAR->GetMaxADC());
-    printf("   Max Scaler          : %d\n", gAR->GetMaxScaler());
-    printf("\n");
+    TA2AccessSQL::PostInit();
 
     // show information about the selected analysis class
     printf("\n\n\n  ****** PHYSICS ANALYSIS ******\n\n");
     printf("   Name       : %s\n", GetName());
     printf("   Class Name : %s\n", ClassName());
     printf("\n");
-
-    // load the detectors and their components
-    printf("\n\n\n  ****** DETECTOR LIST ******\n\n");
-    printf("   Loaded Detectors:\n\n");
-    LoadDetectors(fParent, 0);
-    printf("\n");
+ 
+    // calculate the mean CB NaI gain
+    if (fNaI) fTrigCBMeanGain = CalculateMeanCBGain();
     
+    // show the hardware trigger settings
+    if (!fIsMC)
+    {
+        printf("\n\n\n  ****** HARDWARE TRIGGER ******\n\n");
+        printf("   L1 Bits\n");
+        printf("   CB sum      : 0x%.4x", fL1Bit_CB);
+        if (fCBSumInL2) printf(" (read from L2 pattern)\n");
+        else printf("\n");
+        printf("   TAPS OR     : 0x%.4x\n", fL1Bit_TAPS_OR);
+        printf("   TAPS M2     : 0x%.4x\n", fL1Bit_TAPS_M2);
+        printf("   Pulser      : 0x%.4x\n", fL1Bit_Pulser);
+        printf("   TAPS Pulser : 0x%.4x\n", fL1Bit_TAPS_Pulser);
+        printf("\n");
+        printf("   L2 Bits\n");
+        printf("   M1(+)       : 0x%.4x\n", fL2Bit_M1);
+        printf("   M2(+)       : 0x%.4x\n", fL2Bit_M2);
+        printf("   M3(+)       : 0x%.4x\n", fL2Bit_M3);
+        printf("   M4+         : 0x%.4x\n", fL2Bit_M4);
+    }
+
     // show the software trigger settings
     printf("\n\n\n  ****** SOFTWARE TRIGGER ******\n\n");
-    printf("   Total multiplicity      : %d or more\n", fTrigTotalMult);
-    printf("   TAPS alone multiplicity : %d or more\n", fTrigTAPSMult);
-    printf("   CB sum                  : %6.2f MeV\n", fTrigCBSum);
-    printf("   CB segment threshold    : %6.2f MeV\n", fTrigCBSegThr);
-    printf("   TAPS LED1 threshold     : %6.2f MeV\n", fTrigTAPSLED1Thr);
-    printf("   TAPS LED2 threshold     : %6.2f MeV\n", fTrigTAPSLED2Thr);
-    printf("\n");
+    printf("   Total multiplicity        : %d or more ", fTrigTotalMult);
+    if (fTrigIsTAPSTotalMult) printf("(TAPS included)\n");
+    else printf("(TAPS excluded)\n");
+    printf("   TAPS alone multiplicity   : %d or more\n", fTrigTAPSMult);
+    printf("   CB sum                    : %6.2f MeV", fTrigCBSum);
+    if (fTrigCBSumCDF) printf(" (CDF for MC)\n");
+    else printf(" (No CDF for MC)\n");
+    printf("   CB NaI mean gain          : %8.6f MeV/Ch\n", fTrigCBMeanGain);
+    if (fTrigCBRelGains) printf("   Relative CB NaI gains     : yes\n");
+    if (fCaLibReader)
+    {
+        // CB LED
+        if (fCaLibReader->GetCBled())
+            printf("   CB segment LED threshold  : database value * %6.2f MeV\n", fTrigCBSegThr);
+        else
+            printf("   CB segment LED threshold  : %6.2f MeV\n", fTrigCBSegThr);
+        
+        // TAPS LED1
+        if (fCaLibReader->GetTAPSled())
+        {
+            printf("   TAPS LED1 threshold       : database value * %6.2f MeV\n", fTrigTAPSLED1Thr);
+            printf("   TAPS LED2 threshold       : database value * %6.2f MeV\n", fTrigTAPSLED2Thr);
+        }
+        else
+        {
+            printf("   TAPS LED1 threshold       : %6.2f MeV\n", fTrigTAPSLED1Thr);
+            printf("   TAPS LED2 threshold       : %6.2f MeV\n", fTrigTAPSLED2Thr);
+        }
+    }
+    else
+    {
+        printf("   CB segment LED threshold  : %6.2f MeV\n", fTrigCBSegThr);
+        printf("   TAPS LED1 threshold       : %6.2f MeV\n", fTrigTAPSLED1Thr);
+        printf("   TAPS LED2 threshold       : %6.2f MeV\n", fTrigTAPSLED2Thr);
+    }
+    if (fNTrigTAPSExclRings)
+    {
+        printf("   %2d TAPS ring(s) excluded  : %s", fNTrigTAPSExclRings, 
+                                                     TOSUtils::FormatArrayList(fNTrigTAPSExclRings, fTrigTAPSExclRings));
+    }
 
-    printf("\n\n");
+    printf("\n\n\n");
+
+    // print scaler read list
+    if (fUseBadScalerReads && fBadScalerReads)
+    {
+        printf("  %d Bad scaler read(s): %s", fNBadScalerReads,
+                                              TOSUtils::FormatArrayList(fNBadScalerReads, fBadScalerReads));
+        printf("\n\n");
+    }
      
     // print bad tagger list
     if (fBadTaggerChannels)
     {
-        printf("  %d Bad tagger channels: %s", fNBadTaggerChannels, 
-                                               TOSUtils::FormatArrayList(fNBadTaggerChannels, fBadTaggerChannels));
+        printf("  %d Bad tagger channel(s): %s", fNBadTaggerChannels, 
+                                                 TOSUtils::FormatArrayList(fNBadTaggerChannels, fBadTaggerChannels));
         printf("\n\n");
     }
 
-    // p2-tagger-ratio user output
-    if (fNt_P2TaggerRatio) printf("  Writing P2/Tagger ntuples\n");
-    
+    // print bad CB cluster list
+    if (fBadCBClusters)
+    {
+        printf("  %d Bad CB cluster center(s): %s", fNBadCBClusters, 
+                                                    TOSUtils::FormatArrayList(fNBadCBClusters, fBadCBClusters));
+        printf("\n\n");
+    }
+
+    // print bad TAPS cluster list
+    if (fBadTAPSClusters)
+    {
+        printf("  %d Bad TAPS cluster center(s): %s", fNBadTAPSClusters, 
+                                                      TOSUtils::FormatArrayList(fNBadTAPSClusters, fBadTAPSClusters));
+        printf("\n\n");
+    }
+
     // assign the TAPS pointers
     if (fTAPS && fBaF2PWO)
     {
+        if      (fBaF2PWO->GetType() == EBaF2)        fTAPSType = kTAPS_2007;
+        else if (fBaF2PWO->GetType() == EBaF2_PWO_08) fTAPSType = kTAPS_2008;
+        else if (fBaF2PWO->GetType() == EBaF2_PWO_09) fTAPSType = kTAPS_2009;
+
         fBaF2PWOHits     = fBaF2PWO->GetHits();
         fBaF2PWOEnergy   = fBaF2PWO->GetEnergy();
         fBaF2PWOTime     = fBaF2PWO->GetTime();
 
-        fBaF2Pattern     = fBaF2PWO->GetBitPattern();
-        fBaF2CFDPattern  = GetPatternIndex("TAPSCFDPattern", fBaF2Pattern);
-        fBaF2LED1Pattern = GetPatternIndex("TAPSLED1Pattern", fBaF2Pattern);
-        fBaF2LED2Pattern = GetPatternIndex("TAPSLED2Pattern", fBaF2Pattern);
+        fTAPSPattern     = fBaF2PWO->GetBitPattern();
+        fBaF2CFDPattern  = GetPatternIndex("TAPSCFDPattern", fTAPSPattern);
+        fBaF2LED1Pattern = GetPatternIndex("TAPSLED1Pattern", fTAPSPattern);
+        fBaF2LED2Pattern = GetPatternIndex("TAPSLED2Pattern", fTAPSPattern);
+        fVetoLEDPattern  = GetPatternIndex("TAPSVetoPattern", fTAPSPattern);
         
         if (fBaF2CFDPattern >= 0)
         {
-            fBaF2CFDHits = fBaF2Pattern->GetHits(fBaF2CFDPattern);
-            printf("  BaF2 CFD Pattern '%s' found at index %d\n", fBaF2Pattern->GetPatternName(fBaF2CFDPattern), fBaF2CFDPattern);
+            fBaF2CFDHits = fTAPSPattern->GetHits(fBaF2CFDPattern);
+            printf("  BaF2 CFD Pattern '%s' found at index %d\n", fTAPSPattern->GetPatternName(fBaF2CFDPattern), fBaF2CFDPattern);
         }
 
         if (fBaF2LED1Pattern >= 0)
         {
-            fBaF2LED1Hits = fBaF2Pattern->GetHits(fBaF2LED1Pattern);
-            printf("  BaF2 LED1 Pattern '%s' found at index %d\n", fBaF2Pattern->GetPatternName(fBaF2LED1Pattern), fBaF2LED1Pattern);
+            fBaF2LED1Hits = fTAPSPattern->GetHits(fBaF2LED1Pattern);
+            printf("  BaF2 LED1 Pattern '%s' found at index %d\n", fTAPSPattern->GetPatternName(fBaF2LED1Pattern), fBaF2LED1Pattern);
         }
 
         if (fBaF2LED2Pattern >= 0)
         {
-            fBaF2LED2Hits = fBaF2Pattern->GetHits(fBaF2LED2Pattern);
-            printf("  BaF2 LED2 Pattern '%s' found at index %d\n", fBaF2Pattern->GetPatternName(fBaF2LED2Pattern), fBaF2LED2Pattern);
+            fBaF2LED2Hits = fTAPSPattern->GetHits(fBaF2LED2Pattern);
+            printf("  BaF2 LED2 Pattern '%s' found at index %d\n", fTAPSPattern->GetPatternName(fBaF2LED2Pattern), fBaF2LED2Pattern);
+        }
+
+        if (fVetoLEDPattern >= 0)
+        {
+            fVetoLEDHits = fTAPSPattern->GetHits(fVetoLEDPattern);
+            printf("  Veto LED Pattern '%s' found at index %d\n", fTAPSPattern->GetPatternName(fVetoLEDPattern), fVetoLEDPattern);
         }
 
         fTAPSClusterHit  = fBaF2PWO->GetClustHit();
@@ -768,6 +878,15 @@ void TA2MyPhysics::PostInit()
 //        fCBPID_dE       = fCB->GetPIDEnergyDepo();
         fCBClusterHit   = fNaI->GetClustHit();
         fCBCluster      = fNaI->GetCluster();
+        
+        fCBPattern     = fNaI->GetBitPattern();
+        fNaILEDPattern = GetPatternIndex("CBLEDPattern", fCBPattern);
+        
+        if (fNaILEDPattern >= 0)
+        {
+            fNaILEDHits = fCBPattern->GetHits(fNaILEDPattern);
+            printf("  NaI LED Pattern '%s' found at index %d\n", fCBPattern->GetPatternName(fNaILEDPattern), fNaILEDPattern);
+        }
     }
     
     // assign the PID pointers
@@ -777,6 +896,12 @@ void TA2MyPhysics::PostInit()
         fPIDHitPos  = fPID->GetPosition();
         fPIDEnergy  = fPID->GetEnergy();
         fPIDTime    = fPID->GetTime();
+    }
+
+    // assign the MWPC pointers
+    if (fMWPC)
+    {
+        fMWPCtracks = fMWPC->GetTracks();
     }
 
     // assign the Veto pointers
@@ -810,34 +935,47 @@ void TA2MyPhysics::PostInit()
     }
 
     // electron beam helicity state pointer
-    fCP = &fADC[6]; 
+    fCP = &fADC[fEBeamBitADC]; 
+
+    // apply CB/TAPS energy scaling
+    if (fNaI) fNaI->SetEnergyScale(fCBEnergyScale);
+    if (fBaF2PWO) fBaF2PWO->SetEnergyScale(fTAPSEnergyScale);
 
     // create histograms
-    fH_EventInfo = new TH1F("EventInfo", "EventInfo", 10, 0, 10);
-    fH_Corrected_Scalers = new TH1F("CorrectedScalers", "CorrectedScalers", gMyPhysics_MaxScalers, 0, gMyPhysics_MaxScalers);
-    fH_Corrected_SumScalers = new TH1F("CorrectedSumScalers", "CorrectedSumScalers", gMyPhysics_MaxScalers, 0, gMyPhysics_MaxScalers);
+    fH_EventInfo = new TH1F("EventInfo", "EventInfo", 20, 0, 20);
+    fH_EventInfo->GetXaxis()->SetBinLabel(1, "Events");
+    fH_EventInfo->GetXaxis()->SetBinLabel(2, "Hel+");
+    fH_EventInfo->GetXaxis()->SetBinLabel(3, "Hel-");
+    fH_EventInfo->GetXaxis()->SetBinLabel(4, "Hel undef");
+    fH_EventInfo->GetXaxis()->SetBinLabel(5, "CB");
+    fH_EventInfo->GetXaxis()->SetBinLabel(6, "TAPS OR");
+    fH_EventInfo->GetXaxis()->SetBinLabel(7, "TAPS Pulser");
+    fH_EventInfo->GetXaxis()->SetBinLabel(8, "TAPS M2");
+    fH_EventInfo->GetXaxis()->SetBinLabel(9, "Pulser");
+    fH_EventInfo->GetXaxis()->SetBinLabel(10, "M1(+)");
+    fH_EventInfo->GetXaxis()->SetBinLabel(11, "M2(+)");
+    fH_EventInfo->GetXaxis()->SetBinLabel(12, "M3(+)");
+    fH_EventInfo->GetXaxis()->SetBinLabel(13, "M4(+)");
+    fH_EventInfo->GetXaxis()->SetBinLabel(14, "Scaler reads");
+    fH_EventInfo->GetXaxis()->SetBinLabel(15, "HW Errors");
     if (fIsMC)
     {
         fH_MCVertX = new TH1F("MCVertexX", "MCVertexX", 400, -10, 10);
         fH_MCVertY = new TH1F("MCVertexY", "MCVertexY", 400, -10, 10);
         fH_MCVertZ = new TH1F("MCVertexZ", "MCVertexZ", 400, -10, 10);
     }
-
-    // CaLib
-    if (fCaLibReader)
+    else
     {
-        ApplyCaLib();
-        fCaLibReader->Deconnect();
+        fH_ErrorInfo = new TH2F("ErrorInfo", "ErrorInfo;Module Index;Error Code", 50000, 0, 50000, 20, 0, 20);
+        fH_Corrected_Scalers = new TH1F("CorrectedScalers", "CorrectedScalers", gAR->GetMaxScaler(), 0, gAR->GetMaxScaler());
+        fH_Corrected_SumScalers = new TH1F("CorrectedSumScalers", "CorrectedSumScalers", gAR->GetMaxScaler(), 0, gAR->GetMaxScaler());
+
+        if (fUseBadScalerReads)
+        {
+            fH_BadScR_SumScalers = new TH1D("BadScR_SumScalers", "BadScR_SumScalers", gAR->GetMaxScaler(), 0, gAR->GetMaxScaler());
+            if (fLadder) fH_BadScR_SumFPDScalers = new TH1D("BadScR_SumFPDScalers", "BadScR_SumFPDScalers", fLadder->GetNelement(), 0, fLadder->GetNelement());
+        }
     }
-    
-    //CBEnergy Correction per run
-    if(CBEnergyPerRunCorrection)
-	{
-		for(UInt_t i=0; i<fNaI->GetNelement(); i++)
-		{
-			fNaI->GetElement(i)->SetA1(CBEnergyPerRunCorrectionFactor * (fNaI->GetElement(i)->GetA1()));
-		}
-	}
 }
 
 //______________________________________________________________________________ 
@@ -854,6 +992,65 @@ void TA2MyPhysics::Reconstruct()
 {
     // AcquRoot Reconstruct() method.
  
+    ////////////////////////////////////////////////////////////////////////////
+    // Process (bad) scaler read                                              //
+    ////////////////////////////////////////////////////////////////////////////
+
+    // check for scaler read event
+    if (!fIsMC && gAR->IsScalerRead())
+    {
+        // reset event skipping flag
+        fIsBadScalerSkip = kFALSE;
+
+        // increment scaler reads counter
+        fScalerReadCounter++;
+
+        // check whether previous scaler read (interval) was good in order to update scaler histos
+        if (fUseBadScalerReads && !IsBadScalerRead(fScalerReadCounter - 1))
+        {
+            // loop over scalers
+            for (Int_t i = 0; i < gAR->GetMaxScaler(); i++)
+            {
+                // fill sum scalers
+                fH_BadScR_SumScalers->AddBinContent(i+1, (Double_t) fScaler[i]);
+            }
+
+            // check for ladder
+            if (fLadder)
+            {
+                // loop over ladder scalers
+                for (UInt_t i = 0; i < fLadder->GetNelement(); i++)
+                {
+                    // fill ladder sum scalers
+                    fH_BadScR_SumFPDScalers->AddBinContent(i+1, (Double_t) fLadder->GetScalerCurr()[i]);
+                }
+            }
+        }
+    }
+
+    // apply bad scaler read event skip
+    if (!fIsMC && fUseBadScalerReads)
+    {
+        // set the skip flag once for events before first scaler read
+        if (fIsBadScalerSkip == kFALSE && IsBadScalerRead(fScalerReadCounter)) fIsBadScalerSkip = kTRUE;
+        
+        // check for bad scaler read in order to skip event
+        if (fIsBadScalerSkip)
+        {
+            // display user info
+            if (fEventCounter == 0 || gAR->IsScalerRead()) Info("Reconstruct", "Skipping scaler read %d", fScalerReadCounter);
+
+            // increment event counter
+            fEventCounter++;
+
+            // check if last event was processed and finish the analysis
+            if (fLastEvent && fEventCounter > fLastEvent) TerminateAnalysis();
+
+            // skip this event
+            return;
+        }
+    }
+
 
     ////////////////////////////////////////////////////////////////////////////
     // Set detector event-dependent variables                                 //
@@ -879,9 +1076,11 @@ void TA2MyPhysics::Reconstruct()
         fTAPSNCluster = fBaF2PWO->GetNCluster();
     }
 
-    if (fBaF2CFDHits) fBaF2CFDNhits = fBaF2Pattern->GetNHits()[fBaF2CFDPattern];
-    if (fBaF2LED1Hits) fBaF2LED1Nhits = fBaF2Pattern->GetNHits()[fBaF2LED1Pattern];
-    if (fBaF2LED2Hits) fBaF2LED2Nhits = fBaF2Pattern->GetNHits()[fBaF2LED2Pattern];
+    if (fNaILEDHits) fNaILEDNhits = fCBPattern->GetNHits()[fNaILEDPattern];
+    if (fBaF2CFDHits) fBaF2CFDNhits = fTAPSPattern->GetNHits()[fBaF2CFDPattern];
+    if (fBaF2LED1Hits) fBaF2LED1Nhits = fTAPSPattern->GetNHits()[fBaF2LED1Pattern];
+    if (fBaF2LED2Hits) fBaF2LED2Nhits = fTAPSPattern->GetNHits()[fBaF2LED2Pattern];
+    if (fVetoLEDHits) fVetoLEDNhits = fTAPSPattern->GetNHits()[fVetoLEDPattern];
 
     if (fPID)
     {
@@ -907,62 +1106,53 @@ void TA2MyPhysics::Reconstruct()
     {
         fPbGlassNhits = fPbGlass->GetNhits();
     }
-
-    if (fCP)
+    
+    
+    ////////////////////////////////////////////////////////////////////////////
+    // Read-in beam helicity                                                  //
+    ////////////////////////////////////////////////////////////////////////////
+    
+    if (!fIsMC)
     {
-        UShort_t eHS = *fCP;
-        if (eHS == fEBeamBitNeg) fEBeamHelState = -1;
-        else if (eHS == fEBeamBitPos) fEBeamHelState = 1;
-        else fEBeamHelState = 0;
+        if (fCP)
+        {
+            UShort_t eHS = *fCP;
+            if (eHS == fEBeamBitNeg) fTrigger->SetBeamHel(kNeg);
+            else if (eHS == fEBeamBitPos) fTrigger->SetBeamHel(kPos);
+            else fTrigger->SetBeamHel(kUndef);
+        }
+        else fTrigger->SetBeamHel(kUndef);
     }
-    else fEBeamHelState = 0;
     
-    
+
     ////////////////////////////////////////////////////////////////////////////
     // Read-in hardware trigger                                               //
     ////////////////////////////////////////////////////////////////////////////
   
-    // Level 1 trigger
-    (fADC[0] & 0x01) ? fL1CB = kTRUE : fL1CB = kFALSE;
-    (fADC[0] & 0x08) ? fL1TAPS_OR = kTRUE : fL1TAPS_OR = kFALSE;
-    (fADC[0] & 0x10) ? fL1TAPS_Pulser = kTRUE : fL1TAPS_Pulser = kFALSE;
-    (fADC[0] & 0x40) ? fL1TAPS_M2 = kTRUE : fL1TAPS_M2 = kFALSE;
-    (fADC[0] & 0x80) ? fL1Pulser = kTRUE : fL1Pulser = kFALSE;
-    
-    // Level 2 trigger ("Normal" ordering, Feb 2009, Nov 2010)
-    //(fADC[1] & 0x10) ? fL2M1 = kTRUE : fL2M1 = kFALSE;
-    //(fADC[1] & 0x20) ? fL2M2 = kTRUE : fL2M2 = kFALSE;
-    //(fADC[1] & 0x40) ? fL2M3 = kTRUE : fL2M3 = kFALSE;
-    //(fADC[1] & 0x80) ? fL2M4 = kTRUE : fL2M4 = kFALSE;
-
-    // Level 2 trigger ("Strange" ordering, May 2009)
-    (fADC[1] & 0x80) ? fL2M1 = kTRUE : fL2M1 = kFALSE;
-    (fADC[1] & 0x10) ? fL2M2 = kTRUE : fL2M2 = kFALSE;
-    (fADC[1] & 0x20) ? fL2M3 = kTRUE : fL2M3 = kFALSE;
-    (fADC[1] & 0x40) ? fL2M4 = kTRUE : fL2M4 = kFALSE;
-
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Read-in MC information                                                 //
-    ////////////////////////////////////////////////////////////////////////////
-    
-    if (fIsMC)
+    if (!fIsMC)
     {
-        // get vertex
-        Float_t* vert = (Float_t*) (fEvent[EI_vertex]);
-    
-        // set vertex
-        fMCVertX = vert[0];
-        fMCVertY = vert[1];
-        fMCVertZ = vert[2];
-    
-        // fill histograms
-        fH_MCVertX->Fill(fMCVertX);
-        fH_MCVertY->Fill(fMCVertY);
-        fH_MCVertZ->Fill(fMCVertZ);
+        // Level 1 trigger
+        if (fCBSumInL2) 
+        {
+            if (fADC[1] & fL1Bit_CB)      fTrigger->SetTriggerL1(kCB); 
+        }
+        else 
+        {
+            if (fADC[0] & fL1Bit_CB)      fTrigger->SetTriggerL1(kCB); 
+        }
+        if (fADC[0] & fL1Bit_TAPS_OR)     fTrigger->SetTriggerL1(kTAPS_OR);
+        if (fADC[0] & fL1Bit_TAPS_M2)     fTrigger->SetTriggerL1(kTAPS_M2);
+        if (fADC[0] & fL1Bit_Pulser)      fTrigger->SetTriggerL1(kPulser);
+        if (fADC[0] & fL1Bit_TAPS_Pulser) fTrigger->SetTriggerL1(kTAPS_Pulser);
+        
+        // Level 2 trigger
+        if (fADC[1] & fL2Bit_M1) fTrigger->SetTriggerL2(kM1); 
+        if (fADC[1] & fL2Bit_M2) fTrigger->SetTriggerL2(kM2); 
+        if (fADC[1] & fL2Bit_M3) fTrigger->SetTriggerL2(kM3); 
+        if (fADC[1] & fL2Bit_M4) fTrigger->SetTriggerL2(kM4); 
     }
-
  
+
     ////////////////////////////////////////////////////////////////////////////
     // Read-in tagger hits                                                    //
     ////////////////////////////////////////////////////////////////////////////
@@ -979,21 +1169,27 @@ void TA2MyPhysics::Reconstruct()
         if (fIsMC)
         {
             // get tagger hits and the time array
-            fTaggerPhotonNhits = fLadder->GetNhits();
+            UInt_t nhits = fLadder->GetNhits();
             Int_t* hits = fLadder->GetHits();
             Double_t* time = fLadder->GetTimeOR();
             
             // create hit, energy and time arrays
-            fTaggerPhotonHits = new Int_t[fTaggerPhotonNhits];
-            fTaggerPhotonEnergy = new Double_t[fTaggerPhotonNhits];
-            fTaggerPhotonTime = new Double_t[fTaggerPhotonNhits];
+            fTaggerPhotonNhits = 0;
+            fTaggerPhotonHits = new Int_t[nhits];
+            fTaggerPhotonEnergy = new Double_t[nhits];
+            fTaggerPhotonTime = new Double_t[nhits];
             
             // loop over tagger hits
-            for (UInt_t i = 0; i < fTaggerPhotonNhits; i++)
+            for (UInt_t i = 0; i < nhits; i++)
             {
-                fTaggerPhotonHits[i] = hits[i];
-                fTaggerPhotonEnergy[i] = eBeamEnergy - fpdEnergy[hits[i]];
-                fTaggerPhotonTime[i] = time[i];
+                // skip bad tagger channels
+                if (IsBadTaggerChannel(hits[i])) continue;
+                
+                // set hit element, time and energy
+                fTaggerPhotonHits[fTaggerPhotonNhits] = hits[i];
+                fTaggerPhotonEnergy[fTaggerPhotonNhits] = eBeamEnergy - fpdEnergy[hits[i]];
+                fTaggerPhotonTime[fTaggerPhotonNhits] = time[i];
+                fTaggerPhotonNhits++;
             }
         }
         else
@@ -1002,17 +1198,17 @@ void TA2MyPhysics::Reconstruct()
             Int_t m = fLadder->GetNMultihit();
 
             // count total number of hits including all hit multiplicities
-            fTaggerPhotonNhits = 0;
-            for (Int_t i = 0; i < m; i++) fTaggerPhotonNhits += fLadder->GetNhitsM(i);
+            Int_t nhits = 0;
+            for (Int_t i = 0; i < m; i++) nhits += fLadder->GetNhitsM(i);
             
             // create hit, energy and time arrays
-            fTaggerPhotonHits = new Int_t[fTaggerPhotonNhits];
-            fTaggerPhotonEnergy = new Double_t[fTaggerPhotonNhits];
-            fTaggerPhotonTime = new Double_t[fTaggerPhotonNhits];
+            fTaggerPhotonNhits = 0;
+            fTaggerPhotonHits = new Int_t[nhits];
+            fTaggerPhotonEnergy = new Double_t[nhits];
+            fTaggerPhotonTime = new Double_t[nhits];
             
             // read-in all the hits
             // loop over hit multiplicity
-            Int_t currHit = 0;
             for (Int_t i = 0; i < m; i++)
             {   
                 // number of hits of current multiplicity
@@ -1027,14 +1223,110 @@ void TA2MyPhysics::Reconstruct()
                 // loop over hits of current multiplicity
                 for (Int_t j = 0; j < nhits; j++)
                 {
+                    // skip bad tagger channels
+                    if (IsBadTaggerChannel(hits[j])) continue;
+
                     // set hit element, time and energy
-                    fTaggerPhotonHits[currHit] = hits[j];
-                    fTaggerPhotonEnergy[currHit] = eBeamEnergy - fpdEnergy[hits[j]];
-                    fTaggerPhotonTime[currHit] = time[j];
-                    currHit++;
+                    fTaggerPhotonHits[fTaggerPhotonNhits] = hits[j];
+                    fTaggerPhotonEnergy[fTaggerPhotonNhits] = eBeamEnergy - fpdEnergy[hits[j]];
+                    fTaggerPhotonTime[fTaggerPhotonNhits] = time[j];
+                    fTaggerPhotonNhits++;
                 }
             } // for: hit multiplicity loop
         } // if: data handling
+    }
+    
+    
+    ////////////////////////////////////////////////////////////////////////////
+    // Read-in MC information                                                 //
+    ////////////////////////////////////////////////////////////////////////////
+    
+    if (fIsMC)
+    {
+        // set MC branches in first event (does not work in PostInit())
+        if (fEventCounter == 0)
+        {
+            Int_t nBr = gAR->GetNbranch();
+            for (Int_t i = 0; i < nBr; i++)
+            {
+                Char_t* brN = gAR->GetBranchName(i);
+                if (!strcmp(brN, "dircos")) fMCBranchDirCos = gAR->GetBranch(i);
+                else if (!strcmp(brN, "vertices")) fMCBranchVert = gAR->GetBranch(i);
+            }
+        }
+
+        // get vertex
+        Float_t* vert = (Float_t*) (fEvent[EI_vertex]);
+    
+        // set vertex
+        fMCVertX = vert[0];
+        fMCVertY = vert[1];
+        fMCVertZ = vert[2];
+    
+        // fill histograms
+        fH_MCVertX->Fill(fMCVertX);
+        fH_MCVertY->Fill(fMCVertY);
+        fH_MCVertZ->Fill(fMCVertZ);
+    }
+
+    
+    ////////////////////////////////////////////////////////////////////////////
+    // Collect MC particles                                                   //
+    ////////////////////////////////////////////////////////////////////////////
+    
+    if (fIsMC) 
+    {
+        // get number of particles
+        fNMC = *(Int_t*) (fEvent[EI_npart]);
+        
+        // read particle IDs and 4-momenta
+        Int_t* g3_ID = (Int_t*) (fEvent[EI_idpart]);
+        Float_t* etot = (Float_t*) (fEvent[EI_elab]);
+        Float_t* ptot = (Float_t*) (fEvent[EI_plab]);
+        Float_t dircos[fNMC][3];
+        fMCBranchDirCos->SetAddress(dircos);
+        fMCBranchDirCos->GetEntry(fEventCounter - fEventOffset);
+
+        // read particle vertices
+        Float_t vertices[fNMC][3];
+        if (fMCBranchVert)
+        {
+            fMCBranchVert->SetAddress(vertices);
+            fMCBranchVert->GetEntry(fEventCounter - fEventOffset);
+        }
+
+        // create particles and set their properties
+        for (Int_t i = 0; i < fNMC; i++)
+        {
+            // set particle ID
+            fPartMC[i]->SetGeant3_ID(g3_ID[i]);
+        
+            // set 4-momentum (convert to MeV)
+            fPartMC[i]->SetP4(1000.*ptot[i]*dircos[i][0],
+                              1000.*ptot[i]*dircos[i][1],
+                              1000.*ptot[i]*dircos[i][2],
+                              1000.*etot[i]);
+        
+            // set vertex
+            if (fMCBranchVert) fPartMC[i]->SetVertex(vertices[i][0], vertices[i][1], vertices[i][2]);
+        }
+
+        // information output at first event
+        if (fEventCounter == 0)
+        {
+            printf("\n\n\n  ****** MC PARTICLE COLLECTION ******\n\n");
+            if (fMCBranchVert) printf("   Found %d MC particles with vertices:\n\n", fNMC);
+            else printf("   Found %d MC particles:\n\n", fNMC);
+            for (Int_t i = 0; i < fNMC; i++) 
+                printf("   %2d. %-22s (PDG: %5d   G3: %2d)\n", i+1, fPartMC[i]->GetName(), 
+                       fPartMC[i]->GetPDG_ID(), fPartMC[i]->GetGeant3_ID());
+            printf("\n");
+            printf("\n");
+        }
+        
+        // update event offset when at last event of current tree
+        Long64_t tevents = fMCBranchDirCos->GetEntries();
+        if (fEventCounter - fEventOffset == tevents - 1) fEventOffset += tevents;
     }
 
 
@@ -1043,15 +1335,17 @@ void TA2MyPhysics::Reconstruct()
     ////////////////////////////////////////////////////////////////////////////
     
     // detector particle arrays
+    fPart = new TOA2DetParticle*[fCBNCluster + fTAPSNCluster];
     fPartCB = new TOA2DetParticle*[fCBNCluster];
     fPartTAPS = new TOA2DetParticle*[fTAPSNCluster];
-    for (UInt_t i = 0; i < fCBNCluster; i++) fPartCB[i] = new TOA2DetParticle();
-    for (UInt_t i = 0; i < fTAPSNCluster; i++) fPartTAPS[i] = new TOA2DetParticle();
     
     // neutral/charged particle arrays
     fPartNeutral = new TOA2DetParticle*[fCBNCluster + fTAPSNCluster];
     fPartCharged = new TOA2DetParticle*[fCBNCluster + fTAPSNCluster];
     
+    // total number of particles
+    fNTotal = 0;
+
     // number of neutral/charged particles
     fNNeutral = 0;
     fNCharged = 0;
@@ -1061,6 +1355,8 @@ void TA2MyPhysics::Reconstruct()
     // Collect particles in CB                                                //
     ////////////////////////////////////////////////////////////////////////////
     
+    // loop over all CB clusters
+    Int_t nCB = 0;
     for (UInt_t i = 0; i < fCBNCluster; i++)
     {
         // get cluster
@@ -1068,67 +1364,99 @@ void TA2MyPhysics::Reconstruct()
         Int_t clNhits    = cl->GetNhits();
         UInt_t* clHits   = cl->GetHits();
         Int_t center     = cl->GetIndex();
+        
+        // skip bad cluster centers
+        if (IsBadCBCluster(center)) continue;
+        
+        // create particle
+        fPartCB[nCB] = new TOA2DetParticle();
 
         // set particle properties
-        fPartCB[i]->SetDetector(kCBDetector);
-        fPartCB[i]->SetPosition(cl->GetMeanPosition());
-        fPartCB[i]->SetZ(fPartCB[i]->GetZ() - fTargetPosition);
-        fPartCB[i]->SetEnergy(cl->GetEnergy());
-        fPartCB[i]->SetTime(cl->GetTime() + fCBTimeOffset);
-        fPartCB[i]->SetCentralElement(center);
-        fPartCB[i]->SetCentralEnergy(cl->GetEnergy()*cl->GetCentralFrac());
-        fPartCB[i]->SetClusterSize(clNhits);
-        fPartCB[i]->SetClusterHits(clNhits, clHits);
-        Double_t clHitE[clNhits];
-        Double_t clHitT[clNhits];
-        for (Int_t j = 0; j < clNhits; j++) 
+        fPartCB[nCB]->SetDetector(kCBDetector);
+        fPartCB[nCB]->SetPosition(cl->GetMeanPosition());
+        fPartCB[nCB]->SetEnergy(cl->GetEnergy());
+        
+        // check all bad particle cuts
+        Bool_t bad = kFALSE;
+        for (Int_t j = 0; j < fNBadParticleCuts; j++)
         {
-            clHitE[j] = fNaIEnergy[clHits[j]];
-            clHitT[j] = fNaITime[clHits[j]];
+            // check if particle is within this bad particle cut
+            if (fBadParticleCuts[j]->IsInside(fPartCB[nCB]))
+            {
+                bad = kTRUE;
+                break;
+            }
         }
-        fPartCB[i]->SetClusterHitEnergies(clNhits, clHitE);
-        fPartCB[i]->SetClusterHitTimes(clNhits, clHitT);
+        // skip bad particle
+        if (bad)
+        {
+            delete fPartCB[nCB];
+            continue;
+        }
+        
+        // set other particle properties
+        fPartCB[nCB]->SetTime(cl->GetTime());
+        fPartCB[nCB]->SetCentralElement(center);
+        fPartCB[nCB]->SetCentralEnergy(cl->GetEnergy()*cl->GetCentralFrac());
+        fPartCB[nCB]->SetClusterSize(clNhits);
+        fPartCB[nCB]->SetClusterHits(clNhits, clHits);
+        fPartCB[nCB]->SetClusterHitEnergies(clNhits, cl->GetEnergies());
+        fPartCB[nCB]->SetClusterHitTimes(clNhits, cl->GetTimes());
+        
+        // calculate photon resolutions
+        CalculatePhotonResolutions(fPartCB[nCB]);
 
         // link neutral/charged lists and fill charged particle properties
         Int_t pid_index;
-        Double_t pid_energy = CheckClusterPID(cl, &pid_index);
-        if (pid_energy > 0) 
+        Double_t pid_energy = CheckClusterPID(fPartCB[nCB], &pid_index);
+        if (pid_energy > 0)
         {
-            // perform droop correction
-            if (fCaLibReader)
+            // proton energy loss correction
+            if (fProtonECorrCB)
             {
-                if (fCaLibReader->GetPIDdroop())
-                {   
-                    // get PID element pedestal and gain
-                    Double_t pid_ped = fPID->GetElement(pid_index)->GetA0();
-                    Double_t pid_gain = fPID->GetElement(pid_index)->GetA1();
+                Double_t e = fPartCB[nCB]->GetEnergy();
+                Double_t corr = fProtonECorrCB[fPartCB[nCB]->GetCentralElement()]->Eval(e);
+                fPartCB[nCB]->SetEnergy(e + corr*e);
+            }
 
-                    // de-calibrate to raw ADC channel value
-                    Double_t ch = pid_energy / pid_gain + pid_ped;
-                    
-                    // get theta of cluster
-                    Double_t pid_theta = fPartCB[i]->GetTheta() * TMath::RadToDeg();
+            // light attenuation correction for protons
+            //if (!fIsMC)
+            //{
+            //    Double_t a0 =  1.156669e+00;
+            //    Double_t a1 = -3.878119e-02;
+            //    Double_t a2 =  4.566693e-04;
+            //    Double_t a3 = -2.595171e-06;
+            //    Double_t a4 =  7.111759e-09;
+            //    Double_t a5 = -7.534346e-12;
+            //    Double_t e = fPartCB[nCB]->GetEnergy();
+            //    Double_t corr = a0 + a1*e + a2*e*e + a3*e*e*e + a4*e*e*e*e + a5*e*e*e*e*e;
+            //    Double_t e_corr;
+            //    if (e < 250) e_corr = e + corr*e;
+            //    else e_corr = e + -0.123795297*e;
+            //    fPartCB[nCB]->SetEnergy(e_corr);
+            //}
 
-                    // normalize to energy at 45 degrees
-                    ch *= fCaLibReader->GetPIDDroopFunc(pid_index)->Eval(45) /
-                          fCaLibReader->GetPIDDroopFunc(pid_index)->Eval(pid_theta);
+            // perform droop correction
+            if (fPIDDroopCorr)
+            {
+                // get theta of cluster
+                Double_t pid_theta = fPartCB[nCB]->GetTheta() * TMath::RadToDeg();
 
-                    // calibrate
-                    pid_energy = pid_gain * (ch - pid_ped);
-                }
+                // normalize to energy at 45 degrees
+                pid_energy /= fPIDDroopCorr[pid_index]->Eval(pid_theta);
             }
             
             // set PID index
-            fPartCB[i]->SetPIDIndex(pid_index);
+            fPartCB[nCB]->SetPIDIndex(pid_index);
 
             // set PID energy
-            fPartCB[i]->SetPIDEnergy(pid_energy);
+            fPartCB[nCB]->SetPIDEnergy(pid_energy);
             
             // set PID time
-            if (fPIDTime) fPartCB[i]->SetPIDTime(fPIDTime[pid_index]);
-
+            if (fPIDTime) fPartCB[nCB]->SetPIDTime(fPIDTime[pid_index]);
+            
             // link particle to charged list
-            fPartCharged[fNCharged++] = fPartCB[i];
+            fPartCharged[fNCharged++] = fPartCB[nCB];
         }
         else 
         {
@@ -1137,22 +1465,44 @@ void TA2MyPhysics::Reconstruct()
             {
                 if (fCaLibReader->GetCBquadEnergy())
                 {
-                    Double_t energy = fPartCB[i]->GetEnergy();
-                    fPartCB[i]->SetEnergy(fCaLibReader->GetCBQuadEnergyPar0(center)*energy + 
-                                          fCaLibReader->GetCBQuadEnergyPar1(center)*energy*energy);
+                    Double_t energy = fPartCB[nCB]->GetEnergy();
+                    fPartCB[nCB]->SetEnergy(fCaLibReader->GetCBQuadEnergyPar0(center)*energy + 
+                                            fCaLibReader->GetCBQuadEnergyPar1(center)*energy*energy);
                 }
             }
 
             // link particle to neutral list
-            fPartNeutral[fNNeutral++] = fPartCB[i];
+            fPartNeutral[fNNeutral++] = fPartCB[nCB];
         }
+        
+        // link particle to total list
+        fPart[fNTotal++] = fPartCB[nCB];
+
+        // increment number of accepted particles
+        nCB++;
     } 
 
+    // set number of accepted particles
+    fCBNCluster = nCB;
     
+    
+    ////////////////////////////////////////////////////////////////////////////
+    // Collect tracks in the MWPC                                             //
+    ////////////////////////////////////////////////////////////////////////////
+    
+    if (fMWPC)
+    {
+        fMWPC->ResetWiresAndStripsUsage();
+        fMWPCNtracks = fMWPC->GetNtracks();
+    }
+    
+
     ////////////////////////////////////////////////////////////////////////////
     // Collect particles in TAPS                                              //
     ////////////////////////////////////////////////////////////////////////////
     
+    // loop over all TAPS clusters
+    Int_t nTAPS = 0;
     for (UInt_t i = 0; i < fTAPSNCluster; i++)
     {
         // get cluster
@@ -1160,44 +1510,73 @@ void TA2MyPhysics::Reconstruct()
         Int_t clNhits    = cl->GetNhits();
         UInt_t* clHits   = cl->GetHits();
         Int_t center     = cl->GetIndex();
+        
+        // skip bad cluster centers
+        if (IsBadTAPSCluster(center)) continue;
+        
+        // create particle
+        fPartTAPS[nTAPS] = new TOA2DetParticle();
 
         // set particle properties
-        fPartTAPS[i]->SetDetector(kTAPSDetector);
-        fPartTAPS[i]->SetPosition(cl->GetMeanPosition());
-        fPartTAPS[i]->SetZ(fPartTAPS[i]->GetZ() - fTargetPosition);
-        fPartTAPS[i]->SetEnergy(cl->GetEnergy());
-        fPartTAPS[i]->SetTime(cl->GetTime() + fTAPSTimeOffset);
-        fPartTAPS[i]->SetCentralElement(center);
-        fPartTAPS[i]->SetCentralEnergy(cl->GetEnergy()*cl->GetCentralFrac());
-        fPartTAPS[i]->SetClusterSize(clNhits);
-        fPartTAPS[i]->SetClusterHits(clNhits, clHits);
-        Double_t clHitE[clNhits];
-        Double_t clHitT[clNhits];
-        for (Int_t j = 0; j < clNhits; j++) 
+        fPartTAPS[nTAPS]->SetDetector(kTAPSDetector);
+        fPartTAPS[nTAPS]->SetPosition(cl->GetMeanPosition());
+        fPartTAPS[nTAPS]->SetEnergy(cl->GetEnergy());
+        
+        // check all bad particle cuts
+        Bool_t bad = kFALSE;
+        for (Int_t j = 0; j < fNBadParticleCuts; j++)
         {
-            clHitE[j] = fBaF2PWOEnergy[clHits[j]];
-            clHitT[j] = fBaF2PWOTime[clHits[j]];
+            // check if particle is within this bad particle cut
+            if (fBadParticleCuts[j]->IsInside(fPartTAPS[nTAPS]))
+            {
+                bad = kTRUE;
+                break;
+            }
         }
-        fPartTAPS[i]->SetClusterHitEnergies(clNhits, clHitE);
-        fPartTAPS[i]->SetClusterHitTimes(clNhits, clHitT);
-        fPartTAPS[i]->SetCentralSGEnergy(fBaF2PWO->GetSGEnergy(cl->GetIndex()));
+        // skip bad particle
+        if (bad)
+        {
+            delete fPartTAPS[nTAPS];
+            continue;
+        }
+  
+        // set other particle properties
+        fPartTAPS[nTAPS]->SetTime(cl->GetTime());
+        fPartTAPS[nTAPS]->SetCentralElement(center);
+        fPartTAPS[nTAPS]->SetCentralEnergy(cl->GetEnergy()*cl->GetCentralFrac());
+        fPartTAPS[nTAPS]->SetClusterSize(clNhits);
+        fPartTAPS[nTAPS]->SetClusterHits(clNhits, clHits);
+        fPartTAPS[nTAPS]->SetClusterHitEnergies(clNhits, cl->GetEnergies());
+        fPartTAPS[nTAPS]->SetClusterHitTimes(clNhits, cl->GetTimes());
+        fPartTAPS[nTAPS]->SetCentralSGEnergy(fBaF2PWO->GetSGEnergy(cl->GetIndex()));
+        
+        // calculate photon resolutions
+        CalculatePhotonResolutions(fPartTAPS[nTAPS]);
         
         // link neutral/charged lists and fill charged particle properties
         Int_t veto_index;
-        Double_t veto_energy = CheckClusterVeto(cl, &veto_index);
-        if (veto_energy > 0) 
+        Double_t veto_energy = CheckClusterVeto(fPartTAPS[nTAPS], &veto_index);
+        if (veto_energy > 0)
         {
+            // proton energy loss correction
+            if (fProtonECorrTAPS)
+            {
+                Double_t e = fPartTAPS[nTAPS]->GetEnergy();
+                Double_t corr = fProtonECorrTAPS[fPartTAPS[nTAPS]->GetCentralElement()]->Eval(e);
+                fPartTAPS[nTAPS]->SetEnergy(e + corr*e);
+            }
+
             // set Veto index
-            fPartTAPS[i]->SetVetoIndex(veto_index);
+            fPartTAPS[nTAPS]->SetVetoIndex(veto_index);
 
             // set Veto energy
-            fPartTAPS[i]->SetVetoEnergy(veto_energy);
+            fPartTAPS[nTAPS]->SetVetoEnergy(veto_energy);
             
             // set Veto time
-            if (fVetoTime) fPartTAPS[i]->SetVetoTime(fVetoTime[veto_index]);
+            if (fVetoTime) fPartTAPS[nTAPS]->SetVetoTime(fVetoTime[veto_index]);
 
             // link particle to charged list
-            fPartCharged[fNCharged++] = fPartTAPS[i];
+            fPartCharged[fNCharged++] = fPartTAPS[nTAPS];
         }
         else 
         {
@@ -1206,104 +1585,41 @@ void TA2MyPhysics::Reconstruct()
             {
                 if (fCaLibReader->GetTAPSquadEnergy())
                 {
-                    Double_t energy = fPartTAPS[i]->GetEnergy();
-                    fPartTAPS[i]->SetEnergy(fCaLibReader->GetCBQuadEnergyPar0(GetTAPSRing(center)-1)*energy + 
-                                            fCaLibReader->GetCBQuadEnergyPar1(GetTAPSRing(center)-1)*energy*energy);
+                    Double_t energy = fPartTAPS[nTAPS]->GetEnergy();
+                    fPartTAPS[nTAPS]->SetEnergy(fCaLibReader->GetTAPSQuadEnergyPar0(center)*energy + 
+                                                fCaLibReader->GetTAPSQuadEnergyPar1(center)*energy*energy);
                 }
             }
 
             // link particle to neutral list
-            fPartNeutral[fNNeutral++] = fPartTAPS[i];
+            fPartNeutral[fNNeutral++] = fPartTAPS[nTAPS];
         }
+
+        // link particle to total list
+        fPart[fNTotal++] = fPartTAPS[nTAPS];
+
+        // increment number of accepted particles
+        nTAPS++;
     } 
     
-
-    ////////////////////////////////////////////////////////////////////////////
-    // Prepare MC particle collection                                         //
-    ////////////////////////////////////////////////////////////////////////////
+    // set number of accepted particles
+    fTAPSNCluster = nTAPS;
     
-    if (fIsMC) 
-    {
-        // get momentum branch and number of tree events
-        TBranch* b = gAR->GetBranch(EI_dircos);
-        
-        // get number of particles
-        fNMC = *(Int_t*) (fEvent[EI_npart]);
-        
-        // read particle IDs and 4-momenta
-        Int_t* g3_ID = (Int_t*) (fEvent[EI_idpart]);
-        Float_t* etot = (Float_t*) (fEvent[EI_elab]);
-        Float_t* ptot = (Float_t*) (fEvent[EI_plab]);
-        Float_t dircos[fNMC][3];
-        b->SetAddress(dircos);
-        b->GetEntry(fEventCounter - fEventOffset);
-
-        // create particles and set their properties
-        for (Int_t i = 0; i < fNMC; i++)
-        {
-            // set particle ID
-            fPartMC[i]->SetGeant3_ID(g3_ID[i]);
-        
-            // 4-momentum (convert to MeV)
-            fPartMC[i]->SetP4(1000.*ptot[i]*dircos[i][0],
-                              1000.*ptot[i]*dircos[i][1],
-                              1000.*ptot[i]*dircos[i][2],
-                              1000.*etot[i]);
-        }
-
-        // information output at first event
-        if (fEventCounter == 0)
-        {
-            printf("\n\n\n  ****** MC PARTICLE COLLECTION ******\n\n");
-            printf("   Found %d MC particles:\n\n", fNMC);
-            for (Int_t i = 0; i < fNMC; i++) 
-                printf("   %2d. %-22s (PDG: %5d   G3: %2d)\n", i+1, fPartMC[i]->GetName(), 
-                       fPartMC[i]->GetPDG_ID(), fPartMC[i]->GetGeant3_ID());
-            printf("\n");
-            printf("\n");
-        }
-        
-        // update event offset when at last event of current tree
-        Long64_t tevents = b->GetEntries();
-        if (fEventCounter - fEventOffset == tevents - 1) fEventOffset += tevents;
-    }
-
 
     ////////////////////////////////////////////////////////////////////////////
     // Update corrected sum scaler histogram                                  //
     ////////////////////////////////////////////////////////////////////////////
     
-    if (gAR->IsScalerRead())
+    if (!fIsMC && gAR->IsScalerRead())
     {
-        // update clock scalers
+        // user information
+        //printf("Scaler read @ event %lld\n", fEventCounter);
+
+        // update corrected clock scalers
         UpdateCorrectedScaler(0);
         UpdateCorrectedScaler(1);
         UpdateCorrectedScaler(144);
         UpdateCorrectedScaler(145);
-            
-        // update P2 scaler 
-        if (fNt_P2TaggerRatio && fScalerSum[151] != fOldP2ScalerSum)
-        {
-            Double_t ratio, ratio_err, tagger; 
-            
-            // correct free-running p2 for total DAQ livetime
-            Double_t sc_0 = fH_Corrected_Scalers->GetBinContent(1);
-            Double_t sc_1 = fH_Corrected_Scalers->GetBinContent(2);
-            Double_t p2 = sc_1 / sc_0 * (Double_t)fScaler[151];
-            
-            // channel wise
-            TH1F* hSc = (TH1F*) gDirectory->Get("FPD_ScalerCurr");
-            for (Int_t i = 0; i < 352; i++)
-            {
-                tagger = hSc->GetBinContent(i+1);
-                ratio = p2 / tagger;
-                ratio_err = ratio * TMath::Sqrt(1./p2 + 1./tagger + 1./sc_0 + 1./sc_1);
-                fNt_P2TaggerRatio[i]->Fill(ratio, ratio_err);
-            }
-            
-            // update old values
-            fOldP2ScalerSum = fScalerSum[151];
-        }
     }
  
 
@@ -1314,11 +1630,40 @@ void TA2MyPhysics::Reconstruct()
     // count event
     fH_EventInfo->Fill(0);
 
-    // fill beam helicity
-    if (fEBeamHelState == 1)       fH_EventInfo->Fill(1);
-    else if (fEBeamHelState == -1) fH_EventInfo->Fill(2);
-    else if (fEBeamHelState ==  0) fH_EventInfo->Fill(3);
+    if (!fIsMC)
+    {
+        // fill beam helicity
+        if (fTrigger->IsBeamHel(kPos)) fH_EventInfo->Fill(1);
+        else if (fTrigger->IsBeamHel(kNeg)) fH_EventInfo->Fill(2);
+        else if (fTrigger->IsBeamHel(kUndef)) fH_EventInfo->Fill(3);
+        
+        // fill Level 1 trigger
+        if (fTrigger->IsTriggerL1(kCB))          fH_EventInfo->Fill(4);
+        if (fTrigger->IsTriggerL1(kTAPS_OR))     fH_EventInfo->Fill(5);
+        if (fTrigger->IsTriggerL1(kTAPS_Pulser)) fH_EventInfo->Fill(6);
+        if (fTrigger->IsTriggerL1(kTAPS_M2))     fH_EventInfo->Fill(7);
+        if (fTrigger->IsTriggerL1(kPulser))      fH_EventInfo->Fill(8);
+        
+        // fill Level 2 trigger
+        if (fTrigger->IsTriggerL2(kM1)) fH_EventInfo->Fill(9);
+        if (fTrigger->IsTriggerL2(kM2)) fH_EventInfo->Fill(10);
+        if (fTrigger->IsTriggerL2(kM3)) fH_EventInfo->Fill(11);
+        if (fTrigger->IsTriggerL2(kM4)) fH_EventInfo->Fill(12);
 
+        // fill number of scaler reads
+        if (!fIsMC && gAR->IsScalerRead()) fH_EventInfo->Fill(13);
+
+        // fill number of events with hardware errors
+        if (!fIsMC && gAR->GetHardError()) fH_EventInfo->Fill(14);
+        
+        // fill types of hardware errors
+        for (Int_t i = 0; i < gAR->GetHardError(); i++)
+        {
+            fH_ErrorInfo->Fill(gAR->GetHardwareError()[i].fModIndex, 
+                               gAR->GetHardwareError()[i].fErrCode);
+        }
+    }
+    
     
     ////////////////////////////////////////////////////////////////////////////
     // Call virtual reconstruction method of child class                      //
@@ -1348,10 +1693,41 @@ void TA2MyPhysics::Reconstruct()
 
     
     ////////////////////////////////////////////////////////////////////////////
-    // Increment event counter                                                //
+    // Trigger reset                                                          //
+    ////////////////////////////////////////////////////////////////////////////
+    
+    fTrigger->Reset();
+
+    
+    ////////////////////////////////////////////////////////////////////////////
+    // Increment event counter and check last event                           //
     ////////////////////////////////////////////////////////////////////////////
     
     fEventCounter++;
+
+    // check if last event was processed and finish the analysis
+    if (fLastEvent && fEventCounter > fLastEvent) TerminateAnalysis();
+}
+
+//______________________________________________________________________________
+Bool_t TA2MyPhysics::IsBadScalerRead(Int_t scr)
+{
+    // Check if the scaler read 'scr' is in the list of bad scaler reads.
+    // Return kTRUE if yes, otherwise or if no bad scaler reads list was
+    // specified kFALSE;
+
+    // loop over bad scaler reads list (should be sorted)
+    for (Int_t i = 0; i < fNBadScalerReads; i++)
+    {
+        // check for bad scaler read
+        if (fBadScalerReads[i] < scr) continue;
+        if (fBadScalerReads[i] == scr)
+            return kTRUE;
+        else
+            return kFALSE;
+    }
+
+    return kFALSE;
 }
 
 //______________________________________________________________________________
@@ -1365,6 +1741,71 @@ Bool_t TA2MyPhysics::IsBadTaggerChannel(Int_t ch)
     for (Int_t i = 0; i < fNBadTaggerChannels; i++)
     {
         if (ch == fBadTaggerChannels[i]) return kTRUE;
+    }
+    return kFALSE;
+}
+
+//______________________________________________________________________________
+Bool_t TA2MyPhysics::IsBadCBCluster(Int_t center)
+{
+    // Check if the cluster center 'center' is in the list of bad CB clusters.
+    // Return kTRUE if yes, otherwise or if no bad CB cluster list was
+    // specified kFALSE;
+
+    // loop over bad CB cluster list
+    for (Int_t i = 0; i < fNBadCBClusters; i++)
+    {
+        if (center == fBadCBClusters[i]) return kTRUE;
+    }
+    return kFALSE;
+}
+
+//______________________________________________________________________________
+Bool_t TA2MyPhysics::IsBadTAPSCluster(Int_t center)
+{
+    // Check if the cluster center 'center' is in the list of bad TAPS clusters.
+    // Return kTRUE if yes, otherwise or if no bad TAPS cluster list was
+    // specified kFALSE;
+
+    // loop over bad TAPS cluster list
+    for (Int_t i = 0; i < fNBadTAPSClusters; i++)
+    {
+        if (center == fBadTAPSClusters[i]) return kTRUE;
+    }
+    return kFALSE;
+}
+
+//______________________________________________________________________________
+Double_t TA2MyPhysics::GetTaggEff(Int_t ch)
+{
+    // Return the tagging efficiency of the channel 'ch' read from the CaLib 
+    // database.
+    // If no values were read from the database 1 is returned.
+    // In the analysis of MC data always 1 is returned.
+
+    // MC data
+    if (fIsMC) return 1;
+
+    // check for CaLib
+    if (fCaLibReader)
+    {
+        if (fCaLibReader->GetTAGGeff()) return fCaLibReader->GetTAGGEffVal(ch);
+        else return 1;
+    }
+    else return 1;
+}
+
+//______________________________________________________________________________
+Bool_t TA2MyPhysics::IsTrigExclTAPSRing(Int_t ring)
+{
+    // Check if the TAPS ring 'ring' is in the list of trigger-excluded TAPS rings.
+    // Return kTRUE if yes, otherwise or if no trigger-excluded TAPS ring list was
+    // specified kFALSE;
+
+    // loop over trigger-excluded TAPS ring list
+    for (Int_t i = 0; i < fNTrigTAPSExclRings; i++)
+    {
+        if (ring == fTrigTAPSExclRings[i]) return kTRUE;
     }
     return kFALSE;
 }
@@ -1390,12 +1831,14 @@ Bool_t TA2MyPhysics::IsTrigger(TOA2RecParticle& meson)
     Bool_t tapsLED2Pat[6] = { kFALSE, kFALSE, kFALSE, kFALSE, kFALSE, kFALSE };
     
     // check if LED values were read using CaLib
-    Bool_t useCaLibLED = kFALSE;
+    Bool_t useCaLibLEDCB = kFALSE;
+    Bool_t useCaLibLEDTAPS = kFALSE;
     if (fCaLibReader)
     {
-        if (fCaLibReader->GetTAPSled()) useCaLibLED = kTRUE;
+        if (fCaLibReader->GetCBled()) useCaLibLEDCB = kTRUE;
+        if (fCaLibReader->GetTAPSled()) useCaLibLEDTAPS = kTRUE;
     }
-
+    
     // get number of decay particles
     Int_t nHits = meson.GetNDetectedProducts();
     
@@ -1405,56 +1848,69 @@ Bool_t TA2MyPhysics::IsTrigger(TOA2RecParticle& meson)
     // loop over all particles
     for (Int_t i = 0; i < nHits; i++)
     {
+        // get cluster size and hits
+        Int_t clNhits    = part[i]->GetClusterSize();
+        UInt_t* clHits   = part[i]->GetClusterHits();
+        Double_t* clHitE = part[i]->GetClusterHitEnergies();
+        
         // particles in CB
         if (part[i]->GetDetector() == kCBDetector)
         {
-            // get cluster size and hits
-            Int_t clNhits    = part[i]->GetClusterSize();
-            UInt_t* clHits   = part[i]->GetClusterHits();
-            Double_t* clHitE = part[i]->GetClusterHitEnergies();
-            
             // loop over all cluster hits
             for (Int_t j = 0; j < clNhits; j++)
             {
                 // calculate the segment index
                 Int_t seg = (Int_t)(clHits[j] / 16);
+                
+                // set threshold either via CaLib or via config file
+                Double_t thr;
+                if (useCaLibLEDCB) thr = fCaLibReader->GetCBLEDThr(clHits[j]) * fTrigCBSegThr;
+                else thr = fTrigCBSegThr;
 
                 // check NaI segment high discriminator threshold
-                if (clHitE[j] > fTrigCBSegThr) segPat[seg] = kTRUE;
+                if (clHitE[j] > thr) segPat[seg] = kTRUE;
 
-                // add energy to total sum
-                cbSum += clHitE[j];
+                // add de-calibrated energy to total sum
+                Double_t eDecal;
+                if (fIsMC) 
+                {
+                    // check if relative gains were read in
+                    if (fTrigCBRelGains) eDecal = clHitE[j] / (fNaI->GetElement(clHits[j])->GetA1() / fTrigCBMeanGain) / fTrigCBRelGains[clHits[j]];
+                    else eDecal = clHitE[j] / (fNaI->GetElement(clHits[j])->GetA1() / fTrigCBMeanGain);
+                }
+                else eDecal = clHitE[j] / (fNaI->GetElement(clHits[j])->GetA1() / fTrigCBMeanGain);
+                cbSum += eDecal;
             }
         }
-
+        
         // particles in TAPS
         if (part[i]->GetDetector() == kTAPSDetector)
         {
-            // get the energy of the central detector
-            Double_t centE = part[i]->GetCentralEnergy();
-            
-            // get the central element
-            Int_t centElem = part[i]->GetCentralElement();
-
-            // calculate the block index
-            Int_t block = GetTAPSBlock(centElem);
-            
-            // check LED threshold either using CaLib or the block variables
-            if (useCaLibLED)
+            // loop over all cluster hits
+            for (Int_t j = 0; j < clNhits; j++)
             {
-                // check LED1 trigger condition
-                if (centE > fCaLibReader->GetTAPSLED1Thr(centElem)) tapsLED1Pat[block-1] = kTRUE;
+                // skip elements in trigger-excluded TAPS rings
+                if (IsTrigExclTAPSRing(TOA2Detector::GetTAPSRing(clHits[j], fTAPSType))) continue;
 
-                // check LED2 trigger condition
-                if (centE > fCaLibReader->GetTAPSLED2Thr(centElem)) tapsLED2Pat[block-1] = kTRUE;
-            }
-            else
-            {
-                // check LED1 trigger condition
-                if (centE > fTrigTAPSLED1Thr) tapsLED1Pat[block] = kTRUE;
-            
-                // check LED2 trigger condition
-                if (centE > fTrigTAPSLED2Thr) tapsLED2Pat[block] = kTRUE;
+                // get the block index (0..5)
+                Int_t block = TOA2Detector::GetTAPSBlock(clHits[j], fTAPSType) - 1;
+                
+                // set thresholds either via CaLib or via config file
+                Double_t thr_led1, thr_led2;
+                if (useCaLibLEDTAPS) 
+                {
+                    thr_led1 = fCaLibReader->GetTAPSLED1Thr(clHits[j]) * fTrigTAPSLED1Thr;
+                    thr_led2 = fCaLibReader->GetTAPSLED2Thr(clHits[j]) * fTrigTAPSLED2Thr;
+                }
+                else 
+                {
+                    thr_led1 = fTrigTAPSLED1Thr;
+                    thr_led2 = fTrigTAPSLED2Thr;
+                }
+
+                // check LED1/LED2 trigger condition
+                if (clHitE[j] > thr_led1) tapsLED1Pat[block] = kTRUE;
+                if (clHitE[j] > thr_led2) tapsLED2Pat[block] = kTRUE;
             }
         }
     }
@@ -1479,25 +1935,42 @@ Bool_t TA2MyPhysics::IsTrigger(TOA2RecParticle& meson)
         // add blocks that fired the LED2 to the TAPS alone multiplicity
         if (tapsLED2Pat[i]) multTAPS_LED2++;
     }
+    
+    //
+    // CB sum for MC analysis when CB sum CDF is provided
+    //
+
+    Bool_t cbCDF;
+    if (fIsMC && fTrigCBSumCDF)
+    {
+        // get random number in ]0,max] where max is the maximum value of the CDF
+        Double_t rnd = gRandom->Uniform(0, fTrigCBSumCDF->GetParameter(0));
+
+        // compare random number to function value
+        // at the energy sum value
+        if (rnd < fTrigCBSumCDF->Eval(cbSum)) cbCDF = kTRUE;
+        else cbCDF = kFALSE;
+    }
+    else cbCDF = kTRUE;
+
+    //
+    // store software trigger
+    //
+    
+    fTrigger->SetCBEnergySum(cbSum);
+    fTrigger->SetMultCB(multCB);
+    fTrigger->SetMultTAPSLED1(multTAPS_LED1);
+    fTrigger->SetMultTAPSLED2(multTAPS_LED2);
 
     //
     // make trigger decision
     //
 
-    //printf("CB sum: %f   CB mult: %d   TAPS mult: %d\n", cbSum, multCB, multTAPS_LED1);
-    //UShort_t l1 = fADC[0];
-    //UShort_t l2 = fADC[1];
-    //if (l1 & 0x01) printf("CBsum  ");
-    //if (l1 & 0x08) printf("TAPSOR  ");
-    //if (l2 & 0x10) printf("M1  ");
-    //if (l2 & 0x20) printf("M2  ");
-    //if (l2 & 0x40) printf("M3  ");
-    //if (l2 & 0x80) printf("M4  ");
-    //printf("\n\n");
-
     // CB sum + total multiplicity
-    Int_t multTotal = multCB + multTAPS_LED1;
-    if (cbSum > fTrigCBSum && multTotal >= fTrigTotalMult) return kTRUE;
+    Int_t multTotal;
+    if (fTrigIsTAPSTotalMult) multTotal = multCB + multTAPS_LED1;
+    else multTotal = multCB;
+    if (cbSum >= fTrigCBSum && cbCDF && multTotal >= fTrigTotalMult) return kTRUE;
 
     // TAPS alone
     if (multTAPS_LED2 >= fTrigTAPSMult) return kTRUE;
@@ -1531,7 +2004,8 @@ Double_t TA2MyPhysics::GetBGSubtractionWeight(TOA2RecParticle& meson,
                                               Double_t limitBG2LowCB, Double_t limitBG2HighCB,
                                               Double_t limitPromptLowTAPS, Double_t limitPromptHighTAPS,
                                               Double_t limitBG1LowTAPS, Double_t limitBG1HighTAPS,
-                                              Double_t limitBG2LowTAPS, Double_t limitBG2HighTAPS)
+                                              Double_t limitBG2LowTAPS, Double_t limitBG2HighTAPS,
+                                              Bool_t* outIsOutside)
 {
     // Return the weight for the tagger background subtraction using
     // - the detected meson 'meson'
@@ -1539,6 +2013,15 @@ Double_t TA2MyPhysics::GetBGSubtractionWeight(TOA2RecParticle& meson,
     // - the limits for the prompt region 'limitPromptLowCB/TAPS' and 'limitPromptHighCB/TAPS'
     // - the limits for the background region 1 'limitBG1LowCB/TAPS' and 'limitBG1HighCB/TAPS'
     // - the limits for the background region 2 'limitBG2LowCB/TAPS' and 'limitBG2HighCB/TAPS'
+    // If 'outIsOutside' is non-zero it will be used to return kTRUE if the hit is a useless
+    // background hit.
+    
+    // MC events are always considered prompt
+    if (fIsMC)
+    {
+        if (outIsOutside) *outIsOutside = kFALSE;
+        return 1.;
+    }
 
     // calculate the coincidence time taking into account the detector time
     // of the meson to remove the trigger time
@@ -1549,16 +2032,26 @@ Double_t TA2MyPhysics::GetBGSubtractionWeight(TOA2RecParticle& meson,
         // calculate coincidence time
         Double_t coincTime = meson.GetTime() + taggerTime;
     
-        // check for the prompt region (MC events are always considered prompt)
-        if ((coincTime > limitPromptLowTAPS && coincTime < limitPromptHighTAPS) ||
-            fIsMC) return 1.;
+        // check for the prompt region
+        if (coincTime > limitPromptLowTAPS && coincTime < limitPromptHighTAPS)
+        {
+            if (outIsOutside) *outIsOutside = kFALSE;
+            return 1.;
+        }
         // check for background region
         else if ((coincTime > limitBG1LowTAPS && coincTime < limitBG1HighTAPS) ||
                  (coincTime > limitBG2LowTAPS && coincTime < limitBG2HighTAPS))
-                    return - (limitPromptHighTAPS - limitPromptLowTAPS) / 
-                             (limitBG1HighTAPS - limitBG1LowTAPS + limitBG2HighTAPS - limitBG2LowTAPS);
+        {
+            if (outIsOutside) *outIsOutside = kFALSE;
+            return - (limitPromptHighTAPS - limitPromptLowTAPS) / 
+                     (limitBG1HighTAPS - limitBG1LowTAPS + limitBG2HighTAPS - limitBG2LowTAPS);
+        }
         // useless background here
-        return 0.;
+        else
+        {
+            if (outIsOutside) *outIsOutside = kTRUE;
+            return 0.;
+        }
     }
     // meson time from CB
     else 
@@ -1566,17 +2059,101 @@ Double_t TA2MyPhysics::GetBGSubtractionWeight(TOA2RecParticle& meson,
         // calculate coincidence time
         Double_t coincTime = meson.GetTime() - taggerTime;
         
-        // check for the prompt region (MC events are always considered prompt)
-        if ((coincTime > limitPromptLowCB && coincTime < limitPromptHighCB) ||
-            fIsMC) return 1.;
+        // check for the prompt region
+        if (coincTime > limitPromptLowCB && coincTime < limitPromptHighCB)
+        {
+            if (outIsOutside) *outIsOutside = kFALSE;
+            return 1.;
+        }
         // check for background region
         else if ((coincTime > limitBG1LowCB && coincTime < limitBG1HighCB) ||
                  (coincTime > limitBG2LowCB && coincTime < limitBG2HighCB))
-                    return - (limitPromptHighCB - limitPromptLowCB) / 
-                             (limitBG1HighCB - limitBG1LowCB + limitBG2HighCB - limitBG2LowCB);
+        {
+            if (outIsOutside) *outIsOutside = kFALSE;
+            return - (limitPromptHighCB - limitPromptLowCB) / 
+                     (limitBG1HighCB - limitBG1LowCB + limitBG2HighCB - limitBG2LowCB);
+        }
         // useless background here
-        return 0.;
+        else
+        {
+            if (outIsOutside) *outIsOutside = kTRUE;
+            return 0.;
+        }
      }
+}
+
+//______________________________________________________________________________
+Double_t TA2MyPhysics::GetBGSubtractionWeight(TOA2RecParticle& meson, 
+                                              Int_t taggerChannel,
+                                              Double_t taggerTime,
+                                              Double_t limitBG1LowCB, Double_t limitBG1HighCB,
+                                              Double_t limitBG2LowCB, Double_t limitBG2HighCB,
+                                              Double_t limitBG1LowTAPS, Double_t limitBG1HighTAPS,
+                                              Double_t limitBG2LowTAPS, Double_t limitBG2HighTAPS,
+                                              Bool_t* outIsOutside)
+{
+    // Return the weight for the tagger background subtraction using
+    // - the detected meson 'meson'
+    // - the tagger channel 'taggerChannel'
+    // - the tagger time 'taggerTime'
+    // - the limits for the background region 1 'limitBG1LowCB/TAPS' and 'limitBG1HighCB/TAPS'
+    // - the limits for the background region 2 'limitBG2LowCB/TAPS' and 'limitBG2HighCB/TAPS'
+    // The limits for the prompt window will be taken from the tagger prompt graphs.
+    // If 'outIsOutside' is non-zero it will be used to return kTRUE if the hit is a useless
+    // background hit.
+    
+    // MC events are always considered prompt
+    if (fIsMC)
+    {
+        if (outIsOutside) *outIsOutside = kFALSE;
+        return 1.;
+    }
+
+    // get prompt limits
+    Double_t limitPromptLowCB = fPrompt_Min_CB->Eval(taggerChannel);
+    Double_t limitPromptHighCB = fPrompt_Max_CB->Eval(taggerChannel);
+    Double_t limitPromptLowTAPS = fPrompt_Min_TAPS->Eval(taggerChannel);
+    Double_t limitPromptHighTAPS = fPrompt_Max_TAPS->Eval(taggerChannel);
+    
+    // call normal method
+    return GetBGSubtractionWeight(meson, taggerTime,
+                                  limitPromptLowCB, limitPromptHighCB,
+                                  limitBG1LowCB, limitBG1HighCB,
+                                  limitBG2LowCB, limitBG2HighCB,
+                                  limitPromptLowTAPS, limitPromptHighTAPS,
+                                  limitBG1LowTAPS, limitBG1HighTAPS,
+                                  limitBG2LowTAPS, limitBG2HighTAPS,
+                                  outIsOutside);
+}
+ 
+//______________________________________________________________________________
+Double_t TA2MyPhysics::GetRandomTaggerTime(TOA2RecParticle& meson, Int_t channel, 
+                                           Double_t subtr_weight, Double_t taggerTime)
+{
+    // Return a randomized tagger time for the tagger channel 'channel' within
+    // the prompt window of the meson-Tagger time if the weight 'subtr_weight' is
+    // negative (random background).
+    // If 'subtr_weight' is positive the original tagger time 'taggerTime' will
+    // be returned.
+
+    // check weight
+    if (subtr_weight > 0) 
+        return taggerTime;
+    else
+    {
+        // meson time from TAPS
+        if (meson.GetNDetectorHits(kTAPSDetector)) 
+        {
+            Double_t new_coinc = gRandom->Uniform(fPrompt_Min_TAPS->Eval(channel), fPrompt_Max_TAPS->Eval(channel));
+            return new_coinc - meson.GetTime();
+        }
+        // meson time from CB
+        else  
+        {
+            Double_t new_coinc = gRandom->Uniform(fPrompt_Min_CB->Eval(channel), fPrompt_Max_CB->Eval(channel));
+            return meson.GetTime() - new_coinc;
+        }
+    }
 }
 
 //______________________________________________________________________________
@@ -1603,8 +2180,8 @@ void TA2MyPhysics::FillTaggerCoincidence(TOA2RecParticle& meson, Double_t tagger
 }
 
 //______________________________________________________________________________
-void TA2MyPhysics::FillTaggerCoincidence2D(TOA2RecParticle& meson, Double_t taggerTime, 
-                                           Int_t taggerElement, TH2* hCB, TH2* hTAPS)
+void TA2MyPhysics::FillTaggerCoincidence(TOA2RecParticle& meson, Double_t taggerTime, 
+                                         Int_t taggerElement, TH2* hCB, TH2* hTAPS)
 {
     // Fill the tagger coincidence time of the meson 'meson' using the tagger time 'taggerTime'
     // against the tagged element 'taggerElement' depending of the detector the meson time was 
@@ -1634,7 +2211,7 @@ void TA2MyPhysics::UpdateCorrectedScaler(Int_t sc)
     // after checking gAR->IsScalerRead().
 
     // check scaler number
-    if (sc >= gMyPhysics_MaxScalers)
+    if (sc >= gAR->GetMaxScaler())
     {
         Error("UpdateCorrectedScaler", "Scaler %d is larger than max. scaler value!", sc);
         return;
@@ -1642,7 +2219,7 @@ void TA2MyPhysics::UpdateCorrectedScaler(Int_t sc)
 
     // check previous sum scaler entry to avoid double counting
     // do not do this in offline ROOT file input mode
-    if ((gAR->IsOnline() && fScalerSum[sc] != fOldScalerSumValue[sc]) ||
+    if ((gAR->IsOnline() && fScalerSum[sc] != fOldScalerSum[sc]) ||
         !gAR->IsOnline())
     {
         // free running, overflow vulnerable 24-bit scaler (total)
@@ -1670,136 +2247,12 @@ void TA2MyPhysics::UpdateCorrectedScaler(Int_t sc)
         }
 
         // update old sum scaler value
-        fOldScalerSumValue[sc] = fScalerSum[sc];    
+        fOldScalerSum[sc] = fScalerSum[sc];    
     }
 }
 
 //______________________________________________________________________________
-inline Int_t TA2MyPhysics::GetVetoInFrontOfElement(Int_t id) const
-{
-    // Return the index of the veto that is installed in front of the
-    // BaF2 or PWO element with the index 'id'.
-    
-    // check TAPS setup
-    switch (fBaF2PWO->GetType())
-    {
-        case EBaF2:
-        {
-            return id;
-        }
-        case EBaF2_PWO_08:
-        {
-            // 1st PWO ring
-            if (id >=   0 && id <=   3) return   0;
-            if (id >=  67 && id <=  70) return  64;
-            if (id >= 134 && id <= 137) return 128;
-            if (id >= 201 && id <= 204) return 192;
-            if (id >= 268 && id <= 271) return 256;
-            if (id >= 335 && id <= 338) return 320;
-            
-            // other elements
-            else return id - 3*(id/67 + 1);
-        }
-        case EBaF2_PWO_09:
-        {
-	    if ((fVeto->GetNelement()) == 384)
-	    {
-	        // 1st PWO ring
-	        if (id >=   0 && id <=   3) return   0;
-		if (id >=  73 && id <=  76) return  64;
-		if (id >= 146 && id <= 149) return 128;
-		if (id >= 219 && id <= 222) return 192;
-		if (id >= 292 && id <= 295) return 256;
-		if (id >= 365 && id <= 368) return 320;
-            
-		// 2nd PWO ring
-		if (id >=   4 && id <=   7) return   1;
-		if (id >=   8 && id <=  11) return   2;
-		if (id >=  77 && id <=  80) return  65;
-		if (id >=  81 && id <=  84) return  66;
-		if (id >= 150 && id <= 153) return 129;
-		if (id >= 154 && id <= 157) return 130;
-		if (id >= 223 && id <= 226) return 193;
-		if (id >= 227 && id <= 230) return 194;
-		if (id >= 296 && id <= 299) return 257;
-		if (id >= 300 && id <= 303) return 258;
-		if (id >= 369 && id <= 372) return 321;
-		if (id >= 373 && id <= 376) return 322;
-		
-		// other elements
-		else return id - 9*(id/73 + 1);
-	    }
-	    else return id;
-        }
-        default:
-        {
-            Error("GetVetoInFrontOfElement", "TAPS setup could not be identified!");
-            return 0;
-        }
-    }
-}
-
-//______________________________________________________________________________
-Int_t TA2MyPhysics::GetTAPSRing(Int_t id) const
-{
-    // Return the number of the ring (1 to 11) the TAPS element
-    // 'id' belongs to.
-    
-    // element layout (first and last elements of a ring)
-    Int_t ringRange[11][2] = {{0, 0}, {1, 2}, {3, 5}, {6, 9}, {10, 14}, {15, 20},
-                              {21, 27}, {28, 35}, {36, 44}, {45, 54}, {55, 63}};
-             
-    // get corresponding TAPS 2007 element number
-    Int_t elem = GetVetoInFrontOfElement(id);
-    
-    // map element to first block
-    Int_t mid = elem % 64;
-
-    if      (mid >= ringRange[0][0]  && mid <= ringRange[0][1])  return 1;
-    else if (mid >= ringRange[1][0]  && mid <= ringRange[1][1])  return 2;
-    else if (mid >= ringRange[2][0]  && mid <= ringRange[2][1])  return 3;
-    else if (mid >= ringRange[3][0]  && mid <= ringRange[3][1])  return 4;
-    else if (mid >= ringRange[4][0]  && mid <= ringRange[4][1])  return 5;
-    else if (mid >= ringRange[5][0]  && mid <= ringRange[5][1])  return 6;
-    else if (mid >= ringRange[6][0]  && mid <= ringRange[6][1])  return 7;
-    else if (mid >= ringRange[7][0]  && mid <= ringRange[7][1])  return 8;
-    else if (mid >= ringRange[8][0]  && mid <= ringRange[8][1])  return 9;
-    else if (mid >= ringRange[9][0]  && mid <= ringRange[9][1])  return 10;
-    else if (mid >= ringRange[10][0] && mid <= ringRange[10][1]) return 11;
-    else return 99;
-}
-
-//______________________________________________________________________________
-Int_t TA2MyPhysics::GetTAPSBlock(Int_t id) const
-{
-    // Return the number of the block (1 to 6) the TAPS element
-    // 'id' belongs to.
-    
-    // check TAPS setup
-    switch (fBaF2PWO->GetType())
-    {
-        case EBaF2:
-        {
-            return (id / 64) + 1;
-        }
-        case EBaF2_PWO_08:
-        {
-            return (id / 67) + 1;
-        }
-        case EBaF2_PWO_09:
-        {
-            return (id / 73) + 1;
-        }
-        default:
-        {
-            Error("GetTAPSBlock", "TAPS setup could not be identified!");
-            return 0;
-        }
-    }
-}
-
-//______________________________________________________________________________
-Double_t TA2MyPhysics::CheckClusterVeto(HitCluster_t* inCluster, Int_t* outVetoIndex) const
+Double_t TA2MyPhysics::CheckClusterVeto(TOA2DetParticle* inCluster, Int_t* outVetoIndex) const
 {
     // Return the maximum energy deposited in one of the veto detectors of the
     // TAPS cluster 'inCluster'.
@@ -1808,9 +2261,19 @@ Double_t TA2MyPhysics::CheckClusterVeto(HitCluster_t* inCluster, Int_t* outVetoI
     // If 'outVetoIndex' is provided write the index of the corresponding veto
     // element to that variable (-1 if no cluster veto fired).
     
-    Int_t center        = inCluster->GetIndex();
-    UInt_t nNeighbours  = inCluster->GetNNeighbour();
-    UInt_t* neighbours  = inCluster->GetNeighbour();
+    // quit if there is no veto hit
+    if (!fVetoNhits)
+    {
+        // set veto index
+        if (outVetoIndex) *outVetoIndex = -1;
+
+        // exit
+        return 0.;
+    }
+    
+    Int_t center        = inCluster->GetCentralElement();
+    UInt_t nNeighbours  = fTAPSCluster[center]->GetNNeighbour();
+    UInt_t* neighbours  = fTAPSCluster[center]->GetNeighbour();
         
     Double_t maxVetoEnergy = 0;
     if (outVetoIndex) *outVetoIndex = -1;
@@ -1819,25 +2282,39 @@ Double_t TA2MyPhysics::CheckClusterVeto(HitCluster_t* inCluster, Int_t* outVetoI
     for (UInt_t i = 0; i < fVetoNhits; i++)
     {
         // check central element
-        if (fVetoHits[i] == GetVetoInFrontOfElement(center))
+        if (fVetoHits[i] == TOA2Detector::GetVetoInFrontOfElement(center, fTAPSType))
         {
             if (fVetoEnergy[fVetoHits[i]] > maxVetoEnergy) 
             {
                 maxVetoEnergy = fVetoEnergy[fVetoHits[i]]
-                                * TMath::Abs(TMath::Cos(inCluster->GetTheta() * TMath::DegToRad()));
+                                * TMath::Abs(TMath::Cos(inCluster->GetTheta()));
                 if (outVetoIndex) *outVetoIndex = fVetoHits[i];
             }
         }
-
+        
         // loop over all neighbour elements
         for (UInt_t j = 0; j < nNeighbours; j++)
         {
-            if (fVetoHits[i] == GetVetoInFrontOfElement((Int_t)neighbours[j]))
+            if (fVetoHits[i] == TOA2Detector::GetVetoInFrontOfElement((Int_t)neighbours[j], fTAPSType))
             {
                 if (fVetoEnergy[fVetoHits[i]] > maxVetoEnergy) 
                 {
                     maxVetoEnergy = fVetoEnergy[fVetoHits[i]]
-                                    * TMath::Abs(TMath::Cos(inCluster->GetTheta() * TMath::DegToRad()));
+                                    * TMath::Abs(TMath::Cos(inCluster->GetTheta()));
+                    if (outVetoIndex) *outVetoIndex = fVetoHits[i];
+                }
+            }
+        }
+ 
+        // loop over all cluster members
+        for (Int_t j = 0; j < inCluster->GetClusterSize(); j++)
+        {
+            if (fVetoHits[i] == TOA2Detector::GetVetoInFrontOfElement(inCluster->GetClusterHits()[j], fTAPSType))
+            {
+                if (fVetoEnergy[fVetoHits[i]] > maxVetoEnergy) 
+                {
+                    maxVetoEnergy = fVetoEnergy[fVetoHits[i]]
+                                    * TMath::Abs(TMath::Cos(inCluster->GetTheta()));
                     if (outVetoIndex) *outVetoIndex = fVetoHits[i];
                 }
             }
@@ -1848,7 +2325,7 @@ Double_t TA2MyPhysics::CheckClusterVeto(HitCluster_t* inCluster, Int_t* outVetoI
 }
 
 //______________________________________________________________________________
-Double_t TA2MyPhysics::CheckClusterPID(HitCluster_t* inCluster, Int_t* outPIDIndex) const
+Double_t TA2MyPhysics::CheckClusterPID(TOA2DetParticle* inCluster, Int_t* outPIDIndex) const
 {
     // Return the theta-weighted energy deposited in the coincident PID element
     // of the CB cluster 'inCluster'.
@@ -1856,42 +2333,52 @@ Double_t TA2MyPhysics::CheckClusterPID(HitCluster_t* inCluster, Int_t* outPIDInd
     //
     // If 'outPIDIndex' is provided write the index of the PID element with the 
     // minimum difference in the phi angle to that variable (-1 if no cluster PID fired).
+    
+    // quit if there is no PID hit
+    if (!fPIDNhits)
+    {
+        // set PID index
+        if (outPIDIndex) *outPIDIndex = -1;
 
-    Double_t cb_phi = inCluster->GetMeanPosition()->Phi() * TMath::RadToDeg();
+        // exit
+        return 0.;
+    }
 
-    Double_t pidEnergy = 0;
+    // init variables
     Double_t minPhiDiff = 180;
     Int_t pidIndex = -1;
 
-    // loop over all PID hits
+    // loop over all PID hits and search best coincident hit
     for (UInt_t i = 0; i < fPIDNhits; i++)
     {
         // calculate CB-PID phi difference
-        Double_t phi_diff = fPIDHitPos[fPIDHits[i]]->Z() - cb_phi;
-        
-        // map difference to the interval [0, 180]
-        if (phi_diff >  180) phi_diff =  360 - phi_diff;
-        if (phi_diff < -180) phi_diff = -360 - phi_diff;
-        phi_diff = TMath::Abs(phi_diff);
-
-        // fill CB-PID coincidence histograms
-        //fH_CB_PID_Coinc_Hits[fPIDHits[i]]->Fill(phi_diff);
-        
-        // check phi difference limit
-        if (phi_diff <= fCBPIDPhiLimit)
+        Double_t phi_diff = TVector2::Phi_mpi_pi(fPIDHitPos[fPIDHits[i]]->Z()*TMath::DegToRad() - inCluster->GetPhi());
+        phi_diff = TMath::Abs(phi_diff*TMath::RadToDeg());
+  
+        // update minimal phi difference
+        if (phi_diff < minPhiDiff)
+        {
+            pidIndex = fPIDHits[i];
+            minPhiDiff = phi_diff;
+        }
+    }
+    
+    // fill CB-PID coincidence histograms
+    //fH_CB_PID_Coinc_Hits[pidIndex]->Fill(minPhiDiff);
+    
+    // check phi difference limit
+    Double_t pidEnergy = 0;
+    if (minPhiDiff <= fCBPIDPhiLimit)
+    {   
+        // check if energy information is available
+        if (fPIDEnergy)
         {
             // calculate theta-weighted energy
-            Double_t energy = fPIDEnergy[fPIDHits[i]]
-                              * TMath::Abs(TMath::Sin(inCluster->GetTheta() * TMath::DegToRad()));
-            
-            // update minimal phi difference
-            if (phi_diff < minPhiDiff)
-            {
-                pidEnergy = energy;
-                pidIndex = fPIDHits[i];
-                minPhiDiff = phi_diff;
-            }
+            pidEnergy = fPIDEnergy[pidIndex]
+                        * TMath::Abs(TMath::Sin(inCluster->GetTheta()));
+        
         }
+        else pidEnergy = 1.;
     }
    
     // fill CB-PID dE vs. E histograms
@@ -1905,31 +2392,6 @@ Double_t TA2MyPhysics::CheckClusterPID(HitCluster_t* inCluster, Int_t* outPIDInd
 }
 
 //______________________________________________________________________________
-void TA2MyPhysics::SetP4(TLorentzVector& p4, Double_t Ekin, Double_t mass, TVector3* dir)
-{
-    // Set the 4-vector 'p4' using the kinetic energy 'Ekin', the mass
-    // 'mass' and the reconstructed direction 'dir'.
-
-    Double_t E = Ekin + mass;
-    p4.SetE(E);
-    TVector3 p = dir->Unit() * TMath::Sqrt(E*E - mass*mass);
-    p4.SetVect(p);
-}
-
-//______________________________________________________________________________
-void TA2MyPhysics::SetP4(TLorentzVector& p4, Double_t Ekin, Double_t mass, Double_t x, Double_t y, Double_t z)
-{
-    // Set the 4-vector 'p4' using the kinetic energy 'Ekin', the mass
-    // 'mass' and the reconstructed direction 'x,y,x'.
-
-    Double_t E = Ekin + mass;
-    TVector3 dir(x, y, z);
-    p4.SetE(E);
-    TVector3 p = dir.Unit() * TMath::Sqrt(E*E - mass*mass);
-    p4.SetVect(p);
-}
-
-//______________________________________________________________________________
 void TA2MyPhysics::FillPSA(TH2* h, TOA2DetParticle* p, Double_t w)
 {
     // Fill the PSA information of the particle 'p' into the histogram 'h'
@@ -1939,7 +2401,7 @@ void TA2MyPhysics::FillPSA(TH2* h, TOA2DetParticle* p, Double_t w)
     Double_t psaA;
     
     // get PSA information
-    if (GetPSA(p, &psaR, &psaA)) h->Fill(psaA, psaR, w);
+    if (p->CalculatePSA(&psaR, &psaA)) h->Fill(psaA, psaR, w);
 }
 
 //______________________________________________________________________________
@@ -1976,7 +2438,7 @@ Bool_t TA2MyPhysics::CheckPSA(TOA2DetParticle* p, TCutG* c)
     Double_t psaA;
     
     // get PSA information
-    if (GetPSA(p, &psaR, &psaA))
+    if (p->CalculatePSA(&psaR, &psaA))
     {
         // check cut
         return c->IsInside(psaA, psaR);
@@ -2016,12 +2478,12 @@ Int_t TA2MyPhysics::GetForeignVetoHits(TOA2DetParticle* p)
         Bool_t isForeign = kTRUE;
 
         // check central element
-        if (fVetoHits[i] == GetVetoInFrontOfElement(center)) continue;
+        if (fVetoHits[i] == TOA2Detector::GetVetoInFrontOfElement(center, fTAPSType)) continue;
 
         // loop over all neighbour elements
         for (UInt_t j = 0; j < nNeighbours; j++)
         {
-            if (fVetoHits[i] == GetVetoInFrontOfElement((Int_t)neighbours[j]))
+            if (fVetoHits[i] == TOA2Detector::GetVetoInFrontOfElement((Int_t)neighbours[j], fTAPSType))
             {
                 isForeign = kFALSE;
                 break;
@@ -2035,32 +2497,268 @@ Int_t TA2MyPhysics::GetForeignVetoHits(TOA2DetParticle* p)
     return nForeign;
 }
 
-//______________________________________________________________________________
-Bool_t TA2MyPhysics::GetPSA(TOA2DetParticle* p, Double_t* psaR, Double_t* psaA)
-{   
-    // Calculate the PSA information of the particle 'p'.
-    // Save the PSA radius to 'psaR' and the PSA angle to psA.
-    // If the particle 'p' was detected in TAPS and the PSA information could
-    // be calculated and saved kTRUE is returned, otherwise kFALSE.
-    
-    // check if particle was detected in TAPS
-    if (p->GetDetector() == kTAPSDetector)
-    {   
-        // calculate the PSA information
-        Double_t lgE  = p->GetCentralEnergy();
-        Double_t sgE  = p->GetCentralSGEnergy();
-        Double_t r = TMath::Sqrt(sgE*sgE + lgE*lgE); 
-        Double_t a = TMath::ATan(sgE/lgE)*TMath::RadToDeg();
-        
-        // saved information
-        if (psaR) *psaR = r;
-        else return kFALSE;
-        if (psaA) *psaA = a;
-        else return kFALSE;
+//______________________________________________________________________________ 
+Bool_t TA2MyPhysics::IsPSAPhoton(TOA2DetParticle* p)
+{
+    // Return kTRUE if the particle 'p' is considered as photon according to PSA.
+    // Return kFALSE otherwise.
+    // Return always kTRUE in MC analysis.
+    // Return kTRUE if PSA is not configured.
 
-        // calculation and checks were successful here
+    // check MC
+    if (fIsMC) return kTRUE;
+
+    // PSA configured?
+    if (!fPSA) return kTRUE;
+    
+    // perform PSA
+    return fPSA->IsPSAPhoton(p);
+}
+
+//______________________________________________________________________________ 
+Bool_t TA2MyPhysics::IsPSANucleon(TOA2DetParticle* p)
+{
+    // Return kTRUE if the particle 'p' is considered as nucleon according to PSA.
+    // Return kFALSE otherwise.
+    // Return always kTRUE in MC analysis.
+    // Return kTRUE if PSA is not configured.
+
+    // check MC
+    if (fIsMC) return kTRUE;
+    
+    // PSA configured?
+    if (!fPSA) return kTRUE;
+    
+    // perform PSA
+    return fPSA->IsPSANucleon(p);
+}
+
+//______________________________________________________________________________ 
+Bool_t TA2MyPhysics::IsPIDProton(TOA2DetParticle* p)
+{
+    // Return kTRUE if the particle 'p' is considered as proton according to the
+    // PID dE-E cut.
+    // Return kTRUE if the particle was detected in TAPS.
+    // Return kTRUE if no PID dE-E cuts were loaded.
+    
+    // check for PID dE-E cuts
+    if (!fPIDdEECuts) return kTRUE;
+
+    // TAPS particles
+    if (p->GetDetector() != kCBDetector) return kTRUE;
+
+    // get PID element index
+    Int_t elem = p->GetPIDIndex();
+
+    // check if specific PID dE-E cut was loaded
+    if (!fPIDdEECuts[elem])
+    {
+        Error("IsPIDProton", "No PID dE-E cuts for element %d found!", elem);
         return kTRUE;
     }
+
+    // check for proton
+    if (p->GetPIDEnergy() > fPIDdEECuts[elem]->Eval(p->GetEnergy())) return kTRUE;
     else return kFALSE;
 }
 
+//______________________________________________________________________________ 
+Bool_t TA2MyPhysics::IsPIDPion(TOA2DetParticle* p)
+{
+    // Return kTRUE if the particle 'p' is considered as pion according to the
+    // PID dE-E cut.
+    // Return kFALSE if the particle was detected in TAPS.
+    // Return kTRUE if no PID dE-E cuts were loaded.
+    
+    // check for PID dE-E cuts
+    if (!fPIDdEECuts) return kTRUE;
+
+    // TAPS particles
+    if (p->GetDetector() != kCBDetector) return kFALSE;
+
+    // get PID element index
+    Int_t elem = p->GetPIDIndex();
+
+    // check if specific PID dE-E cut was loaded
+    if (!fPIDdEECuts[elem])
+    {
+        Error("IsPIDProton", "No PID dE-E cuts for element %d found!", elem);
+        return kTRUE;
+    }
+
+    // check for pion
+    if (p->GetPIDEnergy() > fPIDdEECuts[elem]->Eval(p->GetEnergy())) return kFALSE;
+    else return kTRUE;
+}
+
+//______________________________________________________________________________ 
+void TA2MyPhysics::UndoQuadraticEnergyCorr(TOA2DetParticle* p)
+{
+    // Undo the quadratic energy correction that was applied to the neutral
+    // particle 'p'.
+
+    // get parameters
+    Double_t a, b;
+    if (p->GetDetector() == kCBDetector)
+    {
+        if (!fCaLibReader->GetCBquadEnergy()) return;
+        a = fCaLibReader->GetCBQuadEnergyPar0(p->GetCentralElement());
+        b = fCaLibReader->GetCBQuadEnergyPar1(p->GetCentralElement());
+    }
+    else if (p->GetDetector() == kTAPSDetector)
+    {
+        if (!fCaLibReader->GetTAPSquadEnergy()) return;
+        a = fCaLibReader->GetTAPSQuadEnergyPar0(p->GetCentralElement());
+        b = fCaLibReader->GetTAPSQuadEnergyPar1(p->GetCentralElement());
+    }
+    else
+    {
+        Error("UndoQuadraticEnergyCorr", "Particle was detected in unknown detector!");
+        return;
+    }
+    
+    // get corrected energy
+    Double_t e = p->GetEnergy();
+    
+    // restore original energy
+    Double_t e_orig = (-a + TMath::Sqrt(a*a + 4.*b*e)) / 2. / b;
+    p->SetEnergy(e_orig);
+}
+
+//______________________________________________________________________________ 
+void TA2MyPhysics::CalculatePhotonResolutions(TOA2DetParticle* p)
+{
+    // Calculate the photon resolutions for the particle 'p' assuming it is a photon
+    // and save the errors into the particle object.
+    // The original energy of the particle should be stored into 'p' because this
+    // method is performing the quadratic energy correction for photons.
+
+    // get detector
+    if (p->GetDetector() == kCBDetector)
+    {
+        // check if all resolution data were loaded
+        if (!fPhotonResThetaCB || !fPhotonResPhiCB || !fPhotonResEnergyCB) return;
+
+        // perform quadratic energy correction to get photon energy
+        Double_t energy = p->GetEnergy();
+        if (fCaLibReader)
+        {
+            if (fCaLibReader->GetCBquadEnergy())
+            {
+                energy = fCaLibReader->GetCBQuadEnergyPar0(p->GetCentralElement())*p->GetEnergy() + 
+                         fCaLibReader->GetCBQuadEnergyPar1(p->GetCentralElement())*p->GetEnergy()*p->GetEnergy();
+            }
+        }
+        
+        // save theta error
+        p->SetErrorTheta(fPhotonResThetaCB->Eval(p->GetTheta()*TMath::RadToDeg()) * TMath::DegToRad());
+        
+        // save phi error
+        p->SetErrorPhi(fPhotonResPhiCB->Eval(p->GetTheta()*TMath::RadToDeg()) * TMath::DegToRad());
+
+        // save energy error
+        p->SetErrorEnergy(fPhotonResEnergyCB->Eval(energy));
+    }
+    else if (p->GetDetector() == kTAPSDetector)
+    {
+        // check if all resolution data were loaded
+        if (!fPhotonResThetaTAPS || !fPhotonResPhiTAPS || !fPhotonResEnergyTAPS) return;
+
+        // perform quadratic energy correction to get photon energy
+        Double_t energy = p->GetEnergy();
+        if (fCaLibReader)
+        {
+            if (fCaLibReader->GetTAPSquadEnergy())
+            {
+                energy = fCaLibReader->GetTAPSQuadEnergyPar0(p->GetCentralElement())*p->GetEnergy() + 
+                         fCaLibReader->GetTAPSQuadEnergyPar1(p->GetCentralElement())*p->GetEnergy()*p->GetEnergy();
+            }
+        }
+        
+        // save theta error
+        p->SetErrorTheta(fPhotonResThetaTAPS->Eval(p->GetTheta()*TMath::RadToDeg()) * TMath::DegToRad());
+        
+        // save phi error
+        p->SetErrorPhi(fPhotonResPhiTAPS->Eval(p->GetTheta()*TMath::RadToDeg()) * TMath::DegToRad());
+
+        // save energy error
+        p->SetErrorEnergy(fPhotonResEnergyTAPS->Eval(energy));
+    }
+}
+
+//______________________________________________________________________________ 
+Double_t TA2MyPhysics::CalculateMeanCBGain()
+{
+    // Calculate the mean CB NaI gain.
+    
+    Double_t mean = 0;
+    Int_t nElem = 0;
+
+    // loop over CB elements
+    for (UInt_t i = 0; i < fNaI->GetNelement(); i++) 
+    {
+        // skip CB holes
+        if (TOA2Detector::IsCBHole(i)) continue;
+        
+        // skip bad elements
+        if (fNaI->GetElement(i)->IsIgnored()) continue;
+
+        // sum up gains
+        mean += fNaI->GetElement(i)->GetA1();
+        nElem++;
+    }
+    
+    return mean / (Double_t)nElem;
+}
+
+//______________________________________________________________________________ 
+void TA2MyPhysics::OpenOutputFile()
+{
+    // Open the output file for e.g. direct tree writing.
+
+    Char_t tmp[256];
+    Char_t tmp2[256];
+    
+    // check if file is already open
+    if (fOutputFile) return;
+
+    // check if data or MC analysis to construct the filename
+    if (!fIsMC) 
+    {
+        sprintf(tmp, "%sARHistograms_%s.root", gAR->GetTreeDir(), TOSUtils::ExtractPureFileName(gAR->GetFileName()));
+    }
+    else 
+    {
+        // Search last slash
+        Int_t pos = TOSUtils::LastIndexOf(gAR->GetTreeFileList(0), '/');
+
+        // get string until filename
+        strncpy(tmp2, gAR->GetTreeFileList(0), pos);
+        tmp2[pos]='\0';
+
+        // get parent directory
+        strcpy(tmp, TOSUtils::ExtractFileName(tmp2));
+
+        // create new string
+        sprintf(tmp2, "%s_%s", tmp, TOSUtils::ExtractPureFileName(gAR->GetTreeFileList(0)));
+        sprintf(tmp, "%sARHistograms_%s.root", gAR->GetTreeDir(), tmp2);
+    }
+
+    // open the file
+    fOutputFile = new TFile(tmp, "recreate");
+   
+    // user information
+    Info("OpenOutputFile", "Opening output ROOT file '%s'\n", tmp);
+}
+
+//______________________________________________________________________________ 
+void TA2MyPhysics::TerminateAnalysis()
+{
+    // Terminate the analysis (taken from AcquSys).
+
+    gAN->EndFile();
+    gAN->Finish();
+    fflush(NULL);
+}
+
+ClassImp(TA2MyPhysics)

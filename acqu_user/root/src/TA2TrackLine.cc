@@ -1,6 +1,5 @@
 #include "TA2TrackLine.h"
 
-ClassImp(TA2TrackLine)
 //_________________________________________________________________________________________
 //  TA2TrackLine
 //
@@ -34,3 +33,5 @@ Bool_t TA2TrackLine::BuildTrack(const TVector3 &r0, const TVector3 &r1, const Do
   // Return true in case of a good track
   return kTRUE;
 }
+
+ClassImp(TA2TrackLine)

@@ -1,4 +1,4 @@
-// SVN Info: $Id: CBTime.C 912 2011-05-18 22:09:17Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller
@@ -12,12 +12,12 @@
 //                                                                      //
 //////////////////////////////////////////////////////////////////////////
 
+#include "Config.h"
 
 TCanvas* gCFit;
 TH1* gHOverview;
 TH1* gH;
 TH2* gH2;
-TFile* gFile;
 TF1* gFitFunc;
 TLine* gLine;
 
@@ -26,7 +26,6 @@ TLine* gLine;
 void Fit(Int_t run)
 {
     // Perform fit.
-    
     Char_t tmp[256];
 
     // delete old function
@@ -70,6 +69,7 @@ void Fit(Int_t run)
     // fill overview histogram
     gHOverview->SetBinContent(run+1, fPi0Pos);
     gHOverview->SetBinError(run+1, 0.0001);
+
 }
 
 //______________________________________________________________________________
@@ -88,22 +88,12 @@ void CBTime()
     const Char_t* hName = "CaLib_CB_Time_Neut";
     Double_t yMin = -20;
     Double_t yMax = 20;
-
-    // configuration (December 2007)
-    const Char_t calibration[] = "LD2_Dec_07";
-    const Char_t* fLoc = "/usr/puma_scratch0/werthm/A2/Dec_07/AR/out";
-
-    // configuration (February 2009)
-    //const Char_t calibration[] = "LD2_Feb_09";
-    //const Char_t* fLoc = "/usr/panther_scratch0/werthm/A2/Feb_09/AR/out/ADC";
     
-    // configuration (May 2009)
-    //const Char_t calibration[] = "LD2_May_09";
-    //const Char_t* fLoc = "/usr/puma_scratch0/werthm/A2/May_09/AR/out";
-
     // create histogram
-    gHOverview = new TH1F("Overview", "Overview", 40000, 0, 40000);
-    TCanvas* cOverview = new TCanvas();
+    gHOverview = new TH1F("CBTime", "CBTime", 40000, 0, 40000);
+    gHOverview->SetXTitle("Run Number");
+    gHOverview->SetYTitle("CB time [ns]");
+    TCanvas* cOverview = new TCanvas("CBTime", "CBTime");
     gHOverview->GetYaxis()->SetRangeUser(yMin, yMax);
     gHOverview->Draw("E1");
     
@@ -141,17 +131,10 @@ void CBTime()
             if (i == 0 && j == 0) first_run = runs[j];
             if (i == nSets-1 && j == nRuns-1) last_run = runs[j];
 
-            // clean-up
-            if (gH) delete gH;
-            if (gH2) delete gH2;
-            if (gFile) delete gFile;
-            gH = 0;
-            gH2 = 0;
-            gFile = 0;
-
+            
             // load ROOT file
-            sprintf(tmp, "%s/ARHistograms_CB_%d.root", fLoc, runs[j]);
-            gFile = new TFile(tmp);
+            sprintf(tmp, "%s/Hist_CBTaggTAPS_%d.root", fLoc, runs[j]);
+            TFile* gFile = new TFile(tmp);
 
             // check file
             if (!gFile) continue;
@@ -165,9 +148,11 @@ void CBTime()
             // project histogram
             sprintf(tmp, "Proj_%d", runs[j]);
             gH = gH2->ProjectionX(tmp);
-
+           
             // fit the histogram
             Fit(runs[j]);
+
+            gFile->Close();
             
             // update canvases and sleep
             if (watch)
@@ -176,7 +161,10 @@ void CBTime()
                 gCFit->Update();
                 gSystem->Sleep(100);
             }
-     
+
+            
+            
+            
             // count run
             nTotRuns++;
         }
@@ -200,7 +188,7 @@ void CBTime()
     // adjust axis
     gHOverview->GetXaxis()->SetRangeUser(first_run-10, last_run+10);
 
-    TFile* fout = new TFile("runset_overview.root", "recreate");
+    TFile* fout = new TFile("runset_overview.root", "update");
     cOverview->Write();
     delete fout;
 

@@ -23,6 +23,9 @@
 
 #include "ARFile_t.h"
 #include <sstream>
+#include <map>
+
+using namespace std;
 
 //---------------------------------------------------------------------------
 ARFile_t::ARFile_t( const Char_t* name, const Char_t* mode, TA2System* sys,
@@ -39,7 +42,7 @@ ARFile_t::ARFile_t( const Char_t* name, const Char_t* mode, TA2System* sys,
   fStart = fopen(fName, mode);
   if( isFatal ) {
     if(fStart== NULL) {
-      std::stringstream errMsg;
+      stringstream errMsg;
       errMsg << "<ERROR ARFile_t: fopen failed, FileName: " << fName << ">";
       PrintError(errMsg.str().c_str(), EErrFatal);
     }
@@ -48,42 +51,39 @@ ARFile_t::ARFile_t( const Char_t* name, const Char_t* mode, TA2System* sys,
 
 //---------------------------------------------------------------------------
 ARFile_t::ARFile_t( const Char_t* name, Int_t flags, mode_t mode,
-		    TA2System* sys )
+                    TA2System* sys )
 {
-// Check compression state of file and open directly (uncompressed)
-// or open pipe from shell uncompress command
-// failure is judged fatal and causes the program to exit
-//
-  const Char_t* extension[] = {".zip", ".bz2", ".gz", ".xz", NULL};
-  const Char_t* command[] = {"unzip -p ", "bzcat ", "zcat ", "xzcat ", NULL};
-  Char_t com[64];
-  Int_t i;
+  // this is a pretty weird setting of fName
+  // so be careful when using this constructor
   fSys = sys;
-  for(i=0;; i++){
-    if( !extension[i] ) break;
-    if( strstr(name, extension[i]) ) break;
-  }
-  if( !sys ) fName = NULL;
-  else fName = sys->BuildName( (Char_t*)name );
-  switch(i){
-  default:
+  if( !fSys ) fName = NULL;
+  else fName = fSys->BuildName( (Char_t*)name );
+ 
+  map<string, string> compress_extensions;
+  compress_extensions["zip"] = "unzip -p";
+  compress_extensions["bz2"] = "bzcat";
+  compress_extensions["gz"]  = "zcat";
+  compress_extensions["xz"]  = "xzcat";
+  
+  // extract the extension
+  const string filename(name);
+  const string::size_type idx = filename.rfind('.');
+  const string ext = idx == string::npos ? "" : filename.substr(idx+1);
+  if(compress_extensions.count(ext) == 0) {
+    // simple default open routine for uncompressed file
     fPath = open(fName, flags, mode);
     if(fPath == -1)
       PrintError("<ERROR ARFile_t: file open by open() failed>", EErrFatal);
     fStart = NULL;
-    break;
-  case EZiped:
-  case EBZiped:
-  case EGZiped:
-  case EXZiped:
-    strcpy(com, command[i]);
-    strcat(com, name);
-    fStart = popen( com, "r" );
-    if( fStart == NULL )
-      PrintError("<ERROR ARFile_t: file open via pipe popen()>", EErrFatal);
-    fPath = -2;
-    break;
+    return;
   }
+  
+  // open compressed file via pipe
+  const string pipe_cmd = compress_extensions[ext] + " " + filename; 
+  fStart = popen( pipe_cmd.c_str(), "r" );
+  if( fStart == NULL )
+    PrintError("<ERROR ARFile_t: file open via pipe popen()>", EErrFatal);
+  fPath = -2;
 }
 
 //---------------------------------------------------------------------------
@@ -169,7 +169,11 @@ Int_t ARFile_t::ReadKey( const Map_t** keylist )
     if( sscanf(fLine,"%s",keyword) < 1) return -1;
     for( j=0; ; j++ ){
       list = keylist[j];
-      if( !list ) return -1;
+      if( !list ){
+        printf("ERROR: Key '%s' in file %s not found!\n", keyword, fName);
+        printf("  I'm exiting now...\n");
+        exit(1);
+      }
       for( i=0; ; i++){
 	k = list[i].fFnName;
 	if( !k ) break;                  // null-terminated...nothing found

@@ -1,0 +1,120 @@
+#########################################################################
+#                                                                       #
+# Physics analysis class configuration file                             #
+#                                                                       #
+#########################################################################
+
+
+Reconstruct:
+
+#
+# CaLib configuration
+#
+
+# General:      dbhost     dbname                  dbuser      dbpass        calibration
+Use-CaLib:      blaster    CaLib_2013_10-Present   calib       basel10       2014-07_EPT_Prod_Neiser      
+#
+#
+# tagger calib:     time    efficiency (0=off/1=on)
+Use-CaLib-TAGG:     1       0
+# CB calib:         energy  time    timewalk    quadr. energy    led  (0=off/1=on)
+Use-CaLib-CB:       1       1       0           0                0 
+# TAPS calib:       energy  time    quadr. energy   LED thr.    CFD thr.  (0=off/1=on)
+Use-CaLib-TAPS:     1       1       0               0           0
+# PID calib:        phi     energy  time  (0=off/1=on)
+Use-CaLib-PID:      1       0       1
+# Veto calib:       energy  time    LED thr. (0=off/1=on)
+Use-CaLib-Veto:     1       1       0
+
+
+#
+# TA2MyCaLib calibration configuration
+#
+
+### STEP ONE: "PID Phi Angle Calibration" and "Veto Correlation"
+
+# PID Phi calibration
+CaLib-PID-Phi: 1
+# veto-crystal correlation
+CaLib-Veto-Corr: 1
+
+### STEP TWO 
+
+# Uncomment Display: lines for in Analysis.dat for TAPS raw ADC histograms
+
+### STEP THREE
+
+# Have Use-CaLib-CB: 1 1 0 0 above (no timewalk, no quadratic energy)
+# Have Use-CaLib-TAPS: 1 1 0 0 above (no quadratic energy, no LED threshold) 
+# Have dummy TimeWalk: 0 0.000000000 0.0000000000 0.00000000 0.0000000 entries in your Detector-NaI.dat file
+
+# CB energy calibration
+CaLib-CB-Energy: 1
+# CB time calibration
+CaLib-CB-Time: 1
+# TAPS time calibration
+CaLib-TAPS-Time: 1
+# PID time calibration
+CaLib-PID-Time: 1
+# Veto time
+CaLib-Veto-Time: 1
+
+### STEP FOUR
+
+# Check the invariant mass cut positions for the Quadratic energy correction
+# Ensure that you have enough statistics for the Quadratic energy correction
+
+# target position calibration
+#CaLib-Target-Position: 1
+
+# CB quadratic energy correction
+#              on/off  pi0_min  pi0_max  eta_min  eta_max
+CaLib-CB-Quad: 1       100      150      480      620
+
+# tagger time calibration
+CaLib-Tagger-Time: 1
+
+#### STEP FIVE
+
+# Ensure that you have enough statistics for the time walk correction
+
+# CB time walk calibration
+# For EPT, we use a variant of the method from Marc Unverzagt's thesis
+# the proton time is used as reference, so proton should have sufficiently high energy
+# to minimize their own timewalk (but also lower than the punch through limit)
+# the advantage is that it only depends on CB
+#                   on/off  pi0_min  pi0_max  phi_min  phi_max  protonE_min  protonE_max
+CaLib-CB-Walk-EPT:  1       115      155      170      190      250          400       
+
+# TAPS energy calibration
+CaLib-TAPS-Energy: 1
+
+# TAPS LED calibration
+#CaLib-TAPS-LED: 1
+
+
+####
+
+# TAPS quadratic energy correction
+#                on/off  pi0_min  pi0_max  eta_min  eta_max
+#CaLib-TAPS-Quad: 1       110      160      500      600
+
+
+# TAPS PSA calibration
+#CaLib-TAPS-PSA: 1
+
+
+
+# PID energy calibration
+#CaLib-PID-Energy: 1
+
+
+
+
+# Veto energy
+#CaLib-Veto-Energy: 1
+
+
+
+Initialise:
+

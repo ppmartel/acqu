@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCCalibPIDPhi.h 768 2011-01-26 16:57:17Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller

@@ -48,7 +48,6 @@ static const Map_t kTaggerKeys[] = {
   {NULL,            -1}
 };
 
-ClassImp(TA2Tagger)
 
 //-----------------------------------------------------------------------------
 TA2Tagger::TA2Tagger( const char* name, TA2System* analysis )
@@ -799,3 +798,5 @@ void TA2Tagger::ReconstructMicro( )
 {
   // Correlate Microscope and main FP hits
 }
+
+ClassImp(TA2Tagger)

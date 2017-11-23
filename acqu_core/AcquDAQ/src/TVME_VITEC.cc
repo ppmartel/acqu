@@ -15,7 +15,6 @@
 #include "TDAQexperiment.h"
 //#include "TDAQmemmap.h"
 
-ClassImp(TVME_VITEC)
 
 enum { EVIT_ReadoutPatternOffset=200, EVIT_YYY };
 static Map_t kVITECKeys[] = {
@@ -104,4 +103,4 @@ Bool_t TVME_VITEC::CheckHardID( )
     PrintError("","<VITEC firmware ID error>",EErrFatal);
   return kFALSE;
 }
-
+ClassImp(TVME_VITEC)

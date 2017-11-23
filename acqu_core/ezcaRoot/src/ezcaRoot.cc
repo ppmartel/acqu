@@ -36,3 +36,4 @@ int epicsPutString(char *pvname, int nelem, char *data_buff){return epicsPut(pvn
 int epicsPutShort(char *pvname, int nelem, short *data_buff){return epicsPut(pvname,kEpicsSHORT,nelem,(void*)data_buff);}
 int epicsPutFloat(char *pvname, int nelem, float *data_buff){return epicsPut(pvname,kEpicsFLOAT,nelem,(void*)data_buff);}
 int epicsPutDouble(char *pvname, int nelem, double *data_buff){return epicsPut(pvname,kEpicsDOUBLE,nelem,(void*)data_buff);}
+

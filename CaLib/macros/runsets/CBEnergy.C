@@ -1,4 +1,4 @@
-// SVN Info: $Id: CBEnergy.C 912 2011-05-18 22:09:17Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller
@@ -12,12 +12,12 @@
 //                                                                      //
 //////////////////////////////////////////////////////////////////////////
 
+#include "Config.h"
 
 TCanvas* gCFit;
 TH1* gHOverview;
 TH1* gH;
 TH2* gH2;
-TFile* gFileCBEnergy;
 TF1* gFitFunc;
 TLine* gLine;
 
@@ -59,7 +59,7 @@ void Fit(Int_t run, Bool_t fitEta)
         if (!(fitres = gH->Fit(gFitFunc, "RB0Q"))) break;
   
     // get position
-    pos = gFitFunc->GetParameter(1);
+    Double_t pos = gFitFunc->GetParameter(1);
 
     // check failed fits
     if (fitres) 
@@ -109,23 +109,14 @@ void CBEnergy()
     const Char_t* data = "Data.CB.E1";
     const Char_t* hName = "CaLib_CB_IM_Neut";
     Double_t yMin = 110;
-    Double_t yMax = 160;
-
-    // configuration (December 2007)
-    const Char_t calibration[] = "ETAP_Aug_12";
-    const Char_t* fLoc = "/daten/out/Step2";
-
-    // configuration (February 2009)
-    //const Char_t calibration[] = "LD2_Feb_09";
-    //const Char_t* fLoc = "/Users/fulgur/Desktop/calib/Feb_09";
+    Double_t yMax = 160;   
     
-    // configuration (May 2009)
-    //const Char_t calibration[] = "LD2_May_09";
-    //const Char_t* fLoc = "/Users/fulgur/Desktop/calib/May_09";
-
+    
     // create histogram
-    gHOverview = new TH1F("Overview", "Overview", 40000, 0, 40000);
-    TCanvas* cOverview = new TCanvas();
+    gHOverview = new TH1F("CBEnergy", "CBEnergy", 40000, 0, 40000);
+    gHOverview->SetXTitle("Run Number");
+    gHOverview->SetYTitle("#pi^{0} peak [MeV]");
+    TCanvas* cOverview = new TCanvas("CBEnergy", "CBEnergy");
     gHOverview->GetYaxis()->SetRangeUser(yMin, yMax);
     gHOverview->Draw("E1");
     
@@ -155,7 +146,7 @@ void CBEnergy()
         // get runs of set
         Int_t nRuns;
         Int_t* runs = TCMySQLManager::GetManager()->GetRunsOfSet(data, calibration, i, &nRuns);
-		
+    
         // loop over runs
         for (Int_t j = 0; j < nRuns; j++)
         {
@@ -163,25 +154,17 @@ void CBEnergy()
             if (i == 0 && j == 0) first_run = runs[j];
             if (i == nSets-1 && j == nRuns-1) last_run = runs[j];
 
-            // clean-up
-            if (gH) delete gH;
-            if (gH2) delete gH2;
-            if (gFileCBEnergy) delete gFileCBEnergy;
-            gH = 0;
-            gH2 = 0;
-            gFileCBEnergy = 0;
-
+            
             // load ROOT file
-            sprintf(tmp, "%s/ARHistograms_CB_%d.root", fLoc, runs[j]);
-            printf("%d\t%d\t%s\n", i, j, tmp );
-            gFileCBEnergy = new TFile(tmp);
+            sprintf(tmp, "%s/Hist_CBTaggTAPS_%d.root", fLoc, runs[j]);
+            TFile* gFile = new TFile(tmp);
 
             // check file
-            if (!gFileCBEnergy) continue;
-            if (gFileCBEnergy->IsZombie()) continue;
+            if (!gFile) continue;
+            if (gFile->IsZombie()) continue;
 
             // load histogram
-            gH2 = (TH2*) gFileCBEnergy->Get(hName);
+            gH2 = (TH2*) gFile->Get(hName);
             if (!gH2) continue;
             if (!gH2->GetEntries()) continue;
 
@@ -192,6 +175,8 @@ void CBEnergy()
             // fit the histogram
             Fit(runs[j], kFALSE);
             //Fit(runs[j], kTRUE);
+
+            gFile->Close();
             
             // update canvases and sleep
             if (watch)
@@ -201,7 +186,7 @@ void CBEnergy()
                 gSystem->Sleep(100);
                 //if (runs[j] > 13595) Char_t gg = getchar();
             }
-     
+            
             // count run
             nTotRuns++;
         }
@@ -225,9 +210,7 @@ void CBEnergy()
     // adjust axis
     gHOverview->GetXaxis()->SetRangeUser(first_run-10, last_run+10);
 
-    TFile* fout = new TFile("runset_overview.root", "recreate");
-    cOverview->Write();
-    delete fout;
+    gHOverview->SaveAs("Calib_Overview_CBEnergy.root");
 
     printf("%d runs analyzed.\n", nTotRuns);
 

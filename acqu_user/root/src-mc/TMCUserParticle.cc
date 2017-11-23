@@ -13,7 +13,6 @@
 
 #include "TMCUserParticle.h"
 
-ClassImp(TMCUserParticle)
 
 //-----------------------------------------------------------------------------
 TMCUserParticle::TMCUserParticle(const Char_t* name, TRandom* rand, Double_t mass, Bool_t decay, Bool_t track)
@@ -58,4 +57,4 @@ void TMCUserParticle::PostInit( )
   // decay generator. Call PostInit for all decay particles
   TMCParticle::PostInit();
 }
-
+ClassImp(TMCUserParticle)

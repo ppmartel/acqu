@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCCalibPed.h 912 2011-05-18 22:09:17Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller
@@ -25,7 +25,10 @@
 #include "TCCalib.h"
 #include "TCReadARCalib.h"
 #include "TCFileManager.h"
-#include "TCFitTools.h"
+
+#include "a2display.h"
+#include "TH2CB.h"
+#include "TH2TAPS.h"
 
 
 class TCCalibPed : public TCCalib
@@ -42,6 +45,9 @@ private:
     virtual void Calculate(Int_t elem);
 
     void ReadADC();
+protected:
+
+        TH2Crystals* fDetectorView;
 
 public:
     TCCalibPed() : TCCalib(), fADC(0), fFileManager(0), fMean(0), fLine(0) { }
@@ -60,7 +66,11 @@ public:
     TCCalibTAPSPedLG() 
         : TCCalibPed("TAPS.Ped.LG", "TAPS LG pedestal calibration",
                      "Data.TAPS.LG.E0",
-                     TCReadConfig::GetReader()->GetConfigInt("TAPS.Elements")) { }
+                     TCReadConfig::GetReader()->GetConfigInt("TAPS.Elements")) {
+
+        fDetectorView = new TH2TAPS("calib_taps", "TAPS");
+
+    }
     virtual ~TCCalibTAPSPedLG() { }
     
     ClassDef(TCCalibTAPSPedLG, 0) // TAPS LG pedestal calibration class
@@ -74,7 +84,11 @@ public:
     TCCalibTAPSPedSG() 
         : TCCalibPed("TAPS.Ped.SG", "TAPS SG pedestal calibration",
                      "Data.TAPS.SG.E0",
-                     TCReadConfig::GetReader()->GetConfigInt("TAPS.Elements")) { }
+                     TCReadConfig::GetReader()->GetConfigInt("TAPS.Elements")) {
+
+        fDetectorView = new TH2TAPS("calib_taps", "TAPS");
+
+    }
     virtual ~TCCalibTAPSPedSG() { }
     
     ClassDef(TCCalibTAPSPedSG, 0) // TAPS SG pedestal calibration class
@@ -88,7 +102,11 @@ public:
     TCCalibTAPSPedVeto() 
         : TCCalibPed("TAPS.Ped.Veto", "Veto pedestal calibration",
                      "Data.Veto.E0",
-                     TCReadConfig::GetReader()->GetConfigInt("Veto.Elements")) { }
+                     TCReadConfig::GetReader()->GetConfigInt("Veto.Elements")) {
+
+        fDetectorView = new TH2TAPS("calib_taps", "TAPS");
+
+    }
     virtual ~TCCalibTAPSPedVeto() { }
     
     ClassDef(TCCalibTAPSPedVeto, 0) // Veto pedestal calibration class

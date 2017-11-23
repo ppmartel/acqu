@@ -1,4 +1,4 @@
-// SVN Info: $Id: AddTable.C 923 2011-05-28 17:53:17Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller

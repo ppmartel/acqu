@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCCalibEnergy.cxx 1038 2011-11-14 13:01:17Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Irakli Keshelashvili, Dominik Werthmueller
@@ -15,7 +15,6 @@
 
 #include "TCCalibEnergy.h"
 
-ClassImp(TCCalibEnergy)
 
 
 //______________________________________________________________________________
@@ -28,7 +27,7 @@ TCCalibEnergy::TCCalibEnergy(const Char_t* name, const Char_t* title, const Char
     // init members
     fPi0Pos = 0;
     fLine = 0;
-
+    fDetectorView = 0;
 }
 
 //______________________________________________________________________________
@@ -47,13 +46,10 @@ void TCCalibEnergy::Init()
     Char_t tmp[256];
 
     // init members
+
     fPi0Pos = 0;
-    fLine = new TLine();
+    fLine = new TIndicatorLine();
     
-    // configure line
-    fLine->SetLineColor(4);
-    fLine->SetLineWidth(3);
- 
     // get histogram name
     sprintf(tmp, "%s.Histo.Fit.Name", GetName());
     if (!TCReadConfig::GetReader()->GetConfig(tmp))
@@ -117,6 +113,7 @@ void TCCalibEnergy::Fit(Int_t elem)
     fCanvasFit->cd(2);
     sprintf(tmp, "%s.Histo.Fit", GetName());
     TCUtils::FormatHistogram(fFitHisto, tmp);
+    fFitHisto->GetYaxis()->SetRangeUser(0.0, fFitHisto->GetMaximum()*1.05);
     fFitHisto->Draw("hist");
      
     // check for sufficient statistics
@@ -133,22 +130,7 @@ void TCCalibEnergy::Fit(Int_t elem)
         if (fPi0Pos < 100 || fPi0Pos > 160) fPi0Pos = 135;
 
         // configure fitting function
-        if (this->InheritsFrom("TCCalibCBEnergy"))
-        {
-            fFitFunc->SetRange(fPi0Pos - 50, fPi0Pos + 80);
-            fFitFunc->SetParameters(fFitHisto->GetMaximum(), fPi0Pos, 8, 1, 1, 1, 0.1);
-            fFitFunc->SetParLimits(1, 130, 140);  
-            fFitFunc->SetParLimits(2, 3, 15);  
-        }
-        else if (this->InheritsFrom("TCCalibTAPSEnergyLG"))
-        {
-	    fFitFunc->SetRange(80, 200);
-       	    fFitFunc->SetParameters(fFitHisto->GetMaximum(), fPi0Pos, 10, 1, 1, 1, 0.1);
-	    fFitFunc->SetParLimits(1, 1, 2000);
-	    fFitFunc->SetParLimits(1, 115, 140);
-	    fFitFunc->SetParLimits(2, 5, 15);
-            fFitFunc->FixParameter(6, 0);
-        }
+        initFitFunction();
 
         // fit
         for (Int_t i = 0; i < 10; i++)
@@ -162,17 +144,59 @@ void TCCalibEnergy::Fit(Int_t elem)
  
         // set indicator line
         fLine->SetY1(0);
-        fLine->SetY2(fFitHisto->GetMaximum() + 20);
+        fLine->SetupY(0, fFitHisto->GetMaximum()*1.05);
         fLine->SetX1(fPi0Pos);
         fLine->SetX2(fPi0Pos);
    
         // draw fitting function
-        if (fFitFunc) fFitFunc->Draw("same");
+        if (fFitFunc) {
+            fFitFunc->Draw("same");
+
+            delete fFitPeak;
+            fFitPeak = new TF1("peak", "gaus(0)", fFitFunc->GetXmin(), fFitFunc->GetXmax());
+            fFitPeak->SetLineColor(kGreen);
+
+            // copy parameters from fit
+            for(int i=0;i<fFitPeak->GetNpar(); ++i) {
+                fFitPeak->SetParameter(i, fFitFunc->GetParameter(i));
+            }
+
+            // background = fit - peak
+            delete fFitBackGround;
+            fFitBackGround = new TF1("bg",Form("%s-peak",fFitFunc->GetName()), fFitFunc->GetXmin(), fFitFunc->GetXmax());
+            fFitBackGround->SetLineColor(kBlue);
+
+            fFitPeak->Draw("same");
+            fFitBackGround->Draw("same");
+
+            //
+            //double peak_integral = fFitPeak->Integral(fFitPeak->GetXmin(), fFitPeak->GetXmax(), nullptr);
+            //double bg_integral   = fFitBackGround->Integral(fFitBackGround->GetXmin(), fFitBackGround->GetXmax(), nullptr);
+            //double peak_ratio    = peak_integral / bg_integral;
+        }
     
         // draw indicator line
         fLine->Draw();
     }
-    
+
+    double xmin,xmax;
+    fFitFunc->GetRange(xmin,xmax);
+    double maximum = fFitFunc->GetMaximumX();
+    fFitOk=false;
+    if(maximum < xmax && maximum > xmin) {
+        puts("Fit OK!\n");
+        fFitOk=true;
+    } else {
+        puts("No Maximum found in fit!");
+    }
+
+    if(fDetectorView) {
+        fDetectorView->SetElement(elem, vCurrPos);
+        fExtraCanvas->cd();
+        fDetectorView->Draw("col");
+        fExtraCanvas->Update();
+    }
+
     // update canvas
     fCanvasFit->Update();
 
@@ -182,6 +206,7 @@ void TCCalibEnergy::Fit(Int_t elem)
         fCanvasResult->cd();
         fOverviewHisto->Draw("E1");
         fCanvasResult->Update();
+
     }   
 }
 
@@ -198,8 +223,10 @@ void TCCalibEnergy::Calculate(Int_t elem)
         // check if line position was modified by hand
         if (fLine->GetX1() != fPi0Pos) fPi0Pos = fLine->GetX1();
         
-        // calculate the new offset
-        fNewVal[elem] = fOldVal[elem] * TCConfig::kPi0Mass / fPi0Pos;
+        // calculate the new gain
+        // apply fConvergenceFactor only to the desired procentual change of fOldVal,
+        // given by (TCConfig::kPi0Mass / fPi0Pos - 1)
+        fNewVal[elem] = fOldVal[elem] + fOldVal[elem] * fConvergenceFactor * (TCConfig::kPi0Mass / fPi0Pos - 1);
         
         // if new value is negative take old
         if (fNewVal[elem] < 0) 
@@ -244,5 +271,32 @@ void TCCalibEnergy::Calculate(Int_t elem)
         printf("Average pi0 position           : %.3f MeV\n", fAvr);
         printf("Average difference to pi0 mass : %.3f MeV\n", fAvrDiff);
     }
+
+    if(fDetectorView) {
+        fDetectorView->SetElement(elem, fFitOk ? vFitOK : vFitFailed);
+        fExtraCanvas->cd();
+        fDetectorView->Draw("col");
+        fExtraCanvas->Update();
+    }
 }   
 
+
+void TCCalibCBEnergy::initFitFunction()
+{
+    fFitFunc->SetRange(fPi0Pos - 50, fPi0Pos + 80);
+    fFitFunc->SetParameters(fFitHisto->GetMaximum(), fPi0Pos, 8, 1, 1, 1, 0.1);
+    fFitFunc->SetParLimits(1, 130, 140);
+    fFitFunc->SetParLimits(2, 3, 15);
+}
+
+void TCCalibTAPSEnergyLG::initFitFunction()
+{
+    fFitFunc->SetRange(80, 250);
+    fFitFunc->SetParameters(fFitHisto->GetMaximum(), fPi0Pos, 10, 1, 1, 1, 0.1);
+    fFitFunc->SetParLimits(0, 1, fFitHisto->GetMaximum());
+    fFitFunc->SetParLimits(1, 115, 140);
+    fFitFunc->SetParLimits(2, 5, 50);
+    fFitFunc->FixParameter(6, 0);
+}
+
+ClassImp(TCCalibEnergy)

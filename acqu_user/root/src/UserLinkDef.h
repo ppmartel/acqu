@@ -38,7 +38,6 @@
 // TA2My... extension classes
 //#pragma link C++ class TA2MyAnalysis+;
 #pragma link C++ class TA2MyCaLib+;
-#pragma link C++ class TA2MyRateEstimation+;
 #pragma link C++ class TA2MyPhysics+;
 // Apparatus classes
 #pragma link C++ class TA2GenericApp+;

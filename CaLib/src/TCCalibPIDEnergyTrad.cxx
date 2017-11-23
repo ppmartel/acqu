@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCCalibPIDEnergyTrad.cxx 912 2011-05-18 22:09:17Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller
@@ -15,7 +15,6 @@
 
 #include "TCCalibPIDEnergyTrad.h"
 
-ClassImp(TCCalibPIDEnergyTrad)
 
 
 //______________________________________________________________________________
@@ -381,4 +380,4 @@ void TCCalibPIDEnergyTrad::Write()
     // save overview canvas
     SaveCanvas(fCanvasResult, "Overview");
 }
-
+ClassImp(TCCalibPIDEnergyTrad)

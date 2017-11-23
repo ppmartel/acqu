@@ -2,7 +2,6 @@
 #include "TAcquFile.h"
 #include <time.h>
 
-ClassImp(TA2TriggerPhysics)
 
 //-----------------------------------------------------------------------------
 
@@ -198,4 +197,4 @@ void TA2TriggerPhysics::Speed()
 }
 
 //-----------------------------------------------------------------------------
-
+ClassImp(TA2TriggerPhysics)

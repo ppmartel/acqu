@@ -17,7 +17,6 @@
 #include "TAcquFile.h"
 #include "TA2Tagger.h"
 
-ClassImp(TA2UserPhysics)
 
 //-----------------------------------------------------------------------------
 TA2UserPhysics::TA2UserPhysics( const char* name, TA2Analysis* analysis )
@@ -186,4 +185,4 @@ void TA2UserPhysics::Reconstruct()
   }
   fMmiss[i] = EBufferEnd;
 }
-
+ClassImp(TA2UserPhysics)

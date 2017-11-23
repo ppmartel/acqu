@@ -13,7 +13,6 @@
 #include "TDAQexperiment.h"
 //#include "TDAQmemmap.h"
 
-ClassImp(TVME_V775)
 
 //-----------------------------------------------------------------------------
 TVME_V775::TVME_V775( Char_t* name, Char_t* file, FILE* log,
@@ -41,3 +40,5 @@ void TVME_V775::SetConfig( Char_t* line, Int_t key )
     break;
   }
 }
+
+ClassImp(TVME_V775)

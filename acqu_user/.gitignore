@@ -14,3 +14,6 @@
 
 # AcquRoot histogram files
 /histograms
+
+#Farm job files
+/jobs

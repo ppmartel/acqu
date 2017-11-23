@@ -15,7 +15,6 @@
 
 #include "TA2Cut.h"
 
-ClassImp(TA2Cut)
 
 //-----------------------------------------------------------------------------
 TA2Cut::TA2Cut(const char* name, UInt_t link, Double_t* opt )
@@ -60,3 +59,5 @@ TA2Cut::~TA2Cut()
   // Free up allocated memory
   if( fOpt ) delete fOpt;
 }
+
+ClassImp(TA2Cut)

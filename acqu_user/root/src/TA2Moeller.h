@@ -26,7 +26,16 @@ public:
   virtual void SetConfig( Char_t*, Int_t );   // setup decode in implement
   virtual void SaveDecoded( ) {}
   virtual void ReadDecoded( ) {}
- 
+
+  UShort_t GetNLeftChannels() {return fNLeftChannels;}
+  UShort_t GetNPairsPerCh() {return fNPairsPerCh;}
+  UInt_t GetNBins() {return fNBins;}
+  UShort_t GetNVuproms() {return fVupromOffset.size();}
+  Int_t GetNPairs() {return fVupromOffset.size()*fNLeftChannels*fNPairsPerCh*2;}
+  UInt_t GetTDCValue(UShort_t idx, UInt_t bin) {return fTDCs[idx][bin];}
+  std::vector<UInt_t*> GetTDCValues() {return fTDCs;}
+  Bool_t IsReadoutStarted() {return fReadoutStarted;}
+
   // Root needs this line for incorporation in dictionary
   ClassDef(TA2Moeller,1)
 };

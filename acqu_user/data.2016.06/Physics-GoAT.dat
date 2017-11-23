@@ -1,0 +1,107 @@
+#########################################################################
+#                                                                       #
+# GoAT analysis class configuration file                                #
+#                                                                       #
+#########################################################################
+
+Reconstruct:
+
+#
+# CaLib configuration
+#
+
+# General:      dbhost    dbname                   dbuser      dbpass        calibration
+#Use-CaLib:      a2calib   CaLib_2013_10-Present    calib       basel10       2014_04_Compton_Paudyal
+#Use-CaLib:      a2calib   CaLib_2013_10-Present    calib       basel10       2014_05_Compton_Rajabi
+#Use-CaLib:      a2calib   CaLib_2013_10-Present    calib       basel10       2015_06_Compton_Paudyal
+#Use-CaLib:      a2calib   CaLib_2013_10-Present    calib       basel10       2015_07_Compton_Rajabi
+#Use-CaLib:      a2calib   CaLib_2013_10-Present    calib       basel10       2016-06_APPT_Martel 14292
+#
+#
+# tagger calib:     time    efficiency (0=off/1=on)
+#Use-CaLib-TAGG:     1       0
+# CB calib:         energy  time    timewalk    quadr. energy    led  (0=off/1=on)
+#Use-CaLib-CB:       1       1       1           0                0
+# TAPS calib:       energy  time    quadr. energy   LED thr.    CFD thr.  (0=off/1=on)
+#Use-CaLib-TAPS:     1       1       0               0           0
+# PID calib:        phi     energy  time  (0=off/1=on)
+#Use-CaLib-PID:      1       1       1
+# Veto calib:       energy  time    LED thr. (0=off/1=on)
+#Use-CaLib-Veto:     1       1       0
+
+
+#Use-CaLib-CBEnergyPerRun: 	data/CBEnergyCorrectionPerRun.txt
+#RootTree-Output-Folder:         ~/
+RootTree-File-Name:		Acqu
+
+# Read in and decode beam helicity ADC
+# First number is the ADC channel, other numbers are the bit pattern
+# to set the beam helicity bit to 'true', where I is an inhibit bit,
+# and L and H represent a 'low' and 'high' (0 and 1) respectively
+#
+# Old setting
+#Beam-Helicity: 6 I H L L H
+# New setting
+Beam-Helicity: 7 H I H L
+
+# Optional argument to include tagged photon energies in the tagger tree
+# GoAT currently handles this with an included histogram, reducing file size
+#
+Save-Tagged-Energy: 1
+
+#Save-Channel: 216 APPT_ADC1
+#Save-Channel: 217 APPT_ADC2
+#Save-Channel: 218 APPT_ADC3
+#Save-Channel: 219 APPT_ADC4
+#Save-Channel: 220 APPT_ADC5
+#Save-Channel: 221 APPT_ADC6
+#Save-Channel: 222 APPT_ADC7
+#Save-Channel: 223 APPT_ADC8
+#Save-Channel: 224 APPT_ADC9
+#Save-Channel: 225 APPT_ADC10
+#Save-Channel: 226 APPT_ADC11
+#Save-Channel: 227 APPT_ADC12
+#Save-Channel: 228 APPT_ADC13
+#Save-Channel: 229 APPT_ADC14
+#Save-Channel: 230 APPT_ADC15
+#Save-Channel: 231 APPT_ADC16
+#
+#Save-Channel: 232M0 APPT_TDC1
+#Save-Channel: 296M0 APPT_TDC2
+#Save-Channel: 240M0 APPT_TDC3
+#Save-Channel: 244M0 APPT_TDC4
+#Save-Channel: 248M0 APPT_TDC5
+#Save-Channel: 252M0 APPT_TDC6
+#Save-Channel: 256M0 APPT_TDC7
+#Save-Channel: 260M0 APPT_TDC8
+#Save-Channel: 264M0 APPT_TDC9
+#Save-Channel: 268M0 APPT_TDC10
+#Save-Channel: 272M0 APPT_TDC11
+#Save-Channel: 276M0 APPT_TDC12
+#Save-Channel: 280M0 APPT_TDC13
+#Save-Channel: 284M0 APPT_TDC14
+#Save-Channel: 300M0 APPT_TDC15
+#Save-Channel: 304M0 APPT_TDC16
+#
+#Save-Channel: 352 APPT_RefTDC1
+#Save-Channel: 356 APPT_RefTDC2
+#Save-Channel: 1400 Tagg_RefTDC
+
+Initialise:
+
+Display: 1D nParticles 	  15 0 15 
+Display: 1D clusterEnergy 85 0 850
+Display: 1D theta         180 0 180
+Display: 1D phi	          360 -180 180
+Display: 1D time 	  200 -100 100 
+Display: 1D nTagged	  100 0 100 
+Display: 1D taggedEnergy  160 0 1600 
+Display: 1D taggedChannel 352 0 352 
+Display: 1D taggedTime    200 -100 100
+Display: 1D vetoEnergy    25 0 25 
+Display: 1D MWPC0Energy   500 0 500 
+Display: 1D MWPC1Energy   500 0 500
+Display: 1D vertexX       100 -50 50
+Display: 1D vertexY       100 -50 50
+Display: 1D vertexZ       1000 -500 500
+Display: 1D energySum     2000 0 2000

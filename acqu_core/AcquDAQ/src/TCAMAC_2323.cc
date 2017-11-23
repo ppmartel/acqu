@@ -13,7 +13,6 @@
 
 #include "TCAMAC_2323.h"
 
-ClassImp(TCAMAC_2323)
 
 enum { E2323Delay=200 };
 static Map_t k2323Keys[] = {
@@ -74,3 +73,5 @@ void TCAMAC_2323::InitDelay( Char_t* line )
   fData[index] = delay | (exp<<10) | (latch<<13) | (dwidth<<14);
 
 }
+
+ClassImp(TCAMAC_2323)

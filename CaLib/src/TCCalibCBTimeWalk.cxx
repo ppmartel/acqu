@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCCalibCBTimeWalk.cxx 912 2011-05-18 22:09:17Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Irakli Keshelashvili, Dominik Werthmueller
@@ -15,7 +15,6 @@
 
 #include "TCCalibCBTimeWalk.h"
 
-ClassImp(TCCalibCBTimeWalk)
 
 
 //______________________________________________________________________________
@@ -354,4 +353,4 @@ void TCCalibCBTimeWalk::Write()
         TCMySQLManager::GetManager()->WriteParameters("Data.CB.Walk.Par3", fCalibration.Data(), fSet[i], fPar3, fNelem);
     }
 }
-
+ClassImp(TCCalibCBTimeWalk)

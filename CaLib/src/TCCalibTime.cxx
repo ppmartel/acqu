@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCCalibTime.cxx 912 2011-05-18 22:09:17Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller, Irakli Keshelashvili
@@ -14,8 +14,6 @@
 
 
 #include "TCCalibTime.h"
-
-ClassImp(TCCalibTime)
 
 
 //______________________________________________________________________________
@@ -50,12 +48,8 @@ void TCCalibTime::Init()
 
     // init members
     fMean = 0;
-    fLine = new TLine();
+    fLine = new TIndicatorLine();
     
-    // configure line
-    fLine->SetLineColor(4);
-    fLine->SetLineWidth(3);
- 
     // get histogram name
     sprintf(tmp, "%s.Histo.Fit.Name", GetName());
     if (!TCReadConfig::GetReader()->GetConfig(tmp))
@@ -183,9 +177,9 @@ void TCCalibTime::Fit(Int_t elem)
         }
         if (this->InheritsFrom("TCCalibTAPSTime"))
         {
-	    fFitFunc->SetParLimits(4, 0.001, 1);                  
-            range = 3;
-            factor = 1.5;
+	    fFitFunc->SetParLimits(4, 0.001, 10);                  
+            range = 10;
+            factor = 5;
         }
         if (this->InheritsFrom("TCCalibPIDTime"))
         {
@@ -217,10 +211,8 @@ void TCCalibTime::Fit(Int_t elem)
         fMean = fFitFunc->GetParameter(3); 
 
         // draw mean indicator line
-        fLine->SetY1(0);
-        fLine->SetY2(fFitHisto->GetMaximum() + 20);
+        fLine->SetupY(0,fFitHisto->GetMaximum() + 20);
         fLine->SetX1(fMean);
-        fLine->SetX2(fMean);
    
         // draw fitting function
         if (fFitFunc) fFitFunc->Draw("same");
@@ -257,7 +249,7 @@ void TCCalibTime::Calculate(Int_t elem)
 
         // calculate the new offset
         if (this->InheritsFrom("TCCalibCBRiseTime")) fNewVal[elem] = fOldVal[elem] + fMean;
-        else fNewVal[elem] = fOldVal[elem] + fMean / fTimeGain[elem];
+        else fNewVal[elem] = fOldVal[elem] + fConvergenceFactor * fMean / fTimeGain[elem];
         
         // update overview histogram
         fOverviewHisto->SetBinContent(elem + 1, fMean);
@@ -302,3 +294,110 @@ void TCCalibTime::Calculate(Int_t elem)
     }
 }
 
+double sqr(const double& x) { return x*x; }
+
+double asymGaus(double* xarr, double* p) {
+    double& x  = xarr[0];
+
+    double& a  = p[0];
+    double& x0 = p[1];
+    double& s = (x<x0 ? p[2] : p[3]);
+
+    return a * exp(- sqr(x-x0)/sqr(s) );
+}
+
+TF1* makeAsymGaus(const char* name="ag") {
+    TF1* f = new TF1(name, asymGaus, -10, 10, 4);
+    f->SetParameter(0,1);
+    f->SetParameter(1,1);
+    f->SetParameter(2,1);
+    f->SetParameter(3,4);
+
+    return f;
+}
+
+void TCCalibCBTime::Fit(Int_t elem)
+{
+    // Perform the fit of the element 'elem'.
+
+    Char_t tmp[256];
+
+    // create histogram projection for this element
+    sprintf(tmp, "ProjHisto_%i", elem);
+    TH2* h2 = (TH2*) fMainHisto;
+    if (fFitHisto) delete fFitHisto;
+    fFitHisto = (TH1D*) h2->ProjectionX(tmp, elem+1, elem+1, "e");
+
+    // init variables
+    //Double_t factor = 2.5;
+    Double_t range = 3.8;
+
+    // draw histogram
+    fFitHisto->SetFillColor(35);
+    fCanvasFit->cd(2);
+    sprintf(tmp, "%s.Histo.Fit", GetName());
+    TCUtils::FormatHistogram(fFitHisto, tmp);
+    fFitHisto->Draw("hist");
+
+    // check for sufficient statistics
+    if (fFitHisto->GetEntries())
+    {
+        // get important parameter positions
+        Double_t fMean = fFitHisto->GetXaxis()->GetBinCenter(fFitHisto->GetMaximumBin());
+        Double_t max = fFitHisto->GetBinContent(fFitHisto->GetMaximumBin());
+
+        // delete old function
+        if (fFitFunc) delete fFitFunc;
+        sprintf(tmp, "fTime_%i", elem);
+
+        // the fit function
+        TF1* tmpfit = new TF1("tmpfit", asymGaus, fMean - range, fMean + range, 4);
+        tmpfit->SetLineColor(2);
+
+        tmpfit->SetParLimits(0, 0, max*10.0);
+        tmpfit->SetParameter(0, max);
+
+        tmpfit->SetParameter(1, fMean);
+        tmpfit->SetParameter(2, 5);
+        tmpfit->SetParameter(3, 5);
+        tmpfit->SetParLimits(2, 0, 50);
+        tmpfit->SetParLimits(3, 0, 50);
+
+        fFitHisto->Fit(tmpfit, "RBQ0");
+        fMean = tmpfit->GetParameter(1);
+        double sl = tmpfit->GetParameter(2);
+        double sr = tmpfit->GetParameter(3);
+        delete tmpfit;
+
+        fFitFunc = new TF1("fFitFunc","pol4");
+
+
+        // first iteration
+        fFitFunc->SetRange(fMean - sl, fMean + sr);
+        fFitHisto->Fit(fFitFunc, "RBQ0");
+        fMean = fFitFunc->GetMaximumX();
+
+        // draw mean indicator line
+        fLine->SetupY(0,fFitHisto->GetMaximum() + 20);
+        fLine->SetX1(fMean);
+
+        // draw fitting function
+        if (fFitFunc) fFitFunc->Draw("same");
+
+        // draw indicator line
+        fLine->Draw();
+    }
+
+    // update canvas
+    fCanvasFit->Update();
+
+    // update overview
+    if (elem % 20 == 0)
+    {
+        fCanvasResult->cd();
+        fOverviewHisto->Draw("E1");
+        fCanvasResult->Update();
+    }
+}
+
+ClassImp(TCCalibTime)

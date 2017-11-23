@@ -43,7 +43,6 @@
 #include "CMakeConfig.h"
 
 
-ClassImp(TMCGenerator)
 
 // Main command options
 static const Map_t kMCcmd[] = {
@@ -818,3 +817,5 @@ TMCParticle* TMCGenerator::GetPDG_ID( Char_t* name, Char_t* rname,
   }
   return p;
 }
+
+ClassImp(TMCGenerator)

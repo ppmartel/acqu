@@ -11,11 +11,11 @@
 //
 //---------------------------------------------------------------------------
 
+#include "TA2Control.h"
 #include "TA2FileSource.h"
 #include "ARFile_t.h"
 #include "Semaphore_t.h"
 
-ClassImp(TA2FileSource)
 
 TA2FileSource::TA2FileSource( char* name, Int_t irecl,
 			      Int_t save, Int_t rsize, Int_t swap ) :
@@ -62,7 +62,7 @@ void TA2FileSource::Process()
       else fNbyte = read(fInPath,fBuffer->GetStore(),fInRecLen);
       if( fNbyte != fInRecLen ) break;
       fNrecord++;
-      if( fNrecord > stopRec ){
+      if( fNrecord > stopRec || (gAR->UseDirectIO() && fNrecord >= 1) ){
 	fBuffer->SetHeader(EEndBuff);
 	fBuffer->FNext();
 	break;
@@ -92,14 +92,22 @@ void TA2FileSource::InputList(char* name, UInt_t start, UInt_t stop)
 
   if( !fFileName ){
     fFileName = new char*[EMaxInputFiles];
-    //    fStartList = new UInt_t[EMaxInputFiles];
+    fStartList = new UInt_t[EMaxInputFiles];
     fStopList = new UInt_t[EMaxInputFiles];
     fNfile = 0;
   }
   fFileName[fNfile] = new char[strlen(name)+1];
   strcpy(fFileName[fNfile], name);
-  //  fStartList[fNfile] = start;
+  fStartList[fNfile] = start; // this is actually not used by Process...
   if( !stop ) stop = 0xffffffff;
   fStopList[fNfile] = stop;
   fNfile++;
 }
+
+void TA2FileSource::GetFileInfo(Int_t i, std::string& filename, UInt_t& start, UInt_t& stop) {
+  filename.assign(fFileName[i]);
+  start = fStartList[i];
+  stop = fStopList[i];
+}
+
+ClassImp(TA2FileSource)

@@ -45,7 +45,6 @@
 #include "ezcaRoot.h"      //header for the library of root wrappers for ezca channel access functions
 #endif
 
-ClassImp(TEPICSmodule)
 
 enum  EepicsType{              EepicsBYTE,    EepicsSTRING,     EepicsSHORT,    EepicsLONG,    EepicsFLOAT,    EepicsDOUBLE, EepicsNULL};
 const char *epicsTypeName[] = {"epicsBYTE",   "epicsSTRING",    "epicsSHORT",   "epicsLONG",   "epicsFLOAT",   "epicsDOUBLE",      NULL};
@@ -475,4 +474,4 @@ TEPICSmodule::~TEPICSmodule( ){
   //delete fDataBuffer; //hmm - this delete causes a seg fault. Don't know why.  
 #endif
 }
-
+ClassImp(TEPICSmodule)

@@ -1,0 +1,231 @@
+##-----------------------------------------------------------------------
+##--Author	JRM Annand   29th Apr 2003
+##--Update	JRM Annand...17th May 2005
+##--Description
+##                *** Acqu++ <-> Root ***
+## Online/Offline Analysis of Sub-Atomic Physics Experimental Data 
+##
+## Parameter File: CB.dat (specified in CBanalysis.dat)
+## or equivalent
+## Setup analysis of the Crystal Ball TA2CrystalBall apparatus
+## This one sets up an analysis of the Crystal_Ball NaI(Tl) array
+## the inner Particle ID Detector and 2-layer MWPC
+##
+##-----------------------------------------------------------------------
+##
+## Specify list of detectors which constitute the Crystal Ball apparatus
+##	  Name       Class Name      Setup file
+Detector: NaI        TA2CalArray      NaI_2007_07_July09_TWE.dat
+Detector: PID        TA2PlasticPID    PID_2007_07_Jan09.dat
+#Detector: MWPC       TA2CylMWPC      MWPC.13.01.05 #not in Use
+##
+## Data reconstruction method for Crystal Ball 
+Reconstruct:
+##
+## PDG database	# particles
+ParticleID: 	16
+##
+## Angle-difference limits (in deg.)  for hits correlation
+##              PID	MWPC
+AngleLimits:	15.0	20.0
+##
+## Do some post-initialisation.
+## Should usually be done before display is setup
+Initialise:
+##
+## Periodic procedure to execute every N * NA events
+## NA is the period specified in the analysis (see CBanalysis.dat).
+## Thus if NA = 100000, CBPeriodMacro() will execute every 200000 events
+## If no analysis periodic specified, no apparatus periodic will execute
+##	N	Macro File		Macro Procedure
+#Period: 2	CBPeriodMacro.C		CBPeriodMacro()
+##
+## Cut specification
+## NB 2D cuts, ie a general polygon on the X-Y plane not yet implemented
+## Simple rectangle cuts may be made by an AND of X and Y conditions
+##         1/2D Name     	Link   Scope          Low/High Limits
+Data-Cut: 1D   PID_Nhits	AND     data		1   16
+Data-Cut: 1D   NaI_ClNhits	AND     data		2   16
+##
+## Proton and Pion dE-E cuts for particle ID
+## kProton = 2212 kPiPlus=211 kElectron=11
+##        2D x-var    Link scope y-var name     file           ix iy   i PDG
+Data-Cut: 2D Echarged AND  misc DeltaE p0   PIDdE_2007_07_Jan09.root 0  0   0 2212
+#Data-Cut: 2D Echarged AND  misc DeltaE pi0  PIDdE_2007_07_Jan09.root 0  0   0 211
+Data-Cut: 2D Echarged AND  misc DeltaE pie0  PIDdE_2007_07_Jan09.root 0  0   0 11
+Data-Cut: 2D Echarged AND  misc DeltaE p1   PIDdE_2007_07_Jan09.root 1  1   1 2212
+#Data-Cut: 2D Echarged AND  misc DeltaE pi1  PIDdE_2007_07_Jan09.root 1  1   1 211
+Data-Cut: 2D Echarged AND  misc DeltaE pie1  PIDdE_2007_07_Jan09.root 1  1   1 11
+Data-Cut: 2D Echarged AND  misc DeltaE p2   PIDdE_2007_07_Jan09.root 2  2   2 2212
+#Data-Cut: 2D Echarged AND  misc DeltaE pi2  PIDdE_2007_07_Jan09.root 2  2   2 211
+Data-Cut: 2D Echarged AND  misc DeltaE pie2  PIDdE_2007_07_Jan09.root 2  2   2 11
+Data-Cut: 2D Echarged AND  misc DeltaE p3   PIDdE_2007_07_Jan09.root 3  3   3 2212
+#Data-Cut: 2D Echarged AND  misc DeltaE pi3  PIDdE_2007_07_Jan09.root 3  3   3 211
+Data-Cut: 2D Echarged AND  misc DeltaE pie3  PIDdE_2007_07_Jan09.root 3  3   3 11
+Data-Cut: 2D Echarged AND  misc DeltaE p4   PIDdE_2007_07_Jan09.root 4  4   4 2212
+#Data-Cut: 2D Echarged AND  misc DeltaE pi4  PIDdE_2007_07_Jan09.root 4  4   4 211
+Data-Cut: 2D Echarged AND  misc DeltaE pie4  PIDdE_2007_07_Jan09.root 4  4   4 11
+Data-Cut: 2D Echarged AND  misc DeltaE p5   PIDdE_2007_07_Jan09.root 5  5   5 2212
+#Data-Cut: 2D Echarged AND  misc DeltaE pi5  PIDdE_2007_07_Jan09.root 5  5   5 211
+Data-Cut: 2D Echarged AND  misc DeltaE pie5  PIDdE_2007_07_Jan09.root 5  5   5 11
+Data-Cut: 2D Echarged AND  misc DeltaE p6   PIDdE_2007_07_Jan09.root 6  6   6 2212
+#Data-Cut: 2D Echarged AND  misc DeltaE pi6  PIDdE_2007_07_Jan09.root 6  6   6 211
+Data-Cut: 2D Echarged AND  misc DeltaE pie6  PIDdE_2007_07_Jan09.root 6  6   6 11
+Data-Cut: 2D Echarged AND  misc DeltaE p7   PIDdE_2007_07_Jan09.root 7  7   7 2212
+#Data-Cut: 2D Echarged AND  misc DeltaE pi7  PIDdE_2007_07_Jan09.root 7  7   7 211
+Data-Cut: 2D Echarged AND  misc DeltaE pie7  PIDdE_2007_07_Jan09.root 7  7   7 11
+Data-Cut: 2D Echarged AND  misc DeltaE p8   PIDdE_2007_07_Jan09.root 8  8   8 2212
+#Data-Cut: 2D Echarged AND  misc DeltaE pi8  PIDdE_2007_07_Jan09.root 8  8   8 211
+Data-Cut: 2D Echarged AND  misc DeltaE pie8  PIDdE_2007_07_Jan09.root 8  8   8 11
+Data-Cut: 2D Echarged AND  misc DeltaE p9   PIDdE_2007_07_Jan09.root 9  9   9 2212
+#Data-Cut: 2D Echarged AND  misc DeltaE pi9  PIDdE_2007_07_Jan09.root 9  9   9 211
+Data-Cut: 2D Echarged AND  misc DeltaE pie9  PIDdE_2007_07_Jan09.root 9  9   9 11
+Data-Cut: 2D Echarged AND  misc DeltaE p10  PIDdE_2007_07_Jan09.root 10 10 10 2212
+#Data-Cut: 2D Echarged AND  misc DeltaE pi10 PIDdE_2007_07_Jan09.root 10 10 10 211
+Data-Cut: 2D Echarged AND  misc DeltaE pie10 PIDdE_2007_07_Jan09.root 10 10 10 11
+Data-Cut: 2D Echarged AND  misc DeltaE p11  PIDdE_2007_07_Jan09.root 11 11 11 2212
+#Data-Cut: 2D Echarged AND  misc DeltaE pi11 PIDdE_2007_07_Jan09.root 11 11 11 211
+Data-Cut: 2D Echarged AND  misc DeltaE pie11 PIDdE_2007_07_Jan09.root 11 11 11 11
+Data-Cut: 2D Echarged AND  misc DeltaE p12  PIDdE_2007_07_Jan09.root 12 12 12 2212
+#Data-Cut: 2D Echarged AND  misc DeltaE pi12 PIDdE_2007_07_Jan09.root 12 12 12 211
+Data-Cut: 2D Echarged AND  misc DeltaE pie12 PIDdE_2007_07_Jan09.root 12 12 12 11
+Data-Cut: 2D Echarged AND  misc DeltaE p13  PIDdE_2007_07_Jan09.root 13 13 13 2212
+#Data-Cut: 2D Echarged AND  misc DeltaE pi13 PIDdE_2007_07_Jan09.root 13 13 13 211
+Data-Cut: 2D Echarged AND  misc DeltaE pie13 PIDdE_2007_07_Jan09.root 13 13 13 11
+Data-Cut: 2D Echarged AND  misc DeltaE p14  PIDdE_2007_07_Jan09.root 14 14 14 2212
+#Data-Cut: 2D Echarged AND  misc DeltaE pi14 PIDdE_2007_07_Jan09.root 14 14 14 211
+Data-Cut: 2D Echarged AND  misc DeltaE pie14 PIDdE_2007_07_Jan09.root 14 14 14 11
+Data-Cut: 2D Echarged AND  misc DeltaE p15  PIDdE_2007_07_Jan09.root 15 15 15 2212
+#Data-Cut: 2D Echarged AND  misc DeltaE pi15 PIDdE_2007_07_Jan09.root 15 15 15 211
+Data-Cut: 2D Echarged AND  misc DeltaE pie15 PIDdE_2007_07_Jan09.root 15 15 15 11
+Data-Cut: 2D Echarged AND  misc DeltaE p16  PIDdE_2007_07_Jan09.root 16 16 16 2212
+#Data-Cut: 2D Echarged AND  misc DeltaE pi16 PIDdE_2007_07_Jan09.root 16 16 16 211
+Data-Cut: 2D Echarged AND  misc DeltaE pie16 PIDdE_2007_07_Jan09.root 16 16 16 11
+Data-Cut: 2D Echarged AND  misc DeltaE p17  PIDdE_2007_07_Jan09.root 17 17 17 2212
+#Data-Cut: 2D Echarged AND  misc DeltaE pi17 PIDdE_2007_07_Jan09.root 17 17 17 211
+Data-Cut: 2D Echarged AND  misc DeltaE pie17 PIDdE_2007_07_Jan09.root 17 17 17 11
+Data-Cut: 2D Echarged AND  misc DeltaE p18  PIDdE_2007_07_Jan09.root 18 18 18 2212
+#Data-Cut: 2D Echarged AND  misc DeltaE pi18 PIDdE_2007_07_Jan09.root 18 18 18 211
+Data-Cut: 2D Echarged AND  misc DeltaE pie18 PIDdE_2007_07_Jan09.root 18 18 18 11
+Data-Cut: 2D Echarged AND  misc DeltaE p19  PIDdE_2007_07_Jan09.root 19 19 19 2212
+#Data-Cut: 2D Echarged AND  misc DeltaE pi19 PIDdE_2007_07_Jan09.root 19 19 19 211
+Data-Cut: 2D Echarged AND  misc DeltaE pie19 PIDdE_2007_07_Jan09.root 19 19 19 11
+Data-Cut: 2D Echarged AND  misc DeltaE p20  PIDdE_2007_07_Jan09.root 20 20 20 2212
+#Data-Cut: 2D Echarged AND  misc DeltaE pi20 PIDdE_2007_07_Jan09.root 20 20 20 211
+Data-Cut: 2D Echarged AND  misc DeltaE pie20 PIDdE_2007_07_Jan09.root 20 20 20 11
+Data-Cut: 2D Echarged AND  misc DeltaE p21  PIDdE_2007_07_Jan09.root 21 21 21 2212
+#Data-Cut: 2D Echarged AND  misc DeltaE pi21 PIDdE_2007_07_Jan09.root 21 21 21 211
+Data-Cut: 2D Echarged AND  misc DeltaE pie21 PIDdE_2007_07_Jan09.root 21 21 21 11
+Data-Cut: 2D Echarged AND  misc DeltaE p22  PIDdE_2007_07_Jan09.root 22 22 22 2212
+#Data-Cut: 2D Echarged AND  misc DeltaE pi22 PIDdE_2007_07_Jan09.root 22 22 22 211
+Data-Cut: 2D Echarged AND  misc DeltaE pie22 PIDdE_2007_07_Jan09.root 22 22 22 11
+Data-Cut: 2D Echarged AND  misc DeltaE p23  PIDdE_2007_07_Jan09.root 23 23 23 2212
+#Data-Cut: 2D Echarged AND  misc DeltaE pi23 PIDdE_2007_07_Jan09.root 23 23 23 211
+Data-Cut: 2D Echarged AND  misc DeltaE pie23 PIDdE_2007_07_Jan09.root 23 23 23 11
+##
+##		#Cuts	#Sectors
+ParticleID-Cut: 48	24
+##
+##
+## Histograms of apparatus-level variables
+## histogram name should be preceeded by 1D or 2D (for dimension of spectrum)
+##           Name       chan/low/high   min/max condition(opt)
+#Display: 1D Nhit    	16  0 16
+#Display: 1D Mtot      	800 0 800	0 0 	MtotC
+#Display: 1D Minv   	500 0 500 	0 7
+##        X-Name  X-ch/low/high/id  Y-Name   Y-ch/low/high/id  Condition(opt)
+Display: 2D PID_Hits 24 0 24 -1              NaI_ClPhi 180 -180 180 -1
+Display: 2D MWPC_PhiWire0 180 0 6.5 -1       NaI_ClPhi 180 -180 180 -1
+Display: 2D MWPC_PhiSWDiff0 180 -0.1 0.1 -1  NaI_ClPhi 180 -180 180 -1
+Display: 2D MWPC_PhiWire0 180 0 6.5 -1       PID_Hits 24 0 24 -1
+Display: 2D MWPC_ZIntersect0 100 -200 200 -1 NaI_ClTheta 180 0 180 -1
+Display: 2D MWPC_ZIntersect1 100 -300 300 -1 NaI_ClTheta 180 0 180 -1
+Display: 2D MWPC_TrackTheta 180 0 3.15 -1    NaI_ClTheta 180 0 180 -1
+Display: 2D MWPC_TrackPhi 180 -3.14 3.14 -1  NaI_ClPhi 180 -180 180 -1
+Display: 2D MWPC_PhiDiff 180 -0.5 0.5 -1     NaI_ClPhi 180 -180 180 -1
+##
+#Display	 1D MWPC_Xvertex		1000	-100	100
+#Display	 1D MWPC_Yvertex		1000	-100	100
+Display	 1D MWPC_Zvertex		200	-500	500
+#Display	 1D MWPC_PsXvertex		1000	-100	100
+#Display	 1D MWPC_PsYvertex		1000	-100	100
+Display	 1D MWPC_PsZvertex		1000	-500	500
+#Display: 1D MWPC_ZIntersect0		500	-220	220
+#Display: 1D MWPC_PhiSWDiff0		100	-0.2	0.2
+#Display: 1D MWPC_PhiWire0		360	0	6.4
+#Display: 1D MWPC_ZIntersect1		500	-320	320
+#Display: 1D MWPC_PhiSWDiff1		100	-0.2	0.2
+#Display: 1D MWPC_PhiWire1		360	0	6.4
+#Display: 1D MWPC_PhiDiff		100	-0.5	0.5
+Display: 2D MWPC_Xvertex   100 -50 50 -1       MWPC_Yvertex 100 -50 50 -1
+#Display: 2D MWPC_Zvertex   150 -300 300 -1    MWPC_Rvertex 40 0 40 -1
+Display: 2D MWPC_PsXvertex 100 -50 50 -1       MWPC_PsYvertex 100 -50 50 -1
+#Display: 2D MWPC_PsZvertex 150 -300 300 -1    MWPC_PsRvertex 40 0 40 -1
+#Display: 2D MWPC_ZIntersect0 100 -220 220 -1  MWPC_PhiWire0 180 -0.1 6.4 -1
+#Display: 2D MWPC_ZIntersect0 100 -220 220 -1  MWPC_ZIntersect1 100 -320 320 -1
+#Display: 2D MWPC_ZIntersect0 100 -220 220 -1  MWPC_PhiSWDiff0 100 -0.1 0.1 -1
+#Display: 2D MWPC_ZIntersect1 100 -320 320 -1  MWPC_PhiWire1 180 -0.1 6.4 -1
+#Display: 2D MWPC_ZIntersect1 100 -320 320 -1  MWPC_PhiSWDiff1 180 -0.1 0.1 -1
+#Display: 2D MWPC_PhiSWDiff0 100 -0.1 0.1 -1    MWPC_PhiSWDiff1 100 -0.1 0.1 -1
+#Display: 2D MWPC_PhiWire0 180 0.0 6.4 -1       MWPC_PhiSWDiff0 100 -0.1 0.1 -1
+#Display: 2D MWPC_PhiWire1 180 0.0 6.4 -1       MWPC_PhiSWDiff1 100 -0.1 0.1 -1
+#Display: 2D MWPC_ZIntersect0 100 -220 220 -1   MWPC_PhiDiff 50 -0.1 0.1 -1
+#Display: 2D MWPC_PhiWire0 180 0.0 6.4 -1       MWPC_PhiDiff 50 -0.1 0.1 -1
+#Display: 2D MWPC_PhiWire1 180 0.0 6.4 -1       MWPC_PhiDiff 50 -0.1 0.1 -1
+#
+Display: 2D Echarged 100 0 500 0   DeltaE 100 0 5 0
+Display: 2D Echarged 100 0 500 1   DeltaE 100 0 5 1
+Display: 2D Echarged 100 0 500 2   DeltaE 100 0 5 2
+Display: 2D Echarged 100 0 500 3   DeltaE 100 0 5 3
+Display: 2D Echarged 100 0 500 4   DeltaE 100 0 5 4
+Display: 2D Echarged 100 0 500 5   DeltaE 100 0 5 5
+Display: 2D Echarged 100 0 500 6   DeltaE 100 0 5 6
+Display: 2D Echarged 100 0 500 7   DeltaE 100 0 5 7
+Display: 2D Echarged 100 0 500 8   DeltaE 100 0 5 8
+Display: 2D Echarged 100 0 500 9   DeltaE 100 0 5 9
+Display: 2D Echarged 100 0 500 10   DeltaE 100 0 5 10
+Display: 2D Echarged 100 0 500 11   DeltaE 100 0 5 11
+Display: 2D Echarged 100 0 500 12   DeltaE 100 0 5 12
+Display: 2D Echarged 100 0 500 13   DeltaE 100 0 5 13
+Display: 2D Echarged 100 0 500 14   DeltaE 100 0 5 14
+Display: 2D Echarged 100 0 500 15   DeltaE 100 0 5 15
+Display: 2D Echarged 100 0 500 16   DeltaE 100 0 5 16
+Display: 2D Echarged 100 0 500 17   DeltaE 100 0 5 17
+Display: 2D Echarged 100 0 500 18   DeltaE 100 0 5 18
+Display: 2D Echarged 100 0 500 19   DeltaE 100 0 5 19
+Display: 2D Echarged 100 0 500 20   DeltaE 100 0 5 20
+Display: 2D Echarged 100 0 500 21   DeltaE 100 0 5 21
+Display: 2D Echarged 100 0 500 22   DeltaE 100 0 5 22
+Display: 2D Echarged 100 0 500 23   DeltaE 100 0 5 23
+#
+Display: 2D Echarged 100 0 500 0   DeltaEdouble 100 0 5 0
+Display: 2D Echarged 100 0 500 1   DeltaEdouble 100 0 5 1
+Display: 2D Echarged 100 0 500 2   DeltaEdouble 100 0 5 2
+Display: 2D Echarged 100 0 500 3   DeltaEdouble 100 0 5 3
+Display: 2D Echarged 100 0 500 4   DeltaEdouble 100 0 5 4
+Display: 2D Echarged 100 0 500 5   DeltaEdouble 100 0 5 5
+Display: 2D Echarged 100 0 500 6   DeltaEdouble 100 0 5 6
+Display: 2D Echarged 100 0 500 7   DeltaEdouble 100 0 5 7
+Display: 2D Echarged 100 0 500 8   DeltaEdouble 100 0 5 8
+Display: 2D Echarged 100 0 500 9   DeltaEdouble 100 0 5 9
+Display: 2D Echarged 100 0 500 10   DeltaEdouble 100 0 5 10
+Display: 2D Echarged 100 0 500 11   DeltaEdouble 100 0 5 11
+Display: 2D Echarged 100 0 500 12   DeltaEdouble 100 0 5 12
+Display: 2D Echarged 100 0 500 13   DeltaEdouble 100 0 5 13
+Display: 2D Echarged 100 0 500 14   DeltaEdouble 100 0 5 14
+Display: 2D Echarged 100 0 500 15   DeltaEdouble 100 0 5 15
+Display: 2D Echarged 100 0 500 16   DeltaEdouble 100 0 5 16
+Display: 2D Echarged 100 0 500 17   DeltaEdouble 100 0 5 17
+Display: 2D Echarged 100 0 500 18   DeltaEdouble 100 0 5 18
+Display: 2D Echarged 100 0 500 19   DeltaEdouble 100 0 5 19
+Display: 2D Echarged 100 0 500 20   DeltaEdouble 100 0 5 20
+Display: 2D Echarged 100 0 500 21   DeltaEdouble 100 0 5 21
+Display: 2D Echarged 100 0 500 22   DeltaEdouble 100 0 5 22
+Display: 2D Echarged 100 0 500 23   DeltaEdouble 100 0 5 23
+#
+Display: 1D ECentral 20 0 1. 0 23
+Display: 3D Echarged 100 0 500 0 DeltaEdouble 100 0 5 0 ECentral 20 0 1. 0
+#
+Display: 1D DeltaTheta 50  0   50 -1
+Display: 1D DeltaPhi   100 -50 50 0 23
+

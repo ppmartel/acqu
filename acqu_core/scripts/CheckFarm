@@ -1,0 +1,107 @@
+#!/bin/sh
+# Give the args some sensible names
+JobName=$1
+
+if [ -z $JobName ]; then
+    echo "Please provide a job name as first argument"
+    exit 1
+fi
+
+if [ ! -d jobs/$JobName ]; then
+    echo "No folder jobs/$JobName found. Are you running in acqu_user directory?"
+    exit 1
+fi
+
+####################################################
+###### Beginning of section requiring editing ######
+####################################################
+
+# Expected number of root files per job
+NRoot=2
+
+# Clean up after check: 0 queries before deleting files, 1 does not query
+Clean=0
+
+# Output directory
+OutputDir=/local/raid1/work/$USER/analysis
+
+####################################################
+###### End of section requiring editing ############
+####################################################
+
+
+MC=`grep "^Name:" jobs/${JobName}/AcquSetup.dat | grep -c MC`
+
+Jobs=`ls -1 jobs/${JobName}/jobfiles/*.sub.done`
+
+for Job in $Jobs
+do
+    Prob=0
+    Proc=`cat ${Job}`
+    ProcId=`echo $Proc | sed 's/\..*//'`
+    ErrFile=`ls -1 jobs/${JobName}/jobfiles/Acqu_*.e* | grep $ProcId`
+    Job=`basename $Job | sed 's/.sub.done//'`
+    if [ -e $ErrFile ]
+    then
+	if [ -s $ErrFile ]
+	then
+	    echo "$Job - Error detected in $ErrFile"
+	    Prob=1
+	elif [ -e $OutputDir/${JobName}/log/${Job}_AcquNode.log ]
+	then
+	    Error=`grep -c "segmentation\|crash\|ERROR" $OutputDir/${JobName}/log/${Job}_AcquNode.log`
+	    BadCal=`grep -c "No calibration found" $OutputDir/${JobName}/log/${Job}_AcquNode.log`
+	    Files=`ls -1 $OutputDir/${JobName}/root/*.root | grep -c $Job`
+
+	    if [ $Error -gt 0 ]
+	    then
+		echo "$Job - Errors in AcquNode.log"
+		Prob=1
+	    elif [ $BadCal -gt 0 ]
+	    then
+		echo "$Job - Possible calibration problems in AcquNode.log (not removed automatically)"
+		#Prob=1
+	    elif [ ! -e $OutputDir/${JobName}/log/${Job}_AcquRoot.log ]
+	    then
+		echo "$Job - AcquRoot.log missing"
+		Prob=1
+	    elif [ ! -e $OutputDir/${JobName}/log/${Job}_Analysis.log ]
+	    then
+		echo "$Job - Analysis.log missing"
+		Prob=1
+	    elif [ $MC -eq 0 ]
+	    then
+		if [ ! -e $OutputDir/${JobName}/log/${Job}_DataServer.log ]
+		then
+		    echo "$Job - DataServer.log missing"
+		    Prob=1
+		fi
+	    elif [ $Files -lt $NRoot ]
+	    then
+		echo "$Job - Missing output root file(s)"
+		Prob=1
+	    fi
+
+	else
+	    echo "$Job - AcquNode.log missing"
+	    Prob=1
+	fi
+
+	if [ $Prob -gt 0 ]
+	then
+	    echo "Cleaning to rerun"
+	    if [ $Clean -gt 0 ]
+	    then
+		rm jobs/${JobName}/jobfiles/${Job}.sub.done
+		rm $OutputDir/${JobName}/log/${Job}*.log
+		rm $OutputDir/${JobName}/root/*${Job}*.root
+	    else
+		rm -i jobs/${JobName}/jobfiles/${Job}.sub.done
+		rm -i $OutputDir/${JobName}/log/${Job}*.log
+		rm -i $OutputDir/${JobName}/root/*${Job}*.root
+	    fi
+	fi
+    else
+	echo "$Job - Not finished"
+    fi
+done	

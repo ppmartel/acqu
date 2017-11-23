@@ -1,0 +1,66 @@
+## Apparatus setup file for running TA2CrystalBall
+########################################################################
+#
+## Specify list of detectors which constitute the Crystal Ball apparatus
+##	  	Name    Class Name   	Setup file
+Detector:       NaI     TA2CalArray     Detector-NaI.dat
+Detector:       PID     TA2PlasticPID   Detector-PID.dat
+##
+## Data reconstruction method for Crystal Ball
+Reconstruct:
+##
+## PDG database	# particles
+ParticleID: 	16
+##
+## Angle-difference limits (in deg.)  for hits correlation
+##              PID	MWPC
+AngleLimits:	15.0	20.0
+##
+## Do some post-initialisation.
+Initialise:
+##
+## Cut specification (Proton and Pion dE-E cuts for particle ID)
+##        2D x-var    	Link scope 	y-var 	 name     file       ix iy   i PDG
+#Data-Cut: 2D EchargedOR AND  misc 	DeltaEOR Proton   cuts/CB_DeltaE-E_Proton.root 0  0   0 2212
+#Data-Cut: 2D EchargedOR AND  misc 	DeltaEOR Pion     cuts/CB_DeltaE-E_Pion.root   0  0   0 211
+##
+##		#Cuts	#Sectors
+#ParticleID-Cut: 48	24
+##
+Display: 2D PID_Hits 24 0 24 -1              NaI_ClPhi 180 -180 180 -1
+#Display: 1D PID_Hits 24 0 24 -1
+##
+########################################################################
+## Display histograms of apparatus-level variables
+########################################################################
+#
+Display: 2D Echarged 100 0 500 0   DeltaE 100 0 5 0
+Display: 2D Echarged 100 0 500 1   DeltaE 100 0 5 1
+Display: 2D Echarged 100 0 500 2   DeltaE 100 0 5 2
+Display: 2D Echarged 100 0 500 3   DeltaE 100 0 5 3
+Display: 2D Echarged 100 0 500 4   DeltaE 100 0 5 4
+Display: 2D Echarged 100 0 500 5   DeltaE 100 0 5 5
+Display: 2D Echarged 100 0 500 6   DeltaE 100 0 5 6
+Display: 2D Echarged 100 0 500 7   DeltaE 100 0 5 7
+Display: 2D Echarged 100 0 500 8   DeltaE 100 0 5 8
+Display: 2D Echarged 100 0 500 9   DeltaE 100 0 5 9
+Display: 2D Echarged 100 0 500 10   DeltaE 100 0 5 10
+Display: 2D Echarged 100 0 500 11   DeltaE 100 0 5 11
+Display: 2D Echarged 100 0 500 12   DeltaE 100 0 5 12
+Display: 2D Echarged 100 0 500 13   DeltaE 100 0 5 13
+Display: 2D Echarged 100 0 500 14   DeltaE 100 0 5 14
+Display: 2D Echarged 100 0 500 15   DeltaE 100 0 5 15
+Display: 2D Echarged 100 0 500 16   DeltaE 100 0 5 16
+Display: 2D Echarged 100 0 500 17   DeltaE 100 0 5 17
+Display: 2D Echarged 100 0 500 18   DeltaE 100 0 5 18
+Display: 2D Echarged 100 0 500 19   DeltaE 100 0 5 19
+Display: 2D Echarged 100 0 500 20   DeltaE 100 0 5 20
+Display: 2D Echarged 100 0 500 21   DeltaE 100 0 5 21
+Display: 2D Echarged 100 0 500 22   DeltaE 100 0 5 22
+Display: 2D Echarged 100 0 500 23   DeltaE 100 0 5 23
+#
+#Display: 1D ECentral 20 0 1. 0 23
+#Display: 3D Echarged 100 0 500 0 DeltaEdouble 100 0 5 0 ECentral 20 0 1. 0
+#
+#Display: 1D DeltaTheta 50  0   50 -1
+Display: 1D DeltaPhi   100 -50 50 0 23

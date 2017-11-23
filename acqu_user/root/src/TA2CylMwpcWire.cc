@@ -1,6 +1,5 @@
 #include "TA2CylMwpcWire.h"
 
-ClassImp(TA2CylMwpcWire)
 
 //---------------------------------------------------------------------------
 TA2CylMwpcWire::TA2CylMwpcWire(const char* name, Int_t nelem, Int_t maxclust, Int_t maxclsize, void* det, const Double_t* layerparm)
@@ -14,3 +13,5 @@ TA2CylMwpcWire::TA2CylMwpcWire(const char* name, Int_t nelem, Int_t maxclust, In
   //
   fNClust = 0;
 }
+
+ClassImp(TA2CylMwpcWire)

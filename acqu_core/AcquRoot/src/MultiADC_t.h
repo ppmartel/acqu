@@ -23,7 +23,8 @@ protected:
   UInt_t fChan;                           // # of channels
   UInt_t fNstore;                         // # of channels stored in event
   UInt_t fNtry;                          // channels stored this entry
-public:
+  Bool_t fRefApplied;
+ public:
   MultiADC_t( Int_t index, Int_t chan ){
     // store ADC index and max # of hist (chan), create hit storage array
     fIadc = index;
@@ -31,6 +32,7 @@ public:
     fStore = new Short_t[chan];
     for(UInt_t i=0; i<fChan; i++ ) fStore[i] = ENullStore;
     fNstore = 0;
+    fRefApplied = false;
   }
   virtual ~MultiADC_t(){
     // delete storage arrays...previously "newed" at construct
@@ -63,6 +65,7 @@ public:
     if( !fNstore ) return;
     for( UInt_t i=0; i<fNstore; i++ )fStore[i] = ENullStore;
     fNstore = 0;
+    fRefApplied = false;
   }
 
   // Getters for read-only variables

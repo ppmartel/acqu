@@ -5,8 +5,14 @@
 #
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #Set-up of branches in MC ROOT file as produced by GEANT4 A2 simulation
+#
+# NOTE: The branches MUST appear in the SAME ORDER as defined in the enum in
+#       MCBranchID.h. It is NOT possible to skip branches. You may omit
+#       branches at the end of this list though.
+#
+#
 #         Tree Name     No. of branches   Process Type
-Name:     h12           32                MC
+Name:     h12           34                MC
 #         Branch Name   Buffer size (bytes)
 Branch:   npart         4
 Branch:   dircos        4096
@@ -40,12 +46,14 @@ Branch:   mposx         1024
 Branch:   mposy         1024
 Branch:   mposz         1024
 Branch:   emwpc         1024
+Branch:   mc_evt_id     8
+Branch:   mc_rnd_id     8
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #ROOT file(s) (GEANT4 output) to be analysed. Add more lines for more files
 #
-TreeFile: ~/a2Geant4/A2/out/acquMC/Pi0_g4_out_260.root
+TreeFile: scratch/geant.root
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #
 #- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -16,18 +16,16 @@ Reconstruct:
 Use-CaLib:      localhost   2012_12    calib    123456       Compton_2012_12
 #
 #
-# miscellaneous calibrations    # target position  (0=off/1=on)
-Use-CaLib-Misc:                 1
-# tagger calib:     time  (0=off/1=on)
-Use-CaLib-TAGG:     1
-# CB calib:         energy  time    timewalk    quadr. energy  (0=off/1=on)
-Use-CaLib-CB:       1       1       1           1
-# TAPS calib:       energy  time    quadr. energy   LED thr.  (0=off/1=on)
-Use-CaLib-TAPS:     1       1       1               0
-# PID calib:        phi     droop   energy  time  (0=off/1=on)
-Use-CaLib-PID:      1       0       0       1
-# Veto calib:       energy  time  (0=off/1=on)
-Use-CaLib-Veto:     1       1
+# tagger calib:     time    efficiency (0=off/1=on)
+Use-CaLib-TAGG:     1       0
+# CB calib:         energy  time    timewalk    quadr. energy    led  (0=off/1=on)
+Use-CaLib-CB:       1       1       0           0                0 
+# TAPS calib:       energy  time    quadr. energy   LED thr.    CFD thr.  (0=off/1=on)
+Use-CaLib-TAPS:     1       1       0               0           0
+# PID calib:        phi     energy  time  (0=off/1=on)
+Use-CaLib-PID:      1       0       1
+# Veto calib:       energy  time    LED thr. (0=off/1=on)
+Use-CaLib-Veto:     1       1       0
 
 
 #

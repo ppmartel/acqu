@@ -17,6 +17,7 @@
 #include "TA2Apparatus.h"  
 #include "TA2Tagger.h"
 #include "TEPICSmodule.h"
+#include "TA2Ladder.h"
 
 enum { ETablePara	=0,	//for pol lookup table
        ETablePerp	=1,
@@ -34,7 +35,7 @@ enum {
   IVEC,   // [6] ivec[]     array of intensities of vectors up to nvec.
 };  
 
-enum { THETASTEPS = 401 };  //No of steps in the Gaussian smearing of the coherent edge.
+enum { THETASTEPS = 201 };  //No of steps in the Gaussian smearing of the coherent edge.
 
 class TA2LinearPolEpics : public TA2Apparatus {
  protected:
@@ -52,10 +53,17 @@ class TA2LinearPolEpics : public TA2Apparatus {
   char 	   fTaggerName[64];	// Name of tagger object (in case more than 1 tagger defined)
   char 	   fLadderName[64];	// Name of ladder object within tagger (ditto)
   Double_t *fIncSpectrum;	// Array to hold Inc ref. spectrum
+  Double_t *fIncGatedSpectrum;  // Array to hold Inc gated ref. spectrum
   Double_t *fCohSpectrum;	// Array to hold Coh spectrum
   Double_t *fEnhSpectrum;	// Array to hold Enhancement spectrum
+  Double_t *fRandSubtraction;   // Array to hold Random Subtraction spectrum
+  Double_t *fAccPromptSpec;     // Array to hold accumulated prompt spectrum
+  Double_t *fAccRandSpec;       // Array to hold accumulated random spectrum
+  Double_t *fGatedCurrEnhSpec;  // Array to hold gated buffered enhancement spectrum
   Bool_t   *fBadScalerChan;	// Hold map of bad channels
+  Bool_t   *fBadGatedScalerChan;// Hold map of bad channels of gated spectrum
   Bool_t   fHaveIncScaler;	// Flag we have ref from scalers.
+  Bool_t   fHaveIncGatedScaler; // Flag we have ref from gated scalers.
   Bool_t   fHaveTaggerApp;     	// Flag if tagger apparatus
   Bool_t   fHaveLadderDet;     	// Flag if ladder detector loaded
   Bool_t   fDoingScalers;	// Flag if we're handling scalers
@@ -66,10 +74,15 @@ class TA2LinearPolEpics : public TA2Apparatus {
   Double_t *fPolArrayM;         // Hold the polarizations for all the hits in the ladder, including multihit.
   Int_t   *fLadderHits;         // pointer to ladder hits array
   Double_t **fAccScaler;        // keep a few consecutive scaler buffers for summing up
+  Double_t **fAccPromptScaler;
+  Double_t **fAccRandScaler;
   Int_t    fNScalerBuffers;
   Int_t    fScalerEvent;
   
   Double_t fEdge;		// for position of coherent edge chans
+  Double_t fEdgeError;
+  Double_t fEdgeGated;          // for position of gated coherent edge chans
+  Double_t fEdgeGatedError;
   Double_t fEdgeSetting;	// for nominal edge setting
   Double_t fEdgeRange;	        // how much it can drift from the nominal setting 
   Double_t fLastEdge;		// for position of coherent edge chans
@@ -151,16 +164,27 @@ class TA2LinearPolEpics : public TA2Apparatus {
 
   UShort_t fPolPlane;		// Polarisation plane (Para / Perp)
   Double_t fDInc;		//dummy variables to set up 1D and 2D scaler hists
+  Double_t fDGatedInc;
   Double_t fDCoh;
   Double_t fDEnh;
   Double_t fDCohPara;
   Double_t fDEnhPara;
   Double_t fDCohPerp;
   Double_t fDEnhPerp;
- 
+  
+  Double_t fDGatedCoherent;
+  Double_t fDGatedCoherentPara;
+  Double_t fDGatedCoherentPerp;
+  Double_t fDGatedCurrEnh;
+  Double_t fDGatedCurrEnhPara;
+  Double_t fDGatedCurrEnhPerp;
+  
   Double_t fDEdge;		// for position history  of coherent edge MeV
+  Double_t fDEdgeGated;
   Double_t fDEdgePerp;
   Double_t fDEdgePara;
+  Double_t fDEdgeGatedPara;
+  Double_t fDEdgeGatedPerp;
   Double_t fDEdgeDistPerp;		// for position distribution  of coherent edge MeV
   Double_t fDEdgeDistPara;
   Double_t fDEdgeEpics;		// for position history  of coherent edge MeV
@@ -182,6 +206,7 @@ class TA2LinearPolEpics : public TA2Apparatus {
   
   Double_t fDScanStep;
   UInt_t   fScalerCount;		//running counter of scaler events
+  UInt_t   fScalerCountGated;           //Running counter for gated scaler reads
 
   TA2Tagger  *fTagger;		        //Tagger and Ladder classes
   TA2Ladder  *fLadder;
@@ -197,6 +222,7 @@ class TA2LinearPolEpics : public TA2Apparatus {
   Double_t *fPolTableCurrentLad;       	//interpolated table for current plane and edge position ladder
  
   TH1F *fHInc;				//ptrs to the hists if they're defined
+  TH1F *fHGatedInc;
   TH1F *fHCoh;
   TH1F *fHEnh;
   TH1F *fHCohPara;
@@ -204,8 +230,11 @@ class TA2LinearPolEpics : public TA2Apparatus {
   TH1F *fHCohPerp;
   TH1F *fHEnhPerp;
   TH1F *fHEdge;
+  TH1F *fHEdgeGated;
   TH1F *fHEdgePerp;
   TH1F *fHEdgePara;
+  TH1F *fHEdgeGatedPara;
+  TH1F *fHEdgeGatedPerp;
   TH1F *fHEdgeDistPara;
   TH1F *fHEdgeDistPerp;
   TH1F *fHEdgeEpics;
@@ -222,6 +251,26 @@ class TA2LinearPolEpics : public TA2Apparatus {
   TH1F *fWeightHist;
   TH2F *fThetaPol;
   TH2F *fThetaItot;
+
+  TH1F *fHGatedCoherent;
+  TH1F *fHGatedCoherentPara;
+  TH1F *fHGatedCoherentPerp;
+  TH1F *fHGatedCurrEnh;
+  TH1F *fHGatedCurrEnhPara;
+  TH1F *fHGatedCurrEnhPerp;
+
+  ///////////////////////////////////////////////////////
+  /////////////////Variables for fit/////////////////////
+  Double_t fLOWFIT; //how far below the peak in MeV to start fitting
+  Double_t fFitedge;
+  Double_t fbestPar[10];
+  Double_t fbestChisq;
+  Double_t fFitMinBin;
+  Double_t fFitMaxBin;
+  Bool_t fFitInitialised;
+  TH1F *fFitEnhData;
+  TH1F *fFitEnh;
+  TH1F *fFitPol;
   
  public:
   TA2LinearPolEpics( const char*, TA2System* ); 	// pass ptr to analyser
@@ -231,9 +280,10 @@ class TA2LinearPolEpics : public TA2Apparatus {
   virtual 	TA2DataManager* CreateChild( const char*, Int_t ){return NULL;};
   virtual void 	LoadVariable( );         	// display setup
   virtual void 	Reconstruct( );			//the main event reconstruction function
-  Int_t  	LoadAmoRef(Char_t *refFilename);//load the amorphoes reference scalers
+  Int_t  	LoadAmoRef(Char_t *refFilename);//load the amorphoes reference scalers 
   Int_t		GetPolPlane(){return fPlane;};  //para,perp or unknown
   Double_t	GetEdge(){return fEdge;};       //coherent edge
+  Double_t      GetEdgeGated(){return fEdgeGated;};
   Double_t	GetEdgeSetting(){return fEdgeSetting;};  //coherent edge
   Double_t	*GetPolTable(){return fCurrentPolTable;};       //get pol for given photon energy
   Double_t	*GetEnhTable(){return fCurrentEnhTable;};       //get pol for given photon energy
@@ -247,8 +297,13 @@ class TA2LinearPolEpics : public TA2Apparatus {
  private:
   Int_t		CreateCurrentPolTable();	//create one for the current edge position
   void          enhFromParams();
+  void          enhFromParams(Double_t *par, Double_t edge); //called by fit function
   void          SetPolTable();
   Double_t 	*FillPolArray();	         //fill and return array of polarizations for all ladder hits.
+  void          FitInit(const TH1F *histD);
+  void          FitEnhancement(const TH1F *histD, const double scalingN, const int nVec=2);
+  void          parFromHuman(Double_t edgeMeV = 750.0, Double_t spreadMeV = 20.0, Double_t colliDist_m = 2.5, Double_t colliRad_mm = 3.0, Int_t nVec = 2, Double_t *par=NULL);
+  Double_t      efit(const Double_t *parms); //The main customized fitting function which gets called by MINUIT
   
   // Root needs this line for incorporation in dictionary
   ClassDef(TA2LinearPolEpics,1)

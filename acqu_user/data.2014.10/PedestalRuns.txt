@@ -1,0 +1,8 @@
+/local/raid2/A2/rundata/2014-10_EPT_Prod/CBTaggTAPSPed_6065.dat.xz
+/local/raid2/A2/rundata/2014-10_EPT_Prod/CBTaggTAPSPed_6193.dat.xz
+/local/raid2/A2/rundata/2014-10_EPT_Prod/CBTaggTAPSPed_6323.dat.xz
+/local/raid2/A2/rundata/2014-10_EPT_Prod/CBTaggTAPSPed_6377.dat.xz
+/local/raid2/A2/rundata/2014-10_EPT_Prod/CBTaggTAPSPed_6433.dat.xz
+/local/raid2/A2/rundata/2014-10_EPT_Prod/CBTaggTAPSPed_6443.dat.xz
+/local/raid2/A2/rundata/2014-10_EPT_Prod/CBTaggTAPSPed_6696.dat.xz
+/local/raid2/A2/rundata/2014-10_EPT_Prod/CBTaggTAPSPed_6744.dat.xz

@@ -2,6 +2,19 @@ cmake_minimum_required (VERSION 2.6)
 include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/subdir-header.cmake)
 message(STATUS "Configuring acqu_core...")
 
+# LZMA for reading xz files directly
+# Note that ROOT provides $ROOTSYS/lib/liblzma.a in his own lib
+# directory. So you need to rebuild ROOT after
+# installing the LZMA header dev files...
+find_package(LibLZMA)
+if(LIBLZMA_FOUND)
+  message(STATUS "Found LibLZMA: Enabling DirectIO with XZ compression")
+  include_directories(${LIBLZMA_INCLUDE_DIRS})
+  add_definitions(-DWITH_LIBLZMA)
+else()
+  message(STATUS "No LibLZMA found: DirectIO with XZ compression NOT supported")
+endif()
+
 # the following feature helps us to get rid of
 # getenv("acqu"), getenv("acqu_sys"), getenv("ROOTSYS")
 # because we define this variables now at "configure" time!
@@ -18,7 +31,7 @@ endif()
 # use all "src" subfolders as include directories
 # this is also used by ROOT_PREPARE_LIB as arguments to rootcint 
 file(GLOB ALLSRCDIRS "*/src")
-include_directories(${ALLSRCDIRS} "${CMAKE_CURRENT_BINARY_DIR}/AcquRoot/src")
+include_directories(${ALLSRCDIRS} "${CMAKE_CURRENT_BINARY_DIR}/AcquRoot/src" )
 
 # This builds automagically all the ROOT-enabled libraries
 macro(CompileCoreLib MOD)
@@ -29,7 +42,7 @@ macro(CompileCoreLib MOD)
   add_library("lib${MOD}" SHARED ${SRCS} ${ACQU_CONFIG_FILE})
 
   set_target_properties("lib${MOD}"
-    PROPERTIES COMPILE_FLAGS "${ARGN}" LIBRARY_OUTPUT_NAME ${MOD})
+    PROPERTIES COMPILE_FLAGS "${ARGN}" OUTPUT_NAME ${MOD})
   target_link_libraries("lib${MOD}" ${ROOT_LIBRARIES} ${EXTRA_LIBS})
   # track this library for the following exe's
   list(APPEND CORE_LIBS "lib${MOD}")
@@ -42,8 +55,15 @@ set(EXTRA_LIBS EG Foam rt)
 set(CORE_EXESRCS)
 set(CORE_LIBS)
 
-
+include_directories(${CMAKE_SOURCE_DIR}/Tools/a2display/inc)
 CompileCoreLib(AcquRoot)
+# link against some optional libraries
+if(LIBLZMA_FOUND)
+  target_link_libraries(libAcquRoot ${LIBLZMA_LIBRARIES})
+endif()
+
+target_link_libraries(libAcquRoot a2display)
+
 CompileCoreLib(AcquDAQ "-O0") # AcquDAQ must not be optimized (hardware access gets scrambled)
 CompileCoreLib(AcquMC)
 

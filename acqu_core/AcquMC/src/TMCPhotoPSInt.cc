@@ -20,7 +20,6 @@
 #include "TMCPhotoPSInt.h"
 #include "ARFile_t.h"
 
-ClassImp(TMCPhotoPSInt)
 
 //-----------------------------------------------------------------------------
 TMCPhotoPSInt::TMCPhotoPSInt( Int_t n, Double_t* scale, TA2System* sys,
@@ -177,4 +176,4 @@ void TMCPhotoPSInt::ReadData(Char_t* dbname)
     fScale[2*j+1] = fXN[j][fSN[j]-1];
   } 
 }
-
+ClassImp(TMCPhotoPSInt)

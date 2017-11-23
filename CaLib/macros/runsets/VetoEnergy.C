@@ -1,4 +1,4 @@
-// SVN Info: $Id: VetoEnergy.C 1137 2012-04-26 12:06:34Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller

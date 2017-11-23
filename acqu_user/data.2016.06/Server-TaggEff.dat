@@ -1,0 +1,132 @@
+##-----------------------------------------------------------------------
+##--Author	JRM Annand   13th Jan 2004
+##--Update	JRM Annand... 1st Dec 2004
+##--Description
+##                *** Acqu++ <-> Root ***
+## Online/Offline Analysis of Sub-Atomic Physics Experimental Data
+##
+## Parameter File: FPcommServer.Offline
+## Configuration file for DataServer (data input for analysis)
+##
+##-----------------------------------------------------------------------
+## Number of Input streams (sources of data), Record length to write data
+## and switch 0/1 = no/yes to control data write
+##              Number streams	Record Len	Save Data
+Input-Streams:	1		327680		0
+##
+## Optional directory spec. If not specified File-Names must contain the full
+## directory path
+File-Directory: scratch/
+##
+## Specify each input stream
+## From disk file, ACQU (Mk1) format, save any output to file (save=1)
+## Input data record length, Output data record length
+##
+##            	Source	Format	Save?	RecLen	Buffers	Swap	MarkID
+Stream-Spec:	File	Mk2	0	327680	32	0	400
+##
+## Now the list of data files to analyse
+##		File Name	1st rec	Last rec
+#
+## 450 MeV
+#File-Name: TaggEff_15891.dat.xz 0 0
+#File-Name: TaggEff_15892.dat.xz 0 0
+#File-Name: TaggEff_15893.dat.xz 0 0
+#File-Name: TaggEff_15894.dat.xz 0 0
+#File-Name: TaggEff_15895.dat.xz 0 0
+#File-Name: TaggEff_15896.dat.xz 0 0
+#File-Name: TaggEff_15897.dat.xz 0 0
+#File-Name: TaggEff_15898.dat.xz 0 0
+#File-Name: TaggEff_15899.dat.xz 0 0
+#File-Name: TaggEff_15900.dat.xz 0 0
+#File-Name: TaggEff_15901.dat.xz 0 0
+#File-Name: TaggEff_15902.dat.xz 0 0
+#File-Name: TaggEff_15903.dat.xz 0 0
+#File-Name: TaggEff_15904.dat.xz 0 0
+#File-Name: TaggEff_15905.dat.xz 0 0
+#File-Name: TaggEff_15906.dat.xz 0 0
+#File-Name: TaggEff_15907.dat.xz 0 0
+#File-Name: TaggEff_15908.dat.xz 0 0
+#File-Name: TaggEff_15909.dat.xz 0 0
+#File-Name: TaggEff_15910.dat.xz 0 0
+#File-Name: TaggEff_15911.dat.xz 0 0
+#File-Name: TaggEff_15912.dat.xz 0 0
+#File-Name: TaggEff_15913.dat.xz 0 0
+##
+## 180 MeV
+#File-Name: TaggEff_15925.dat.xz 0 0
+#File-Name: TaggEff_15926.dat.xz 0 0
+#File-Name: TaggEff_15927.dat.xz 0 0
+#File-Name: TaggEff_15928.dat.xz 0 0
+#File-Name: TaggEff_15929.dat.xz 0 0
+#File-Name: TaggEff_15930.dat.xz 0 0
+#File-Name: TaggEff_15931.dat.xz 0 0
+#File-Name: TaggEff_15932.dat.xz 0 0
+#File-Name: TaggEff_15933.dat.xz 0 0
+#File-Name: TaggEff_15934.dat.xz 0 0
+#File-Name: TaggEff_15935.dat.xz 0 0
+#File-Name: TaggEff_15936.dat.xz 0 0
+#File-Name: TaggEff_15937.dat.xz 0 0
+#File-Name: TaggEff_15938.dat.xz 0 0
+#File-Name: TaggEff_15939.dat.xz 0 0
+##
+## 883 MeV
+#File-Name: TaggEff_16137.dat.xz 0 0
+#File-Name: TaggEff_16138.dat.xz 0 0
+#File-Name: TaggEff_16139.dat.xz 0 0
+#File-Name: TaggEff_16141.dat.xz 0 0
+#File-Name: TaggEff_16142.dat.xz 0 0
+#File-Name: TaggEff_16143.dat.xz 0 0
+#File-Name: TaggEff_16144.dat.xz 0 0
+#File-Name: TaggEff_16145.dat.xz 0 0
+#File-Name: TaggEff_16146.dat.xz 0 0
+#File-Name: TaggEff_16147.dat.xz 0 0
+#File-Name: TaggEff_16148.dat.xz 0 0
+#File-Name: TaggEff_16149.dat.xz 0 0
+#File-Name: TaggEff_16150.dat.xz 0 0
+#File-Name: TaggEff_16151.dat.xz 0 0
+#File-Name: TaggEff_16152.dat.xz 0 0
+#File-Name: TaggEff_16153.dat.xz 0 0
+#File-Name: TaggEff_16154.dat.xz 0 0
+#File-Name: TaggEff_16155.dat.xz 0 0
+#File-Name: TaggEff_16156.dat.xz 0 0
+#File-Name: TaggEff_16157.dat.xz 0 0
+#File-Name: TaggEff_16158.dat.xz 0 0
+##
+## PS 883 MeV
+#File-Name: TaggEff_16165.dat.xz 0 0
+#File-Name: TaggEff_16166.dat.xz 0 0
+#File-Name: TaggEff_16167.dat.xz 0 0
+#File-Name: TaggEff_16168.dat.xz 0 0
+#File-Name: TaggEff_16169.dat.xz 0 0
+#File-Name: TaggEff_16170.dat.xz 0 0
+#File-Name: TaggEff_16171.dat.xz 0 0
+#File-Name: TaggEff_16172.dat.xz 0 0
+#File-Name: TaggEff_16174.dat.xz 0 0
+#File-Name: TaggEff_16175.dat.xz 0 0
+#File-Name: TaggEff_16176.dat.xz 0 0
+#File-Name: TaggEff_16177.dat.xz 0 0
+#File-Name: TaggEff_16178.dat.xz 0 0
+#File-Name: TaggEff_16179.dat.xz 0 0
+#File-Name: TaggEff_16180.dat.xz 0 0
+##
+## PS 1557 MeV
+#File-Name: TaggEff_16181.dat.xz 0 0
+#File-Name: TaggEff_16182.dat.xz 0 0
+#File-Name: TaggEff_16183.dat.xz 0 0
+#File-Name: TaggEff_16184.dat.xz 0 0
+#File-Name: TaggEff_16185.dat.xz 0 0
+#File-Name: TaggEff_16186.dat.xz 0 0
+#File-Name: TaggEff_16187.dat.xz 0 0
+#File-Name: TaggEff_16188.dat.xz 0 0
+#File-Name: TaggEff_16189.dat.xz 0 0
+#File-Name: TaggEff_16190.dat.xz 0 0
+##
+## 1557 MeV
+File-Name: TaggEff_16206.dat.xz 0 0
+File-Name: TaggEff_16207.dat.xz 0 0
+File-Name: TaggEff_16208.dat.xz 0 0
+File-Name: TaggEff_16209.dat.xz 0 0
+File-Name: TaggEff_16210.dat.xz 0 0
+##
+## END

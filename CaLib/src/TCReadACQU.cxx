@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCReadACQU.cxx 862 2011-03-19 20:22:10Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller
@@ -15,13 +15,10 @@
 
 #include "TCReadACQU.h"
 
-ClassImp(TCReadACQU)
 
-TCReadACQU::TCReadACQU(const Bool_t isFileMk2) : fPath(0), fFiles(0), isMk2(isFileMk2)
-{
-}
+
 //______________________________________________________________________________
-TCReadACQU::TCReadACQU(const Char_t* path, const Bool_t isFileMk2) : isMk2(isFileMk2)
+TCReadACQU::TCReadACQU(const Char_t* path) 
 {
     // Constructor using the path of the raw files 'path'.
     
@@ -73,19 +70,25 @@ void TCReadACQU::ReadFiles()
     {
         // look for ACQU raw files
         TString str(f->GetName());
-        if (str.BeginsWith("CB_") && (str.EndsWith(".dat") || str.EndsWith(".dat.gz")))
+
+        // skip tagging efficiency and tagger calibration runs
+        if (str.BeginsWith("Tagg")) continue;
+
+        // get data files
+        if (str.EndsWith(".dat") || str.EndsWith(".dat.gz") || str.EndsWith(".dat.xz"))
         {
             // user information
             Info("ReadFiles", "Reading '%s/%s'", fPath, f->GetName());
             
             // create file object
-            TCACQUFile* acqufile = new TCACQUFile(isMk2);
+            TCACQUFile* acqufile = new TCACQUFile();
             acqufile->ReadFile(fPath, f->GetName());
             
             // check file 
-            if (!acqufile->IsGoodStartMarker())
+            if (!acqufile->IsGoodDataFile())
             {
-                Warning("ReadFiles", "Bad file header found in '%s/%s'", fPath, f->GetName());
+                Error("ReadFiles", "Unknown file header found in '%s/%s' - skipping file", fPath, f->GetName());
+                continue;
             }
             
             // add file to list
@@ -96,4 +99,4 @@ void TCReadACQU::ReadFiles()
     // clean-up
     delete list;
 }
-
+ClassImp(TCReadACQU)

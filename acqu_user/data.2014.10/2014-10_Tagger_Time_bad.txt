@@ -1,0 +1,12 @@
+/local/raid0/A2/rundata/2014-10_EPT_Prod/CBTaggTAPS_6064.dat.xz
+/local/raid0/A2/rundata/2014-10_EPT_Prod/CBTaggTAPS_6135.dat.xz
+/local/raid0/A2/rundata/2014-10_EPT_Prod/CBTaggTAPS_6290.dat.xz
+/local/raid0/A2/rundata/2014-10_EPT_Prod/CBTaggTAPS_6327.dat.xz
+/local/raid0/A2/rundata/2014-10_EPT_Prod/CBTaggTAPS_6365.dat.xz
+/local/raid0/A2/rundata/2014-10_EPT_Prod/CBTaggTAPS_6403.dat.xz
+/local/raid0/A2/rundata/2014-10_EPT_Prod/CBTaggTAPS_6412.dat.xz
+/local/raid0/A2/rundata/2014-10_EPT_Prod/CBTaggTAPS_6523.dat.xz
+/local/raid0/A2/rundata/2014-10_EPT_Prod/CBTaggTAPS_6545.dat.xz
+/local/raid0/A2/rundata/2014-10_EPT_Prod/CBTaggTAPS_6559.dat.xz
+/local/raid0/A2/rundata/2014-10_EPT_Prod/CBTaggTAPS_6768.dat.xz
+/local/raid0/A2/rundata/2014-10_EPT_Prod/CBTaggTAPS_6796.dat.xz

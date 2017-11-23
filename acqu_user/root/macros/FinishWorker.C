@@ -9,7 +9,7 @@ void Finish(TString sDir = "")
 
   // If user has not specified output directory, pull from AR
   if(sDir.Length() == 0) sDir = gAR->GetTreeDir();
-  if(sDir.Length() == 0) sDir = "~/";
+  if(sDir.Length() == 0) sDir = ".";
   
   // Append "/" to Directory if unspecified
   if(!(sDir.EndsWith("/"))) sDir.Append("/");

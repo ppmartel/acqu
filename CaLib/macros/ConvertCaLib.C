@@ -1,4 +1,4 @@
-// SVN Info: $Id: ConvertCaLib.C 1106 2012-04-13 09:48:08Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller

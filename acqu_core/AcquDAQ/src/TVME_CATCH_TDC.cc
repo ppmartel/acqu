@@ -20,7 +20,6 @@
 #include "TDAQexperiment.h"
 //#include "TDAQmemmap.h"
 
-ClassImp(TVME_CATCH_TDC)
 
 static Map_t kCATCH_TDC_Keys[] = {
   {NULL,                  -1},
@@ -201,4 +200,4 @@ Int_t TVME_CATCH_TDC::F1Setup(F1Data_t* f1data){
   return 0;
 }
 
-
+ClassImp(TVME_CATCH_TDC)

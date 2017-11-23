@@ -12,16 +12,16 @@ improve!
 So be warned, but don't hesitate to fork this repo here and contribute
 your personal changes if there useful by providing pull requests.
 
-**NOTE:** As of July 2013, the acqu\_user folder is based on Cristina
-Collicott's analysis efforts, see collicott/acqu. It "does" something,
-but many issues are not fixed yet.
+**NOTE:** As of November 2014, the acqu\_user folder provides config
+  files for different beamtimes. Use symlinks to select one. However,
+  they might not be perfect or instantly working on your system.
 
 
 Prerequisites
 -------------
 
 * CERN ROOT > 5.30 with MySQL support (enabled by default, if you have mysql development files installed)
-* CMake > 2.8 (most Linux distributions provide packages) 
+* CMake > 2.6 (most Linux distributions provide packages)
 * Zlib and Ncurses development packages (see also troubleshooting)
 * git 
 * Doxygen for documentation support (nicely integrated into QtCreator)
@@ -36,7 +36,14 @@ ready to build acqu:
 Ubuntu 10.04.4:
  `sudo apt-get install git-core cmake zlib1g-dev doxygen libncurses-dev`
 
+For the optional DirectIO mode (useful if running on a farm), install
+also the `liblzma-dev` package. Ensure to rebuild your ROOT
+installation such that the ROOT-internal statically compiled
+`$ROOTSYS/lib/liblzma.a` does not exist anymore. Enable DirectIO mode
+by inserting the line `UseDirectIO:` into your top-config file.
 
+For the optional a2display support, clone and build the a2display
+repository at `../a2display` relative to the `acqu` directory.
 
 Installation
 ------------
@@ -88,13 +95,14 @@ CMakeLists.txt in the basedir. A wizard dialog should pop up.
 2. You should get asked for a build directory. Create a new subdir
 `build` and choose that. You can also choose an already existing one.
 
-3. Run cmake from the GUI as required from the Wizard and check if it
-found the correct ROOT installation. If it did not find the correct
-one, either remove your ROOTSYS environment variable or add one by
-starting QtCreator from the console like this: `ROOTSYS=/path/to/root
-qtcreator &`.
+3. Run cmake from the GUI as required from the wizard but turn Debug
+mode on by providing `-DCMAKE_BUILD_TYPE=Debug` as an option to cmake.
+Check if it found the correct ROOT installation. If it did not find
+the correct one, either remove your ROOTSYS environment variable or
+add one by starting QtCreator from the console like this:
+`ROOTSYS=/path/to/root qtcreator &`.
 
-4. Then set the working directory in "Project (left tab) --> Run
+4. Then set the working directory in "Project (left panel) --> Run
  Settings" to your acqu_user directory and provide the correct *.dat
  file to AcquRoot as an argument. At this point, you can also set
  `-j5` as an argument to make in the build settings tab.
@@ -174,10 +182,6 @@ Migration and Troubleshooting
   basedir) and if that lists only unneeded files delete them by `find
   | grep Dict | xargs rm`. Also git should report some of them as
   untracked (see above item how to get rid of them).
-* If you just want to run AcquRoot, then the Debug mode (=no
-  optimizations) can be unnecessarily slow. Enable the Release mode by
-  executing `cmake -DCMAKE_BUILD_TYPE=Release ..` inside the build
-  directory (can also be a new build directory).
 * If you're changing header files and compiling breaks, a `make clean`
   could help since not all dependencies are correctly identified at
   the moment (but most should be!).

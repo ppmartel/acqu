@@ -22,7 +22,6 @@
 #include "TMCdS5MDMInt.h"
 #include "ARFile_t.h"
 
-ClassImp(TMCdS5MDMInt)
 
 //-----------------------------------------------------------------------------
 TMCdS5MDMInt::TMCdS5MDMInt( Int_t n, Double_t* scale, TA2System* sys,
@@ -134,4 +133,4 @@ void TMCdS5MDMInt::ReadData( Char_t* file )
   fNInterp = nInterp;
   j = 0;
 }
-
+ClassImp(TMCdS5MDMInt)

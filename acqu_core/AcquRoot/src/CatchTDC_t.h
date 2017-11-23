@@ -30,6 +30,8 @@ public:
   }
 
   virtual void ApplyRef() {
+    if( fRefApplied ) return; // Reference has already been subtracted
+
     // A simple algorithm is added to find the correct time difference
     // taking account of possible overflows in either the reference
     // or current channel (if neither or both overflow there is no problem)
@@ -42,6 +44,7 @@ public:
       min = (abs(min)  < abs(diff_m)) ? min  : diff_m;
       fStore[i] = Short_t( min );
     }
+    fRefApplied = true;
   }
 
 };

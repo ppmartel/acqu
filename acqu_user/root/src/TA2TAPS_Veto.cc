@@ -20,7 +20,6 @@ static const Map_t kTAPSVetoKeys[] =
   {NULL, -1}
 };
 
-ClassImp(TA2TAPS_Veto)
 
 //---------------------------------------------------------------------------
 
@@ -111,3 +110,5 @@ inline void TA2TAPS_Veto::Decode()
 }
 
 //---------------------------------------------------------------------------
+
+ClassImp(TA2TAPS_Veto)

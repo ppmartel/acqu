@@ -33,7 +33,6 @@
 #include "TDAQexperiment.h"
 //#include "TDAQmemmap.h"
 
-ClassImp(TVME_CATCH)
 
 
 static Map_t kCATCHKeys[] = {
@@ -488,3 +487,5 @@ Int_t TVME_CATCH::Fileout(FILE *ipf, Int_t slow, Int_t port, Int_t c)
   }
   return 0;
 }
+
+ClassImp(TVME_CATCH)

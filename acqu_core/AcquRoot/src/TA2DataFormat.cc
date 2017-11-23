@@ -29,7 +29,6 @@ static const Map_t kForeignFormat[] = {
   {NULL,          -1}
 };
 
-ClassImp(TA2DataFormat)
 
 //---------------------------------------------------------------------------
 TA2DataFormat::TA2DataFormat(const Char_t* n, Int_t l, Int_t nsrc) :
@@ -120,3 +119,5 @@ Bool_t TA2DataFormat::IsMaybeMk2()
   UInt_t* marker = (UInt_t*)((char*)fHeader + sizeof(UInt_t));
   return *marker == EHeadBuff;
 }
+
+ClassImp(TA2DataFormat)

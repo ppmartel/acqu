@@ -1,0 +1,207 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use Getopt::Long;
+use Pod::Usage;
+use Data::Dumper;
+
+my $help = 0;
+my $man = 0;
+my $verbose = 0;
+my $file_acqu    = 'data/Detector-BaF2-PbWO4.dat';
+my $file_baf     = 'data/Cosmic_Calib_BaF.dat';
+my $file_baf_tdc = 'data/TDC-Gains.dat';
+my $file_baf_map = 'data.online/DetectorOffline-BaF2_LG.dat';
+my $file_pwo     = 'data/Cosmic_Calib_PWO.dat';
+my $file_pwo_map = 'data.online/DetectorOffline-PbWO4.dat';
+
+Getopt::Long::Configure(qw(gnu_getopt));
+GetOptions(
+           'help|h' => \$help,
+           'man' => \$man,
+           'verbose|v+' => \$verbose,
+           'acqu=s'    => \$file_acqu,
+           'baf=s'     => \$file_baf,
+           'baf_tdc=s' => \$file_baf_tdc,
+           'baf_map=s' => \$file_baf_map,
+           'pwo=s'     => \$file_pwo,
+           'pwo_map=s' => \$file_pwo_map
+          ) or pod2usage(2);
+pod2usage(1) if $help;
+pod2usage(-exitval => 0, -verbose => 2) if $man;
+
+&main;
+
+sub main {
+
+  # read in the files
+  my @lines_acqu     = read_file($file_acqu);
+  my @lines_baf      = read_file($file_baf);
+  my @lines_baf_tdc  = read_file($file_baf_tdc);
+  my @lines_baf_map  = read_file($file_baf_map);
+  my @lines_pwo      = read_file($file_pwo);
+  my @lines_pwo_map  = read_file($file_pwo_map);
+
+  # get the element number => ADC number mapping
+  my %map_baf = parse_adc_mapping(@lines_baf_map);
+  my %map_pwo = parse_adc_mapping(@lines_pwo_map);
+  my %is_pwo = map { $_ => 1 } values %map_pwo;
+
+  # parse baf/pwo lines
+  my %baf = parse_cosmic_calib(\@lines_baf, \%map_baf);
+  my %baf_tdc = parse_tdc_calib(\@lines_baf_tdc, \%map_baf);
+  my %pwo = parse_cosmic_calib(\@lines_pwo, \%map_pwo);
+
+  # work on the acqu setup file
+  for my $l (@lines_acqu) {
+    unless($l =~ /^Element:/) {
+      print $l;
+      next;
+    }
+
+    # preserve the structure of each element line as much as possible,
+    # just change the value. This is why we build a large RegEx here...
+    my $r = '';
+    $r .= '(Element:\s+)';                     # 0: Element statement
+    $r .= '(\d+)';                             # 1: ADC number
+    $r .= '(\s+[-.\d]+\s+[-.\d]+)';            # 2: ADC low/high
+    $r .= '(\s+[-.\d]+)';                      # 3: ADC pedestal
+    $r .= '(\s+[-.\d]+)';                      # 4: ADC gain
+    $r .= '(\s+\w+)';                          # 5: TDC number
+    $r .= '(\s+[-.\d]+\s+[-.\d]+\s+[-.\d]+)';  # 6: TDC low/high/offset
+    $r .= '(\s+[-.\d]+)';                      # 7: TDC gain
+    $r .= '(.*)';                              # the rest...
+    my @m = $l =~ /$r/;
+    my $adc_num = $m[1];
+
+    # handle the ADC gain/pedestal stuff
+    my $item = undef;
+    $item = defined $baf{$adc_num} ? $baf{$adc_num} : $item;
+    $item = defined $pwo{$adc_num} ? $pwo{$adc_num} : $item;
+    if(defined $item) {
+      my $ped = sprintf(format_string_from_float($m[3]),
+                        $item->{Pedestal});
+      $m[3] = sprintf('%*s',length $m[3], $ped);
+      my $gain = sprintf(format_string_from_float($m[4]),
+                         $item->{Gain});
+      $m[4] = sprintf('%*s',length $m[4], $gain);
+    }
+    else {
+      print STDERR "Warning: Element with ADC $adc_num not found in cosmic calib.\n";
+    }
+
+    # handle the TDC gain (only for BaF)
+    if(defined $baf_tdc{$adc_num}) {
+      my $sign = $m[7]<0 ? -1 : 1;
+      my $gain = sprintf(format_string_from_float($m[7]),
+                         abs($baf_tdc{$adc_num}->{Gain})*$sign);
+      $m[7] = sprintf('%*s',length $m[7], $gain);
+    }
+    elsif(!$is_pwo{$adc_num}) {
+      print STDERR "Warning: Element with ADC $adc_num not found in TDC calib.\n";
+    }
+
+    print join("",@m),"\n";
+  }
+}
+
+sub format_string_from_float {
+  my $s = shift;
+  my ($prec) = $s =~ /\s+\-?\d+\.?(\d*)/;
+  $prec = defined $prec ? length($prec) : 0;
+  return "%.${prec}f";
+}
+
+sub read_file {
+  my $file = shift;
+  open(my $fh, "<$file") or die "can't open $file: $!";
+  my @lines = <$fh>;
+  close $fh;
+  return @lines;
+}
+
+sub parse_adc_mapping {
+  my @lines = @_;
+  my %map;
+  my $n = 0;
+  for my $l (@lines) {
+    chomp $l;
+    next unless $l =~ /^Element:/;
+    $n++;
+    my @items = split(' ',$l);
+    $map{$n} = 1.0*$items[1];
+  }
+  return %map;
+}
+
+sub parse_cosmic_calib {
+  my @lines = @{ (shift) };
+  my %map = %{ (shift) };
+
+  my %elements;
+  for my $l (@lines) {
+    chomp $l;
+    next if $l =~ /^\s*$/;
+    next if $l =~ /^#/;
+    my @items = split(' ',$l);
+    if(@items != 4) {
+      die "Line '$l' not recognized";
+    }
+    my $elemno = shift @items;
+    unless($elemno =~ /^\d+/) {
+      die "Line '$l' does not start with element number";
+    }
+    $elements{$map{$elemno}} = {'Pedestal' => $items[0], 'Gain' => $items[2]};
+  }
+
+  return %elements;
+}
+
+sub parse_tdc_calib {
+  my @lines = @{ (shift) };
+  my %map = %{ (shift) };
+
+  my %elements;
+  for my $l (@lines) {
+    chomp $l;
+    next if $l =~ /^\s*$/;
+    next if $l =~ /^#/;
+    my @items = split(' ',$l);
+    if (@items != 2) {
+      die "Line '$l' not recognized";
+    }
+    my $elemno = shift @items;
+    unless($elemno =~ /^\d+/) {
+      die "Line '$l' does not start with element number";
+    }
+    $elements{$map{$elemno}} = {'Gain' => $items[0]};
+  }
+
+  return %elements;
+}
+
+
+__END__
+
+=head1 NAME
+TAPSCosmicCalib - Apply cosmics calibration to BaF2/PWO detector file
+
+=head1 SYNOPSIS
+
+TAPSCosmicCalib --acqu    data/Detector-BaF2-PbWO4.dat
+                --baf     data/Cosmic_Calib_BaF.dat
+                --baf_tdc data/TDC-Gains.dat
+                --baf_map data.online/DetectorOffline-BaF2_LG.dat
+                --pwo     data/Cosmic_Calib_PWO.dat
+                --pwo_map data.online/DetectorOffline-PbWO4.dat
+
+ Options:
+   -h, --help       brief help message
+   -v, --verbose    be verbose to STDERR
+   --acqu           path to acqu BaF2/PbWO4 detector file
+   --baf            path to BaF cosmics calibration
+   --baf_tdc        path to BaF TDC gain calibration
+   --baf_map        path to BaF element mapping for TAPS cosmics offline analysis
+   --pwo            path to PWO cosmics calibration
+   --pwo_map        path to PWO element mapping for TAPS cosmics offline analysis

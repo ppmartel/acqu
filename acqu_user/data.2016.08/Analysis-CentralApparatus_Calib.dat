@@ -1,0 +1,113 @@
+## SVN info: $Id: CentralApparatus.dat 119 2013-03-11 11:45:08Z mushkar $
+##-----------------------------------------------------------------------
+##
+## Specify list of detectors which constitute the Crystal Ball apparatus
+##	  Name       Class Name		Setup file
+#_______________________________________________________________
+# 
+Detector: NaI        TA2CalArray        Analysis-NaI.dat
+#Detector: PID        TA2PlasticPID      Analysis-PID_Calib.dat
+Detector:       PID     TA2PlasticPID   Detector-PID-EqGain.dat
+#Detector: PID        TA2PlasticPID      Analysis-PID.dat
+#Detector: CylMWPC    TA2CylMwpc         Analysis-MWPC.dat
+#Detector: CylMWPC    TA2CylMwpc         AR-Analysis-CB-MWPC.dat
+Detector: CylMWPC    TA2CylMwpc         AR-Analysis-CentApp-MWPC_Aug16.dat
+#Detector: CylMWPC    TA2CylMwpc         CylMwpc_may2013.dat
+#_______________________________________________________________
+#
+## Data reconstruction method for Crystal Ball 
+Reconstruct:
+##
+## PDG database	# particles
+ParticleID: 	16
+##
+## Do some post-initialisation.
+## Should usually be done before display is setup
+Initialise:
+##
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#Allows an overall time adjustment of PID timing
+#Misc: PIDTimeShift 0.0
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#Allows an overall position shift for CB NaI crystals
+#May be useful for misaligned target positions
+#Misc: PosShift +0.0 +0.0 +0.0
+#Shift-Coord: TZ 6
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#DeltaE-E cuts for PID/NaI
+#Misc: PIDCuts 48
+#Options are:
+#1. PID element this cut is used for
+#2. PDG ID of particle, if DeltaE-E is inside the cut region
+#3. Name of cut, cuts can be reused for multiple PID elements
+#4. ROOT file containing the cut, files can be reused for multiple PID elements
+#            1. 2.   3.        4.
+
+##
+## Droop correction for light attenuation inside PID strips
+##     Lpid     Npoints         DroopPosition ...               DroopFactor
+# Droop: 300.    7              0 120 140 160 180 200 300        0.76 0.80 0.85 0.92 0.97 0.99 1.00
+##
+
+## PID Droop Settings 
+## UsePidDroop PID_Length[mm]  PID_Radius[mm] PID_Target_Position[mm] Droop_Param PID_direction PID_Type
+PidDroopSettings: 1 300.0  33.0  100.0  1  1  3 24
+
+## PID Droop Parameters
+PidDroopPositionParameters: /scratch/mbashkan/Mainz/New_acqu/acqu/acqu_user/data/PID_Droop_Corr_Aug_16.root
+
+## Angle-difference limits (in rad.)  for hits correlation
+## 		MaxPhiMwpcNaI	MaxPhiTrackPid	MaxPhiPidNaI	MaxPhiMwpcInterNaI	MaxPhiMwpcInterPid
+# AngleLimits:	20.		50.		100.		30.			50.
+AngleLimits:	20.             50.             15.             60.                     50.
+##
+##
+##		MaxTrack	MaxRpsvertex	MaxZpsvertex	MinZpsvertex
+# TrackLimits:	10		30.		500.		-500.
+TrackLimits:	10		70.		1000.		-1000.
+##
+
+
+#
+Display: 2D EclNaI 500 0 500 0   EhitPid 200 0 1200 0
+Display: 2D EclNaI 500 0 500 1   EhitPid 200 0 1200 1
+Display: 2D EclNaI 500 0 500 2   EhitPid 200 0 1200 2
+Display: 2D EclNaI 500 0 500 3   EhitPid 200 0 1200 3
+Display: 2D EclNaI 500 0 500 4   EhitPid 200 0 1200 4
+Display: 2D EclNaI 500 0 500 5   EhitPid 200 0 1200 5
+Display: 2D EclNaI 500 0 500 6   EhitPid 200 0 1200 6
+Display: 2D EclNaI 500 0 500 7   EhitPid 200 0 1200 7
+Display: 2D EclNaI 500 0 500 8   EhitPid 200 0 1200 8
+Display: 2D EclNaI 500 0 500 9   EhitPid 200 0 1200 9
+Display: 2D EclNaI 500 0 500 10   EhitPid 200 0 1200 10
+Display: 2D EclNaI 500 0 500 11   EhitPid 200 0 1200 11
+Display: 2D EclNaI 500 0 500 12   EhitPid 200 0 1200 12
+Display: 2D EclNaI 500 0 500 13   EhitPid 200 0 1200 13
+Display: 2D EclNaI 500 0 500 14   EhitPid 200 0 1200 14
+Display: 2D EclNaI 500 0 500 15   EhitPid 200 0 1200 15
+Display: 2D EclNaI 500 0 500 16   EhitPid 200 0 1200 16
+Display: 2D EclNaI 500 0 500 17   EhitPid 200 0 1200 17
+Display: 2D EclNaI 500 0 500 18   EhitPid 200 0 1200 18
+Display: 2D EclNaI 500 0 500 19   EhitPid 200 0 1200 19
+Display: 2D EclNaI 500 0 500 20   EhitPid 200 0 1200 20
+Display: 2D EclNaI 500 0 500 21   EhitPid 200 0 1200 21
+Display: 2D EclNaI 500 0 500 22   EhitPid 200 0 1200 22
+Display: 2D EclNaI 500 0 500 23   EhitPid 200 0 1200 23
+
+Display: 2D EOR 400 0 400 -1 DeltaEOR 100 0 6 -1
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#Display phi correlation between PID and NaI for charged particles
+Display: 1D DeltaPhi 360 -180 180
+Display: 2D PID_Hits 24 0 24 -1              NaI_ClPhi 180 -180 180 -1
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+#
+
+
+
+

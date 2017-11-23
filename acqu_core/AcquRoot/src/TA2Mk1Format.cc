@@ -28,7 +28,6 @@ static const Map_t kForeignFormat[] = {
   {NULL,          -1}
 };
 
-ClassImp(TA2Mk1Format)
 
 //---------------------------------------------------------------------------
 TA2Mk1Format::TA2Mk1Format( Char_t* n, Int_t l, Int_t nsrc ) :
@@ -352,3 +351,5 @@ void TA2Mk1Format::UpdateInfo( )
     }
   }
 }
+
+ClassImp(TA2Mk1Format)

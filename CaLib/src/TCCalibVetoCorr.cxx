@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCCalibVetoCorr.cxx 912 2011-05-18 22:09:17Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller
@@ -15,7 +15,6 @@
 
 #include "TCCalibVetoCorr.h"
 
-ClassImp(TCCalibVetoCorr)
 
 
 //______________________________________________________________________________
@@ -226,4 +225,4 @@ void TCCalibVetoCorr::PrintValuesChanged()
 
     Info("PrintValuesChanged", "Not implemented in this module");
 }
-
+ClassImp(TCCalibVetoCorr)

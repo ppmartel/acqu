@@ -1,7 +1,6 @@
 #include "TA2KFParticle.h"
 #include <iostream>
 
-ClassImp(TA2KFParticle);
 /////////////////////////////////////////////////////////////
 //TCBKFParticle
 TA2KFParticle::TA2KFParticle(TLorentzVector lv,Double_t sig_th,Double_t sig_ph,Double_t sig_E){
@@ -110,3 +109,5 @@ TMatrixD TA2KFParticle::GetT(){
   //fT.Print();
   return fT;
 }
+
+ClassImp(TA2KFParticle);

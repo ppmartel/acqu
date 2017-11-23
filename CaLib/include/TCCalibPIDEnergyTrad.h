@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCCalibPIDEnergyTrad.h 904 2011-05-15 16:51:57Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller

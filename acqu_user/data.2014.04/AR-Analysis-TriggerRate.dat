@@ -1,0 +1,49 @@
+##	Scaler time dependence config file
+##	JRM Annand	 27th Jun 2004
+##
+##	Ratios of scalers as a function of time
+Number-Rates: 38
+##	     Name	Scaler	Clock	Frequency	Normalisation
+RateData: ScP2Tagger	203	387	1		100.
+RateData: ScInt4	192	191	1		1000000.
+RateData: ScFC  	195	191	1		1000000.
+RateData: ScG175	387	0	1		1000000.
+RateData: ScP2Faraday 	203	202	1		1000000.
+RateData: ScFarady	202	0	1		1000000.
+RateData: LiveTotal	190	191	1		100.
+RateData: LiveTrig	189	191	1		100.
+RateData: LiveTaggA	176	191	1		100.
+RateData: LiveTaggB	177	191	1		100.
+RateData: LiveBeamPol	178	191	1		100.
+RateData: LiveADC1A	179	191	1		100.
+RateData: LiveADC1B	180	191	1		100.
+RateData: LiveADC2A	181	191	1		100.
+RateData: LiveADC2B	182	191	1		100.
+RateData: LiveTDCA	183	191	1		100.
+RateData: LiveTDCB	184	191	1		100.
+RateData: LiveMWPCA	185	191	1		100.
+RateData: LiveMWPCB	186	191	1		100.
+RateData: LiveFree	187	191	1		100.
+RateData: LiveTAPS	188	191	1		100.
+RateData: LiveTAPS1	1082	1083	1		100.
+RateData: LiveTrigTAPS	1068	1083	1		100.
+RateData: LiveBafA	1069	1083	1		100.
+RateData: LiveBafB	1070	1083	1		100.
+RateData: LiveBafC	1071	1083	1		100.
+RateData: LiveBafD	1072	1083	1		100.
+RateData: LiveBafE	1073	1083	1		100.
+RateData: LiveBafF	1074	1083	1		100.
+RateData: LiveVetoAB	1075	1083	1		100.
+RateData: LiveVetoCD	1076	1083	1		100.
+RateData: LiveVetoEF	1077	1083	1		100.
+RateData: LivePbWO4	1078	1083	1		100.
+RateData: ScCBEsum	1	191	1		1000000.
+RateData: ScTAPSM1	6	191	1		1000000.
+RateData: ScTAPSM2  	7	191	1		1000000.
+RateData: ScCher	8	191	1		1000000.
+RateData: ScTAPSPed	15	191	1		1000000.
+##
+##	End
+#RateData: ScCBSum	5	534	1		1000000.
+#RateData: ScTAPSor	6	534	1		1000000.
+#RateData: ScPIDor	7	534	1		1000000.

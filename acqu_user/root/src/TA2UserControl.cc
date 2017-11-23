@@ -39,7 +39,6 @@ static const Map_t kKnownAnalysis[] = {
   {NULL,             -1}
 };
 
-ClassImp(TA2UserControl)
 
 //--------------------------------------------------------------------------
 
@@ -77,3 +76,5 @@ void TA2UserControl::CreateAnalyser()
     break;
   }
 }
+
+ClassImp(TA2UserControl)

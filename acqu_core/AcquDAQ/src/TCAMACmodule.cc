@@ -16,7 +16,6 @@
 #include "TCAMACmodule.h"
 #include "TDAQexperiment.h"
 
-ClassImp(TCAMACmodule)
 
 // For command-line setup of module
 enum { ECAMACcnaf=100 };
@@ -129,3 +128,5 @@ void TCAMACmodule::InitReg( Char_t* line )
     }
   }
 }
+
+ClassImp(TCAMACmodule)

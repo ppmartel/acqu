@@ -6,7 +6,7 @@
 Size:	720	1	1	1
 #
 ## 		Max # clusters   	Clust-Thresh(MeV)
-Max-Cluster:	8			15.0
+Max-Cluster:	16			15.0
 #
 # -----------------------------------------------------------------------
 # Some MC controls

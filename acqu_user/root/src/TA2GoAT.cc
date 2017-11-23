@@ -1,61 +1,124 @@
 #include "TA2GoAT.h"
 
-ClassImp(TA2GoAT)
 
 TA2GoAT::TA2GoAT(const char* Name, TA2Analysis* Analysis) : TA2AccessSQL(Name, Analysis),
                                                                     file(0),
-                                                                    treeRawEvent(0),
+                                                                    treeTracks(0),
                                                                     treeTagger(0),
                                                                     treeLinPol(0),
                                                                     treeTrigger(0),
                                                                     treeDetectorHits(0),
-                                                                    treeScaler(0),
+                                                                    treeVertex(0),
+                                                                    treeScalers(0),
+                                                                    treeMoeller(0),
+                                                                    treeSetupParameters(0),
                                                                     nParticles(0),
-                                                                    Ek(0),
-																	Theta(0),
-																	Phi(0),
+                                                                    clusterEnergy(0),
+                                                                    theta(0),
+                                                                    phi(0),
                                                                     time(0),
                                                                     clusterSize(0),
-                                                                    centralCrys(0),
+                                                                    centralCrystal(0),
                                                                     centralVeto(0),
-                                                                    Apparatus(0),
-                                                                    d_E(0),
-                                                                    WC0_E(0),
-                                                                    WC1_E(0),
-                                                                    WC_Vertex_X(0),
-                                                                    WC_Vertex_Y(0),
-                                                                    WC_Vertex_Z(0),
+                                                                    detectors(0),
+                                                                    vetoEnergy(0),
+                                                                    MWPC0Energy(0),
+                                                                    MWPC1Energy(0),
+                                                                    shortEnergy(0),
+                                                                    pseudoVertexX(0),
+                                                                    pseudoVertexY(0),
+                                                                    pseudoVertexZ(0),
+                                                                    nVertex(0),
+                                                                    vertexX(0),
+                                                                    vertexY(0),
+                                                                    vertexZ(0),
+								    nChamberHitsin1(0),
+								    nChamberHitsin2(0),
+								    MWPC0PosX(0),
+								    MWPC1PosX(0),
+								    MWPC0PosY(0),
+								    MWPC1PosY(0),
+								    MWPC0PosZ(0),
+								    MWPC1PosZ(0),
                                                                     nTagged(0),
-                                                                    photonbeam_E(0),
-                                                                    tagged_ch(0),
-                                                                    tagged_t(0),
+                                                                    taggedEnergy(0),
+                                                                    taggedChannel(0),
+                                                                    taggedTime(0),
+                                                                    saveTaggedEnergy(0),
                                                                     plane(0),
                                                                     edge(0),
                                                                     edgeSetting(0),
-                                                                    nNaI_Hits(0),
-                                                                    NaI_Hits(0),
-                                                                    nPID_Hits(0),
-                                                                    PID_Hits(0),
-                                                                    nWC_Hits(0),
-																	WC_Hits(0),
-																	nBaF2_PbWO4_Hits(0),
-																	BaF2_PbWO4_Hits(0),
-                                                                    nVeto_Hits(0),
-                                                                    Veto_Hits(0),
-                                                                    ESum(0),
-                                                                    Mult(0),
+                                                                    nNaIADCs(0),
+                                                                    NaIADCs(0),
+                                                                    NaIADCsRaw(0),
+                                                                    NaIADCsHit(0),
+                                                                    nNaITDCs(0),
+                                                                    NaITDCs(0),
+                                                                    NaITDCsRaw(0),
+                                                                    NaITDCsHit(0),
+                                                                    nNaIHits(0),
+                                                                    NaIHits(0),
+                                                                    NaICluster(0),
+                                                                    NaIEnergy(0),
+                                                                    NaITime(0),
+                                                                    nPIDADCs(0),
+                                                                    PIDADCs(0),
+                                                                    PIDADCsRaw(0),
+                                                                    PIDADCsHit(0),
+                                                                    nPIDTDCs(0),
+                                                                    PIDTDCs(0),
+                                                                    PIDTDCsRaw(0),
+                                                                    PIDTDCsHit(0),
+                                                                    nPIDHits(0),
+                                                                    PIDHits(0),
+                                                                    PIDEnergy(0),
+                                                                    PIDTime(0),
+                                                                    nMWPCHits(0),
+                                                                    MWPCHits(0),
+                                                                    nBaF2ADCs(0),
+                                                                    BaF2ADCs(0),
+                                                                    BaF2ADCsRaw(0),
+                                                                    BaF2ADCsHit(0),
+                                                                    nBaF2TDCs(0),
+                                                                    BaF2TDCs(0),
+                                                                    BaF2TDCsRaw(0),
+                                                                    BaF2TDCsHit(0),
+                                                                    nBaF2Hits(0),
+                                                                    BaF2Hits(0),
+                                                                    BaF2Cluster(0),
+                                                                    BaF2Energy(0),
+                                                                    BaF2Time(0),
+                                                                    nVetoADCs(0),
+                                                                    VetoADCs(0),
+                                                                    VetoADCsRaw(0),
+                                                                    VetoADCsHit(0),
+                                                                    nVetoTDCs(0),
+                                                                    VetoTDCs(0),
+                                                                    VetoTDCsRaw(0),
+                                                                    VetoTDCsHit(0),
+                                                                    nVetoHits(0),
+                                                                    VetoHits(0),
+                                                                    VetoEnergy(0),
+                                                                    VetoTime(0),
+                                                                    energySum(0),
+                                                                    multiplicity(0),
                                                                     nTriggerPattern(0),
-																	TriggerPattern(0),
-                                                                    nHelBits(0),	
-                                                                    Helicity(0),
-                                                                    HelInver(0),
-                                                                    HelADC(0),															
-                                                                    nError(0),
-                                                                    ErrModID(0),
-                                                                    ErrModIndex(0),
-                                                                    ErrCode(0),
+                                                                    triggerPattern(0),
+                                                                    nHelicityBits(0),
+                                                                    helicity(0),
+                                                                    helicityInverted(0),
+                                                                    helicityADC(0),
+                                                                    nErrors(0),
+                                                                    errorModuleID(0),
+                                                                    errorModuleIndex(0),
+                                                                    errorCode(0),
+                                                                    nChannels(0),
                                                                     eventNumber(0),
-                                                                    eventID(0)														
+                                                                    eventID(0),
+                                                                    moellerRead(0),
+                                                                    moellerPairs(0),
+                                                                    MCEventID(0),
+                                                                    MCRndID(0)
 {
     	strcpy(outputFolder,"");
     	strcpy(inputName,"");
@@ -67,18 +130,24 @@ TA2GoAT::TA2GoAT(const char* Name, TA2Analysis* Analysis) : TA2AccessSQL(Name, A
 
 TA2GoAT::~TA2GoAT()
 {
-	if(treeRawEvent)
-		delete treeRawEvent;
+    if(treeTracks)
+        delete treeTracks;
 	if(treeTagger)
 		delete treeTagger;
 	if(treeLinPol)
-		delete treeLinPol;		
+        delete treeLinPol;
 	if(treeTrigger)
 		delete treeTrigger;
 	if(treeDetectorHits)
 		delete treeDetectorHits;
-	if(treeScaler)
-		delete treeScaler;
+    if(treeVertex)
+        delete treeVertex;
+    if(treeScalers)
+        delete treeScalers;
+    if(treeMoeller)
+        delete treeMoeller;
+    if(treeSetupParameters)
+        delete treeSetupParameters;
     if(file)
 		delete file;
 }
@@ -88,23 +157,36 @@ void    TA2GoAT::LoadVariable()
 	// Including histogram output for testing purposes (quick check of variables)
    	TA2AccessSQL::LoadVariable();
 
-	TA2DataManager::LoadVariable("nParticles", 	&nParticles,EISingleX);
-	TA2DataManager::LoadVariable("Ek", 			Ek,			EDMultiX);
-	TA2DataManager::LoadVariable("Theta", 		Theta,		EDMultiX);   
-	TA2DataManager::LoadVariable("Phi", 		Phi,		EDMultiX);     	 	
-	TA2DataManager::LoadVariable("time", 		time,		EDMultiX);
+    TA2DataManager::LoadVariable("nParticles", 	  &nParticles,   EISingleX);
+    TA2DataManager::LoadVariable("clusterEnergy", clusterEnergy, EDMultiX);
+    TA2DataManager::LoadVariable("theta", 		  theta,         EDMultiX);
+    TA2DataManager::LoadVariable("phi", 		  phi,           EDMultiX);
+    TA2DataManager::LoadVariable("time", 		  time,          EDMultiX);
 
-	TA2DataManager::LoadVariable("nTagged", 	&nTagged,	EISingleX);
-	TA2DataManager::LoadVariable("photonbeam_E",photonbeam_E,EDMultiX);
-	TA2DataManager::LoadVariable("taggedCh", 	tagged_ch,	EIMultiX);
-	TA2DataManager::LoadVariable("taggedT", 	tagged_t,	EDMultiX);    
+    TA2DataManager::LoadVariable("nTagged", 	  &nTagged,	     EISingleX);
+    TA2DataManager::LoadVariable("taggedEnergy",  taggedEnergy,  EDMultiX);
+    TA2DataManager::LoadVariable("taggedChannel", taggedChannel, EIMultiX);
+    TA2DataManager::LoadVariable("taggedTime", 	  taggedTime,    EDMultiX);
 
-	TA2DataManager::LoadVariable("dE", 			d_E,		EDMultiX);
-	TA2DataManager::LoadVariable("WC0E", 		WC0_E,		EDMultiX);   
-	TA2DataManager::LoadVariable("WC1E", 		WC1_E,		EDMultiX);
+    TA2DataManager::LoadVariable("vetoEnergy",    vetoEnergy,    EDMultiX);
+    TA2DataManager::LoadVariable("MWPC0Energy",   MWPC0Energy,   EDMultiX);
+    TA2DataManager::LoadVariable("MWPC1Energy",   MWPC1Energy,   EDMultiX);
 
-	TA2DataManager::LoadVariable("ESum",		&ESum, 		EDSingleX);
- 
+    TA2DataManager::LoadVariable("vertexX",       vertexX,       EDMultiX);
+    TA2DataManager::LoadVariable("vertexY",       vertexY,       EDMultiX);
+    TA2DataManager::LoadVariable("vertexZ",       vertexZ,       EDMultiX);
+
+    TA2DataManager::LoadVariable("energySum",     &energySum,    EDSingleX);
+
+    TA2DataManager::LoadVariable("MWPC0PosX",   MWPC0PosX,   EDMultiX);
+    TA2DataManager::LoadVariable("MWPC1PosX",   MWPC1PosX,   EDMultiX);
+    TA2DataManager::LoadVariable("MWPC0PosY",   MWPC0PosY,   EDMultiX);
+    TA2DataManager::LoadVariable("MWPC1PosY",   MWPC1PosY,   EDMultiX);
+    TA2DataManager::LoadVariable("MWPC0PosZ",   MWPC0PosZ,   EDMultiX);
+    TA2DataManager::LoadVariable("MWPC1PosZ",   MWPC1PosZ,   EDMultiX);
+
+
+
     return;
     
 }
@@ -132,65 +214,119 @@ void    TA2GoAT::SetConfig(Char_t* line, Int_t key)
 			fileName[strlen(fileName)-1]='\0';
         return;
     	case EG_BEAM_HELICITY:
-    	    	nHelBits = sscanf(line, "%i%s%s%s%s%s%s%s%s", &HelADC, HelBits[0], HelBits[1], HelBits[2], HelBits[3], HelBits[4], HelBits[5], HelBits[6], HelBits[7]);
-    	    	nHelBits--;
-    	    	if(nHelBits < 2) Error("SetConfig", "Not enough information to construct beam helicity!");
+                nHelicityBits = sscanf(line, "%i%s%s%s%s%s%s%s%s", &helicityADC, helicityBits[0], helicityBits[1], helicityBits[2], helicityBits[3], helicityBits[4], helicityBits[5], helicityBits[6], helicityBits[7]);
+                nHelicityBits--;
+                if(nHelicityBits < 2) Error("SetConfig", "Not enough information to construct beam helicity!");
     	    	else
     	    	{
 			printf("Helicity");
-			for(int i=0; i<nHelBits; i++)
+            for(Int_t i=0; i<nHelicityBits; i++)
 			{
-    				HelInh[i] = false;
-    				if(!strcmp(HelBits[i],"I") || !strcmp(HelBits[i],"i")) HelInh[i] = true;
-    				else if(!strcmp(HelBits[i],"L") || !strcmp(HelBits[i],"l")) HelBeam[i] = false;
-    				else if(!strcmp(HelBits[i],"H") || !strcmp(HelBits[i],"h")) HelBeam[i] = true;
-				printf(" - %s %i %i",HelBits[i],HelInh[i],HelBeam[i]);
+                    helicityInhibit[i] = false;
+                    if(!strcmp(helicityBits[i],"I") || !strcmp(helicityBits[i],"i")) helicityInhibit[i] = true;
+                    else if(!strcmp(helicityBits[i],"L") || !strcmp(helicityBits[i],"l")) helicityBeam[i] = false;
+                    else if(!strcmp(helicityBits[i],"H") || !strcmp(helicityBits[i],"h")) helicityBeam[i] = true;
+                printf(" - %s %i %i",helicityBits[i], helicityInhibit[i], helicityBeam[i]);
 			}
 			printf("\n");
     	    	}
-	return;
-    	default:
+        return;
+        case EG_TAGGED_ENERGY:
+            sscanf(line, "%i", &saveTaggedEnergy);
+        return;
+        case EG_SAVE_CHANNEL:
+            if(sscanf(line, "%s%s", channelIndex[nChannels], channelName[nChannels]) == 1) strcpy(channelName[nChannels],channelIndex[nChannels]);
+            nChannels++;
+        return;
+        default:
         	TA2AccessSQL::SetConfig(line, key);
     	}
 }
 
 void    TA2GoAT::PostInit()
 {
+    clusterEnergy    = new Double_t[TA2GoAT_MAX_PARTICLE];
+    theta            = new Double_t[TA2GoAT_MAX_PARTICLE];
+    phi              = new Double_t[TA2GoAT_MAX_PARTICLE];
+    time             = new Double_t[TA2GoAT_MAX_PARTICLE];
+    clusterSize      = new Int_t[TA2GoAT_MAX_PARTICLE];
+    centralCrystal   = new Int_t[TA2GoAT_MAX_PARTICLE];
+    centralVeto      = new Int_t[TA2GoAT_MAX_PARTICLE];
+
+    detectors        = new Int_t[TA2GoAT_MAX_PARTICLE];
+    vetoEnergy       = new Double_t[TA2GoAT_MAX_PARTICLE];
+    MWPC0Energy      = new Double_t[TA2GoAT_MAX_PARTICLE];
+    MWPC1Energy      = new Double_t[TA2GoAT_MAX_PARTICLE];
+    shortEnergy      = new Double_t[TA2GoAT_MAX_PARTICLE];
+
+    pseudoVertexX    = new Double_t[TA2GoAT_MAX_PARTICLE];
+    pseudoVertexY    = new Double_t[TA2GoAT_MAX_PARTICLE];
+    pseudoVertexZ    = new Double_t[TA2GoAT_MAX_PARTICLE];
+
+    MWPC0PosX         = new Double_t[TA2GoAT_MAX_PARTICLE];
+    MWPC1PosX         = new Double_t[TA2GoAT_MAX_PARTICLE];
+    MWPC0PosY         = new Double_t[TA2GoAT_MAX_PARTICLE];
+    MWPC1PosY         = new Double_t[TA2GoAT_MAX_PARTICLE];
+    MWPC0PosZ         = new Double_t[TA2GoAT_MAX_PARTICLE];
+    MWPC1PosZ         = new Double_t[TA2GoAT_MAX_PARTICLE];
+
+
+    vertexX          = new Double_t[TA2GoAT_MAX_PARTICLE];
+    vertexY          = new Double_t[TA2GoAT_MAX_PARTICLE];
+    vertexZ          = new Double_t[TA2GoAT_MAX_PARTICLE];
+
+    taggedChannel    = new Int_t[TA2GoAT_MAX_TAGGER];
+    taggedTime       = new Double_t[TA2GoAT_MAX_TAGGER];
+    taggedEnergy     = new Double_t[TA2GoAT_MAX_TAGGER];
+
+    NaIADCs          = new Int_t[TA2GoAT_MAX_HITS];
+    NaIADCsRaw       = new Int_t[720];
+    NaIADCsHit       = new Bool_t[TA2GoAT_MAX_HITS];
+    NaITDCs          = new Int_t[TA2GoAT_MAX_HITS];
+    NaITDCsRaw       = new Int_t[720];
+    NaITDCsHit       = new Bool_t[TA2GoAT_MAX_HITS];
+    NaIHits	         = new Int_t[TA2GoAT_MAX_HITS];
+    NaICluster       = new Int_t[TA2GoAT_MAX_HITS];
+    NaIEnergy        = new Double_t[TA2GoAT_MAX_HITS];
+    NaITime          = new Double_t[TA2GoAT_MAX_HITS];
+    PIDADCs          = new Int_t[TA2GoAT_MAX_HITS];
+    PIDADCsRaw       = new Int_t[24];
+    PIDADCsHit       = new Bool_t[TA2GoAT_MAX_HITS];
+    PIDTDCs          = new Int_t[TA2GoAT_MAX_HITS];
+    PIDTDCsRaw       = new Int_t[24];
+    PIDTDCsHit       = new Bool_t[TA2GoAT_MAX_HITS];
+    PIDHits	         = new Int_t[TA2GoAT_MAX_HITS];
+    PIDEnergy        = new Double_t[TA2GoAT_MAX_HITS];
+    PIDTime          = new Double_t[TA2GoAT_MAX_HITS];
+    MWPCHits		 = new Int_t[TA2GoAT_MAX_HITS];
+    BaF2ADCs         = new Int_t[TA2GoAT_MAX_HITS];
+    BaF2ADCsRaw      = new Int_t[438];
+    BaF2ADCsHit      = new Bool_t[TA2GoAT_MAX_HITS];
+    BaF2TDCs         = new Int_t[TA2GoAT_MAX_HITS];
+    BaF2TDCsRaw      = new Int_t[438];
+    BaF2TDCsHit      = new Bool_t[TA2GoAT_MAX_HITS];
+    BaF2Hits	     = new Int_t[TA2GoAT_MAX_HITS];
+    BaF2Cluster      = new Int_t[TA2GoAT_MAX_HITS];
+    BaF2Energy       = new Double_t[TA2GoAT_MAX_HITS];
+    BaF2Time         = new Double_t[TA2GoAT_MAX_HITS];
+    VetoADCs         = new Int_t[TA2GoAT_MAX_HITS];
+    VetoADCsRaw      = new Int_t[438];
+    VetoADCsHit      = new Bool_t[TA2GoAT_MAX_HITS];
+    VetoTDCs         = new Int_t[TA2GoAT_MAX_HITS];
+    VetoTDCsRaw      = new Int_t[438];
+    VetoTDCsHit      = new Bool_t[TA2GoAT_MAX_HITS];
+    VetoHits         = new Int_t[TA2GoAT_MAX_HITS];
+    VetoEnergy       = new Double_t[TA2GoAT_MAX_HITS];
+    VetoTime         = new Double_t[TA2GoAT_MAX_HITS];
+
+    triggerPattern   = new Int_t[32];
+
+    errorModuleID 	 = new Int_t[TA2GoAT_MAX_ERROR];
+    errorModuleIndex = new Int_t[TA2GoAT_MAX_ERROR];
+    errorCode        = new Int_t[TA2GoAT_MAX_ERROR];
+
 	// Default SQL-physics initialisation
-    TA2AccessSQL::PostInit();
-
-   	Ek		= new Double_t[TA2GoAT_MAX_PARTICLE];
-   	Theta		= new Double_t[TA2GoAT_MAX_PARTICLE];
-   	Phi		= new Double_t[TA2GoAT_MAX_PARTICLE];
-   	time		= new Double_t[TA2GoAT_MAX_PARTICLE];
-   	clusterSize = new UChar_t[TA2GoAT_MAX_PARTICLE];
-   	centralCrys  = new Int_t[TA2GoAT_MAX_PARTICLE];
-	centralVeto = new Int_t[TA2GoAT_MAX_PARTICLE];
-	
-   	photonbeam_E= new Double_t[TA2GoAT_MAX_TAGGER];
-   	tagged_ch	= new Int_t[TA2GoAT_MAX_TAGGER];
-   	tagged_t	= new Double_t[TA2GoAT_MAX_TAGGER];
-    
-   	Apparatus	= new UChar_t[TA2GoAT_MAX_PARTICLE];
-   	d_E			= new Double_t[TA2GoAT_MAX_PARTICLE];
-   	WC0_E		= new Double_t[TA2GoAT_MAX_PARTICLE];
-   	WC1_E		= new Double_t[TA2GoAT_MAX_PARTICLE];
-    
-   	WC_Vertex_X 	= new Double_t[TA2GoAT_MAX_PARTICLE];
-   	WC_Vertex_Y 	= new Double_t[TA2GoAT_MAX_PARTICLE];
-   	WC_Vertex_Z 	= new Double_t[TA2GoAT_MAX_PARTICLE];
-    
-   	NaI_Hits	= new Int_t[TA2GoAT_MAX_HITS];  
-   	PID_Hits	= new Int_t[TA2GoAT_MAX_HITS];
-   	WC_Hits		= new Int_t[TA2GoAT_MAX_HITS];
-   	BaF2_PbWO4_Hits	= new Int_t[TA2GoAT_MAX_HITS];
-   	Veto_Hits	= new Int_t[TA2GoAT_MAX_HITS];
-    
-   	TriggerPattern = new Int_t[32];
-
-    ErrModID 	= new Int_t[TA2GoAT_MAX_ERROR];
-   	ErrModIndex 	= new Int_t[TA2GoAT_MAX_ERROR];
-   	ErrCode 	= new Int_t[TA2GoAT_MAX_ERROR];
+        TA2AccessSQL::PostInit();
 
    	printf("---------\n");
    	printf("Init Tree\n");
@@ -206,88 +342,494 @@ void    TA2GoAT::PostInit()
 	if(strlen(inputName) && fullName.BeginsWith(inputName)) fullName.Remove(0,strlen(inputName));
 	else fullName.Prepend("_");
 	fullName.Prepend(fileName);
-	if(!strcmp(outputFolder,"")) strcpy(outputFolder, gAR->GetTreeDir());
-	if(strcmp(outputFolder+strlen(outputFolder)-1,"/")) strcat(outputFolder, "/");
+	if((gAR->IsBatch() || !strcmp(outputFolder,"")) && (gAR->GetTreeDir())) strcpy(outputFolder, gAR->GetTreeDir());
+	if((strlen(outputFolder)>0) && strcmp(outputFolder+strlen(outputFolder)-1,"/")) strcat(outputFolder, "/");
 	fullName.Prepend(outputFolder);
    	printf("Root file saved to %s\n", fullName.Data());  
 
-   	file		= new TFile(fullName.Data(),"RECREATE");
-	treeRawEvent	= new TTree("treeRawEvent", "treeRawEvent");
-	treeTagger	= new TTree("treeTagger","treeTagger");
-	treeTrigger	= new TTree("treeTrigger","treeTrigger");
-	treeDetectorHits = new TTree("treeDetectorHits", "treeDetectorHits");
-	
-	treeRawEvent->Branch("nParticles",&nParticles,"nParticles/I");
-	treeRawEvent->Branch("Ek",  Ek,  "Ek[nParticles]/D");	
-	treeRawEvent->Branch("Theta",  Theta,  "Theta[nParticles]/D");	
-	treeRawEvent->Branch("Phi",  Phi,  "Phi[nParticles]/D");	
-	treeRawEvent->Branch("time", time, "time[nParticles]/D");
-	treeRawEvent->Branch("clusterSize", clusterSize, "clusterSize[nParticles]/b");
-	treeRawEvent->Branch("centralCrys", centralCrys, "centralCrys[nParticles]/I");
-	treeRawEvent->Branch("centralVeto", centralVeto, "centralVeto[nParticles]/I");
-	treeRawEvent->Branch("Apparatus", Apparatus, "Apparatus[nParticles]/b");
-	treeRawEvent->Branch("d_E", d_E, "d_E[nParticles]/D");	
-	treeRawEvent->Branch("WC0_E", WC0_E, "WC0_E[nParticles]/D");	
-	treeRawEvent->Branch("WC1_E", WC1_E, "WC1_E[nParticles]/D");
-	treeRawEvent->Branch("WC_Vertex_X", WC_Vertex_X, "WC_Vertex_X[nParticles]/D");	
-	treeRawEvent->Branch("WC_Vertex_Y", WC_Vertex_Y, "WC_Vertex_Y[nParticles]/D");	
-	treeRawEvent->Branch("WC_Vertex_Z", WC_Vertex_Z, "WC_Vertex_Z[nParticles]/D");
-	
+    file		        = new TFile(fullName.Data(),     "RECREATE");
+    treeTracks          = new TTree("tracks",            "tracks");
+    treeTagger          = new TTree("tagger",            "tagger");
+    treeTrigger	        = new TTree("trigger",           "trigger");
+    treeDetectorHits    = new TTree("detectorHits",      "detectorHits");
+    treeSetupParameters = new TTree("setupParameters",   "setupParameters");
+
+    treeTracks->Branch("nTracks", &nParticles, "nTracks/I");
+    treeTracks->Branch("clusterEnergy", clusterEnergy, "clusterEnergy[nTracks]/D");
+    treeTracks->Branch("theta", theta, "theta[nTracks]/D");
+    treeTracks->Branch("phi", phi, "phi[nTracks]/D");
+    treeTracks->Branch("time", time, "time[nTracks]/D");
+    treeTracks->Branch("clusterSize", clusterSize, "clusterSize[nTracks]/I");
+    treeTracks->Branch("centralCrystal", centralCrystal, "centralCrystal[nTracks]/I");
+    treeTracks->Branch("centralVeto", centralVeto, "centralVeto[nTracks]/I");
+    treeTracks->Branch("detectors", detectors, "detectors[nTracks]/I");
+    treeTracks->Branch("vetoEnergy", vetoEnergy, "vetoEnergy[nTracks]/D");
+    treeTracks->Branch("MWPC0Energy", MWPC0Energy, "MWPC0Energy[nTracks]/D");
+    treeTracks->Branch("MWPC1Energy", MWPC1Energy, "MWPC1Energy[nTracks]/D");
+    treeTracks->Branch("shortEnergy", shortEnergy, "shortEnergy[nTracks]/D");
+    treeTracks->Branch("pseudoVertexX", pseudoVertexX, "pseudoVertexX[nTracks]/D");
+    treeTracks->Branch("pseudoVertexY", pseudoVertexY, "pseudoVertexY[nTracks]/D");
+    treeTracks->Branch("pseudoVertexZ", pseudoVertexZ, "pseudoVertexZ[nTracks]/D");
+
+    treeTracks->Branch("MWPC0PosX",MWPC0PosX, "MWPC0PosX[nTracks]/D");
+    treeTracks->Branch("MWPC1PosX",MWPC1PosX, "MWPC1PosX[nTracks]/D");
+    treeTracks->Branch("MWPC0PosY",MWPC0PosY, "MWPC0PosY[nTracks]/D");
+    treeTracks->Branch("MWPC1PosY",MWPC1PosY, "MWPC1PosY[nTracks]/D");
+    treeTracks->Branch("MWPC0PosZ",MWPC0PosZ, "MWPC0PosZ[nTracks]/D");
+    treeTracks->Branch("MWPC1PosZ",MWPC1PosZ, "MWPC1PosZ[nTracks]/D");
+
+
 	treeTagger->Branch("nTagged", &nTagged,"nTagged/I");
-	treeTagger->Branch("photonbeam_E", photonbeam_E, "photonbeam_E[nTagged]/D");
-	treeTagger->Branch("tagged_ch", tagged_ch, "tagged_ch[nTagged]/I");
-	treeTagger->Branch("tagged_t", tagged_t, "tagged_t[nTagged]/D");
+    treeTagger->Branch("taggedChannel", taggedChannel, "taggedChannel[nTagged]/I");
+    treeTagger->Branch("taggedTime", taggedTime, "taggedTime[nTagged]/D");
+    if(saveTaggedEnergy)
+    {
+        treeTagger->Branch("taggedEnergy", taggedEnergy, "taggedEnergy[nTagged]/D");
+        printf("User requested tagged photon energies be exported to the tagger tree\n");
+    }
 
-	// Store Lin Pol if class is active
-	if(fLinPol)
-	{
-		treeLinPol = new TTree("treeLinPol", "treeLinPol");		
-		treeLinPol->Branch("plane", &plane, "plane/I");
-		treeLinPol->Branch("edge", &edge, "edge/D");
-		treeLinPol->Branch("edgeSetting", &edgeSetting, "edgeSetting/D");
-		treeLinPol->Branch("polTable", fLinPol->GetPolTable_TC(), "polTable[352]/D");
-		treeLinPol->Branch("enhTable", fLinPol->GetEnhTable_TC(), "enhTable[352]/D");
-	}
-
-	treeTrigger->Branch("ESum", &ESum, "ESum/D");
-	treeTrigger->Branch("Mult", &Mult, "Mult/I");
-	if(nHelBits > 1) treeTrigger->Branch("Helicity", &Helicity, "Helicity/O");
-	treeTrigger->Branch("nError", &nError, "nError/I");
-	treeTrigger->Branch("ErrModID", ErrModID, "ErrModID[nError]/I");
-	treeTrigger->Branch("ErrModIndex", ErrModIndex, "ErrModIndex[nError]/I");
-	treeTrigger->Branch("ErrCode", ErrCode, "ErrCode[nError]/I");
+    treeTrigger->Branch("energySum", &energySum, "energySum/D");
+    treeTrigger->Branch("multiplicity", &multiplicity, "multiplicity/I");
+    if(nHelicityBits > 1) treeTrigger->Branch("helicity", &helicity, "helicity/O");
+    treeTrigger->Branch("nErrors", &nErrors, "nErrors/I");
+    treeTrigger->Branch("errorModuleID", errorModuleID, "errorModuleID[nErrors]/I");
+    treeTrigger->Branch("errorModuleIndex", errorModuleIndex, "errorModuleIndex[nErrors]/I");
+    treeTrigger->Branch("errorCode", errorCode, "errorCode[nErrors]/I");
 	treeTrigger->Branch("nTriggerPattern", &nTriggerPattern, "nTriggerPattern/I");
-	treeTrigger->Branch("TriggerPattern", TriggerPattern, "TriggerPattern[nTriggerPattern]/I");
+    treeTrigger->Branch("triggerPattern", triggerPattern, "triggerPattern[nTriggerPattern]/I");
 	
-	treeDetectorHits->Branch("nNaI_Hits", &nNaI_Hits, "nNaI_Hits/I");
-	treeDetectorHits->Branch("NaI_Hits", NaI_Hits, "NaI_Hits[nNaI_Hits]/I");
-	treeDetectorHits->Branch("nPID_Hits", &nPID_Hits, "nPID_Hits/I");
-	treeDetectorHits->Branch("PID_Hits", PID_Hits, "PID_Hits[nPID_Hits]/I");
-	treeDetectorHits->Branch("nWC_Hits", &nWC_Hits, "nWC_Hits/I");
-	treeDetectorHits->Branch("WC_Hits", WC_Hits, "WC_Hits[nWC_Hits]/I");	
-	treeDetectorHits->Branch("nBaF2_PbWO4_Hits", &nBaF2_PbWO4_Hits, "nBaF2_PbWO4_Hits/I");
-	treeDetectorHits->Branch("BaF2_PbWO4_Hits", BaF2_PbWO4_Hits, "BaF2_PbWO4_Hits[nBaF2_PbWO4_Hits]/I");
-	treeDetectorHits->Branch("nVeto_Hits", &nVeto_Hits, "nVeto_Hits/I");
-	treeDetectorHits->Branch("Veto_Hits", Veto_Hits, "Veto_Hits[nVeto_Hits]/I");
+    if(fNaI)
+    {
+        if (fNaI->IsRawHits())
+        {
+            treeDetectorHits->Branch("nNaIADCs", &nNaIADCs, "nNaIADCs/I");
+            treeDetectorHits->Branch("NaIADCs", NaIADCs, "NaIADCs[nNaIADCs]/I");
+            treeDetectorHits->Branch("NaIADCsRaw", NaIADCsRaw, "NaIADCsRaw[720]/I");
+            treeDetectorHits->Branch("NaIADCsHit", NaIADCsHit, "NaIADCsHit[nNaIADCs]/O");
+            treeDetectorHits->Branch("nNaITDCs", &nNaITDCs, "nNaITDCs/I");
+            treeDetectorHits->Branch("NaITDCs", NaITDCs, "NaITDCs[nNaITDCs]/I");
+            treeDetectorHits->Branch("NaITDCsRaw", NaITDCsRaw, "NaITDCsRaw[720]/I");
+            treeDetectorHits->Branch("NaITDCsHit", NaITDCsHit, "NaITDCsHit[nNaITDCs]/O");
+        }
+        treeDetectorHits->Branch("nNaIHits", &nNaIHits, "nNaIHits/I");
+        treeDetectorHits->Branch("NaIHits", NaIHits, "NaIHits[nNaIHits]/I");
+        treeDetectorHits->Branch("NaICluster", NaICluster, "NaICluster[nNaIHits]/I");
+        if(fNaI->IsEnergy()) treeDetectorHits->Branch("NaIEnergy", NaIEnergy, "NaIEnergy[nNaIHits]/D");
+        if(fNaI->IsTime()) treeDetectorHits->Branch("NaITime", NaITime, "NaITime[nNaIHits]/D");
+    }
+    if(fPID)
+    {
+        if (fPID->IsRawHits())
+        {
+            treeDetectorHits->Branch("nPIDADCs", &nPIDADCs, "nPIDADCs/I");
+            treeDetectorHits->Branch("PIDADCs", PIDADCs, "PIDADCs[nPIDADCs]/I");
+            treeDetectorHits->Branch("PIDADCsRaw", PIDADCsRaw, "PIDADCsRaw[24]/I");
+            treeDetectorHits->Branch("PIDADCsHit", PIDADCsHit, "PIDADCsHit[nPIDADCs]/O");
+            treeDetectorHits->Branch("nPIDTDCs", &nPIDTDCs, "nPIDTDCs/I");
+            treeDetectorHits->Branch("PIDTDCs", PIDTDCs, "PIDTDCs[nPIDTDCs]/I");
+            treeDetectorHits->Branch("PIDTDCsRaw", PIDTDCsRaw, "PIDTDCsRaw[24]/I");
+            treeDetectorHits->Branch("PIDTDCsHit", PIDTDCsHit, "PIDTDCsHit[nPIDTDCs]/O");
+        }
+        treeDetectorHits->Branch("nPIDHits", &nPIDHits, "nPIDHits/I");
+        treeDetectorHits->Branch("PIDHits", PIDHits, "PIDHits[nPIDHits]/I");
+        if(fPID->IsEnergy()) treeDetectorHits->Branch("PIDEnergy", PIDEnergy, "PIDEnergy[nPIDHits]/D");
+        if(fPID->IsTime()) treeDetectorHits->Branch("PIDTime", PIDTime, "PIDTime[nPIDHits]/D");
+    }
+    if(fMWPC)
+    {
+        treeDetectorHits->Branch("nMWPCHits", &nMWPCHits, "nMWPCHits/I");
+        treeDetectorHits->Branch("MWPCHits", MWPCHits, "MWPCHits[nMWPCHits]/I");
+    }
+    if(fBaF2PWO)
+    {
+        if (fBaF2PWO->IsRawHits())
+        {
+            treeDetectorHits->Branch("nBaF2ADCs", &nBaF2ADCs, "nBaF2ADCs/I");
+            treeDetectorHits->Branch("BaF2ADCs", BaF2ADCs, "BaF2ADCs[nBaF2ADCs]/I");
+            treeDetectorHits->Branch("BaF2ADCsRaw", BaF2ADCsRaw, "BaF2ADCsRaw[438]/I");
+            treeDetectorHits->Branch("BaF2ADCsHit", BaF2ADCsHit, "BaF2ADCsHit[nBaF2ADCs]/O");
+            treeDetectorHits->Branch("nBaF2TDCs", &nBaF2TDCs, "nBaF2TDCs/I");
+            treeDetectorHits->Branch("BaF2TDCs", BaF2TDCs, "BaF2TDCs[nBaF2TDCs]/I");
+            treeDetectorHits->Branch("BaF2TDCsRaw", BaF2TDCsRaw, "BaF2TDCsRaw[438]/I");
+            treeDetectorHits->Branch("BaF2TDCsHit", BaF2TDCsHit, "BaF2TDCsHit[nBaF2TDCs]/O");
+        }
+        treeDetectorHits->Branch("nBaF2Hits", &nBaF2Hits, "nBaF2Hits/I");
+        treeDetectorHits->Branch("BaF2Hits", BaF2Hits, "BaF2Hits[nBaF2Hits]/I");
+        treeDetectorHits->Branch("BaF2Cluster", BaF2Cluster, "BaF2Cluster[nBaF2Hits]/I");
+        if(fBaF2PWO->IsEnergy()) treeDetectorHits->Branch("BaF2Energy", BaF2Energy, "BaF2Energy[nBaF2Hits]/D");
+        if(fBaF2PWO->IsTime()) treeDetectorHits->Branch("BaF2Time", BaF2Time, "BaF2Time[nBaF2Hits]/D");
+    }
+    if(fVeto)
+    {
+        if (fVeto->IsRawHits())
+        {
+            treeDetectorHits->Branch("nVetoADCs", &nVetoADCs, "nVetoADCs/I");
+            treeDetectorHits->Branch("VetoADCs", VetoADCs, "VetoADCs[nVetoADCs]/I");
+            treeDetectorHits->Branch("VetoADCsRaw", VetoADCsRaw, "VetoADCsRaw[438]/I");
+            treeDetectorHits->Branch("VetoADCsHit", VetoADCsHit, "VetoADCsHit[nVetoADCs]/O");
+            treeDetectorHits->Branch("nVetoTDCs", &nVetoTDCs, "nVetoTDCs/I");
+            treeDetectorHits->Branch("VetoTDCs", VetoTDCs, "VetoTDCs[nVetoTDCs]/I");
+            treeDetectorHits->Branch("VetoTDCsRaw", VetoTDCsRaw, "VetoTDCsRaw[438]/I");
+            treeDetectorHits->Branch("VetoTDCsHit", VetoTDCsHit, "VetoTDCsHit[nVetoTDCs]/O");
+        }
+        treeDetectorHits->Branch("nVetoHits", &nVetoHits, "nVetoHits/I");
+        treeDetectorHits->Branch("VetoHits", VetoHits, "VetoHits[nVetoHits]/I");
+        if(fVeto->IsEnergy()) treeDetectorHits->Branch("VetoEnergy", VetoEnergy, "VetoEnergy[nVetoHits]/D");
+        if(fVeto->IsTime()) treeDetectorHits->Branch("VetoTime", VetoTime, "VetoTime[nVetoHits]/D");
+    }
+
+    for(Int_t i=0; i<nChannels; i++) treeDetectorHits->Branch(channelName[i],&channelValue[i],Form("%s/I",channelName[i]));
+
+    if(fNaI && fMWPC)
+    {
+        treeVertex = new TTree("vertex", "vertex");
+        treeVertex->Branch("nVertex", &nVertex, "nVertex/I");
+        treeVertex->Branch("vertexX", vertexX, "vertexX[nVertex]/D");
+        treeVertex->Branch("vertexY", vertexY, "vertexY[nVertex]/D");
+        treeVertex->Branch("vertexZ", vertexZ, "vertexZ[nVertex]/D");
+    }
 
 	// Store Scalers for non-MC process
 	if (gAR->GetProcessType() != EMCProcess) 
 	{
-		treeScaler = new TTree("treeScaler", "treeScaler");	
-		treeScaler->Branch("eventNumber", &eventNumber, "eventNumber/I");
-		treeScaler->Branch("eventID", &eventID, "eventID/I");
+        treeScalers = new TTree("scalers", "scalers");
+        treeScalers->Branch("eventNumber", &eventNumber, "eventNumber/I");
+        treeScalers->Branch("eventID", &eventID, "eventID/I");
 		printf("GetMaxScaler: %d\n", GetMaxScaler());
 	        Char_t str[256];
-		sprintf(str, "Scaler[%d]/i", GetMaxScaler());
-		treeScaler->Branch("Scaler", fScaler, str);
-	}
+        sprintf(str, "scalers[%d]/i", GetMaxScaler());
+        treeScalers->Branch("scalers", fScaler, str);
 
-	// Define Histograms which will be saved to root tree
+		// Store Lin Pol if class is active
+		if(fLinPol)
+		{
+			treeLinPol = new TTree("linPol", "linPol");		
+			treeLinPol->Branch("plane", &plane, "plane/I");
+			treeLinPol->Branch("edge", &edge, "edge/D");
+			treeLinPol->Branch("edgeSetting", &edgeSetting, "edgeSetting/D");
+            treeLinPol->Branch("polarizationTable", fLinPol->GetPolTable_TC(), "polarizationTable[352]/D");
+            treeLinPol->Branch("enhancementTable", fLinPol->GetEnhTable_TC(), "enhancementTable[352]/D");
+		}
+
+        if(fMoeller)
+        {
+            treeMoeller = new TTree("moeller", "moeller");
+            treeMoeller->Branch("eventNumber", &eventNumber, "eventNumber/I");
+            moellerRead = false;
+            moellerPairs = new UInt_t*[fMoeller->GetNPairs()];
+            Char_t moellerName[256];
+            Char_t moellerType[256];
+            for(UShort_t i=0; i<(fMoeller->GetNVuproms()); i++)
+            {
+                for(UShort_t j=0; j<(fMoeller->GetNLeftChannels()); j++)
+                {
+                    for(UShort_t k=0; k<(fMoeller->GetNPairsPerCh()); k++)
+                    {
+                        for(UShort_t hel=0;hel<2;hel++)
+                        {
+                            UShort_t idx = (i*2*(fMoeller->GetNLeftChannels())*(fMoeller->GetNPairsPerCh()));
+                            idx += (j*2*(fMoeller->GetNPairsPerCh()));
+                            idx += (k*2);
+                            idx += hel;
+                            sprintf(moellerName, "pair_V%d_L%d_R%d_H%d", i, j, k, hel);
+                            sprintf(moellerType, "pair_V%d_L%d_R%d_H%d[256]/i", i, j, k, hel);
+                            moellerPairs[idx] = new UInt_t[fMoeller->GetNBins()];
+                            treeMoeller->Branch(moellerName, moellerPairs[idx], moellerType);
+
+                            for(UInt_t bin=0; bin<fMoeller->GetNBins(); bin++) moellerPairs[idx][bin] = 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (gAR->GetProcessType() == EMCProcess)
+    {
+        // Store MC event id for MC process
+        if(EI_mc_evt_id < gAR->GetNbranch()) treeTrigger->Branch("mc_evt_id", &MCEventID, "mc_event_id/L");
+        if(EI_mc_rnd_id < gAR->GetNbranch()) treeTrigger->Branch("mc_rnd_id", &MCRndID, "mc_rnd_id/L");
+    }
+
+    // Adding Tagger information to parameters tree
+
+    Int_t nTagger;
+    Double_t TaggerGlobalOffset;
+    const Double_t* ChToE;
+    Double_t BeamE;
+
+    Double_t* TaggerTDCLoThr;
+    Double_t* TaggerTDCHiThr;
+    Double_t* TaggerTDCOffset;
+    Double_t* TaggerElectronEnergy;
+    Double_t* TaggerPhotonEnergy;
+    Double_t *TaggerEnergyWidth;
+
+    if(fTagger)
+    {
+        nTagger = fLadder->GetNelem();
+        TaggerGlobalOffset = fLadder->GetTimeOffset();
+        ChToE = fLadder->GetECalibration();
+        BeamE = fTagger->GetBeamEnergy();
+
+        TaggerTDCLoThr = new Double_t[nTagger];
+        TaggerTDCHiThr = new Double_t[nTagger];
+        TaggerTDCOffset = new Double_t[nTagger];
+        TaggerElectronEnergy = new Double_t[nTagger];
+        TaggerPhotonEnergy = new Double_t[nTagger];
+
+        for(UInt_t i=0; i<fLadder->GetNelem(); i++)
+        {
+            TaggerTDCLoThr[i] = fLadder->GetElement(i)->GetTimeLowThr();
+            TaggerTDCHiThr[i] = fLadder->GetElement(i)->GetTimeHighThr();
+            TaggerTDCOffset[i] = fLadder->GetElement(i)->GetT0();
+            TaggerElectronEnergy[i] = ChToE[i];
+            TaggerPhotonEnergy[i] = BeamE - ChToE[i];
+        }
+        TaggerEnergyWidth = fLadder->GetEWidth();
+
+        treeSetupParameters->Branch("nTagger", &nTagger, "nTagger/I");
+        treeSetupParameters->Branch("TaggerGlobalOffset", &TaggerGlobalOffset, "TaggerGlobalOffset/D");
+        treeSetupParameters->Branch("TaggerTDCLoThr", TaggerTDCLoThr, "TaggerTDCLoThr[nTagger]/D");
+        treeSetupParameters->Branch("TaggerTDCHiThr", TaggerTDCHiThr, "TaggerTDCHiThr[nTagger]/D");
+        treeSetupParameters->Branch("TaggerTDCOffset", TaggerTDCOffset, "TaggerTDCOffset[nTagger]/D");
+        treeSetupParameters->Branch("TaggerElectronEnergy", TaggerElectronEnergy, "TaggerElectronEnergy[nTagger]/D");
+        treeSetupParameters->Branch("TaggerPhotonEnergy", TaggerPhotonEnergy, "TaggerPhotonEnergy[nTagger]/D");
+        treeSetupParameters->Branch("TaggerEnergyWidth", TaggerEnergyWidth, "TaggerEnergyWidth[nTagger]/D");
+    }
+
+    // Adding NaI information to parameters tree
+
+    Int_t nNaI;
+    Double_t NaIGlobalOffset;
+    Double_t NaIGlobalScale;
+    Int_t NaIMaxClusters;
+    Double_t NaIClusterThr;
+
+    Double_t* NaIADCLoThr;
+    Double_t* NaIADCHiThr;
+    Double_t* NaIADCGain;
+    Double_t* NaITDCLoThr;
+    Double_t* NaITDCHiThr;
+    Double_t* NaITDCOffset;
+
+    if(fNaI)
+    {
+        nNaI = fNaI->GetNelem();
+        NaIGlobalOffset = fNaI->GetTimeOffset();
+        NaIGlobalScale = fNaI->GetEnergyScale();
+        NaIMaxClusters = (Int_t)fNaI->GetMaxCluster();
+        NaIClusterThr = fNaI->GetClusterThreshold();
+
+        NaIADCLoThr = new Double_t[nNaI];
+        NaIADCHiThr = new Double_t[nNaI];
+        NaIADCGain = new Double_t[nNaI];
+        NaITDCLoThr = new Double_t[nNaI];
+        NaITDCHiThr = new Double_t[nNaI];
+        NaITDCOffset = new Double_t[nNaI];
+
+        for(UInt_t i=0; i<fNaI->GetNelem(); i++)
+        {
+            NaIADCLoThr[i] = fNaI->GetElement(i)->GetEnergyLowThr();
+            NaIADCHiThr[i] = fNaI->GetElement(i)->GetEnergyHighThr();
+            NaIADCGain[i] = fNaI->GetElement(i)->GetA1();
+            NaITDCLoThr[i] = fNaI->GetElement(i)->GetTimeLowThr();
+            NaITDCHiThr[i] = fNaI->GetElement(i)->GetTimeHighThr();
+            NaITDCOffset[i] = fNaI->GetElement(i)->GetT0();
+        }
+
+        treeSetupParameters->Branch("nNaI", &nNaI, "nNaI/I");
+        treeSetupParameters->Branch("NaIGlobalOffset", &NaIGlobalOffset, "NaIGlobalOffset/D");
+        treeSetupParameters->Branch("NaIGlobalScale", &NaIGlobalScale, "NaIGlobalScale/D");
+        treeSetupParameters->Branch("NaIMaxClusters", &NaIMaxClusters, "NaIMaxClusters/I");
+        treeSetupParameters->Branch("NaIClusterThr", &NaIClusterThr, "NaIClusterThr/D");
+        treeSetupParameters->Branch("NaIADCLoThr", NaIADCLoThr, "NaIADCLoThr[nNaI]/D");
+        treeSetupParameters->Branch("NaIADCHiThr", NaIADCHiThr, "NaIADCHiThr[nNaI]/D");
+        treeSetupParameters->Branch("NaIADCGain", NaIADCGain, "NaIADCGain[nNaI]/D");
+        treeSetupParameters->Branch("NaITDCLoThr", NaITDCLoThr, "NaITDCLoThr[nNaI]/D");
+        treeSetupParameters->Branch("NaITDCHiThr", NaITDCHiThr, "NaITDCHiThr[nNaI]/D");
+        treeSetupParameters->Branch("NaITDCOffset", NaITDCOffset, "NaITDCOffset[nNaI]/D");
+    }
+
+    // Adding PID information to parameters tree
+
+    Int_t nPID;
+    Double_t PIDGlobalOffset;
+
+    Double_t* PIDADCLoThr;
+    Double_t* PIDADCHiThr;
+    Double_t* PIDADCPedestal;
+    Double_t* PIDADCGain;
+    Double_t* PIDTDCLoThr;
+    Double_t* PIDTDCHiThr;
+    Double_t* PIDTDCOffset;
+    Double_t* PIDPhi;
+
+    if(fPID)
+    {
+        nPID = fPID->GetNelem();
+        PIDGlobalOffset = fPID->GetTimeOffset();
+
+        PIDADCLoThr = new Double_t[nPID];
+        PIDADCHiThr = new Double_t[nPID];
+        PIDADCPedestal = new Double_t[nPID];
+        PIDADCGain = new Double_t[nPID];
+        PIDTDCLoThr = new Double_t[nPID];
+        PIDTDCHiThr = new Double_t[nPID];
+        PIDTDCOffset = new Double_t[nPID];
+        PIDPhi = new Double_t[nPID];
+
+        for(UInt_t i=0; i<fPID->GetNelem(); i++)
+        {
+            PIDADCLoThr[i] = fPID->GetElement(i)->GetEnergyLowThr();
+            PIDADCHiThr[i] = fPID->GetElement(i)->GetEnergyHighThr();
+            PIDADCPedestal[i] = fPID->GetElement(i)->GetA0();
+            PIDADCGain[i] = fPID->GetElement(i)->GetA1();
+            PIDTDCLoThr[i] = fPID->GetElement(i)->GetTimeLowThr();
+            PIDTDCHiThr[i] = fPID->GetElement(i)->GetTimeHighThr();
+            PIDTDCOffset[i] = fPID->GetElement(i)->GetT0();
+            PIDPhi[i] = fPID->GetPosition(i)->Z();
+        }
+
+        treeSetupParameters->Branch("nPID", &nPID, "nPID/I");
+        treeSetupParameters->Branch("PIDGlobalOffset", &PIDGlobalOffset, "PIDGlobalOffset/D");
+        treeSetupParameters->Branch("PIDADCLoThr", PIDADCLoThr, "PIDADCLoThr[nPID]/D");
+        treeSetupParameters->Branch("PIDADCHiThr", PIDADCHiThr, "PIDADCHiThr[nPID]/D");
+        treeSetupParameters->Branch("PIDADCPedestal", PIDADCPedestal, "PIDADCPedestal[nPID]/D");
+        treeSetupParameters->Branch("PIDADCGain", PIDADCGain, "PIDADCGain[nPID]/D");
+        treeSetupParameters->Branch("PIDTDCLoThr", PIDTDCLoThr, "PIDTDCLoThr[nPID]/D");
+        treeSetupParameters->Branch("PIDTDCHiThr", PIDTDCHiThr, "PIDTDCHiThr[nPID]/D");
+        treeSetupParameters->Branch("PIDTDCOffset", PIDTDCOffset, "PIDTDCOffset[nPID]/D");
+        treeSetupParameters->Branch("PIDPhi", PIDPhi, "PIDPhi[nPID]/D");
+    }
+
+    // Adding BaF2 information to parameters tree
+
+    Int_t nBaF2;
+    Double_t BaF2GlobalOffset;
+    Double_t BaF2GlobalScale;
+    Double_t BaF2Distance;
+    Int_t BaF2MaxClusters;
+    Double_t BaF2ClusterThr;
+
+    Double_t* BaF2ADCLoThr;
+    Double_t* BaF2ADCHiThr;
+    Double_t* BaF2ADCPedestal;
+    Double_t* BaF2ADCGain;
+    Double_t* BaF2TDCLoThr;
+    Double_t* BaF2TDCHiThr;
+    Double_t* BaF2TDCOffset;
+    Double_t* BaF2TDCGain;
+
+    if(fBaF2PWO)
+    {
+        nBaF2 = fBaF2PWO->GetNelem();
+        BaF2GlobalOffset = fBaF2PWO->GetTimeOffset();
+        BaF2GlobalScale = fBaF2PWO->GetEnergyScale();
+        BaF2Distance = fBaF2PWO->GetPosition(0)->Z();
+        BaF2MaxClusters = (Int_t)fBaF2PWO->GetMaxCluster();
+        BaF2ClusterThr = fBaF2PWO->GetClusterThreshold();
+
+        BaF2ADCLoThr = new Double_t[nBaF2];
+        BaF2ADCHiThr = new Double_t[nBaF2];
+        BaF2ADCPedestal = new Double_t[nBaF2];
+        BaF2ADCGain = new Double_t[nBaF2];
+        BaF2TDCLoThr = new Double_t[nBaF2];
+        BaF2TDCHiThr = new Double_t[nBaF2];
+        BaF2TDCOffset = new Double_t[nBaF2];
+        BaF2TDCGain = new Double_t[nBaF2];
+
+        for(UInt_t i=0; i<fBaF2PWO->GetNelem(); i++)
+        {
+            BaF2ADCLoThr[i] = fBaF2PWO->GetElement(i)->GetEnergyLowThr();
+            BaF2ADCHiThr[i] = fBaF2PWO->GetElement(i)->GetEnergyHighThr();
+            BaF2ADCPedestal[i] = fBaF2PWO->GetElement(i)->GetA0();
+            BaF2ADCGain[i] = fBaF2PWO->GetElement(i)->GetA1();
+            BaF2TDCLoThr[i] = fBaF2PWO->GetElement(i)->GetTimeLowThr();
+            BaF2TDCHiThr[i] = fBaF2PWO->GetElement(i)->GetTimeHighThr();
+            BaF2TDCOffset[i] = fBaF2PWO->GetElement(i)->GetT0();
+            BaF2TDCGain[i] = fBaF2PWO->GetElement(i)->GetT1();
+        }
+
+        treeSetupParameters->Branch("nBaF2", &nBaF2, "nBaF2/I");
+        treeSetupParameters->Branch("BaF2GlobalOffset", &BaF2GlobalOffset, "BaF2GlobalOffset/D");
+        treeSetupParameters->Branch("BaF2GlobalScale", &BaF2GlobalScale, "BaF2GlobalScale/D");
+        treeSetupParameters->Branch("BaF2Distance", &BaF2Distance, "BaF2Distance/D");
+        treeSetupParameters->Branch("BaF2MaxClusters", &BaF2MaxClusters, "BaF2MaxClusters/I");
+        treeSetupParameters->Branch("BaF2ClusterThr", &BaF2ClusterThr, "BaF2ClusterThr/D");
+        treeSetupParameters->Branch("BaF2ADCLoThr", BaF2ADCLoThr, "BaF2ADCLoThr[nBaF2]/D");
+        treeSetupParameters->Branch("BaF2ADCHiThr", BaF2ADCHiThr, "BaF2ADCHiThr[nBaF2]/D");
+        treeSetupParameters->Branch("BaF2ADCPedestal", BaF2ADCPedestal, "BaF2ADCPedestal[nBaF2]/D");
+        treeSetupParameters->Branch("BaF2ADCGain", BaF2ADCGain, "BaF2ADCGain[nBaF2]/D");
+        treeSetupParameters->Branch("BaF2TDCLoThr", BaF2TDCLoThr, "BaF2TDCLoThr[nBaF2]/D");
+        treeSetupParameters->Branch("BaF2TDCHiThr", BaF2TDCHiThr, "BaF2TDCHiThr[nBaF2]/D");
+        treeSetupParameters->Branch("BaF2TDCOffset", BaF2TDCOffset, "BaF2TDCOffset[nBaF2]/D");
+        treeSetupParameters->Branch("BaF2TDCGain", BaF2TDCGain, "BaF2TDCGain[nBaF2]/D");
+    }
+
+    // Adding Veto information to parameters tree
+
+    Int_t nVeto;
+    Double_t VetoGlobalOffset;
+    Double_t VetoDistance;
+
+    Double_t* VetoADCLoThr;
+    Double_t* VetoADCHiThr;
+    Double_t* VetoADCPedestal;
+    Double_t* VetoADCGain;
+    Double_t* VetoTDCLoThr;
+    Double_t* VetoTDCHiThr;
+    Double_t* VetoTDCOffset;
+
+    if(fVeto)
+    {
+        nVeto = fVeto->GetNelem();
+        VetoGlobalOffset = fVeto->GetTimeOffset();
+        VetoDistance = fVeto->GetPosition(0)->Z();
+
+        VetoADCLoThr = new Double_t[nVeto];
+        VetoADCHiThr = new Double_t[nVeto];
+        VetoADCPedestal = new Double_t[nVeto];
+        VetoADCGain = new Double_t[nVeto];
+        VetoTDCLoThr = new Double_t[nVeto];
+        VetoTDCHiThr = new Double_t[nVeto];
+        VetoTDCOffset = new Double_t[nVeto];
+
+        for(UInt_t i=0; i<fVeto->GetNelem(); i++)
+        {
+            VetoADCLoThr[i] = fVeto->GetElement(i)->GetEnergyLowThr();
+            VetoADCHiThr[i] = fVeto->GetElement(i)->GetEnergyHighThr();
+            VetoADCPedestal[i] = fVeto->GetElement(i)->GetA0();
+            VetoADCGain[i] = fVeto->GetElement(i)->GetA1();
+            VetoTDCLoThr[i] = fVeto->GetElement(i)->GetTimeLowThr();
+            VetoTDCHiThr[i] = fVeto->GetElement(i)->GetTimeHighThr();
+            VetoTDCOffset[i] = fVeto->GetElement(i)->GetT0();
+        }
+
+        treeSetupParameters->Branch("nVeto", &nVeto, "nVeto/I");
+        treeSetupParameters->Branch("VetoGlobalOffset", &VetoGlobalOffset, "VetoGlobalOffset/D");
+        treeSetupParameters->Branch("VetoDistance", &VetoDistance, "VetoDistance/D");
+        treeSetupParameters->Branch("VetoADCLoThr", VetoADCLoThr, "VetoADCLoThr[nVeto]/D");
+        treeSetupParameters->Branch("VetoADCHiThr", VetoADCHiThr, "VetoADCHiThr[nVeto]/D");
+        treeSetupParameters->Branch("VetoADCPedestal", VetoADCPedestal, "VetoADCPedestal[nVeto]/D");
+        treeSetupParameters->Branch("VetoADCGain", VetoADCGain, "VetoADCGain[nVeto]/D");
+        treeSetupParameters->Branch("VetoTDCLoThr", VetoTDCLoThr, "VetoTDCLoThr[nVeto]/D");
+        treeSetupParameters->Branch("VetoTDCHiThr", VetoTDCHiThr, "VetoTDCHiThr[nVeto]/D");
+        treeSetupParameters->Branch("VetoTDCOffset", VetoTDCOffset, "VetoTDCOffset[nVeto]/D");
+    }
+
+    treeSetupParameters->Fill();
+
+    // Define Histograms which will be saved to root tree
 	DefineHistograms();
 
 	gROOT->cd();
 	
-	eventNumber	= 0;	
+	eventNumber	= 0;
+
+   	printf("---------\n");
+   	printf("Running\n");
+   	printf("---------\n");	
 
 }
 
@@ -296,218 +838,407 @@ void    TA2GoAT::Reconstruct()
 	// Fill standard data check histograms
 	DataCheckHistograms();
 
+    if(gAR->GetProcessType() == EMCProcess ) { 
+        if(EI_mc_evt_id < gAR->GetNbranch()) MCEventID = *(Long64_t*) (fEvent[EI_mc_evt_id]);
+        if(EI_mc_rnd_id < gAR->GetNbranch()) MCRndID   = *(Long64_t*) (fEvent[EI_mc_rnd_id]);
+    }
+
 	// Output scaler info on scaler read events
 	if((gAR->IsScalerRead()) && (gAR->GetProcessType() != EMCProcess))
 	{
 		eventID	= gAN->GetNDAQEvent();
-		treeScaler->Fill();		
+        if(treeScalers) treeScalers->Fill();
 		
 		if(fLinPol)
 		{
 			plane 	= fLinPol->GetPolPlane();
 			edge 	= fLinPol->GetEdge();
 			edgeSetting = fLinPol->GetEdgeSetting();
-			treeLinPol->Fill();
+			if(treeLinPol) treeLinPol->Fill();
 		}
+
+        if(fMoeller)
+        {
+            if(fMoeller->IsReadoutStarted())
+            {
+                moellerRead = true;
+                //printf("Moeller read started - Event %d\n",eventNumber);
+            }
+        }
 	}
 
+    if(fMoeller)
+    {
+        if(moellerRead && !fMoeller->IsReadoutStarted())
+        {
+            for(Int_t i=0; i<fMoeller->GetNPairs(); i++)
+            {
+                for(UInt_t j=0; j<fMoeller->GetNBins(); j++)
+                {
+                    moellerPairs[i][j] = fMoeller->GetTDCValue(i,j);
+                }
+            }
+            treeMoeller->Fill();
+            moellerRead = false;
+            //printf("Moeller read finish  - Event %d\n",eventNumber);
+        }
+    }
+
+	nTagged = 0;
 	if(fTagger && fLadder)
 	{
-        // Get the conversion of tagger channel to photon energy
-	Double_t electron_E = fTagger->GetBeamEnergy();
-        const Double_t* ChToE = fLadder->GetECalibration();		
-		
-		// Collect Tagger M0 Hits
-		nTagged	= fLadder->GetNhits();
-		for(int i=0; i<nTagged; i++)
+                // Get the conversion of tagger channel to photon energy
+	        Double_t electron_E = fTagger->GetBeamEnergy();
+                const Double_t* ChToE = fLadder->GetECalibration();
+	        Int_t fNmult = 1;
+	        if ( gAR->IsOnline() ) fNmult = fLadder->GetNMultihit();
+
+		if ( fNmult <= 1 )
 		{
-			tagged_ch[i]	= fLadder->GetHits(i);
-			tagged_t[i]		= (fLadder->GetTimeOR())[i];
-			photonbeam_E[i] = electron_E - ChToE[tagged_ch[i]];
+        		// Collect Tagger Hits without Multihits
+                nTagged	= fLadder->GetNhitsAll();
+                for(Int_t i=0; i<nTagged; i++)
+        		{
+                    taggedChannel[i] = (fLadder->GetHitsAll())[i];
+                    taggedTime[i] = (fLadder->GetTimeORAll())[i];
+                    taggedEnergy[i] = electron_E - ChToE[taggedChannel[i]];
+	        	}
 		}
-	
-		// Collect Tagger M+ Hits
-		for(UInt_t m=1; m<fLadder->GetNMultihit(); m++)
+		
+		else
 		{
-			for(UInt_t i=0; i<fLadder->GetNhitsM(m); i++)
-			{
-				tagged_ch[nTagged+i] 	= (fLadder->GetHitsM(m))[i];
-				tagged_t[nTagged+i]	 	= (fLadder->GetTimeORM(m))[i];
-				photonbeam_E[nTagged+i] = electron_E - ChToE[tagged_ch[nTagged+i]];
-			}
-			nTagged	+= fLadder->GetNhitsM(m);
+        		// Collect Tagger Hits with Multihits
+        		for(UInt_t m=0; m<(UInt_t)fNmult; m++)
+        		{
+        			for(UInt_t i=0; i<fLadder->GetNhitsM(m); i++)
+        			{
+                        taggedChannel[nTagged+i] 	= (fLadder->GetHitsM(m))[i];
+                        taggedTime[nTagged+i]	= (fLadder->GetTimeORM(m))[i];
+                        taggedEnergy[nTagged+i] = electron_E - ChToE[taggedChannel[nTagged+i]];
+        			}
+        			nTagged	+= fLadder->GetNhitsM(m);
+	        	}
 		}
 	}
-	else nTagged = 0;
 	
 	// Gather particle information
-	nParticles = 0;
-	if(fCB)
-	{
-	// Collect CB Hits
-    	nParticles	= fCB->GetNParticle();      
-		for(int i=0; i<nParticles; i++)
-		{
-			TA2Particle part = fCB->GetParticles(i);
-			
-			part.SetParticleID(kRootino); // Set mass to 0 (rootino)
-			part.SetMass(0.0);
+    Int_t nCB = 0;
+    if(fCB) nCB	= fCB->GetNParticle();
 
-			// Reset a bunch of inconsistant "no-value" markers
-			if(TMath::Abs(part.GetT()) >= TA2GoAT_NULL) Ek[i] = 0.0;
-			else Ek[i] = part.GetT();
+    Int_t nTAPS = 0;
+    if(fTAPS) nTAPS = fTAPS->GetNParticle();
 
-			if(TMath::Abs(part.GetTime()) >= TA2GoAT_NULL) time[i] = 0.0;
-			else time[i] = part.GetTime();
-			
-			if(TMath::Abs(part.GetVetoEnergy()) >= TA2GoAT_NULL) d_E[i] = 0.0;
-			else d_E[i]	= part.GetVetoEnergy();
-			
-			if(TMath::Abs(part.GetEnergyMwpc0()) >= TA2GoAT_NULL) WC0_E[i] = 0.0;
-			else WC0_E[i] = part.GetEnergyMwpc0();
-			
-			if(TMath::Abs(part.GetEnergyMwpc1()) >= TA2GoAT_NULL) WC1_E[i] = 0.0;
-			else WC1_E[i] = part.GetEnergyMwpc1();
-			
-			if(TMath::Abs(part.GetPsVertex().X()) >= TA2GoAT_NULL) WC_Vertex_X[i] = 0.0;
-			else WC_Vertex_X[i]  = part.GetPsVertex().X();			
+    nParticles = nCB + nTAPS;
+    TA2Particle part;
 
-			if(TMath::Abs(part.GetPsVertex().Y()) >= TA2GoAT_NULL) WC_Vertex_Y[i] = 0.0;
-			else WC_Vertex_Y[i]  = part.GetPsVertex().Y();	
-			
-			if(TMath::Abs(part.GetPsVertex().Z()) >= TA2GoAT_NULL) WC_Vertex_Z[i] = 0.0;
-			else WC_Vertex_Z[i]  = part.GetPsVertex().Z();				
-			
-			if(part.GetCentralIndex() == ENullHit) centralCrys[i] = -1;
-			else centralCrys[i] = part.GetCentralIndex();
-						
-			if(part.GetVetoIndex() == ENullHit) centralVeto[i] = -1;
-			else centralVeto[i]	= part.GetVetoIndex();		
-			
-			// Store other values which don't have this "no-value" option
-			Apparatus[i]	= (UChar_t)EAppCB;
-			Theta[i]		= part.GetThetaDg();
-			Phi[i]			= part.GetPhiDg();			
-			clusterSize[i]  = (UChar_t)part.GetClusterSize();
+    if(fMWPC){
+	nChamberHitsin1 = fMWPC->GetNinters(0); 
+        Chamber1Hits = fMWPC->GetInters(0); 
+	Chamber2Hits = fMWPC->GetInters(1);
+	nChamberHitsin2 = fMWPC->GetNinters(1);
+    }
 
-		}
+    for(Int_t i=0; i<nParticles; i++)
+    {
+        if(i < nCB) part = fCB->GetParticles(i);
+        else part = fTAPS->GetParticles(i-nCB);
+
+        part.SetParticleID(kRootino); // Set mass to 0 (rootino)
+        part.SetMass(0.0);
+
+        // Reset a bunch of inconsistant "no-value" markers
+        if(TMath::Abs(part.GetT()) >= TA2GoAT_NULL) clusterEnergy[i] = 0.0;
+        else clusterEnergy[i] = part.GetT();
+
+        if(TMath::Abs(part.GetTime()) >= TA2GoAT_NULL) time[i] = 0.0;
+        else time[i] = part.GetTime();
+
+        if(TMath::Abs(part.GetVetoEnergy()) >= TA2GoAT_NULL) vetoEnergy[i] = 0.0;
+        else vetoEnergy[i]	= part.GetVetoEnergy();
+
+        if(TMath::Abs(part.GetEnergyMwpc0()) >= TA2GoAT_NULL) MWPC0Energy[i] = 0.0;
+        else MWPC0Energy[i] = part.GetEnergyMwpc0();
+
+        if(TMath::Abs(part.GetEnergyMwpc1()) >= TA2GoAT_NULL) MWPC1Energy[i] = 0.0;
+        else MWPC1Energy[i] = part.GetEnergyMwpc1();
+
+        if(TMath::Abs(part.GetPSAShort()) >= TA2GoAT_NULL) shortEnergy[i] = 0.0;
+        else shortEnergy[i] = part.GetPSAShort();
+
+        if(part.GetClusterSize() == ENullHit) clusterSize[i] = 0;
+        else clusterSize[i] = part.GetClusterSize();
+
+        if(part.GetCentralIndex() == ENullHit) centralCrystal[i] = -1;
+        else centralCrystal[i] = part.GetCentralIndex();
+
+        if(part.GetVetoIndex() == ENullHit) centralVeto[i] = -1;
+        else centralVeto[i]	= part.GetVetoIndex();
+
+
+	MWPC0PosX[i]=0;
+	MWPC1PosX[i]=0;
+	MWPC0PosY[i]=0;
+	MWPC1PosY[i]=0;
+	MWPC0PosZ[i]=0;
+	MWPC1PosZ[i]=0;
+
+	if(fMWPC){
+	if(part.GetTrackIntersect(0)>=0){
+	  MWPC0PosX[i]=(*(Chamber1Hits[part.GetTrackIntersect(0)].GetPosition())).X();
+	  MWPC0PosY[i]=(*(Chamber1Hits[part.GetTrackIntersect(0)].GetPosition())).Y();
+	  MWPC0PosZ[i]=(*(Chamber1Hits[part.GetTrackIntersect(0)].GetPosition())).Z();
 	}
-
-	if(fTAPS)
-	{
-		// Collect TAPS Hits
-		for(int i=0; i<fTAPS->GetNParticle(); i++)
-		{
-			TA2Particle part = fTAPS->GetParticles(i);
-			
-			part.SetParticleID(kRootino); // Set mass to 0 (rootino)
-			part.SetMass(0.0);				
-
-			// Reset a bunch of inconsistant "no-value" markers
-			if(TMath::Abs(part.GetT()) >= TA2GoAT_NULL) Ek[nParticles+i] = 0.0;
-			else Ek[nParticles+i] = part.GetT();
-
-			if(TMath::Abs(part.GetTime()) >= TA2GoAT_NULL) time[nParticles+i] = 0.0;
-			else time[nParticles+i] = part.GetTime();
-			
-			if(TMath::Abs(part.GetVetoEnergy()) >= TA2GoAT_NULL) d_E[nParticles+i] = 0.0;
-			else d_E[nParticles+i]	= part.GetVetoEnergy();
-		
-			if(part.GetCentralIndex() == ENullHit) centralCrys[nParticles+i] = -1;
-			else centralCrys[nParticles+i]	= part.GetCentralIndex();
-			
-			if(part.GetVetoIndex() == ENullHit) centralVeto[nParticles+i] = -1;
-			else centralVeto[nParticles+i]	= part.GetVetoIndex();		
-			
-			// Set WC values to NULL
-			WC0_E[nParticles+i] = 0.0;
-			WC1_E[nParticles+i] = 0.0;
-			WC_Vertex_X[nParticles+i] = 0.0;
-			WC_Vertex_Y[nParticles+i] = 0.0;
-			WC_Vertex_Z[nParticles+i] = 0.0;	
-			
-			// Store other values which don't have this "no-value" option
-			Apparatus[nParticles+i]		= (UChar_t)EAppTAPS;
-			Theta[nParticles+i]			= part.GetThetaDg();
-			Phi[nParticles+i]			= part.GetPhiDg();			
-			time[nParticles+i]			= part.GetTime();	
-			clusterSize[nParticles+i]  	= (UChar_t)part.GetClusterSize();
-
-		}
-		nParticles += fTAPS->GetNParticle(); // update number of particles
+	if(part.GetTrackIntersect(1)>=0){
+	  MWPC1PosX[i]=(*(Chamber2Hits[part.GetTrackIntersect(1)].GetPosition())).X();
+	  MWPC1PosY[i]=(*(Chamber2Hits[part.GetTrackIntersect(1)].GetPosition())).Y();
+	  MWPC1PosZ[i]=(*(Chamber2Hits[part.GetTrackIntersect(1)].GetPosition())).Z();
 	}
+	}
+        // Store other values which don't have this "no-value" option
+        detectors[i]	= part.GetDetectors();
+        theta[i]		= part.GetThetaDg();
+        phi[i]			= part.GetPhiDg();
+        pseudoVertexX[i] = part.GetPsVertex().X();
+        pseudoVertexY[i] = part.GetPsVertex().Y();
+        pseudoVertexZ[i] = part.GetPsVertex().Z();
+
+    }
+
+    UInt_t *clhits;
+	HitCluster_t *cl;
+	UInt_t *hits;
+	Int_t clindex[720];
+    Int_t *rhits;
 
 	// Get Detector Hits
 	if(fNaI)
 	{
-		nNaI_Hits = fNaI->GetNhits();
-		for(int i=0; i<nNaI_Hits; i++)   
-			{ NaI_Hits[i] = fNaI->GetHits(i); }
+        for(Int_t i=0; i<720; i++)
+		{
+		        clindex[i] = -1;
+		}
+                clhits = fNaI->GetClustHit();
+        for(UInt_t i=0; i<fNaI->GetNCluster(); i++)
+		{
+		        cl = fNaI->GetCluster(clhits[i]);
+			hits = cl->GetHits();
+            for(UInt_t j=0; j<(cl->GetNhits()); j++)
+			{
+			        clindex[hits[j]] = i;
+			}
+		}
+			
+        if(fNaI->IsRawHits())
+        {
+            nNaIADCs = fNaI->GetNADChits();
+            rhits = fNaI->GetRawEnergyHits();
+            for(Int_t i=0; i<720; i++) NaIADCsRaw[i] = 0;
+            for(Int_t i=0; i<nNaIADCs; i++)
+            {
+                NaIADCs[i] = rhits[i];
+                NaIADCsRaw[NaIADCs[i]] = (Int_t)fNaI->GetElement(NaIADCs[i])->GetRawADCValue();
+                NaIADCsHit[i] = fNaI->GetElement(NaIADCs[i])->CheckEnergy();
+            }
+            nNaITDCs = fNaI->GetNTDChits();
+            rhits = fNaI->GetRawTimeHits();
+            for(Int_t i=0; i<720; i++) NaITDCsRaw[i] = 0;
+            for(Int_t i=0; i<nNaITDCs; i++)
+            {
+                NaITDCs[i] = rhits[i];
+                NaITDCsRaw[NaITDCs[i]] = (Int_t)fNaI->GetElement(NaITDCs[i])->GetRawTDCValue();
+                NaITDCsHit[i] = fNaI->GetElement(NaITDCs[i])->CheckTime();
+            }
+        }
+        nNaIHits = fNaI->GetNhits();
+        for(Int_t i=0; i<nNaIHits; i++)
+		{
+            NaIHits[i] = fNaI->GetHits(i);
+            NaICluster[i] = clindex[NaIHits[i]];
+            if(fNaI->IsEnergy()) NaIEnergy[i] = fNaI->GetEnergy(NaIHits[i]);
+            if(fNaI->IsTime()) NaITime[i] = fNaI->GetTime(NaIHits[i]);
+        }
 	}
 
 	if(fPID)
 	{
-		nPID_Hits = fPID->GetNhits();
-		for(int i=0; i<nPID_Hits; i++)   
-			{ PID_Hits[i] = fPID->GetHits(i); }
+        if(fPID->IsRawHits())
+        {
+            nPIDADCs = fPID->GetNADChits();
+            rhits = fPID->GetRawEnergyHits();
+            for(Int_t i=0; i<24; i++) PIDADCsRaw[i] = 0;
+            for(Int_t i=0; i<nPIDADCs; i++)
+            {
+                PIDADCs[i] = rhits[i];
+                PIDADCsRaw[PIDADCs[i]] = (Int_t)fPID->GetElement(PIDADCs[i])->GetRawADCValue();
+                PIDADCsHit[i] = fPID->GetElement(PIDADCs[i])->CheckEnergy();
+            }
+            nPIDTDCs = fPID->GetNTDChits();
+            rhits = fPID->GetRawTimeHits();
+            for(Int_t i=0; i<24; i++) PIDTDCsRaw[i] = 0;
+            for(Int_t i=0; i<nPIDTDCs; i++)
+            {
+                PIDTDCs[i] = rhits[i];
+                PIDTDCsRaw[PIDTDCs[i]] = (Int_t)fPID->GetElement(PIDTDCs[i])->GetRawTDCValue();
+                PIDTDCsHit[i] = fPID->GetElement(PIDTDCs[i])->CheckTime();
+            }
+        }
+        nPIDHits = fPID->GetNhits();
+        for(Int_t i=0; i<nPIDHits; i++)
+        {
+            PIDHits[i] = fPID->GetHits(i);
+            if(fPID->IsEnergy()) PIDEnergy[i] = fPID->GetEnergy(PIDHits[i]);
+            if(fPID->IsTime()) PIDTime[i] = fPID->GetTime(PIDHits[i]);
+        }
 	}
 
 	if(fMWPC)
 	{
-		nWC_Hits = fMWPC->GetNhits();
-		for(int i=0; i<nWC_Hits; i++)    
-			{ WC_Hits[i] = fMWPC->GetHits(i); }
+        nMWPCHits = fMWPC->GetNhits();
+        for(Int_t i=0; i<nMWPCHits; i++)
+        { MWPCHits[i] = fMWPC->GetHits(i); }
 	}
 
 	if(fBaF2PWO)
 	{
-		nBaF2_PbWO4_Hits = fBaF2PWO->GetNhits();
-		for(int i=0; i<nBaF2_PbWO4_Hits; i++)
-			{ BaF2_PbWO4_Hits[i] = fBaF2PWO->GetHits(i); }
+            for(Int_t i=0; i<438; i++)
+		{
+		        clindex[i] = -1;
+		}
+                clhits = fBaF2PWO->GetClustHit();
+        for(UInt_t i=0; i<fBaF2PWO->GetNCluster(); i++)
+		{
+		        cl = fBaF2PWO->GetCluster(clhits[i]);
+			hits = cl->GetHits();
+            for(UInt_t j=0; j<(cl->GetNhits()); j++)
+			{
+			        clindex[hits[j]] = i;
+			}
+		}
+			
+        if(fBaF2PWO->IsRawHits())
+        {
+            nBaF2ADCs = fBaF2PWO->GetNADChits();
+            rhits = fBaF2PWO->GetRawEnergyHits();
+            for(Int_t i=0; i<438; i++) BaF2ADCsRaw[i] = 0;
+            for(Int_t i=0; i<nBaF2ADCs; i++)
+            {
+                BaF2ADCs[i] = rhits[i];
+                BaF2ADCsRaw[BaF2ADCs[i]] = (Int_t)fBaF2PWO->GetElement(BaF2ADCs[i])->GetRawADCValue();
+                BaF2ADCsHit[i] = fBaF2PWO->GetElement(BaF2ADCs[i])->CheckEnergy();
+            }
+            nBaF2TDCs = fBaF2PWO->GetNTDChits();
+            rhits = fBaF2PWO->GetRawTimeHits();
+            for(Int_t i=0; i<438; i++) BaF2TDCsRaw[i] = 0;
+            for(Int_t i=0; i<nBaF2TDCs; i++)
+            {
+                BaF2TDCs[i] = rhits[i];
+                BaF2TDCsRaw[BaF2TDCs[i]] = (Int_t)fBaF2PWO->GetElement(BaF2TDCs[i])->GetRawTDCValue();
+                BaF2TDCsHit[i] = fBaF2PWO->GetElement(BaF2TDCs[i])->CheckTime();
+            }
+        }
+        nBaF2Hits = fBaF2PWO->GetNhits();
+        for(Int_t i=0; i<nBaF2Hits; i++)
+		{
+            BaF2Hits[i] = fBaF2PWO->GetHits(i);
+            BaF2Cluster[i] = clindex[fBaF2PWO->GetHits(i)];
+            if(fBaF2PWO->IsEnergy()) BaF2Energy[i] = fBaF2PWO->GetLGEnergy(fBaF2PWO->GetHits(i));
+            if(fBaF2PWO->IsTime()) BaF2Time[i] = fBaF2PWO->GetTime(fBaF2PWO->GetHits(i));
+        }
 	}
 
 	if(fVeto)
 	{
-		nVeto_Hits = fVeto->GetNhits();
-		for(int i=0; i<nVeto_Hits; i++) 
-			{ Veto_Hits[i] = fVeto->GetHits(i);}
+        if(fVeto->IsRawHits())
+        {
+            nVetoADCs = fVeto->GetNADChits();
+            rhits = fVeto->GetRawEnergyHits();
+            for(Int_t i=0; i<438; i++) VetoADCsRaw[i] = 0;
+            for(Int_t i=0; i<nVetoADCs; i++)
+            {
+                VetoADCs[i] = rhits[i];
+                VetoADCsRaw[VetoADCs[i]] = (Int_t)fVeto->GetElement(VetoADCs[i])->GetRawADCValue();
+                VetoADCsHit[i] = fVeto->GetElement(VetoADCs[i])->CheckEnergy();
+            }
+            nVetoTDCs = fVeto->GetNTDChits();
+            rhits = fVeto->GetRawTimeHits();
+            for(Int_t i=0; i<438; i++) VetoTDCsRaw[i] = 0;
+            for(Int_t i=0; i<nVetoTDCs; i++)
+            {
+                VetoTDCs[i] = rhits[i];
+                VetoTDCsRaw[VetoTDCs[i]] = (Int_t)fVeto->GetElement(VetoTDCs[i])->GetRawTDCValue();
+                VetoTDCsHit[i] = fVeto->GetElement(VetoTDCs[i])->CheckTime();
+            }
+        }
+        nVetoHits = fVeto->GetNhits();
+        for(Int_t i=0; i<nVetoHits; i++)
+        {
+            VetoHits[i] = fVeto->GetHits(i);
+            if(fVeto->IsEnergy()) VetoEnergy[i] = fVeto->GetEnergy(VetoHits[i]);
+            if(fVeto->IsTime()) VetoTime[i] = fVeto->GetTime(VetoHits[i]);
+        }
 	}
+
+    for(Int_t i=0; i<nChannels; i++)
+    {
+        TString index = channelIndex[i];
+        if(index.Contains("M"))
+        {
+            TString mult = channelIndex[i];
+            index.Remove(index.First("M"));
+            mult.Remove(0,mult.First("M")+1);
+            channelValue[i] = fMulti[index.Atoi()]->GetHit(mult.Atoi());
+        }
+        else channelValue[i] = fADC[index.Atoi()];
+    }
+
+    // Get two track vertex information from CentralApparatus
+    if(fNaI && fMWPC)
+    {
+        nVertex = fCB->GetNvertexes();
+        const TVector3 *vertex = fCB->GetVertexes();
+        for(Int_t i=0; i<nVertex; i++)
+        {
+            vertexX[i] = vertex[i].X();
+            vertexY[i] = vertex[i].Y();
+            vertexZ[i] = vertex[i].Z();
+        }
+    }
 	
 	// Get Trigger information
 	TriggerReconstruction();
 
-	nError = gAR->GetHardError();
+    nErrors = gAR->GetHardError();
 	ReadErrorMk2_t *ErrorBlock = gAR->GetHardwareError();
 	ReadErrorMk2_t *Error;
-	for(int i=0; i<nError; i++)
+    for(Int_t i=0; i<nErrors; i++)
 	{
 		Error = ErrorBlock + i;
-		ErrModID[i] = Error->fModID;
-		ErrModIndex[i] = Error->fModIndex;
-		ErrCode[i] = Error->fErrCode;
+        errorModuleID[i] = Error->fModID;
+        errorModuleIndex[i] = Error->fModIndex;
+        errorCode[i] = Error->fErrCode;
 	}
 
-	if(nHelBits > 1)
+    if(nHelicityBits > 1)
 	{
-		Bool_t HelBit;
-		Helicity = true;
-		HelInver = true;
-		for(int i=0; i<nHelBits; i++)
+        Bool_t helicityBit;
+        helicity = true;
+        helicityInverted = true;
+        for(Int_t i=0; i<nHelicityBits; i++)
 		{
-			HelBit = (fADC[HelADC] & 1<<i);
-			if(HelInh[i] && HelBit)
+            helicityBit = (fADC[helicityADC] & 1<<i);
+            if(helicityInhibit[i] && helicityBit)
 			{
-				ErrCode[nError] = 9;
-				nError++;
+                errorCode[nErrors] = 9;
+                nErrors++;
 				break;
 			}
-			else if(HelInh[i]) continue;
-			Helicity = (Helicity && (HelBeam[i] == HelBit));
-			HelInver = (HelInver && (HelBeam[i] != HelBit));
-			if(Helicity == HelInver)
+            else if(helicityInhibit[i]) continue;
+            helicity = (helicity && (helicityBeam[i] == helicityBit));
+            helicityInverted = (helicityInverted && (helicityBeam[i] != helicityBit));
+            if(helicity == helicityInverted)
 			{
-				ErrCode[nError] = 10;
-				nError++;
+                errorCode[nErrors] = 10;
+                nErrors++;
 				break;
 			}
 		}
@@ -515,37 +1246,86 @@ void    TA2GoAT::Reconstruct()
 
         if(fMulti[400])
 	{
-		int eventIDcheck = fMulti[400]->GetHit(0);
-		for(int i=1; i<23; i++)
+        Int_t eventIDcheck = fMulti[400]->GetHit(0);
+        for(Int_t i=1; i<23; i++)
 		{
 			if(eventIDcheck != fMulti[400]->GetHit(i))
 			{
-				ErrCode[nError] = 11;
-				nError++;
+                errorCode[nErrors] = 11;
+                nErrors++;
 				break;
 			}
 		}
 	}
 
+
 	//Apply EndBuffer
-    	Ek[nParticles] 		= EBufferEnd;
-    	Theta[nParticles]	= EBufferEnd;
-    	Phi[nParticles]		= EBufferEnd;
-    	time[nParticles] 	= EBufferEnd;
-    	WC0_E[nParticles] 	= EBufferEnd;
-    	WC1_E[nParticles] 	= EBufferEnd;
-    	WC_Vertex_X[nParticles] = EBufferEnd;  
-    	WC_Vertex_Y[nParticles] = EBufferEnd;    
-	WC_Vertex_Z[nParticles] = EBufferEnd;    
-	d_E[nParticles] 	= EBufferEnd;    
-    tagged_ch[nTagged] 	= EBufferEnd;
-    tagged_t[nTagged] 	= EBufferEnd;	
-	
+    clusterEnergy[nParticles] = EBufferEnd;
+    theta[nParticles]         = EBufferEnd;
+    phi[nParticles]           = EBufferEnd;
+    time[nParticles]          = EBufferEnd;
+    clusterSize[nParticles]   = EBufferEnd;
+    centralCrystal[nParticles]= EBufferEnd;
+    centralVeto[nParticles]   = EBufferEnd;
+    detectors[nParticles] 	  = EBufferEnd;
+    vetoEnergy[nParticles] 	  = EBufferEnd;
+    MWPC0Energy[nParticles]   = EBufferEnd;
+    MWPC1Energy[nParticles]   = EBufferEnd;
+    shortEnergy[nParticles]   = EBufferEnd;
+    pseudoVertexX[nParticles] = EBufferEnd;
+    pseudoVertexY[nParticles] = EBufferEnd;
+    pseudoVertexZ[nParticles] = EBufferEnd;
+
+    vertexX[nVertex]          = EBufferEnd;
+    vertexY[nVertex]          = EBufferEnd;
+    vertexZ[nVertex]          = EBufferEnd;
+
+    taggedChannel[nTagged] 	  = EBufferEnd;
+    taggedTime[nTagged] 	  = EBufferEnd;
+    taggedEnergy[nTagged] 	  = EBufferEnd;
+
+    NaIADCs[nNaIADCs] 	      = EBufferEnd;
+    NaIADCsHit[nNaIADCs]      = EBufferEnd;
+    NaITDCs[nNaITDCs] 	      = EBufferEnd;
+    NaITDCsHit[nNaITDCs]      = EBufferEnd;
+    NaIHits[nNaIHits] 	      = EBufferEnd;
+    NaICluster[nNaIHits] 	  = EBufferEnd;
+    NaIEnergy[nNaIHits] 	  = EBufferEnd;
+    NaITime[nNaIHits]         = EBufferEnd;
+    PIDADCs[nPIDADCs] 	      = EBufferEnd;
+    PIDADCsHit[nPIDADCs]      = EBufferEnd;
+    PIDTDCs[nPIDTDCs] 	      = EBufferEnd;
+    PIDTDCsHit[nPIDTDCs]      = EBufferEnd;
+    PIDHits[nPIDHits] 	      = EBufferEnd;
+    PIDEnergy[nPIDHits] 	  = EBufferEnd;
+    PIDTime[nPIDHits]         = EBufferEnd;
+    MWPCHits[nMWPCHits] 	  = EBufferEnd;
+    BaF2ADCs[nBaF2ADCs]       = EBufferEnd;
+    BaF2ADCsHit[nBaF2ADCs]    = EBufferEnd;
+    BaF2TDCs[nBaF2TDCs] 	  = EBufferEnd;
+    BaF2TDCsHit[nBaF2TDCs]    = EBufferEnd;
+    BaF2Hits[nBaF2Hits] 	  = EBufferEnd;
+    BaF2Cluster[nBaF2Hits] 	  = EBufferEnd;
+    BaF2Energy[nBaF2Hits] 	  = EBufferEnd;
+    BaF2Time[nBaF2Hits]       = EBufferEnd;
+    VetoADCs[nVetoADCs] 	  = EBufferEnd;
+    VetoADCsHit[nVetoADCs]    = EBufferEnd;
+    VetoTDCs[nVetoTDCs] 	  = EBufferEnd;
+    VetoTDCsHit[nVetoTDCs]    = EBufferEnd;
+    VetoHits[nVetoHits] 	  = EBufferEnd;
+    VetoEnergy[nVetoHits] 	  = EBufferEnd;
+    VetoTime[nVetoHits]       = EBufferEnd;
+
+    errorModuleID[nErrors] 	  = EBufferEnd;
+    errorModuleIndex[nErrors] = EBufferEnd;
+    errorCode[nErrors] 	      = EBufferEnd;
+
 	//Fill Trees
-	if(treeRawEvent) 		treeRawEvent->Fill();
+    if(treeTracks) 	treeTracks->Fill();
 	if(treeTagger)			treeTagger->Fill();
 	if(treeTrigger)  		treeTrigger->Fill();
 	if(treeDetectorHits)	treeDetectorHits->Fill();
+    if(treeVertex)          treeVertex->Fill();
 
 	//increment event number
 	eventNumber++;	
@@ -566,7 +1346,7 @@ void	TA2GoAT::DefineHistograms()
 	Check_TAPSdE_E		= new TH2F("Check_TAPSdE_E", "dE_E (all TAPS clusters compared to Veto hits)", 	400, 0, 400, 100, 0, 10);
 	Check_TAPSPhiCorr 	= new TH2F("Check_TAPSPhiCorr","TAPS-Veto phi correlation (all TAPS clusters compared to Veto hits)", 438,  0,  438, 180, -180, 180);
 
-	Check_TAPSdE_E_1Veto	= new TH2F("Check_TAPSdE_E_1PID", "dE_E (all TAPS clusters compared to single Veto hits)", 	400, 0, 400, 100, 0, 10);
+	Check_TAPSdE_E_1Veto	= new TH2F("Check_TAPSdE_E_1Veto", "dE_E (all TAPS clusters compared to single Veto hits)", 	400, 0, 400, 100, 0, 10);
 	Check_TAPSPhiCorr_1Veto = new TH2F("Check_TAPSPhiCorr_1Veto","TAPS-Veto phi correlation (all TAPS clusters compared to single Veto hits)", 438,  0,  438, 180, -180, 180);
 
 	Check_CBHits 		= new TH2F("Check_CBHits", 		"CB Hits by event number", 		10000,  0,  10000000, 720, 0, 720);	
@@ -660,7 +1440,7 @@ void 	TA2GoAT::DataCheckHistograms()
 	{
 		// Find the charged particle (if possible) and fill dE_E for this
 		// Fill the charged particle phi against the PID hit
-		for(int i=0; i<fCB->GetNParticle(); i++)
+        for(Int_t i=0; i<fCB->GetNParticle(); i++)
 		{
 			TA2Particle part = fCB->GetParticles(i);
 
@@ -722,7 +1502,7 @@ void 	TA2GoAT::DataCheckHistograms()
 	{
 		// Find the charged particle (if possible) and fill dE_E for this
 		// Fill the charged particle phi against the Veto hit
-		for(int i=0; i<fTAPS->GetNParticle(); i++)
+        for(Int_t i=0; i<fTAPS->GetNParticle(); i++)
 		{
 			TA2Particle part = fTAPS->GetParticles(i);
 
@@ -825,10 +1605,10 @@ void    TA2GoAT::Finish()
 	
 	file->cd();
 	
-	if(treeRawEvent) 
+    if(treeTracks)
 	{
-		treeRawEvent->Write();	// Write	
-		delete treeRawEvent; 	// Close and delete in memory
+        treeTracks->Write();	// Write
+        delete treeTracks; 	// Close and delete in memory
 	}
 	if(treeTagger) 
 	{
@@ -849,12 +1629,27 @@ void    TA2GoAT::Finish()
 	{
 		treeDetectorHits->Write();// Write	
 		delete treeDetectorHits;  // Close and delete in memory
-	}		
-	if(treeScaler)
+    }
+    if(treeVertex)
+    {
+        treeVertex->Write();    // Write
+        delete treeVertex;      // Close and delete in memory
+    }
+    if(treeScalers)
 	{
-		treeScaler->Write();	// Write	
-		delete treeScaler; 	// Close and delete in memory
-    	}
+        treeScalers->Write();	// Write
+        delete treeScalers; 	// Close and delete in memory
+    }
+    if(treeMoeller)
+    {
+        treeMoeller->Write();	// Write
+        delete treeMoeller; 	// Close and delete in memory
+    }
+    if(treeSetupParameters)
+    {
+        treeSetupParameters->Write();	// Write
+        delete treeSetupParameters; 	// Close and delete in memory
+    }
 
 	WriteHistograms();
 	
@@ -872,7 +1667,7 @@ void    TA2GoAT::ParseMisc(char* line)
 
 void 	TA2GoAT::TriggerReconstruction()
 {
-	if (fNaI) ESum = fNaI->GetTotalEnergy();
+    if (fNaI) energySum = fNaI->GetTotalEnergy();
 	if(gAR->GetProcessType() == EMCProcess) TriggerMC();
 	else TriggerHW();
 
@@ -886,7 +1681,7 @@ void 	TA2GoAT::TriggerMC()
 	// Also need some flag for new and old 
 	// Set some basic discriminator thresh for now
 	Double_t DiscTh = 5.0; 
-	Mult = 0;
+    multiplicity = 0;
 		
 	if(fNaI) 
 	{
@@ -897,7 +1692,7 @@ void 	TA2GoAT::TriggerMC()
 			{
 				if ((fNaI->GetEnergyAll(i*16 + j)) >= DiscTh) flag = kTRUE;
 			}
-			if (flag == kTRUE) Mult++;
+            if (flag == kTRUE) multiplicity++;
 		}
 	}
 		
@@ -908,37 +1703,39 @@ void 	TA2GoAT::TriggerMC()
 			// really add some check of how many crystals are used, skip PbWO4s
 				if ((fBaF2PWO->GetEnergyAll(i*71 + j)) >= DiscTh) flag = kTRUE;
 			}
-			if (flag == kTRUE) Mult++; 		
+            if (flag == kTRUE) multiplicity++;
 		}
 	}
 		
 	// True Hardware multiplicities store only M2, M3, M4+
 	//  Reduce MC multiplicity to reflect this limitation
-	if (Mult == 1) Mult = 0;	
-	if (Mult > 4) Mult = 4;
+    if (multiplicity == 1) multiplicity = 0;
+    if (multiplicity > 4) multiplicity = 4;
 }
 	
 void 	TA2GoAT::TriggerHW() 
 {
 	nTriggerPattern = 0;
-	for (int i= 0; i < 16; i++)
+    for (Int_t i= 0; i < 16; i++)
 	{
 		if (fADC[0] & 1<<i) 
 		{ 
-			TriggerPattern[nTriggerPattern] = i; 
+            triggerPattern[nTriggerPattern] = i;
 			nTriggerPattern++;
 		}
 		if (fADC[1] & 1<<i) 
 		{ 
-			TriggerPattern[nTriggerPattern] = i+16;
+            triggerPattern[nTriggerPattern] = i+16;
 			nTriggerPattern++;
 		}
 	}
 	
-	Mult = 0;
+    multiplicity = 0;
 	
-	if (fADC[0] & 1<<11) Mult+=2;
-	if (fADC[0] & 1<<12) Mult++;
-	if (fADC[0] & 1<<13) Mult++;
+    if (fADC[0] & 1<<11) multiplicity+=2;
+    if (fADC[0] & 1<<12) multiplicity++;
+    if (fADC[0] & 1<<13) multiplicity++;
  	
 }
+
+ClassImp(TA2GoAT)

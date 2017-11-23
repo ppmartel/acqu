@@ -16,7 +16,6 @@
 
 #include "TCAMAC_4413SPILL.h"
 
-ClassImp(TCAMAC_4413SPILL)
 
 
 enum {E4413SPILLreset=200 };
@@ -150,3 +149,5 @@ void TCAMAC_4413SPILL::DisableTrigCtrl()
   Read( fTrigExe, &data );    // execute F25 test... generate pulse
 }
 //--------------------------------------------------------------------------
+
+ClassImp(TCAMAC_4413SPILL)

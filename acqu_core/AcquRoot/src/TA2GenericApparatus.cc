@@ -23,7 +23,6 @@ static Map_t kValidDetectors[] = {
   {NULL, 		-1}
 };
 
-ClassImp(TA2GenericApparatus)
 
 //-----------------------------------------------------------------------------
 TA2GenericApparatus::TA2GenericApparatus( const char* name, TA2System* analysis )
@@ -96,3 +95,5 @@ void TA2GenericApparatus::Reconstruct( )
 {
   // The needful goes here
 }
+
+ClassImp(TA2GenericApparatus)

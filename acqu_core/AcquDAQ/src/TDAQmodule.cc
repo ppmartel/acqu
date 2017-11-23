@@ -39,7 +39,6 @@
 #include "TA2Mk1Format.h"
 #include "TDAQexperiment.h"
 
-ClassImp(TDAQmodule)
 
 enum { EModBaseAddr, EModRegister, EModPostInit, EModBaseIndex, EModHardID };
 static Map_t kModuleKeys[] = {
@@ -383,4 +382,4 @@ inline void TDAQmodule::ErrorStore( void** out, Int_t errcode )
   if( IsType(EDAQ_ADC) )fEXP->IncADCError();
   else if( IsType(EDAQ_Scaler) )fEXP->IncScalerError();
 }
-
+ClassImp(TDAQmodule)

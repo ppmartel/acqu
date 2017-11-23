@@ -40,12 +40,10 @@
 #pragma link C++ class TA2GenericPhysics+;
 #pragma link C++ class TA2Apparatus+;
 #pragma link C++ class TA2GenericApparatus+;
-#pragma link C++ class TA2TOFApparatus+;
 #pragma link C++ class TA2Tagger+;
 #pragma link C++ class TA2Detector+;
 #pragma link C++ class TA2GenericDetector+;
 #pragma link C++ class TA2ClusterDetector+;
-#pragma link C++ class TA2GenericCluster+;
 #pragma link C++ class TA2LongScint+;
 #pragma link C++ class TA2Ladder+;
 #pragma link C++ class TA2WireChamber+;

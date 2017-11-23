@@ -3,7 +3,15 @@ function (ROOT_GENERATE_DICTIONARY HEADERS LINKDEF_FILE DICTFILE INCLUDE_DIRS)
   # construct -I arguments
   foreach(f ${INCLUDE_DIRS})
     list(APPEND INCLUDE_DIRS_ARGS -I"${f}")   
-  endforeach() 
+  endforeach()
+  # construct -D arguments
+  get_directory_property(DirDefs
+    DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMPILE_DEFINITIONS)
+  foreach(f ${DirDefs})
+    list(APPEND DEF_ARGS -D${f})
+  endforeach()
+  
 
   # also add the outfile with extension .h 
   get_filename_component(DICTFILEDIR ${DICTFILE} PATH)
@@ -29,7 +37,7 @@ function (ROOT_GENERATE_DICTIONARY HEADERS LINKDEF_FILE DICTFILE INCLUDE_DIRS)
     ${LDPREFIX}=${ROOT_LIBRARY_DIR}
     ROOTSYS=${ROOTSYS}
     ${ROOT_CINT_EXECUTABLE}
-    -f "${DICTFILE}" -c -p ${INCLUDE_DIRS_ARGS} ${HEADERS} "${LINKDEF_FILE}"
+    -f "${DICTFILE}" -c -p ${INCLUDE_DIRS_ARGS} ${DEF_ARGS} ${HEADERS} "${LINKDEF_FILE}"
     DEPENDS ${HEADERS} ${LINKDEF_FILE}
     )
 

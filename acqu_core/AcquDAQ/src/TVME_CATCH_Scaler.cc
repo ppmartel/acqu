@@ -17,7 +17,6 @@
 #include "TVME_CATCH_Scaler.h"
 #include "TDAQexperiment.h"
 
-ClassImp(TVME_CATCH_Scaler)
 
 static Map_t kCATCH_Scaler_Keys[] = {
   {NULL,                  -1},
@@ -96,3 +95,5 @@ void TVME_CATCH_Scaler::ReadIRQScaler( void** outBuffer )
   //  fTCSEventID = fSpyData[0]; // move the TVME_CATCH
   return;
 }
+
+ClassImp(TVME_CATCH_Scaler)

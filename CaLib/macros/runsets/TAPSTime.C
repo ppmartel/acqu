@@ -1,4 +1,4 @@
-// SVN Info: $Id: TAPSTime.C 912 2011-05-18 22:09:17Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller
@@ -12,12 +12,12 @@
 //                                                                      //
 //////////////////////////////////////////////////////////////////////////
 
+#include "Config.h"
 
 TCanvas* gCFit;
 TH1* gHOverview;
 TH1* gH;
 TH2* gH2;
-TFile* gFile;
 TF1* gFitFunc;
 TLine* gLine;
 
@@ -41,7 +41,7 @@ void Fit(Int_t run)
     // configure fitting function
     gFitFunc->SetRange(fPi0Pos - 0.5, fPi0Pos + 0.5);
     gFitFunc->SetLineColor(2);
-    gFitFunc->SetParameters(gH->GetMaximum(), 0, 5);
+    gFitFunc->SetParameters(gH->GetMaximum(), fPi0Pos, .5);
     Int_t fitres = gH->Fit(gFitFunc, "RB0Q");
     
     // get position
@@ -91,23 +91,11 @@ void TAPSTime()
     Double_t yMin = -50;
     Double_t yMax = 50;
 
-    // configuration (December 2007)
-    //const Char_t calibration[] = "LD2_Dec_07";
-    //const Char_t* fLoc = "/Users/fulgur/Desktop/calib/Dec_07";
-    //const Char_t* fLoc = "/usr/puma_scratch0/werthm/A2/Dec_07/AR/out";
-
-    // configuration (February 2009)
-    const Char_t calibration[] = "LD2_Feb_09";
-    const Char_t* fLoc = "/usr/puma_scratch0/werthm/A2/Feb_09/AR/out";
-    //const Char_t* fLoc = "/Users/fulgur/Desktop/calib/Feb_09";
-    
-    // configuration (May 2009)
-    //const Char_t calibration[] = "LD2_May_09";
-    //const Char_t* fLoc = "/usr/puma_scratch0/werthm/A2/May_09/AR/out";
-
     // create histogram
-    gHOverview = new TH1F("Overview", "Overview", 40000, 0, 40000);
-    TCanvas* cOverview = new TCanvas();
+    gHOverview = new TH1F("TAPSTime", "TAPS Time", 40000, 0, 40000);
+    gHOverview->SetXTitle("Run Number");
+    gHOverview->SetYTitle("TAPS Time [ns]");
+    TCanvas* cOverview = new TCanvas("cOverview","TAPS Time");
     gHOverview->GetYaxis()->SetRangeUser(yMin, yMax);
     gHOverview->Draw("E1");
     
@@ -120,10 +108,15 @@ void TAPSTime()
     gFitFunc = 0;
     
     // create fitting canvas
-    gCFit = new TCanvas();
+    gCFit = new TCanvas("gCFit","Fit");
     
     // get number of sets
     Int_t nSets = TCMySQLManager::GetManager()->GetNsets(data, calibration);
+
+    if(nSets <= 0) {
+        printf("No run sets found for calibration \"%s\"\n", calibration);
+        gSystem->Exit(0);
+    }
     
     // total number of runs
     Int_t nTotRuns = 0;
@@ -148,14 +141,12 @@ void TAPSTime()
             // clean-up
             if (gH) delete gH;
             if (gH2) delete gH2;
-            if (gFile) delete gFile;
             gH = 0;
             gH2 = 0;
-            gFile = 0;
 
             // load ROOT file
-            sprintf(tmp, "%s/ARHistograms_CB_%d.root", fLoc, runs[j]);
-            gFile = new TFile(tmp);
+            sprintf(tmp, "%s/Hist_CBTaggTAPS_%d.root", fLoc, runs[j]);
+            TFile* gFile = new TFile(tmp, "READ");
 
             // check file
             if (!gFile) continue;
@@ -205,9 +196,7 @@ void TAPSTime()
     // adjust axis
     gHOverview->GetXaxis()->SetRangeUser(first_run-10, last_run+10);
 
-    TFile* fout = new TFile("runset_overview.root", "recreate");
-    cOverview->Write();
-    delete fout;
+    gHOverview->SaveAs("Calib_Overview_TAPSTime.root");
 
     printf("%d runs analyzed.\n", nTotRuns);
 

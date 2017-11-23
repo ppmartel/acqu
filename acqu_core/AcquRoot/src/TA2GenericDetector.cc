@@ -17,7 +17,6 @@
 
 #include "TA2GenericDetector.h"
 
-ClassImp(TA2GenericDetector)
 
 enum { EMCnpart, EMCntof, EMCtofi, EMCtofe, EMCtofew, EMCtoft, EMCtofte,
        EMCtofx, EMCtofy, EMCtofz, EMCvertex, EMCbeam, EMCdircos, EMCplab,
@@ -306,3 +305,5 @@ void TA2GenericDetector::LoadVariable( )
   }
   TA2Detector::LoadVariable();
 }
+
+ClassImp(TA2GenericDetector)

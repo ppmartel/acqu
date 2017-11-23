@@ -26,7 +26,6 @@
 #include "TFB_1821SMI.h"
 #include "ARFile_t.h"
 
-ClassImp(TFB_1821SMI)
 
 enum { E1821SMI_RAM=100, E1821SMIRdReg,E1821SMI_INIT };
 static Map_t k1821SMIKeys[] = {
@@ -1067,4 +1066,4 @@ Int_t TFB_1821SMI::Add_FbSCA(TDAQmodule* mod)
   fNScaler++;                     // increment no. of scalers
   return(0);
 }
-
+ClassImp(TFB_1821SMI)

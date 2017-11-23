@@ -1,7 +1,6 @@
 #include "TA2CylMwpcStrip.h"
 #include "TA2Math.h"
 
-ClassImp(TA2CylMwpcStrip)
 
 //___________________________________________________________________________________________
 TA2CylMwpcStrip::TA2CylMwpcStrip(const char* name, Int_t nelem, Int_t maxclust, Int_t maxclsize, void* det, Double_t* layerparm)
@@ -64,3 +63,5 @@ Double_t TA2CylMwpcStrip::CGClusterFromPhiZ(const Double_t &z, const Double_t &p
   
   return clCG;
 }
+
+ClassImp(TA2CylMwpcStrip)

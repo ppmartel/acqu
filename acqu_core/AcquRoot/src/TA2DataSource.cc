@@ -16,7 +16,6 @@
 //	ClassImp.....for ROOT implementation of classes
 //	Macro defined in $ROOTSYS/include/Rtypes.h
 
-ClassImp(TA2DataSource)
 
 //-----------------------------------------------------------------------------
 void* A2SourceThread( void* arg )
@@ -111,3 +110,5 @@ void TA2DataSource::Run()
   Process();
   Shutdown();
 }
+
+ClassImp(TA2DataSource)

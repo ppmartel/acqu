@@ -35,7 +35,6 @@ VMEreg_t SIS3820_reg[] = {
 };
 
 
-ClassImp(TVME_SIS3820)
 
 enum { ESIS_XXX=200, ESIS_YYY };
 static Map_t kSISKeys[] = {
@@ -104,4 +103,4 @@ Bool_t TVME_SIS3820::CheckHardID( )
     PrintError("","<SIS3820 firmware ID error>",EErrFatal);
   return kFALSE;
 }
-
+ClassImp(TVME_SIS3820)

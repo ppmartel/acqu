@@ -10,24 +10,21 @@ Reconstruct:
 # CaLib configuration
 #
 
-# General:      dbhost       		dbname   dbuser      dbpass        calibration
-Use-CaLib:      a2calib.online.a2.kph   calib    calib       basel10       Compton_2012_12
+# General:      dbhost     dbname                  dbuser      dbpass        calibration
+Use-CaLib:      blaster    CaLib_2013_10-Present   calib       basel10       2014-07_EPT_Prod_Neiser      
 #
 #
-# miscellaneous calibrations    # target position  (0=off/1=on)
-Use-CaLib-Misc:                 1
-# tagger calib:     time  (0=off/1=on)
-Use-CaLib-TAGG:     1
-# CB calib:         energy  time    timewalk    quadr. energy  (0=off/1=on)
-Use-CaLib-CB:       1       1       1           1
-# TAPS calib:       energy  time    quadr. energy   LED thr.  (0=off/1=on)
-Use-CaLib-TAPS:     0       1       0               0
-# PID calib:        phi     droop   energy  time  (0=off/1=on)
-Use-CaLib-PID:      1       0       0       1
-# Veto calib:       energy  time  (0=off/1=on)
-Use-CaLib-Veto:     0       1
+# tagger calib:     time    efficiency (0=off/1=on)
+Use-CaLib-TAGG:     1       0
+# CB calib:         energy  time    timewalk    quadr. energy    led  (0=off/1=on)
+Use-CaLib-CB:       1       1       0           0                0 
+# TAPS calib:       energy  time    quadr. energy   LED thr.    CFD thr.  (0=off/1=on)
+Use-CaLib-TAPS:     1       1       0               0           0
+# PID calib:        phi     energy  time  (0=off/1=on)
+Use-CaLib-PID:      1       0       1
+# Veto calib:       energy  time    LED thr. (0=off/1=on)
+Use-CaLib-Veto:     1       1       0
 
-#Use-CaLib-CBEnergyPerRun: 	data/CBEnergyCorrectionPerRun.txt
 RootTree-Output-Folder:         ~/
 RootTree-File-Name:		Acqu
 
@@ -41,20 +38,26 @@ RootTree-File-Name:		Acqu
 # New setting
 #Beam-Helicity: 7 H I H L
 
+# Optional argument to include tagged photon energies in the tagger tree
+# GoAT currently handles this with an included histogram, reducing file size
+#
+#Save-Tagged-Energy: 1
+
 Initialise:
 
-Display: 1D nParticles 	15 0 15 
-Display: 1D Px		100 -100 100 
-Display: 1D Py		100 -100 100 
-Display: 1D Pz		100 -100 100 
-Display: 1D E		85 0 850
-Display: 1D Theta	180 0 180
-Display: 1D Phi	 	360 -180 180
-Display: 1D clusterSize 40 0 40 
-Display: 1D nTagged	100 0 100 
-Display: 1D taggedCh	352 0 352 
-Display: 1D taggedT     200 -100 100
-Display: 1D dE		25 0 25 
-Display: 1D WC0E	500 0 500 
-Display: 1D WC1E	500 0 500
-Display: 1D ESum	2000 0 2000
+Display: 1D nParticles 	  15 0 15 
+Display: 1D clusterEnergy 85 0 850
+Display: 1D theta         180 0 180
+Display: 1D phi	          360 -180 180
+Display: 1D time 	  200 -100 100 
+Display: 1D nTagged	  100 0 100 
+Display: 1D taggedEnergy  160 0 1600 
+Display: 1D taggedChannel 352 0 352 
+Display: 1D taggedTime    200 -100 100
+Display: 1D vetoEnergy    25 0 25 
+Display: 1D MWPC0Energy   500 0 500 
+Display: 1D MWPC1Energy   500 0 500
+Display: 1D vertexX       100 -50 50
+Display: 1D vertexY       100 -50 50
+Display: 1D vertexZ       1000-500 500
+Display: 1D energySum     2000 0 2000

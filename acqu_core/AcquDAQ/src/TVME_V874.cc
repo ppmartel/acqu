@@ -66,7 +66,6 @@ const Int_t DevThrVLED[] = { 0x08,0x09,0x0a,0x0b,0x0c,0x0d,0x0e,0x0f };
 const Int_t DevTestPuls = 0x30;
 
 
-ClassImp(TVME_V874)
 
 enum { EV874_ThrLG=200, EV874_ThrLGS, EV874_ThrSG, EV874_ThrSGS, EV874_ThrBP,
        EV874_FCWindow, EV874_CLRTime, EV874_Voff, EV874_Vset, EV874_EnThresh,
@@ -649,3 +648,5 @@ void TVME_V874::WrtThr(Int_t i1, Int_t i2, Int_t i3, Int_t i4)
   Write(EV874_IThresh+i3, fThresh[i3]);
   Write(EV874_IThresh+i4, fThresh[i4]);
 }
+
+ClassImp(TVME_V874)

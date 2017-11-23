@@ -1,0 +1,183 @@
+########################################################################################
+##                                                                                    ##
+##                                                                                    ##
+##       TAPS2  Config File  for use of TA2Taps-class in AcquRoot                     ##
+##                                                                                    ##
+##                                                                                    ##
+##                                                                                    ##
+##                                                                                    ##
+##                                                                                    ##
+##    --Author      H.Berghauser June 2008    (HenningBerghaeuser@web.de)             ##
+##    --Update      H.Berghaeuser Dez 2008                                            ##
+##    --Update      H.Berghaeuser FEB 2009                                            ##
+##    --Update      H.Berghaeuser Oct 2009                                            ##
+##                                                                                    ##
+##    --Version :   1.0                                                               ##
+##                                                                                    ##
+## Parameter File: TAPS.dat                                                           ##
+## Setup analysis of the TA2Taps    (TAPS) apparatus class                            ##
+## This one sets up an analysis of the forward-wall BaF2 array                        ##
+## Vetos handled in TA2PlasticPID-Class                                               ##
+## This code/class is compatible  AR_HB2v3                                            ##
+##                                                                                    ##
+##                                                                                    ##
+## proton and ch_pion identification is done by using dEvE (Veto versus BaF2)         ##
+## ... therefore you need a EnergyCalibration of Veto-Energy                          ##
+##                                                                                    ##
+########################################################################################
+#
+#
+#
+#
+#
+#
+########################################################################################
+##                                                                                    ##
+##      Specify list of detectors which constitute the TAPS apparatus                 ##
+##                                                                                    ##
+##	  Name         Class Name		Setup file                            ##
+########################################################################################
+Detector: BaF2          TA2TAPS_BaF2		BaF2_2007_07_July09_TE.dat
+Detector: VetoBaF2      TA2PlasticPID		Veto2007_07_TE_July09.dat
+#
+#
+#
+#
+#########################################################################################
+##                                                                                     ##
+##                                                                                     ##
+##      Other and OLD settings                                                         ##
+##                                                                                     ##
+##                                                                                     ##
+##                                                                                     ##
+#########################################################################################
+Reconstruct:
+##
+## PDG database	# particles
+ParticleID: 	16
+## Do some post-initialisation.
+## Should usually be done before display is setup
+Initialise:
+##
+TAPS-Factor: 1.0
+#
+#
+#
+########################################################################################
+##                                                                                    ##
+## Define TAPS-Reconstruction mode with variable TAPSSimpleReconstruct                ##
+##                                                                                    ##
+## TAPSSimpleReconstruct = 1  means: all hits will be reconstructed as photons        ##
+##                                   (same as TA2Calorimater does)                    ##
+## TAPSSimpleReconstruct = 0  means: full reconstruction .. use dEvE                  ##
+##                                   in order to separate protons from ch.pions etc.  ##
+##                                                                                    ##
+########################################################################################
+TAPS_SimpleReconstruct: 0
+#
+#
+#
+#
+########################################################################################
+##                                                                                    ##
+##  DeltaEenergy versus Energy  dEvE      (between Veto and BaF2-Clusters)            ##
+##                                                                                    ##
+##  CUTS:                                                                             ##
+##  TAPS_dEvE_Proton  = 1  dEvE-Cut on protons/neutrons is active  / =0 not active    ##
+##  TAPS_dEvE_ChPion  = 1  dEvE-Cuts on charged pions is actice    / =0 not active    ##
+##  TAPS_dEvE_Electron= 1  dEvE-CUTS on electrons is active        / =0 not active    ##
+##                                                                                    ##
+## (note: when a cut is set active ("=1")then the appendant TCut with name specified  ##
+##     below must exist in TAPS_dEvE_Cuts root-File                                   ##
+##                                                                                    ##
+########################################################################################
+TAPS_dEvE_Active: 1
+TAPS_dEvE_Cuts: /home/henning2/acqu/acqu/data/VETOdEvE_2007_7_FEB09.root
+TAPS_dEvE_Proton: 1
+TAPS_dEvE_Proton_CutName: p
+TAPS_dEvE_ChPion: 0
+TAPS_dEvE_ChPion_CutName: pi
+TAPS_dEvE_Electron: 1
+TAPS_dEvE_Electron_CutName: pie
+#
+#
+#
+#
+########################################################################################
+##                                                                                    ##
+##  Time Of Flight     TOF     (best: use tagger-time versus taps)                    ##
+##                                                                                    ##
+##  CUTS:                                                                             ##
+##  TAPS_TOF_Nucleon  = 1  TOF-Cut on protons/neutrons is active  / =0 not active      ##
+##                                                                                    ##
+## (note: when a cut is set active ("=1")then the appendant TCut with name specified  ##
+##     below must exist in TAPS_TOF_Cuts root-File                                    ##
+##                                                                                    ##
+########################################################################################
+TAPS_TOF_Cuts: /home/henning2/acqu/acqu/data/TOFcut2007_07.root
+TAPS_TOF_Nucleon: 1
+TAPS_TOF_onlyPhoton: 1
+TAPS_TOF_Nucleon_CutName: nucleon
+TAPS_TOF_TaggerTime: -142.1
+#
+#
+#
+########################################################################################
+#                                                                                     ##
+# Distance: Target to TAPS_BaF2_Frot in cm					      ##
+#                                                                                     ##
+# Correct for longer way to outer rings/crystals ?! TAPSDoFlightTimeCorrection: 1     ##
+#                                                                                     ##
+########################################################################################
+TAPSTargetDistance: 146.0
+TAPSDoFlightTimeCorrection: 0
+#
+#
+#
+#
+#########################################################################################
+#                                                                                      ##
+# VetoBaF2Time: Cut on Prompt Peak in the VetoBaF2 Time Spectrum                       ##
+#                  Cut on/off    Window: min  max                                      ##
+#########################################################################################
+TAPSVetoBaF2TimeCut:  0        -10.0      15
+#
+#
+#
+#
+########################################################################################
+##                                                                                    ##
+##  Second order correction factors for each TAPS Ring                                ##
+##  Format: c1_ring1 c1_ring2.....                                                    ##
+##  Energy will be corrected as E'=c1*E+c2*E*E                                        ##
+##  Correction facotrs can be obtained from CalcTAPS2ndOrderFactors                   ##
+##  For questions ask boris.lemmer@exp2.physik.uni-giessen.de                         ##
+##                                                                                    ##
+########################################################################################
+TAPSRingEnergyCorr1: 1 1 1 1 1 1 1 1 1 1 1 
+TAPSRingEnergyCorr2: 0 0 0 0 0 0 0 0 0 0 0 
+#TAPSRingEnergyCorr1: 1.000000 1.000000 0.979259 0.988492 0.987351 0.987491 0.983632 0.984127 0.983974 0.977034 0.934262 
+#TAPSRingEnergyCorr2: -0.000000 -0.000000 0.000002 -0.000031 -0.000029 -0.000060 -0.000052 -0.000053 -0.000119 -0.000112 0.000008
+#
+#
+#
+#
+#
+########################################################################################
+##                                                                                    ##
+##  Display Histograms                                                                ##
+##  (these you'll find  @ root/ROOTMemory,                                            ##
+##   when you open a TBrowser while Acqu is running)  dEvE                            ##
+##                                                                                    ##
+########################################################################################
+Display: 2D Echarged 800 0 800 -1        DeltaE 140 0 7 -1
+Display: 2D Echargedcl 1000 0 1000 -1    DeltaE 140 0 7 -1
+Display: 2D EchargedIndex 500 0 500 -1   DeltaE 140 0 7 -1
+Display: 2D HitMatrix_X 280 -70 70 -1    HitMatrix_Y 280 -70 70 -1 
+Display: 2D Echargedcl 600 0 600 -1      TOFproton 800 -200 -100 -1
+Display: 2D Echargedcl 600 0 600 -1      TOFparticle 800 -200 -100 -1
+Display: 1D VetoPromptTime 200 -15 5
+Display: 1D TOFproton 800 -200 -100
+Display: 1D VetoBaf2Time 800 -200 -200
+Display: 1D DetectedParticleIDs 2300 -50 2250
+# End

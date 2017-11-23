@@ -15,7 +15,6 @@
 #include <iostream>
 #include <string>
 
-ClassImp(TVME_VUPROM_Pattern)
 
 enum { EVUPP_ModuleChain=600, EVUPP_Pattern };
 
@@ -146,4 +145,4 @@ void TVME_VUPROM_Pattern::ReadIRQ( void** outBuffer )
     n++; // for next iteration, increment!
   }
 }
-
+ClassImp(TVME_VUPROM_Pattern)

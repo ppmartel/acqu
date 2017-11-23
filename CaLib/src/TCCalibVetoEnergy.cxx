@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCCalibVetoEnergy.cxx 912 2011-05-18 22:09:17Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller
@@ -15,7 +15,6 @@
 
 #include "TCCalibVetoEnergy.h"
 
-ClassImp(TCCalibVetoEnergy)
 
 
 //______________________________________________________________________________
@@ -303,4 +302,4 @@ void TCCalibVetoEnergy::Calculate(Int_t elem)
     if (unchanged) printf("    -> unchanged");
     printf("\n");
 }   
-
+ClassImp(TCCalibVetoEnergy)

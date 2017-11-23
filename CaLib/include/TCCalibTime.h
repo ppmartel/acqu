@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCCalibTime.h 912 2011-05-18 22:09:17Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller, Irakli Keshelashvili
@@ -23,14 +23,15 @@
 #include "TCCalib.h"
 #include "TCFileManager.h"
 
+#include "TIndicatorLine.h"
 
 class TCCalibTime : public TCCalib
 {
 
-private:
+protected:
     Double_t* fTimeGain;                // TDC gain array
     Double_t fMean;                     // mean time position
-    TLine* fLine;                       // indicator line
+    TIndicatorLine* fLine;                       // indicator line
     
     virtual void Init();
     virtual void Fit(Int_t elem);
@@ -69,6 +70,8 @@ public:
                      "Data.CB.T0",
                      TCConfig::kMaxCB) { }
     virtual ~TCCalibCBTime() { }
+
+    virtual void Fit(Int_t elem);
     
     ClassDef(TCCalibCBTime, 0) // CB time calibration class
 };

@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCMySQLManager.cxx 1076 2012-03-13 13:19:04Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller, Irakli Keshelashvili
@@ -15,7 +15,6 @@
 
 #include "TCMySQLManager.h"
 
-ClassImp(TCMySQLManager);
 
 
 // init static class members
@@ -27,13 +26,13 @@ TCMySQLManager::TCMySQLManager()
 {
     // Constructor.
 
+    MC = false;
     fDB = 0;
     fSilence = kFALSE;
     fData = new THashList();
     fData->SetOwner(kTRUE);
     fTypes = new THashList();
     fTypes->SetOwner(kTRUE);
-    isMk2	= kFALSE;
 
     // read CaLib data
     if (!ReadCaLibData())
@@ -616,7 +615,7 @@ Int_t TCMySQLManager::GetFirstRunOfSet(const Char_t* data, const Char_t* calibra
     else 
     {
         if (!fSilence) Error("GetFirstRunOfSet", "Could not find first run of set!");
-        return 0;
+        return -1;
     }
 }
 
@@ -633,7 +632,7 @@ Int_t TCMySQLManager::GetLastRunOfSet(const Char_t* data, const Char_t* calibrat
     else 
     {
         if (!fSilence) Error("GetLastRunOfSet", "Could not find last run of set!");
-        return 0;
+        return -1;
     }
 }
 
@@ -687,7 +686,7 @@ Int_t* TCMySQLManager::GetRunsOfSet(const Char_t* data, const Char_t* calibratio
     Int_t last_run = GetLastRunOfSet(data, calibration, set);
 
     // check first run
-    if (!first_run)
+    if (first_run < 0)
     {
         if (!fSilence) Error("GetRunsOfSet", "Could not find runs of set %d!", set);
         return 0;
@@ -816,7 +815,7 @@ Bool_t TCMySQLManager::ReadParameters(const Char_t* data, const Char_t* calibrat
     Int_t first_run = GetFirstRunOfSet(data, calibration, set);
 
     // check first run
-    if (!first_run)
+    if (first_run < 0)
     {
         if (!fSilence) Error("ReadParameters", "No calibration found for set %d of '%s'!", 
                              set, ((TCCalibData*) fData->FindObject(data))->GetTitle());
@@ -884,7 +883,7 @@ Bool_t TCMySQLManager::WriteParameters(const Char_t* data, const Char_t* calibra
     Int_t first_run = GetFirstRunOfSet(data, calibration, set);
 
     // check first run
-    if (!first_run)
+    if (first_run < 0)
     {
         if (!fSilence) Error("WriteParameters", "Could not write parameters of '%s'!",
                                                 ((TCCalibData*) fData->FindObject(data))->GetTitle());
@@ -936,7 +935,7 @@ void TCMySQLManager::InitDatabase()
            "         All existing tables in the database '%s' on '%s'\n"
            "         will be deleted!\n\n", fDB->GetDB(), fDB->GetHost());
     printf("Are you sure to continue? (yes/no) : ");
-    scanf("%s", answer);
+    if(scanf("%s", answer));
     if (strcmp(answer, "yes")) 
     {
         printf("Aborted.\n");
@@ -963,7 +962,7 @@ void TCMySQLManager::AddRunFiles(const Char_t* path, const Char_t* target)
     // using the target specifier 'target'.
 
     // read the raw files
-    TCReadACQU r(path, isMk2);
+    TCReadACQU r(path);
     Int_t nRun = r.GetNFiles();
     
     // ask for user confirmation
@@ -972,7 +971,7 @@ void TCMySQLManager::AddRunFiles(const Char_t* path, const Char_t* target)
            "They will be added to the database '%s' on '%s'\n", 
            nRun, path, fDB->GetDB(), fDB->GetHost());
     printf("Are you sure to continue? (yes/no) : ");
-    scanf("%s", answer);
+    if(scanf("%s", answer));
     if (strcmp(answer, "yes")) 
     {
         printf("Aborted.\n");
@@ -985,17 +984,6 @@ void TCMySQLManager::AddRunFiles(const Char_t* path, const Char_t* target)
     {
         TCACQUFile* f = r.GetFile(i);
         
-        /*printf("INSERT INTO %s SET, run = %d, path = %s, filename = %s, description = %s, run_note = %s, size = %lld, target = %s",
-											TCConfig::kCalibMainTableName, 
-                                            f->GetRun(),
-                                            path,
-                                            f->GetFileName(),
-                                            f->GetTime(),
-                                            f->GetDescription(),
-                                            f->GetRunNote(),
-                                            f->GetSize(),
-                                            target);*/
-        
         // prepare the insert query
         TString ins_query = TString::Format("INSERT INTO %s SET "
                                             "run = %d, "
@@ -1006,7 +994,7 @@ void TCMySQLManager::AddRunFiles(const Char_t* path, const Char_t* target)
                                             "run_note = \"%s\", "
                                             "size = %lld,"
                                             "target = \"%s\"",
-                                            TCConfig::kCalibMainTableName, 
+                                            TCConfig::kCalibMainTableName,
                                             f->GetRun(),
                                             path,
                                             f->GetFileName(),
@@ -1017,8 +1005,6 @@ void TCMySQLManager::AddRunFiles(const Char_t* path, const Char_t* target)
                                             target);
 
         // try to write data to database
-	//printf( "\n %s \n", ins_query.Data());
-		//printf(ins_query.Data());
         TSQLResult* res = SendQuery(ins_query.Data());
         if (res == 0)
         {
@@ -1316,10 +1302,17 @@ void TCMySQLManager::AddCalibAR(CalibDetector_t det, const Char_t* calibFileAR,
     for (Int_t i = 0; i < nDet; i++)
     {
         eL[i] = r.GetElement(i)->GetEnergyLow();
-        e0[i] = r.GetElement(i)->GetPedestal();
-        e1[i] = r.GetElement(i)->GetADCGain();
-        t0[i] = r.GetElement(i)->GetOffset();
-        t1[i] = r.GetElement(i)->GetTDCGain();
+        if (!MC) {
+            e0[i] = r.GetElement(i)->GetPedestal();
+            e1[i] = r.GetElement(i)->GetADCGain();
+            t0[i] = r.GetElement(i)->GetOffset();
+            t1[i] = r.GetElement(i)->GetTDCGain();
+        } else {
+            e0[i] = 0.;
+            e1[i] = 1.;
+            t0[i] = 0.;
+            t1[i] = 1.;
+        }
     }
 
     // read detector specific calibration values
@@ -1367,8 +1360,13 @@ void TCMySQLManager::AddCalibAR(CalibDetector_t det, const Char_t* calibFileAR,
             // read SG parameters
             for (Int_t i = 0; i < nDetSG; i++)
             {
-                e0SG[i] = rSG.GetElement(i)->GetPedestal();
-                e1SG[i] = rSG.GetElement(i)->GetADCGain();
+                if (!MC) {
+                    e0SG[i] = rSG.GetElement(i)->GetPedestal();
+                    e1SG[i] = rSG.GetElement(i)->GetADCGain();
+                } else {
+                    e0SG[i] = 0.;
+                    e1SG[i] = 1.;
+                }
             }
 
             // write to database
@@ -1737,7 +1735,7 @@ Bool_t TCMySQLManager::RemoveDataSet(const Char_t* data, const Char_t* calibrati
     Int_t first_run = GetFirstRunOfSet(data, calibration, set);
     
     // check first run
-    if (!first_run)
+    if (first_run < 0)
     {
         if (!fSilence) Error("RemoveDataSet", "Could not delete set %d in '%s' of calibration '%s'!",
                              set, ((TCCalibData*) fData->FindObject(data))->GetTitle(), calibration);
@@ -1975,7 +1973,7 @@ Bool_t TCMySQLManager::MergeDataSets(const Char_t* data, const Char_t* calibrati
     Int_t lastSet2 = GetLastRunOfSet(data, calibration, set2);
 
     // check set 1
-    if (!firstSet1 || !lastSet1)
+    if (firstSet1 < 0 || lastSet1 < 0)
     {
         if (!fSilence) Error("MergeDataSets", "Could not find set %d in '%s' of calibration '%s'!",
                              set1, ((TCCalibData*) fData->FindObject(data))->GetTitle(), calibration);
@@ -1983,7 +1981,7 @@ Bool_t TCMySQLManager::MergeDataSets(const Char_t* data, const Char_t* calibrati
     }
 
     // check set 2
-    if (!firstSet2 || !lastSet2)
+    if (firstSet2 < 0 || lastSet2 < 0)
     {
         if (!fSilence) Error("MergeDataSets", "Could not find set %d in '%s' of calibration '%s'!",
                              set2, ((TCCalibData*) fData->FindObject(data))->GetTitle(), calibration);
@@ -2063,7 +2061,7 @@ Int_t TCMySQLManager::DumpRuns(TCContainer* container, Int_t first_run, Int_t la
     Char_t tmp[256];
 
     // create the query
-    if (!first_run && !last_run)
+    if (first_run == -1 && last_run == -1)
     {
         sprintf(query,
                 "SELECT run FROM %s "
@@ -2390,10 +2388,11 @@ void TCMySQLManager::Export(const Char_t* filename, Int_t first_run, Int_t last_
 {
     // Export run and/or calibration data to the ROOT file 'filename'
     //
-    // If 'first_run' is non-zero and 'last_run' is non-zero run information from run
-    // 'first_run' to run 'last_run' is exported.
-    // If 'first_run' is zero and 'last_run' is zero all run information is exported.
-    // If 'first_run' is -1 or 'last_run' is -1 no run information is exported.
+    // If 'first_run' is zero or greater and 'last_run' is zero or greater run
+    // information from run 'first_run' to run 'last_run' is exported.
+    // If 'first_run' is -1 and 'last_run' is -1 all run information is exported.
+    // If 'first_run' is smaller than -1 or 'last_run' is smaller than -1 no run
+    // information is exported.
     //
     // If 'calibration' is non-zero the calibration with the identifier 'calibration'
     // is exported.
@@ -2402,7 +2401,7 @@ void TCMySQLManager::Export(const Char_t* filename, Int_t first_run, Int_t last_
     TCContainer* container = new TCContainer(TCConfig::kCaLibDumpName);
     
     // dump runs to container
-    if (first_run != -1 && last_run != -1) 
+    if (first_run >= -1 && last_run >= -1)
     {
         DumpRuns(container, first_run, last_run);
         if (!fSilence) 
@@ -2512,7 +2511,7 @@ void TCMySQLManager::Import(const Char_t* filename, Bool_t runs, Bool_t calibrat
                    "They will be added to the database '%s' on '%s'\n", 
                    nRun, filename, fDB->GetDB(), fDB->GetHost());
             printf("Are you sure to continue? (yes/no) : ");
-            scanf("%s", answer);
+            if(scanf("%s", answer));
             if (strcmp(answer, "yes")) 
             {
                 printf("Aborted.\n");
@@ -2548,7 +2547,7 @@ void TCMySQLManager::Import(const Char_t* filename, Bool_t runs, Bool_t calibrat
                    nCalib, calibName, filename, fDB->GetDB(), fDB->GetHost());
             if (newCalibName) printf("The calibrations will be renamed to '%s'\n", newCalibName);
             printf("Are you sure to continue? (yes/no) : ");
-            scanf("%s", answer);
+            if(scanf("%s", answer));
             if (strcmp(answer, "yes")) 
             {
                 printf("Aborted.\n");
@@ -2568,4 +2567,4 @@ void TCMySQLManager::Import(const Char_t* filename, Bool_t runs, Bool_t calibrat
     // clean-up
     delete c;
 }
-
+ClassImp(TCMySQLManager)

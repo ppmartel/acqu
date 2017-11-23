@@ -1,0 +1,9 @@
+## Apparatus setup file for running TA2PairSpec
+########################################################################
+
+Detector: PairSpec TA2PairSpec /disk/user/afzal/Mainz/acqu/acqu_user/data.2015.09/AR-Analysis-PairSpec.dat
+Detector: Moeller  TA2Moeller  /disk/user/afzal/Mainz/acqu/acqu_user/data.2015.09/AR-Analysis-Moeller.dat
+
+
+## Do some post-initialisation.
+Initialise:

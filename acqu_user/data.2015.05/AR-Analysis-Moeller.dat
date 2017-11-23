@@ -1,0 +1,31 @@
+## Detector setup file for running TA2Moeller
+########################################################################
+
+# this configures the Moeller data
+# Offset means the index offset for scalers and ADC indices (see baseIndex of readout)  
+# All other values are also highly readout config dependent and thus hardware specific!
+#              #leftChannels  #Pairs  #bins    
+MoellerSetup:  10             5       256
+# fBaseIndex offset of the moeller modules
+# determines ADC indeces and scaler indices
+VupromOffset:  8000
+VupromOffset:  8200
+VupromOffset:  8400
+VupromOffset:  8600
+
+## Do some post-initialisation.
+Initialise:
+
+# show the histograms defined by the detector
+# show some
+#Display: 1D TDC_Vup_Left_Pair_Hel_0_0_0_0 256 0 256
+#Display: 1D TDC_Vup_Left_Pair_Hel_0_0_0_1 256 0 256
+#Display: 1D TDC_Vup_Left_Pair_Hel_3_9_2_0 256 0 256
+#Display: 1D TDC_Vup_Left_Pair_Hel_3_9_2_1 256 0 256
+Display: 1D Scalers_Vup_0_0 352 0 352
+Display: 1D Scalers_Vup_0_1 352 0 352
+Display: 1D Scalers_Vup_0_2 352 0 352
+ 
+
+# show all
+DisplayAllHistos:

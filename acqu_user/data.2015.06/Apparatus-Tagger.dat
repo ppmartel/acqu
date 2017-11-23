@@ -1,0 +1,25 @@
+#########################################################################
+#                                                                       #
+# Tagger apparatus configuration file                                   #
+#                                                                       #
+#########################################################################
+#       NMR field       Beam Energy
+#
+Magnet:	0.53745			450.0
+#Magnet:	1.88821			1557.0
+#
+#         Name          Class Name      Setup file
+#Detector: FPD		TA2Ladder 	Detector-FPD-450.dat
+Detector: FPD		TA2Ladder 	Detector-FPD-450-New.dat
+#Detector: FPD		TA2Ladder 	Detector-FPD-1557-New.dat
+#
+Reconstruct:
+Initialise:
+#
+#Display: 1D Nhit           40 0  40  -1
+Display: 1D PhotonEnergy  352 v2u_plot/v2u_450_plot.ghist
+#Display: 1D PhotonEnergy  352 v2u_plot/v2u_1557_plot.ghist
+#Display: 2D FPD_Hits   352 0 352 -1  PhotonEnergy  150 0 1500 -1 
+#Display: 2D FPD_Hits	192 0 192 -1 Micro_Hits 96 0 96 -1
+#Display: 2D FPD_Hits   352 0 352 -1 FPD_Time 200 -200 200 -1
+#Display 2D Ladder_Doubles 352 0 352 -1 Micro_Doubles 96 0 96 -1

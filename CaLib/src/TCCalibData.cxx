@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCCalibData.cxx 913 2011-05-18 22:15:42Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller
@@ -15,7 +15,6 @@
 
 #include "TCCalibData.h"
 
-ClassImp(TCCalibData)
 
 
 //______________________________________________________________________________
@@ -38,4 +37,4 @@ void TCCalibData::Print()
     printf("Table name     : %s\n", fTableName.Data());
     printf("Number of par. : %d\n", fSize);
 }
-
+ClassImp(TCCalibData)

@@ -1,4 +1,4 @@
-// SVN Info: $Id: TAPSPed.C 912 2011-05-18 22:09:17Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller
@@ -15,15 +15,14 @@
 
 #include "TFile.h"
 #include "TList.h"
-#include "../../include/TCReadARCalib.h"
+#include "TCReadARCalib.h"
 #include "TCanvas.h"
 #include "TF1.h"
 #include "TH1.h"
 #include "TSystem.h"
-#include "../../include/TCMySQLManager.h"
+#include "TCMySQLManager.h"
 #include "TLine.h"
 #include "TGraph.h"
-#include "../../include/TCFitTools.h"
 
 
 class TCReadARCalib;
@@ -35,7 +34,7 @@ TList* gFiles;
 void CheckPedestals(const Char_t* loc)
 {
     // Some old pedestal checking method.
-	
+
     Char_t t[256];
 
     // number of runs
@@ -91,9 +90,8 @@ void CheckPedestals(const Char_t* loc)
             //else h->GetXaxis()->SetRange(90, 115);
             //if (j == 27112) h->GetXaxis()->SetRange(60, 110);
             //else h->GetXaxis()->SetRange(60, 99);
-            //h->GetXaxis()->SetRangeUser(60, 120);
-            //Double_t maxPos = h->GetXaxis()->GetBinCenter(h->GetMaximumBin());
-            Double_t maxPos = TCUtils::PedFinder(h);
+            h->GetXaxis()->SetRangeUser(60, 120);
+            Double_t maxPos = h->GetXaxis()->GetBinCenter(h->GetMaximumBin());
             
             h->GetXaxis()->SetRangeUser(60, 150);
             func->SetParameters(1, maxPos, 0.1);
@@ -179,16 +177,10 @@ void TAPSPed()
     //const Char_t* fAR = "/usr/users/werthm/AcquRoot/acqu/acqu/data/Feb_09/TAPS/Veto.dat";
     
     // configuration (May 2009)
-    //const Char_t calibration[] = "LD2_May_09";
-    //const Char_t* fLoc = "/usr/puma_scratch0/werthm/A2/May_09/AR/out/ADC";
-    //const Char_t* fAR = "/usr/users/werthm/AcquRoot/acqu/acqu/data/May_09/TAPS/BaF2_PWO.dat";
+    const Char_t calibration[] = "LD2_May_09";
+    const Char_t* fLoc = "/usr/puma_scratch0/werthm/A2/May_09/AR/out/ADC";
+    const Char_t* fAR = "/usr/users/werthm/AcquRoot/acqu/acqu/data/May_09/TAPS/BaF2_PWO.dat";
     //const Char_t* fAR = "/usr/users/werthm/AcquRoot/acqu/acqu/data/May_09/TAPS/Veto.dat";
-    
-    // configuration (Aug 2012)
-    const Char_t calibration[] = "ETAP_Aug_12";
-    const Char_t* fLoc = "/home/calib/calibrationData/out/";
-    const Char_t* fAR = "/home/ott/acqu/data/TAPS/BaF2_PWO.dat";
-    //const Char_t* fAR = "/home/ott/acqu/data/TAPS/Veto.dat";
 
     // read the calibration file with the correct element identifier
     gReadAR = new TCReadARCalib(fAR, kFALSE, elemDesc);

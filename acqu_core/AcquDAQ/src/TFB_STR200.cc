@@ -12,7 +12,6 @@
 #include "TFB_STR200.h"
 #include "TDAQexperiment.h"
 
-ClassImp(TFB_STR200)
 
 //-----------------------------------------------------------------------------
 TFB_STR200::TFB_STR200( Char_t* name, Char_t* file, FILE* log,
@@ -35,4 +34,4 @@ TFB_STR200::~TFB_STR200( )
 {
   // Clean up
 }
-
+ClassImp(TFB_STR200)

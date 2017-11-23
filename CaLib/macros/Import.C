@@ -1,4 +1,4 @@
-// SVN Info: $Id: Import.C 861 2011-03-18 20:19:33Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller

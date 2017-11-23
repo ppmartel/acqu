@@ -1,0 +1,235 @@
+##-----------------------------------------------------------------------
+##--Author	JRM Annand   13th Jan 2004
+##--Update	JRM Annand... 1st Dec 2004
+##--Description
+##                *** Acqu++ <-> Root ***
+## Online/Offline Analysis of Sub-Atomic Physics Experimental Data
+##
+## Parameter File: FPcommServer.Offline
+## Configuration file for DataServer (data input for analysis)
+##
+##-----------------------------------------------------------------------
+## Number of Input streams (sources of data), Record length to write data
+## and switch 0/1 = no/yes to control data write
+##              Number streams	Record Len	Save Data
+Input-Streams:	1		327680		0
+##
+## Optional directory spec. If not specified File-Names must contain the full
+## directory path
+File-Directory: scratch/
+##
+## Specify each input stream
+## From disk file, ACQU (Mk1) format, save any output to file (save=1)
+## Input data record length, Output data record length
+##
+##            	Source	Format	Save?	RecLen	Buffers	Swap	MarkID
+Stream-Spec:	File	Mk2	0	327680	32	0	400
+##
+## Now the list of data files to analyse
+##		File Name	1st rec	Last rec
+##
+## Polarized positive, 10 nA, 60 MeV threshold
+#File-Name:	CBTaggTAPS_14292.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14293.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14294.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14295.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14297.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14298.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14299.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14301.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14302.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14303.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14304.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14305.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14306.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14307.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14308.dat.xz 	0       0
+##
+## Polarized negative, 5 nA, 60 MeV threshold
+#File-Name:	CBTaggTAPS_14322.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14325.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14331.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14333.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14334.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14335.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14336.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14337.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14339.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14340.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14341.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14342.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14345.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14346.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14352.dat.xz 	0       0
+##
+## Repolarized negative, 5 nA, 60 MeV threshold
+#File-Name:	CBTaggTAPS_14356.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14357.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14358.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14359.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14360.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14361.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14362.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14363.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14364.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14365.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14366.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14367.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14368.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14375.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14376.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14377.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14378.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14379.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14380.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14381.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14382.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14383.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14384.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14385.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14386.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14387.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14388.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14389.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14390.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14391.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14392.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14393.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14394.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14401.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14402.dat.xz 	0       0
+##
+## Polarized positive, 5 nA, 60 MeV threshold
+#File-Name:	CBTaggTAPS_14403.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14404.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14405.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14406.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14407.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14408.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14409.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14410.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14411.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14412.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14415.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14416.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14417.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14418.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14423.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14424.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14425.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14427.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14428.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14429.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14430.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14431.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14432.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14433.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14434.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14435.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14436.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14437.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14438.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14439.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14440.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14441.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14445.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14446.dat.xz 	0       0
+##
+## Repolarized positive, 5 nA, 40 MeV threshold
+#File-Name:	CBTaggTAPS_14447.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14448.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14449.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14450.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14451.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14452.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14453.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14454.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14455.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14456.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14457.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14458.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14459.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14460.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14462.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14463.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14464.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14465.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14471.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14472.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14473.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14474.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14475.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14476.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14477.dat.xz 	0       0
+##
+## Same polarization, 20 nA, 80 MeV threshold
+#File-Name:	CBTaggTAPS_14479.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14480.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14481.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14482.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14483.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14484.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14485.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14486.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14487.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14488.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14489.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14490.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14491.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14492.dat.xz 	0       0
+##
+## Polarized negative, 20 nA, 80 MeV threshold
+#File-Name:	CBTaggTAPS_14493.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14494.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14495.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14496.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14497.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14498.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14499.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14500.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14501.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14502.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14503.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14504.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14505.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14506.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14507.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14508.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14509.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14510.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14511.dat.xz 	0       0
+#File-Name:	CBTaggTAPS_14512.dat.xz 	0       0
+File-Name:	CBTaggTAPS_14518.dat.xz 	0       0
+File-Name:	CBTaggTAPS_14519.dat.xz 	0       0
+File-Name:	CBTaggTAPS_14520.dat.xz 	0       0
+File-Name:	CBTaggTAPS_14521.dat.xz 	0       0
+File-Name:	CBTaggTAPS_14522.dat.xz 	0       0
+##
+## Same polarization, 5 nA, 40 MeV threshold
+File-Name:	CBTaggTAPS_14523.dat.xz 	0       0
+##
+## Same polarization, 5 nA, 30 MeV threshold
+File-Name:	CBTaggTAPS_14524.dat.xz 	0       0
+File-Name:	CBTaggTAPS_14525.dat.xz 	0       0
+File-Name:	CBTaggTAPS_14526.dat.xz 	0       0
+File-Name:	CBTaggTAPS_14527.dat.xz 	0       0
+File-Name:	CBTaggTAPS_14528.dat.xz 	0       0
+File-Name:	CBTaggTAPS_14529.dat.xz 	0       0
+File-Name:	CBTaggTAPS_14530.dat.xz 	0       0
+File-Name:	CBTaggTAPS_14531.dat.xz 	0       0
+File-Name:	CBTaggTAPS_14532.dat.xz 	0       0
+File-Name:	CBTaggTAPS_14533.dat.xz 	0       0
+File-Name:	CBTaggTAPS_14534.dat.xz 	0       0
+File-Name:	CBTaggTAPS_14539.dat.xz 	0       0
+File-Name:	CBTaggTAPS_14540.dat.xz 	0       0
+File-Name:	CBTaggTAPS_14541.dat.xz 	0       0
+File-Name:	CBTaggTAPS_14542.dat.xz 	0       0
+File-Name:	CBTaggTAPS_14543.dat.xz 	0       0
+File-Name:	CBTaggTAPS_14544.dat.xz 	0       0
+File-Name:	CBTaggTAPS_14545.dat.xz 	0       0
+File-Name:	CBTaggTAPS_14546.dat.xz 	0       0
+File-Name:	CBTaggTAPS_14547.dat.xz 	0       0
+File-Name:	CBTaggTAPS_14548.dat.xz 	0       0
+File-Name:	CBTaggTAPS_14549.dat.xz 	0       0
+##
+## END

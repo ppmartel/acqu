@@ -1,4 +1,4 @@
-// SVN Info: $Id: LinkDef.h 976 2011-08-31 17:16:34Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Irakli Keshelashvili, Dominik Werthmueller
@@ -26,9 +26,13 @@
 
 // enums
 #pragma link C++ enum ECalibDetector;
+#pragma link C++ enum ERawFileType;
+#pragma link C++ enum ERawFileFormat;
 
 // typedefs
 #pragma link C++ typedef CalibDetector_t;
+#pragma link C++ typedef RawFileType_t;
+#pragma link C++ typedef RawFileFormat_t;
 
 // common classes
 #pragma link C++ namespace TCConfig;
@@ -95,6 +99,9 @@
 #pragma link C++ class TCCalibVetoEnergy+;
 #pragma link C++ class TCCalibVetoTime+;
 #pragma link C++ class TCCalibVetoLED+;
+
+// Misc
+#pragma link C++ class TIndicatorLine+;
 
 #endif
 

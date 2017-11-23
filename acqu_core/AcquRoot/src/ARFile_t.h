@@ -37,7 +37,6 @@ extern "C"{
 #include <sys/stat.h>
 #include <fcntl.h>
 }
-enum{ EZiped, EBZiped, EGZiped, EXZiped };       // for compressed file open for read
  
 class ARFile_t{
  private:

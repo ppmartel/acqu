@@ -22,7 +22,6 @@
 
 R__EXTERN TA2Analysis*  gAN;
 
-ClassImp(TA2ParticleID)
 
 //---------------------------------------------------------------------------
 TA2ParticleID::TA2ParticleID( char* line ) :
@@ -80,4 +79,4 @@ TA2ParticleID::~TA2ParticleID( )
   if( fCharge ) delete[] fCharge;
   if( fPDG ) delete fPDG;
 }
-
+ClassImp(TA2ParticleID)

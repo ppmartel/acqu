@@ -6,7 +6,6 @@
 #include "TDecompLU.h"
 #include <iostream>
 
-ClassImp(TA2CBKinematicFitter);
 
 //-----------------------------------------------------------------------------
 TA2CBKinematicFitter::TA2CBKinematicFitter(Int_t npart, Int_t ncon, Int_t unk){
@@ -372,4 +371,4 @@ void TA2CBKinematicFitter::Debug(){
   mCheck1.Print();
 
 }
-
+ClassImp(TA2CBKinematicFitter);

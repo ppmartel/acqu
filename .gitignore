@@ -19,8 +19,8 @@
 *.a
 
 # CMake
-# only build dirs are ignored
-/build*/
+# only build dirs/symlinks are ignored
+/build*
 
 # QtCreator
 CMakeLists.txt.user
@@ -31,3 +31,14 @@ CMakeLists.txt.user
 
 # Ignore symbolic link to data directory
 /acqu_user/data
+
+# ignore it here, since future CaLib versions
+# will have their .gitignore in /CaLib
+/CaLib/*.log
+/CaLib/*.root
+/CaLib/config/config.cfg
+# convenient symlink to the 
+# root files for calibration
+/CaLib/analysis
+
+

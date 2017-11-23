@@ -17,7 +17,6 @@
 #include "TMCGenerator.h"
 //#include "SysUtil.h"
 
-ClassImp(TMCResonance)
 
 //-----------------------------------------------------------------------------
 TMCResonance::TMCResonance( Char_t* name, TMCParticle* p,
@@ -77,3 +76,5 @@ TH1D** TMCResonance::FindDist( Int_t type, Char_t* name,
   }
   else return NULL;
 }
+
+ClassImp(TMCResonance)

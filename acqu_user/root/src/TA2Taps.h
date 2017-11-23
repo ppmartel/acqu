@@ -65,7 +65,6 @@ class TA2Taps : public TA2Apparatus
   UInt_t fVetoIndex;                    // Store Veto-ID of Veto that fired (saved to TA2Particle objects)
   Double_t fVeto_dE;                    // to save Veto-dE
   Double_t fVeto_Time;                  // to save Veto-Prompt-Time
-  Double_t fEnergy_Index;               // to save E of BaF2-ClusterIndexCrystal
   Double_t fEnergy_BaF2;
   UInt_t fMultipleVetoHit;              // not in use
   Bool_t fCutOnVetoBaF2Time;            // Cut on VetoBaF2TimeWindo active or not ?
@@ -91,7 +90,6 @@ class TA2Taps : public TA2Apparatus
   Double_t* fDeltaE;
   Double_t* fEcharged;
   Double_t* fEchargedcl;
-  Double_t* fEchargedIndex;
   Double_t* fHitMatrixY;                // for 2d Plot TAPS charged hit cluster
   Double_t* fHitMatrixX;                // for 2d Plot TAPS charged hit cluster
   TA2Particle* particles;               // use this to store particle-information
@@ -162,6 +160,9 @@ public:
   Double_t GetTapsTargetDistance(){ return fTapsTargetDistance;}
   Bool_t CheckVetoBaF2TimeIsPrompt(Double_t Time);
   Bool_t CheckTOF(Double_t Time, UInt_t NrParticle);      // old remains: from TA2Taps2009
+
+  UInt_t GetVetoInFrontOfElement(UInt_t id) const;
+  Double_t CheckClusterVeto(HitCluster_t* inCluster, UInt_t* outVetoIndex = 0) const;
 
   Bool_t   *GetfIsVCharged(){ return fIsVCharged; }
   Double_t *GetfIsClusterEnergy(){ return fIsClusterEnergy; }
@@ -294,12 +295,85 @@ inline Bool_t TA2Taps::CheckVetoBaF2TimeIsPrompt(Double_t Time)
 
 //-----------------------------------------------------------------------------
 
+inline UInt_t TA2Taps::GetVetoInFrontOfElement(UInt_t id) const
+{
+    // Return the index of the veto that is installed in front of the
+    // BaF2 or PWO element with the index 'id'.
+    
+    // check TAPS setup
+    switch (fBaF2->GetType())
+    {
+        case EBaF2:
+        {
+            return id;
+        }
+        case EBaF2_PWO_08:
+        {
+            // 1st PWO ring
+            if (id >=   0 && id <=   3) return   0;
+            if (id >=  67 && id <=  70) return  64;
+            if (id >= 134 && id <= 137) return 128;
+            if (id >= 201 && id <= 204) return 192;
+            if (id >= 268 && id <= 271) return 256;
+            if (id >= 335 && id <= 338) return 320;
+            
+            // other elements
+            else return id - 3*(id/67 + 1);
+        }
+        case EBaF2_PWO_09:
+        {
+	    if ((fVeto->GetNelement()) == 384)
+	    {
+	        // 1st PWO ring
+	        if (id >=   0 && id <=   3) return   0;
+		if (id >=  73 && id <=  76) return  64;
+		if (id >= 146 && id <= 149) return 128;
+		if (id >= 219 && id <= 222) return 192;
+		if (id >= 292 && id <= 295) return 256;
+		if (id >= 365 && id <= 368) return 320;
+            
+		// 2nd PWO ring
+		if (id >=   4 && id <=   7) return   1;
+		if (id >=   8 && id <=  11) return   2;
+		if (id >=  77 && id <=  80) return  65;
+		if (id >=  81 && id <=  84) return  66;
+		if (id >= 150 && id <= 153) return 129;
+		if (id >= 154 && id <= 157) return 130;
+		if (id >= 223 && id <= 226) return 193;
+		if (id >= 227 && id <= 230) return 194;
+		if (id >= 296 && id <= 299) return 257;
+		if (id >= 300 && id <= 303) return 258;
+		if (id >= 369 && id <= 372) return 321;
+		if (id >= 373 && id <= 376) return 322;
+		
+		// other elements
+		else return id - 9*(id/73 + 1);
+	    }
+	    else return id;
+        }
+        default:
+        {
+            Error("GetVetoInFrontOfElement", "TAPS setup could not be identified!");
+            return 0;
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 // Use this function with Sven Schumanns Acqu
 inline void TA2Taps::SetParticleInfo(UInt_t NrParticle)
 {
   particles[NrParticle].Reset();
   particles[NrParticle].SetP4(fP4[NrParticle]);
-  particles[NrParticle].SetTime(fBaF2->GetTime(id_clBaF2[NrParticle]) + fTapsTimeshift);
+  if(fBaF2->GetElement(id_clBaF2[NrParticle])->GetT1() > 0 || gAR->GetProcessType() == EMCProcess)
+  {
+      particles[NrParticle].SetTime(-(fBaF2->GetTime(id_clBaF2[NrParticle])) + fTapsTimeshift);
+  }
+  else
+  {
+      particles[NrParticle].SetTime((fBaF2->GetTime(id_clBaF2[NrParticle])) + fTapsTimeshift);
+  }
   particles[NrParticle].SetParticleIDA(fPDG_ID[NrParticle]);
   particles[NrParticle].SetCentralIndex(id_clBaF2[NrParticle]);
   particles[NrParticle].SetApparatus(EAppTAPS);
@@ -308,16 +382,23 @@ inline void TA2Taps::SetParticleInfo(UInt_t NrParticle)
   //particles[NrParticle].SetPDG(fPDG_ID[NrParticle]);
   if(fIsVCharged[NrParticle] == kFALSE) //fIsVCharged ... V is for VETO
   {
-    particles[NrParticle].SetVetoEnergy(0.0);
+      particles[NrParticle].SetVetoEnergy(0.0);
   }
   else
   {
-    particles[NrParticle].SetVetoEnergy(fVeto_dE);
-    //particles[NrParticle].SetIsCharged(fIsVCharged[NrParticle]);
-    particles[NrParticle].SetDetector(EDetVeto);
-    particles[NrParticle].SetVetoIndex(fVetoIndex );
-    particles[NrParticle].SetVetoTime(fVeto_Time);
-   }
+      particles[NrParticle].SetVetoEnergy(fVeto_dE);
+      //particles[NrParticle].SetIsCharged(fIsVCharged[NrParticle]);
+      particles[NrParticle].SetDetector(EDetVeto);
+      particles[NrParticle].SetVetoIndex(fVetoIndex );
+      if(fVeto->GetElement(fVetoIndex)->GetT1() > 0 || gAR->GetProcessType() == EMCProcess)
+      {
+          particles[NrParticle].SetVetoTime(-fVeto_Time);
+      }
+      else
+      {
+          particles[NrParticle].SetVetoTime(fVeto_Time);
+      }
+  }
   particles[NrParticle].SetPSAShort(fBaF2->GetSGEnergy(id_clBaF2[NrParticle]));
 
   particles[NrParticle].SetSigmaE(fBaF2->GetEnergyResolution(clBaF2[id_clBaF2[NrParticle]]->GetEnergy()));
@@ -325,53 +406,6 @@ inline void TA2Taps::SetParticleInfo(UInt_t NrParticle)
   particles[NrParticle].SetSigmaTheta(fBaF2->GetThetaResolution());
   particles[NrParticle].SetSigmaTime(fBaF2->GetTimeResolution());
 }
-
-/* Use this function with AR_HB2vX (User Acqu of H Berghaeuser)
-//-----------------------------------------------------------------------------
-
-inline void TA2Taps::SetParticleInfo(UInt_t NrParticle)
-{
-  Double_t ClEnergy = (clBaF2[id_clBaF2[NrParticle]])->GetEnergy();
-  ClEnergy = ClEnergy*fTapsRingEnergycorr1[GetTAPSRing(clBaF2[id_clBaF2[NrParticle]]->GetIndex()) -1] + ClEnergy*ClEnergy*fTapsRingEnergycorr2[GetTAPSRing(clBaF2[id_clBaF2[NrParticle]]->GetIndex()) -1];
-
-  particles[NrParticle].Initialize();
-  particles[NrParticle].SetApparatus(2);
-  particles[NrParticle].SetPDG(fPDG_ID[NrParticle]);
-  particles[NrParticle].SetParticleNumber(NrParticle);
-  particles[NrParticle].SetTLVec(fP4[NrParticle]);
-  particles[NrParticle].SetClusterEnergy(ClEnergy);
-  particles[NrParticle].SetSGEnergyIndex(fBaF2->GetSGEnergy(id_clBaF2[NrParticle]));
-  particles[NrParticle].SetTime(fBaF2->GetTime(id_clBaF2[NrParticle]));
-  particles[NrParticle].SetClusterSize(clBaF2[id_clBaF2[NrParticle]]->GetNhits());
-  particles[NrParticle].SetClusterNumber(id_clBaF2[NrParticle]);
-  particles[NrParticle].SetClusterIndex(clBaF2[id_clBaF2[NrParticle]]->GetIndex() );
-
-
-  if(fSimpleReconstruct == kTRUE)
-  {
-  particles[NrParticle].SetDeltaEnergy(0.0);
-  particles[NrParticle].SetSGEnergyIndex(0.0);
-  }
-  else
-  {
-  particles[NrParticle].SetSGEnergyIndex(0.0); // not being used
-  if(fIsVCharged[NrParticle] == kFALSE)
-	{
-	particles[NrParticle].SetDeltaEnergy(0.0);
-	}
-  else  {
-	particles[NrParticle].SetDeltaEnergy(fVeto_dE);
-	particles[NrParticle].SetIsCharged(fIsVCharged[NrParticle]);
-	particles[NrParticle].SetVetoIndex(fVetoIndex[NrParticle]);
-	particles[NrParticle].SetVetoTime(fVeto_Time);
-	}
-  }
-
-  //particles[NrParticle].SetEventNumber(0);  // check later how to get actual eventnumber!
-}
-*/
-
-//-----------------------------------------------------------------------------
 
 inline UInt_t TA2Taps::GetTAPSRing(UInt_t ClusterIndex)
 {

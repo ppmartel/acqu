@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCCalibTAPSPSA.cxx 945 2011-07-04 16:24:05Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller
@@ -15,7 +15,6 @@
 
 #include "TCCalibTAPSPSA.h"
 
-ClassImp(TCCalibTAPSPSA)
 
 
 //______________________________________________________________________________
@@ -386,4 +385,4 @@ void TCCalibTAPSPSA::Write()
     
     Info("Write", "%d PSA graphs were written to '%s'", nSave, f.GetName());
 }
-
+ClassImp(TCCalibTAPSPSA)

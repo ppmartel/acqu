@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCReadACQU.h 862 2011-03-19 20:22:10Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller
@@ -16,32 +16,125 @@
 #ifndef TCREADACQU_H
 #define TCREADACQU_H
 
-#include <zlib.h>
-
 #include "TList.h"
 #include "TError.h"
 #include "TSystem.h"
 #include "TSystemDirectory.h"
 
 
+// Mk1 format header field sizes
+enum EMk1HeaderSize
+{
+    kMk1Marker    =   4,
+    kMk1SizeTime  =  26, 
+    kMk1SizeDesc  = 133, 
+    kMk1SizeRNote = 133, 
+    kMk1SizeFName =  40  
+};
+
+
+// Mk2 format header field sizes
+enum EMk2HeaderSize
+{ 
+    kMk2Marker    =   8,
+    kMk2SizeTime  =  32, 
+    kMk2SizeDesc  = 256, 
+    kMk2SizeRNote = 256, 
+    kMk2SizeFName = 128
+};
+
+
+// type of raw files
+enum ERawFileType
+{
+    kFileBad,
+    kFileUnComp,
+    kFileGZ,
+    kFileXZ
+};
+typedef ERawFileType RawFileType_t;
+
+
+// types of raw file formats
+enum ERawFileFormat
+{
+    kRawUnknown,
+    kRawMk1,
+    kRawMk2
+};
+typedef ERawFileFormat RawFileFormat_t;
+
+
 class TCACQUFile : public TObject
 {
 
 private:
-    Char_t fStartMarker[4];         // start marker
-    Char_t fTime[26];               // run start time (ascii)
-    Char_t fDescription[133];       // description of experiment
-    Char_t fRunNote[133];           // particular run note
-    Char_t fOutFile[40];            // output file
-    UShort_t fRun;                  // run number
-    Long64_t fSize;                 // file size in bytes
-    Char_t fFileName[256];          // actual filename
-    Bool_t isMk2;					// if kTRUE Mk2 file system is used
-
-public:
-    TCACQUFile(const Bool_t isFileMk2) : TObject(), isMk2(isFileMk2)
+    RawFileFormat_t fFormat;                // raw file format
+    Char_t fTime[kMk2SizeTime];             // run start time (ascii)
+    Char_t fDescription[kMk2SizeDesc];      // description of experiment
+    Char_t fRunNote[kMk2SizeRNote];         // particular run note
+    Char_t fOutFile[kMk2SizeFName];         // output file
+    UShort_t fRun;                          // run number
+    Long64_t fSize;                         // file size in bytes
+    Char_t fFileName[256];                  // actual filename
+    
+    RawFileType_t CheckFileType(const Char_t* file)
     {
-        memset(fStartMarker, 0, sizeof(fStartMarker));
+        Char_t header[6];
+        const unsigned char hGZ[3] = { 0x1f, 0x8b, 0x08 };
+        const unsigned char hXZ[6] = { 0xfd, 0x37, 0x7a, 0x58, 0x5a, 0x00 };
+        
+        // open the file
+        FILE* f = fopen(file, "r");
+        
+        // check file opening
+        if (f)
+        {
+            // read 6 bytes
+            if(fread(header, 1, 6, f));
+            
+            // close the file
+            fclose(f);
+ 
+            // check headers
+            if (!memcmp(header, hGZ, 3)) return kFileGZ;
+            else if (!memcmp(header, hXZ, 6)) return kFileXZ;
+            else return kFileUnComp;
+        } 
+        else return kFileBad;
+    }
+
+    RawFileFormat_t CheckFileFormat(const Char_t* hdr)
+    {
+        // Mk2
+        Int_t n = 0;
+        for (Int_t i = 0; i < 8; i++)
+            if (hdr[i] == 0x10) n++;
+        if (n == 8) return kRawMk2;
+
+        // Mk1
+        n = 0;
+        for (Int_t i = 0; i < 4; i++)
+            if (hdr[i] == 0x10) n++;
+        if (n == 4) return kRawMk1;
+        
+        // other cases
+        return kRawUnknown;
+    }
+    
+    void RemoveControlChars(Char_t* string)
+    {            
+        TString s(string);
+        s.Remove(TString::kBoth, '\n');
+        s.Remove(TString::kBoth, '\t');
+        s.Remove(TString::kBoth, ' ');
+        strcpy(string, s.Data());
+    }
+ 
+public:
+    TCACQUFile() : TObject()
+    {
+        fFormat = kRawUnknown;
         fTime[0] = '\0';
         fDescription[0] = '\0';
         fRunNote[0] = '\0';
@@ -51,17 +144,11 @@ public:
         fFileName[0] = '\0';
     }
     virtual ~TCACQUFile() { }
-
-    void RemoveLineBreak(Char_t* string, Int_t length)
-    {
-        for (Int_t i = 0; i < length; i++)
-        {
-            if (string[i] == '\n') string[i] = '\0';
-        }
-    }
-
+   
     void ReadFile(const Char_t* path, const Char_t* fname)
     {
+        Char_t tmp[280];
+        
         // set full file name
         Char_t filename[256];
         sprintf(filename, "%s/%s", path, fname);
@@ -69,147 +156,100 @@ public:
         // set actual file name
         strcpy(fFileName, fname);
 
+        // identify file type
+        RawFileType_t ftype = CheckFileType(filename);
+        
         // try to open the file
-        gzFile file = gzopen(filename, "r");
+        FILE* file = 0;
+        if (ftype == kFileUnComp) file = fopen(filename, "r");
+        else if (ftype == kFileGZ)
+        {
+            sprintf(tmp, "zcat %s 2> /dev/null", filename);
+            file = popen(tmp, "r");
+        }
+        else if (ftype == kFileXZ)
+        {
+            sprintf(tmp, "xzcat %s", filename);
+            file = popen(tmp, "r");
+        }
+
+        // check if file was opened
         if (!file)
         {
             Error("Read", "Could not open '%s'", filename);
             return;
         }
         
-        if(isMk2)
+        // read complete header
+        Int_t maxHdrLength = kMk2Marker + kMk2SizeTime + kMk2SizeDesc + 
+                             kMk2SizeRNote + kMk2SizeFName +
+                             sizeof(UShort_t);
+        Char_t header[maxHdrLength];
+        if(fread(header, 1, sizeof(header), file));
+        
+        // close file
+        if (ftype == kFileUnComp) fclose(file);
+        else if (ftype == kFileGZ) pclose(file);
+        else if (ftype == kFileXZ) pclose(file);
+        
+        // identify raw file format
+        fFormat = CheckFileFormat(header);
+        
+        // parse header
+        if (fFormat == kRawMk1 || fFormat == kRawMk2)
         {
-			Info("ReadFiles", "using Mk2 file format");
-			
-			// read start marker
-			gzread(file, fStartMarker, 2*sizeof(fStartMarker));
-			
-			// read time
-			gzread(file, fTime, sizeof(fTime));
-			RemoveLineBreak(fTime, sizeof(fTime)/sizeof(Char_t));
-			//printf("fTime: %s\n", fTime);
-			
-			// skip nonsense char
-			char  chr;
-			gzread(file, &chr, 1);
-			while(chr == '\0')
-			{
-				gzread(file, &chr, 1);
-			}
-			gzseek(file, -1, SEEK_CUR);
+            // configure parsing
+            Int_t sMarker = fFormat == kRawMk1 ? (Int_t)kMk1Marker : (Int_t)kMk2Marker;
+            Int_t sTime = fFormat == kRawMk1 ? (Int_t)kMk1SizeTime : (Int_t)kMk2SizeTime;
+            Int_t sDesc = fFormat == kRawMk1 ? (Int_t)kMk1SizeDesc : (Int_t)kMk2SizeDesc;
+            Int_t sRNote = fFormat == kRawMk1 ? (Int_t)kMk1SizeRNote : (Int_t)kMk2SizeRNote;
+            Int_t sFName = fFormat == kRawMk1 ? (Int_t)kMk1SizeFName : (Int_t)kMk2SizeFName;
+            
+            // start parsing
+            Char_t* pos = header;
 
-			// read description (minus 1 byte)
-			gzread(file, fDescription, sizeof(fDescription)-1);
-			RemoveLineBreak(fDescription, sizeof(fDescription)/sizeof(Char_t));
-			//printf("fDescription: %s\n", fDescription);
-			
-			// trim description
-			TString s(fDescription);
-			s.Remove(TString::kBoth, ' ');
-			strcpy(fDescription, s.Data());
-			
-			// skip nonsense char
-			gzread(file, &chr, 1);
-			while(chr == '\0')
-			{
-				gzread(file, &chr, 1);
-			}
-			gzseek(file, -1, SEEK_CUR);
+            // skip header
+            pos += sMarker;
 
-			// read run note
-			gzread(file, fRunNote, sizeof(fRunNote));
-			RemoveLineBreak(fRunNote, sizeof(fRunNote)/sizeof(Char_t));
-			//printf("fRunNote: %s\n", fRunNote);
-			
-			// trim run note
-			s = fRunNote;
-			s.Remove(TString::kBoth, ' ');
-			strcpy(fRunNote, s.Data());
-			
-			// skip nonsense char
-			gzread(file, &chr, 1);
-			while(chr == '\0')
-			{
-				gzread(file, &chr, 1);
-			}
-			gzseek(file, -1, SEEK_CUR);
-			
-			// read output file
-			gzread(file, fOutFile, sizeof(fOutFile));
-			//printf("fOutFile: %s\n", fOutFile);
-			
-			// skip nonsense char
-			gzread(file, &chr, 1);
-			while(chr == '\0')
-			{
-				gzread(file, &chr, 1);
-			}
-			gzseek(file, -1, SEEK_CUR);
-			
-			
-			// read run number
-			gzread(file, &fRun, sizeof(UShort_t));
-			//printf("fRun: %d\n", fRun);
-		}
-        else
-        {
-			Info("ReadFiles", "using Mk1 file format");
-		
-			// read start marker
-			gzread(file, fStartMarker, sizeof(fStartMarker));
-			
-			// read time
-			gzread(file, fTime, sizeof(fTime));
-			RemoveLineBreak(fTime, sizeof(fTime)/sizeof(Char_t));
-			//printf("fTime: %s\n", fTime);
-			
-			// skip tab
-			gzseek(file, sizeof(Char_t), SEEK_CUR);
+            // read time
+            memcpy(fTime, pos, sTime);
+            pos += sTime;
+            RemoveControlChars(fTime);
+            
+            // read description
+            memcpy(fDescription, pos, sDesc);
+            pos += sDesc;
+            RemoveControlChars(fDescription);
+            
+            // read run note
+            memcpy(fRunNote, pos, sRNote);
+            pos += sRNote;
+            RemoveControlChars(fRunNote);
 
-			// read description (minus 1 byte)
-			gzread(file, fDescription, sizeof(fDescription)-1);
-			RemoveLineBreak(fDescription, sizeof(fDescription)/sizeof(Char_t));
-			//printf("fDescription: %s\n", fDescription);
-			
-			// trim description
-			TString s(fDescription);
-			s.Remove(TString::kBoth, ' ');
-			strcpy(fDescription, s.Data());
+            // read output file
+            memcpy(fOutFile, pos, sFName);
+            pos += sFName;
+            RemoveControlChars(fOutFile);
+        
+            // read run number
+            memcpy(&fRun, pos, sizeof(UShort_t));
+        }
 
-			// read run note
-			gzread(file, fRunNote, sizeof(fRunNote));
-			RemoveLineBreak(fRunNote, sizeof(fRunNote)/sizeof(Char_t));
-			//printf("fRunNote: %s\n", fRunNote);
-			
-			// trim run note
-			s = fRunNote;
-			s.Remove(TString::kBoth, ' ');
-			strcpy(fRunNote, s.Data());
-			
-			// read output file
-			gzread(file, fOutFile, sizeof(fOutFile));
-			//printf("fOutFile: %s\n", fOutFile);
-			
-			// read run number
-			gzread(file, &fRun, sizeof(UShort_t));
-			//printf("fRun: %s\n", fRun);
-			
-		}
-			
-		// close the file
-		gzclose(file);
-			
-		// set file size
-		FileStat_t fileinfo;
-		gSystem->GetPathInfo(fFileName, fileinfo);
-		fSize = fileinfo.fSize;
+        // set file size
+        FileStat_t fileinfo;
+        gSystem->GetPathInfo(filename, fileinfo);
+        fSize = fileinfo.fSize;
     }
   
     void Print()
     {
+        Char_t format[16];
+        if (fFormat == kRawMk1) strcpy(format, "Mk1");
+        else if (fFormat == kRawMk2) strcpy(format, "Mk2");
+        else strcpy(format, "unknown");
+
         printf("ACQU File Information\n");
-        printf("Start Marker  : 0x%x 0x%x 0x%x 0x%x\n",
-               fStartMarker[0], fStartMarker[1], fStartMarker[2], fStartMarker[3]);
+        printf("Format        : %s\n", format);
         printf("Time          : %s\n", fTime);
         printf("Description   : %s\n", fDescription);
         printf("Run note      : %s\n", fRunNote);
@@ -222,16 +262,13 @@ public:
 
     void PrintListing() { printf("%s\t%s\t%s\t%s\t%lld\n", fFileName, fTime, fDescription, fRunNote, fSize); }
 
-    Bool_t IsGoodStartMarker()
+    Bool_t IsGoodDataFile()
     {
-        if (fStartMarker[0] == 0x10 &&
-            fStartMarker[1] == 0x10 &&
-            fStartMarker[2] == 0x10 &&
-            fStartMarker[3] == 0x10) return kTRUE;
+        if (fFormat == kRawMk1) return kTRUE;
+        else if (fFormat == kRawMk2) return kTRUE;
         else return kFALSE;
     }
 
-    const Char_t* GetStartMarker() const { return fStartMarker; }
     const Char_t* GetTime() const { return fTime; }
     const Char_t* GetDescription() const { return fDescription; }
     const Char_t* GetRunNote() const { return fRunNote; }
@@ -250,13 +287,12 @@ class TCReadACQU
 private:
     Char_t* fPath;                  // path of files
     TList* fFiles;                  // list of files
-    Bool_t  isMk2;					// if true Mk2 file system is used
 
     void ReadFiles();
 
 public:
-    TCReadACQU(const Bool_t isFileMk2 = kFALSE);
-    TCReadACQU(const Char_t* path, const Bool_t isFileMk2 = kFALSE);
+    TCReadACQU() : fPath(0), fFiles(0) { }
+    TCReadACQU(const Char_t* path);
     virtual ~TCReadACQU();
     
     TList* GetFiles() const { return fFiles; }

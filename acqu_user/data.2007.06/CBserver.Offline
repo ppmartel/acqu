@@ -1,0 +1,325 @@
+##-----------------------------------------------------------------------
+##--Author	JRM Annand   13th Jan 2004
+##--Update	JRM Annand... 1st Dec 2004
+##--Description
+##                *** Acqu++ <-> Root ***
+## Online/Offline Analysis of Sub-Atomic Physics Experimental Data 
+##
+## Parameter File: CBserver.Offline
+## Configuration file for DataServer (data input for analysis)
+##
+##-----------------------------------------------------------------------
+## Number of Input streams (sources of data), Record length to write data
+## and switch 0/1 = no/yes to control data write
+##              Number streams	Record Len	Save Data
+Input-Streams:	1		32768		0
+##
+## Optional directory spec. If not specified File-Names must contain the full
+## directory path
+File-Directory:	/data/2007_07_etaprime/
+##
+## Specify each input stream
+## From disk file, ACQU (Mk1) format, save any output to file (save=1)
+## Input data record length, Output data record length
+##
+##            	Source	Format	Save?	RecLen	Buffers	Swap	MarkID
+Stream-Spec:	File	Mk1	0	32768	32	0	400
+##
+## Now the list of data files to analyse
+##		File Name	1st rec	Last rec
+###### Following Part is for AR0
+#File-Name:	CB_12032.dat	0	0  
+#File-Name:	CB_12033.dat	0	0  
+#File-Name:	CB_12034.dat	0	0  
+#File-Name:	CB_12035.dat	0	0  
+File-Name:	CB_12036.dat	0	0  
+File-Name:	CB_12037.dat	0	0  # seems to be worthless
+File-Name:	CB_12038.dat	0	0 
+File-Name:	CB_12039.dat	0	0 
+#File-Name:	CB_12040.dat	0	0 
+File-Name:	CB_12041.dat	0	0 
+File-Name:	CB_12042.dat	0	0 
+File-Name:	CB_12043.dat	0	0 #seems to be broken !
+File-Name:	CB_12044.dat	0	0 
+File-Name:	CB_12045.dat	0	0 
+File-Name:	CB_12046.dat	0	0 
+File-Name:	CB_12047.dat	0	0 
+File-Name:	CB_12048.dat	0	0 
+File-Name:	CB_12049.dat	0	0 
+File-Name:	CB_12050.dat	0	0 
+File-Name:	CB_12052.dat	0	0 
+File-Name:	CB_12053.dat	0	0 
+File-Name:	CB_12054.dat	0	0 
+File-Name:	CB_12055.dat	0	0 
+File-Name:	CB_12056.dat	0	0 
+File-Name:	CB_12057.dat	0	0 
+File-Name:	CB_12058.dat	0	0 
+File-Name:	CB_12059.dat	0	0 
+File-Name:	CB_12060.dat	0	0 
+File-Name:	CB_12061.dat	0	0 
+File-Name:	CB_12062.dat	0	0 
+File-Name:	CB_12063.dat	0	0 
+File-Name:	CB_12064.dat	0	0 
+File-Name:	CB_12065.dat	0	0 
+File-Name:	CB_12066.dat	0	0 
+File-Name:	CB_12067.dat	0	0 
+File-Name:	CB_12068.dat	0	0 
+File-Name:	CB_12069.dat	0	0 
+File-Name:	CB_12070.dat	0	0 
+File-Name:	CB_12071.dat	0	0 
+File-Name:	CB_12072.dat	0	0 
+File-Name:	CB_12073.dat	0	0 
+File-Name:	CB_12074.dat	0	0 
+File-Name:	CB_12075.dat	0	0 
+File-Name:	CB_12076.dat	0	0 
+#File-Name:	CB_12077.dat	0	0 
+File-Name:	CB_12078.dat	0	0 
+File-Name:	CB_12079.dat	0	0 
+File-Name:	CB_12080.dat	0	0 
+File-Name:	CB_12081.dat	0	0 
+File-Name:	CB_12082.dat	0	0 
+File-Name:	CB_12083.dat	0	0 
+#File-Name:	CB_12084.dat	0	0 # ? why now ?
+#File-Name:	CB_12085.dat	0	0 
+File-Name:	CB_12090.dat	0	0 
+#File-Name:	CB_12091.dat	0	0 
+#File-Name:	CB_12092.dat	0	0 
+File-Name:	CB_12093.dat	0	0 
+File-Name:	CB_12094.dat	0	0 
+File-Name:	CB_12095.dat	0	0 
+File-Name:	CB_12097.dat	0	0 
+File-Name:	CB_12098.dat	0	0  # File seems OK
+File-Name:	CB_12099.dat	0	0
+File-Name:	CB_12100.dat	0	0
+File-Name:	CB_12101.dat	0	0
+File-Name:	CB_12102.dat	0	0
+File-Name:	CB_12103.dat	0	0
+File-Name:	CB_12104.dat	0	0
+File-Name:	CB_12105.dat	0	0
+File-Name:	CB_12106.dat	0	0
+File-Name:	CB_12107.dat	0	0
+File-Name:	CB_12108.dat	0	0
+File-Name:	CB_12109.dat	0	0
+File-Name:	CB_12110.dat	0	0
+File-Name:	CB_12111.dat	0	0
+File-Name:	CB_12112.dat	0	0
+File-Name:	CB_12113.dat	0	0
+File-Name:	CB_12114.dat	0	0
+File-Name:	CB_12115.dat	0	0
+File-Name:	CB_12116.dat	0	0
+File-Name:	CB_12117.dat	0	0
+File-Name:	CB_12118.dat	0	0
+File-Name:	CB_12119.dat	0	0
+File-Name:	CB_12120.dat	0	0
+File-Name:	CB_12121.dat	0	0
+File-Name:	CB_12122.dat	0	0
+File-Name:	CB_12123.dat	0	0
+#File-Name:	CB_12124.dat	0	0 #here 1 time
+File-Name:	CB_12125.dat	0	0
+File-Name:	CB_12126.dat	0	0
+File-Name:	CB_12127.dat	0	0
+File-Name:	CB_12128.dat	0	0
+File-Name:	CB_12129.dat	0	0
+File-Name:	CB_12130.dat	0	0
+File-Name:	CB_12131.dat	0	0
+File-Name:	CB_12132.dat	0	0
+File-Name:	CB_12133.dat	0	0
+File-Name:	CB_12134.dat	0	0
+File-Name:	CB_12135.dat	0	0
+#File-Name:	CB_12136.dat	0	0
+#File-Name:	CB_12137.dat	0	0
+File-Name:	CB_12138.dat	0	0
+File-Name:	CB_12139.dat	0	0
+#File-Name:	CB_12140.dat	0	0
+#File-Name:	CB_12141.dat	0	0
+File-Name:	CB_12142.dat	0	0
+File-Name:	CB_12143.dat	0	0
+File-Name:	CB_12144.dat	0	0
+File-Name:	CB_12145.dat	0	0
+File-Name:	CB_12146.dat	0	0
+File-Name:	CB_12147.dat	0	0
+File-Name:	CB_12148.dat	0	0
+File-Name:	CB_12149.dat	0	0
+#File-Name:	CB_12150.dat	0	0
+File-Name:	CB_12151.dat	0	0
+File-Name:	CB_12152.dat	0	0
+File-Name:	CB_12153.dat	0	0
+File-Name:	CB_12154.dat	0	0
+File-Name:	CB_12155.dat	0	0
+File-Name:	CB_12156.dat	0	0
+File-Name:	CB_12157.dat	0	0
+File-Name:	CB_12158.dat	0	0
+File-Name:	CB_12159.dat	0	0
+File-Name:	CB_12160.dat	0	0
+File-Name:	CB_12161.dat	0	0
+File-Name:	CB_12162.dat	0	0
+#File-Name:	CB_12163.dat	0	0
+#File-Name:	CB_12165.dat	0	0
+File-Name:	CB_12166.dat	0	0
+File-Name:	CB_12167.dat	0	0
+File-Name:	CB_12168.dat	0	0
+File-Name:	CB_12169.dat	0	0
+File-Name:	CB_12170.dat	0	0
+File-Name:	CB_12171.dat	0	0
+File-Name:	CB_12172.dat	0	0
+File-Name:	CB_12173.dat	0	0
+File-Name:	CB_12174.dat	0	0
+File-Name:	CB_12175.dat	0	0
+File-Name:	CB_12176.dat	0	0
+File-Name:	CB_12177.dat	0	0
+File-Name:	CB_12178.dat	0	0
+File-Name:	CB_12179.dat	0	0
+File-Name:	CB_12180.dat	0	0
+File-Name:	CB_12181.dat	0	0
+File-Name:	CB_12185.dat	0	0
+File-Name:	CB_12186.dat	0	0
+File-Name:	CB_12187.dat	0	0
+File-Name:	CB_12188.dat	0	0
+File-Name:	CB_12189.dat	0	0
+##File-Name:	CB_12190.dat	0	0
+##File-Name:	CB_12191.dat	0	0
+##File-Name:	CB_12192.dat	0	0 #crashed here 2 times
+##File-Name:	CB_12193.dat	0	0
+##File-Name:	CB_12194.dat	0	0
+##File-Name:	CB_12195.dat	0	0
+File-Name:	CB_12196.dat	0	0
+File-Name:	CB_12197.dat	0	0
+File-Name:	CB_12198.dat	0	0
+File-Name:	CB_12199.dat	0	0
+File-Name:	CB_12200.dat	0	0
+File-Name:	CB_12201.dat	0	0
+File-Name:	CB_12202.dat	0	0
+File-Name:	CB_12203.dat	0	0
+File-Name:	CB_12204.dat	0	0
+File-Name:	CB_12205.dat	0	0
+File-Name:	CB_12206.dat	0	0
+File-Name:	CB_12207.dat	0	0
+File-Name:	CB_12208.dat	0	0
+File-Name:	CB_12209.dat	0	0
+File-Name:	CB_12210.dat	0	0
+File-Name:	CB_12211.dat	0	0
+File-Name:	CB_12212.dat	0	0
+File-Name:	CB_12213.dat	0	0
+File-Name:	CB_12214.dat	0	0
+File-Name:	CB_12215.dat	0	0
+File-Name:	CB_12216.dat	0	0
+File-Name:	CB_12217.dat	0	0
+File-Name:	CB_12218.dat	0	0
+File-Name:	CB_12219.dat	0	0
+File-Name:	CB_12220.dat	0	0
+File-Name:	CB_12221.dat	0	0
+File-Name:	CB_12222.dat	0	0
+File-Name:	CB_12223.dat	0	0
+File-Name:	CB_12224.dat	0	0
+File-Name:	CB_12225.dat	0	0
+File-Name:	CB_12226.dat	0	0
+File-Name:	CB_12227.dat	0	0
+File-Name:	CB_12228.dat	0	0
+File-Name:	CB_12229.dat	0	0
+File-Name:	CB_12230.dat	0	0
+File-Name:	CB_12231.dat	0	0
+File-Name:	CB_12232.dat	0	0
+File-Name:	CB_12233.dat	0	0
+File-Name:	CB_12234.dat	0	0
+File-Name:	CB_12235.dat	0	0
+File-Name:	CB_12236.dat	0	0
+File-Name:	CB_12237.dat	0	0
+File-Name:	CB_12238.dat	0	0
+File-Name:	CB_12239.dat	0	0
+File-Name:	CB_12240.dat	0	0
+File-Name:	CB_12241.dat	0	0
+File-Name:	CB_12242.dat	0	0
+File-Name:	CB_12243.dat	0	0
+File-Name:	CB_12244.dat	0	0
+File-Name:	CB_12245.dat	0	0
+File-Name:	CB_12246.dat	0	0
+File-Name:	CB_12247.dat	0	0
+File-Name:	CB_12248.dat	0	0
+File-Name:	CB_12249.dat	0	0
+File-Name:	CB_12253.dat	0	0
+File-Name:	CB_12254.dat	0	0
+File-Name:	CB_12255.dat	0	0
+File-Name:	CB_12256.dat	0	0
+File-Name:	CB_12257.dat	0	0
+File-Name:	CB_12258.dat	0	0
+File-Name:	CB_12259.dat	0	0
+#File-Name:	CB_12260.dat	0	0 #crashes around here all the time
+#File-Name:	CB_12261.dat	0	0 # crashed here 2 time
+#File-Name:	CB_12262.dat	0	0 #crashes around here all the time
+File-Name:	CB_12263.dat	0	0
+File-Name:	CB_12264.dat	0	0
+File-Name:	CB_12265.dat	0	0
+File-Name:	CB_12266.dat	0	0
+File-Name:	CB_12267.dat	0	0
+#File-Name:	CB_12268.dat	0	0
+#File-Name:	CB_12269.dat	0	0
+#File-Name:	CB_12270.dat	0	0
+#File-Name:	CB_12271.dat	0	0
+#File-Name:	CB_12272.dat	0	0
+#File-Name:	CB_12273.dat	0	0
+#File-Name:	CB_12274.dat	0	0
+#File-Name:	CB_12275.dat	0	0
+#File-Name:	CB_12276.dat	0	0
+#File-Name:	CB_12277.dat	0	0
+#File-Name:	CB_12278.dat	0	0 # empty target
+#File-Name:	CB_12279.dat	0	0 # empty target
+#File-Name:	CB_12280.dat	0	0 # empty target
+#File-Name:	CB_12281.dat	0	0 # empty target
+#File-Name:	CB_12282.dat	0	0 # empty target
+#File-Name:	CB_12283.dat	0	0 # empty target
+#File-Name:	CB_12284.dat	0	0 # empty target
+#File-Name:	CB_12285.dat	0	0 # empty target
+#File-Name:	CB_12286.dat	0	0 # empty target
+#File-Name:	CB_12287.dat	0	0 # empty target
+#File-Name:	CB_12288.dat	0	0 # empty target
+#File-Name:	CB_12289.dat	0	0 # empty target
+#File-Name:	CB_12290.dat	0	0 # empty target
+#File-Name:	CB_12291.dat	0	0 # empty target
+#File-Name:	CB_12292.dat	0	0 # empty target
+#File-Name:	CB_12293.dat	0	0 # empty target
+#File-Name:	CB_12294.dat	0	0 # empty target
+#File-Name:	CB_12295.dat	0	0 # empty target
+###File-Name:	CB_12296.dat	0	0 # empty target
+###File-Name:	CB_12297.dat	0	0 # empty target
+#File-Name:	CB_12298.dat	0	0 # empty target
+#File-Name:	CB_12299.dat	0	0 # empty target
+#File-Name:	CB_12300.dat	0	0 # empty target
+#File-Name:	CB_12301.dat	0	0 # empty target
+#File-Name:	CB_12302.dat	0	0 # empty target
+#File-Name:	CB_12303.dat	0	0 # empty target
+#File-Name:	CB_12307.dat	0	0 # empty target
+#File-Name:	CB_12308.dat	0	0 # empty target
+#File-Name:	CB_12309.dat	0	0 # empty target
+#File-Name:	CB_12310.dat	0	0 # empty target
+#File-Name:	CB_12311.dat	0	0 # empty target
+#File-Name:	CB_12312.dat	0	0 # empty target
+#File-Name:	CB_12313.dat	0	0 # empty target
+#File-Name:	CB_12314.dat	0	0 # empty target
+#File-Name:	CB_12315.dat	0	0 # empty target
+#File-Name:	CB_12316.dat	0	0 # empty target
+#File-Name:	CB_12317.dat	0	0 # empty target
+#File-Name:	CB_12318.dat	0	0 # empty target
+#File-Name:	CB_12319.dat	0	0 # empty target
+#File-Name:	CB_12320.dat	0	0 # empty target
+#File-Name:	CB_12321.dat	0	0 # empty target
+#File-Name:	CB_12322.dat	0	0 # empty target
+#File-Name:	CB_12323.dat	0	0 # empty target
+#File-Name:	CB_12324.dat	0	0 # empty target
+#File-Name:	CB_12325.dat	0	0 # empty target
+#File-Name:	CB_12326.dat	0	0 # empty target
+#File-Name:	CB_12327.dat	0	0 # empty target
+#File-Name:	CB_12328.dat	0	0 # empty target
+#File-Name:	CB_12329.dat	0	0 # empty target
+#File-Name:	CB_12330.dat	0	0 # empty target
+#File-Name:	CB_12331.dat	0	0 # empty target
+#File-Name:	CB_12332.dat	0	0 # empty target
+#File-Name:	CB_12333.dat	0	0 # empty target
+#File-Name:	CB_12334.dat	0	0 # empty target
+#File-Name:	CB_12335.dat	0	0 # empty target
+#File-Name:	CB_12336.dat	0	0 # empty target
+#File-Name:	CB_12337.dat	0	0 # empty target
+#File-Name:	CB_12338.dat	0	0 # empty target
+#File-Name:	CB_12339.dat	0	0 # empty target
+#File-Name:	CB_12340.dat	0	0 # empty target
+#File-Name:	CB_12341.dat	0	0 # empty target
+##End

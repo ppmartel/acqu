@@ -15,7 +15,6 @@ static const Map_t kInputs[] = {
 	{NULL,          -1}
 };
 
-ClassImp(TA2Pi0Compton)
 
 //-----------------------------------------------------------------------------
 TA2Pi0Compton::TA2Pi0Compton( const char* name, TA2Analysis* analysis )
@@ -750,4 +749,4 @@ void TA2Pi0Compton::Reconstruct()
 		fTree->Fill();
 	}
 }
-
+ClassImp(TA2Pi0Compton)

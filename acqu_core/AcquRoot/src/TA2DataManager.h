@@ -273,7 +273,8 @@ template<class T>
 inline void TA2DataManager::LoadVariable(const char* name, T* var, Int_t type)
 {
   if( !var ){
-    PrintError((char*)name,"<Load-Variable...NULL variable pointer supplied>");
+    const Char_t* line = Form("%s\n",name);
+    PrintError(line,"<Load-Variable...NULL variable pointer supplied>");
     return;
   }
   if( !fVariables ) fVariables = new TList;

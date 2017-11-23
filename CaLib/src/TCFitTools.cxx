@@ -24,3 +24,4 @@ Double_t		TCUtils::PedFinder(const TH1D* hist)
 	//printf("result:  %lf\n", lowPos);
 	return lowPos;
 }
+

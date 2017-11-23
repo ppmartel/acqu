@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCReadConfig.h 830 2011-02-23 16:01:00Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Irakli Keshelashvili, Dominik Werthmueller

@@ -26,7 +26,6 @@ static Map_t kValidDetectors[] = {
   {NULL, 		-1}
 };
 
-ClassImp(TA2GenericApp)
 
 //-----------------------------------------------------------------------------
 TA2GenericApp::TA2GenericApp( const char* name, TA2System* analysis  )
@@ -105,4 +104,4 @@ void TA2GenericApp::PostInit( )
   // Set up histograms if desired.
   TA2Apparatus::PostInit();
 }
-
+ClassImp(TA2GenericApp)

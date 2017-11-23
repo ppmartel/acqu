@@ -1,0 +1,166 @@
+##-----------------------------------------------------------------------
+##--Author	JRM Annand   13th Jan 2004
+##--Update	JRM Annand... 1st Dec 2004
+##--Description
+##                *** Acqu++ <-> Root ***
+## Online/Offline Analysis of Sub-Atomic Physics Experimental Data
+##
+## Parameter File: FPcommServer.Offline
+## Configuration file for DataServer (data input for analysis)
+##
+##-----------------------------------------------------------------------
+## Number of Input streams (sources of data), Record length to write data
+## and switch 0/1 = no/yes to control data write
+##              Number streams	Record Len	Save Data
+#Input-Streams:	1		32768		0
+Input-Streams:	1		327680		0
+##
+## Optional directory spec. If not specified File-Names must contain the full
+## directory path
+#File-Directory: scratch/
+##
+## Specify each input stream
+## From disk file, ACQU (Mk1) format, save any output to file (save=1)
+## Input data record length, Output data record length
+##
+##            	Source	Format	Save?	RecLen	Buffers	Swap	MarkID
+#Stream-Spec:	File	Mk1	0	32768	32	0	400
+#Stream-Spec:	File	Mk2	0	32768	32	0	400
+Stream-Spec:	File	Mk2	0	327680	32	0	400
+##
+## Now the list of data files to analyse
+##	   	File Name	1st rec	Last rec
+##
+## Amorphous
+##
+## 450 MeV, Moeller, 1.5/2.5mm
+#File-Name:	/mnt/storage1/2016-06_Active_Target/TaggEff_14513.dat.xz 0 0
+#File-Name:	/mnt/storage1/2016-06_Active_Target/TaggEff_14514.dat.xz 0 0
+#File-Name:	/mnt/storage1/2016-06_Active_Target/TaggEff_14515.dat.xz 0 0
+##
+## 450 MeV, Moeller, 2.5mm
+#File-Name:	/mnt/storage1/2015-06_Sigma2z/TaggEff_9912.dat.xz 0 0
+#File-Name:	/mnt/storage1/2015-06_Sigma2z/TaggEff_9913.dat.xz 0 0
+#File-Name:	/mnt/storage1/2015-06_Sigma2z/TaggEff_9914.dat.xz 0 0
+##
+## 883 MeV, Moeller, 2mm
+File-Name:	/mnt/storage1/2015-05_G-E_HButanol/TaggEff_8577.dat.xz 0 0
+File-Name:	/mnt/storage1/2015-05_G-E_HButanol/TaggEff_8581.dat.xz 0 0
+File-Name:	/mnt/storage1/2015-05_G-E_HButanol/TaggEff_8582.dat.xz 0 0
+##
+## 883 MeV, Cu 10um, 2mm
+#File-Name:	/mnt/storage1/2015-05_G-E_HButanol/TaggEff_8577.dat.xz 0 0
+File-Name:	/mnt/storage1/2015-05_G-E_HButanol/TaggEff_8579.dat.xz 0 0
+#File-Name:	/mnt/storage1/2015-05_G-E_HButanol/TaggEff_8582.dat.xz 0 0
+##
+## 883 MeV, Cu 10um, 3mm
+#File-Name:	/mnt/storage1/2012-12_Compton/TaggEff_490.dat.xz 0 0
+#File-Name:	/mnt/storage1/2012-12_Compton/TaggEff_493.dat.xz 0 0
+#File-Name:	/mnt/storage1/2012-12_Compton/TaggEff_494.dat.xz 0 0
+##
+## 883 MeV, Cu 10um, 3mm
+#File-Name:	/scratch/martel/Data/TaggEff/TaggEff_46.dat.xz 0 0
+#File-Name:	/scratch/martel/Data/TaggEff/TaggEff_49.dat.xz 0 0
+#File-Name:	/scratch/martel/Data/TaggEff/TaggEff_50.dat.xz 0 0
+##
+## 883 MeV, Cu 10um, 4mm
+#File-Name:	/scratch/martel/Data/TaggEff/TaggEffMk2_164.dat.xz 0 0
+#File-Name:	/scratch/martel/Data/TaggEff/TaggEffMk2_165.dat.xz 0 0
+#File-Name:	/scratch/martel/Data/TaggEff/TaggEffMk2_168.dat.xz 0 0
+##
+## 1557 MeV, Moeller, 1.5/2.5mm
+#File-Name:	/mnt/storage1/2016-05_T_F_DButanol/TaggEff_14162.dat.xz 0 0
+#File-Name:	/mnt/storage1/2016-05_T_F_DButanol/TaggEff_14163.dat.xz 0 0
+#File-Name:	/mnt/storage1/2016-05_T_F_DButanol/TaggEff_14164.dat.xz 0 0
+##
+## 1557 MeV, Moeller, 1.5/2.5mm
+#File-Name:	/mnt/storage1/2016-05_T_F_DButanol/TaggEff_14113.dat.xz 0 0
+#File-Name:	/mnt/storage1/2016-05_T_F_DButanol/TaggEff_14114.dat.xz 0 0
+#File-Name:	/mnt/storage1/2016-05_T_F_DButanol/TaggEff_14115.dat.xz 0 0
+##
+## 1557 MeV, Moeller, 2mm
+#File-Name:	/mnt/storage1/2015-12_E_DButanol/TaggEff_12916.dat.xz 0 0
+#File-Name:	/mnt/storage1/2015-12_E_DButanol/TaggEff_12917.dat.xz 0 0
+#File-Name:	/mnt/storage1/2015-12_E_DButanol/TaggEff_12918.dat.xz 0 0
+##
+## 1557 MeV, Moeller, 2.5mm (C)
+#File-Name:	/mnt/storage1/2015-08_InMediumModifications/TaggEff_11031.dat.xz 0 0
+#File-Name:	/mnt/storage1/2015-08_InMediumModifications/TaggEff_11032.dat.xz 0 0
+#File-Name:	/mnt/storage1/2015-08_InMediumModifications/TaggEff_11033.dat.xz 0 0
+##
+## 1557 MeV, Moeller, 2.5mm (Pb)
+#File-Name:	/mnt/storage1/2015-08_InMediumModifications/TaggEff_10739.dat.xz 0 0
+#File-Name:	/mnt/storage1/2015-08_InMediumModifications/TaggEff_10740.dat.xz 0 0
+#File-Name:	/mnt/storage1/2015-08_InMediumModifications/TaggEff_10741.dat.xz 0 0
+##
+## 1557 MeV, Moeller, 2.5mm (Al)
+#File-Name:	/mnt/storage1/2015-08_InMediumModifications/TaggEff_10435.dat.xz 0 0
+#File-Name:	/mnt/storage1/2015-08_InMediumModifications/TaggEff_10436.dat.xz 0 0
+#File-Name:	/mnt/storage1/2015-08_InMediumModifications/TaggEff_10437.dat.xz 0 0
+##
+## 1557 MeV, Moeller, 3mm
+#File-Name:	/mnt/storage1/2016-08_Recoil_Pol/TaggEff_14665.dat.xz 0 0
+#File-Name:	/mnt/storage1/2016-08_Recoil_Pol/TaggEff_14668.dat.xz 0 0
+#File-Name:	/mnt/storage1/2016-08_Recoil_Pol/TaggEff_14669.dat.xz 0 0
+##
+## 1557 MeV, Cu 10um, 4mm
+#File-Name:	/scratch/martel/Data/TaggEff/TaggEffMk2_149.dat.xz 0 0
+#File-Name:	/scratch/martel/Data/TaggEff/TaggEffMk2_150.dat.xz 0 0
+#File-Name:	/scratch/martel/Data/TaggEff/TaggEffMk2_151.dat.xz 0 0
+##
+## 1604 MeV, Cu 10um, 4mm
+#File-Name:	/mnt/storage2/2014-12_EPT_Prod/TaggEff_7767.dat.xz 0 0
+#File-Name:	/mnt/storage2/2014-12_EPT_Prod/TaggEff_7768.dat.xz 0 0
+##
+##
+## Diamond
+##
+## 883 MeV, Dia 30um, 310 MeV, 3mm
+#File-Name:	/mnt/storage1/2012-12_Compton/TaggEff_490.dat.xz 0 0
+#File-Name:	/mnt/storage1/2012-12_Compton/TaggEff_491.dat.xz 0 0
+#File-Name:	/mnt/storage1/2012-12_Compton/TaggEff_492.dat.xz 0 0
+#File-Name:	/mnt/storage1/2012-12_Compton/TaggEff_494.dat.xz 0 0
+##
+## 883 MeV, Dia 30um, ? MeV, 3mm
+#File-Name:	/scratch/martel/Data/TaggEff/TaggEff_46.dat.xz 0 0
+#File-Name:	/scratch/martel/Data/TaggEff/TaggEff_47.dat.xz 0 0
+#File-Name:	/scratch/martel/Data/TaggEff/TaggEff_48.dat.xz 0 0
+#File-Name:	/scratch/martel/Data/TaggEff/TaggEff_50.dat.xz 0 0
+##
+## 883 MeV, Dia 30um, ? MeV, 4mm
+#File-Name:	/scratch/martel/Data/TaggEff/TaggEffMk2_164.dat.xz 0 0
+#File-Name:	/scratch/martel/Data/TaggEff/TaggEffMk2_166.dat.xz 0 0
+#File-Name:	/scratch/martel/Data/TaggEff/TaggEffMk2_167.dat.xz 0 0
+#File-Name:	/scratch/martel/Data/TaggEff/TaggEffMk2_168.dat.xz 0 0
+##
+## 1557 MeV, Dia 100um, 450 MeV, 2mm
+#File-Name:	/mnt/storage1/2015-09_G_E_Proton/TaggEff_11477.dat.xz 0 0
+#File-Name:	/mnt/storage1/2015-09_G_E_Proton/TaggEff_11478.dat.xz 0 0
+#File-Name:	/mnt/storage1/2015-09_G_E_Proton/TaggEff_11479.dat.xz 0 0
+#File-Name:	/mnt/storage1/2015-09_G_E_Proton/TaggEff_11482.dat.xz 0 0
+##
+## 1557 MeV, Dia 100um, 650 MeV, 2mm
+#File-Name:	/mnt/storage1/2015-09_G_E_Proton/TaggEff_11636.dat.xz 0 0
+#File-Name:	/mnt/storage1/2015-09_G_E_Proton/TaggEff_11638.dat.xz 0 0
+#File-Name:	/mnt/storage1/2015-09_G_E_Proton/TaggEff_11639.dat.xz 0 0
+#File-Name:	/mnt/storage1/2015-09_G_E_Proton/TaggEff_11640.dat.xz 0 0
+##
+## 1557 MeV, Dia 100um, 750 MeV, 2mm
+#File-Name:	/mnt/storage1/2015-05_G-E_HButanol/TaggEff_9169.dat.xz 0 0
+#File-Name:	/mnt/storage1/2015-05_G-E_HButanol/TaggEff_9171.dat.xz 0 0
+#File-Name:	/mnt/storage1/2015-05_G-E_HButanol/TaggEff_9172.dat.xz 0 0
+#File-Name:	/mnt/storage1/2015-05_G-E_HButanol/TaggEff_9173.dat.xz 0 0
+##
+## 1557 MeV, Dia 100um, 850 MeV, 2mm
+#File-Name:	/mnt/storage1/2015-09_G_E_Proton/TaggEff_11976.dat.xz 0 0
+#File-Name:	/mnt/storage1/2015-09_G_E_Proton/TaggEff_11977.dat.xz 0 0
+#File-Name:	/mnt/storage1/2015-09_G_E_Proton/TaggEff_11978.dat.xz 0 0
+#File-Name:	/mnt/storage1/2015-09_G_E_Proton/TaggEff_11980.dat.xz 0 0
+##
+## 1557 MeV, Dia 100um, 650 MeV, 3mm
+#File-Name:	/mnt/storage1/2016-08_Recoil_Pol/TaggEff_14665.dat.xz 0 0
+#File-Name:	/mnt/storage1/2016-08_Recoil_Pol/TaggEff_14666.dat.xz 0 0
+#File-Name:	/mnt/storage1/2016-08_Recoil_Pol/TaggEff_14667.dat.xz 0 0
+#File-Name:	/mnt/storage1/2016-08_Recoil_Pol/TaggEff_14669.dat.xz 0 0
+##
+## END

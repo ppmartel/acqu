@@ -1,4 +1,4 @@
-// SVN Info: $Id: AddSet.C 923 2011-05-28 17:53:17Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller
@@ -21,10 +21,10 @@ void AddSet()
  
     // macro configuration: just change here for your beamtime and leave
     // the other parts of the code unchanged
-    const Int_t firstRun            = 41950;
-    const Int_t lastRun             = 41960;
-    const Char_t calibName[]        = "ETAP_Aug_12";
-    const Char_t calibDesc[]        = "Standard calibration test for August 2012 beamtime";
+    const Int_t firstRun            = 13089;
+    const Int_t lastRun             = 13841;
+    const Char_t calibName[]        = "LD2_Dec_07";
+    const Char_t calibDesc[]        = "Standard calibration for December 2007 beamtime";
     const Char_t calibType[]        = "Type.Tagger.Eff";
 
     // add set

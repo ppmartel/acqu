@@ -1,0 +1,60 @@
+#########################################################################
+#                                                                       #
+# GoAT analysis class configuration file                                #
+#                                                                       #
+#########################################################################
+
+Reconstruct:
+
+#
+# CaLib configuration
+#
+
+# General:      dbhost                           	dbname   dbuser      dbpass        calibration
+Use-CaLib:      marvin.cb.uni-bonn.de     a2_calib   a2_user    a2db4all      2014-05_G_E_Proton-Linturi
+#
+# miscellaneous calibrations:    		target position  						   (0=off/1=on)
+#Use-CaLib-Misc:                 			0
+#tagger calib:     	time    	eff                                                 					   (0=off/1=on)
+Use-CaLib-TAGG:    	1       	0
+#CB calib:         	energy  	time    	timewalk    	quadr. energy  	LED thr.       (0=off/1=on)
+Use-CaLib-CB:       	1       	1       	1                      0             			0
+#TAPS calib:       	energy  	time    	quadr. energy  LED thr.   		CFD thr.       	   (0=off/1=on)
+Use-CaLib-TAPS:    	1       	1       	0               	1          			1
+# PID calib:        	phi     	energy  	time                                        			    	   (0=off/1=on)
+Use-CaLib-PID:      	1       	1       	1
+# Veto calib:       	energy  	time    	LED thr.                                    		 	   (0=off/1=on)
+Use-CaLib-Veto:     	1       	1       	0
+
+
+#Use-CaLib-CBEnergyPerRun: 	data/CBEnergyCorrectionPerRun.txt
+#RootTree-Output-Folder:         	 /hiskp2/afzal/Mainz/datatrees_may14_diamond_LinPol_PID/
+#RootTree-Output-Folder:         	 /hiskp2/afzal/Mainz/datatrees_may14_moeller_NoLinPol_PID/
+#
+#RootTree-Output-Folder:         	  /hiskp2/afzal/Mainz/datatrees_may14_diamond_LinPol/
+RootTree-Output-Folder:         	 /hiskp2/afzal/Mainz/datatrees_may14_moeller_LinPol/
+RootTree-File-Name:			Acqu
+
+# Read in and decode beam helicity ADC
+# First number is the ADC channel, other numbers are the bit pattern
+# to set the beam helicity bit to 'true', where I is an inhibit bit,
+# and L and H represent a 'low' and 'high' (0 and 1) respectively
+#
+# Old setting
+#Beam-Helicity: 6 I H L L H
+# New setting
+Beam-Helicity: 7 H I H L
+
+Initialise:
+
+Display: 1D nParticles 	15 0 15 
+Display: 1D Theta		180 0 180
+Display: 1D Phi	 	360 -180 180
+Display: 1D clusterSize 	40 0 40 
+Display: 1D nTagged	100 0 100 
+Display: 1D taggedCh	352 0 352 
+Display: 1D taggedT    	200 -100 100
+Display: 1D dE			25 0 25 
+Display: 1D WC0E		500 0 500 
+Display: 1D WC1E		500 0 500
+Display: 1D ESum		2000 0 2000

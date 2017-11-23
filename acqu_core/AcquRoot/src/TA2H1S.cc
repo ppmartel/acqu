@@ -20,7 +20,6 @@
 //---------------------------------------------------------------------------
 #include "TA2H1S.h"
 
-ClassImpT(TA2H1S,T)
 
 //-----------------------------------------------------------------------------
 template< typename T > TA2H1S<T>::
@@ -49,3 +48,5 @@ template< typename T >TA2H1S<T>::~TA2H1S()
 {
   // Free up allocated memory
 }
+
+ClassImpT(TA2H1S,T)

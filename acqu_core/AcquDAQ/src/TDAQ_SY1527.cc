@@ -14,7 +14,6 @@
 
 #include "TDAQ_SY1527.h"
 
-ClassImp(TDAQ_SY1527)
 
 enum { Esy1527_Crate=100, Esy1527_P1932, Esy1527_S1932, Esy1527_SaveHV,
        Esy1527_TurnOn, Esy1527_TurnOff };
@@ -371,3 +370,5 @@ void TDAQ_SY1527::CommandLoop()
   } 
 #endif
 }
+
+ClassImp(TDAQ_SY1527)

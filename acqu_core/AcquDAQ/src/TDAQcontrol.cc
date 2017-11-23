@@ -13,7 +13,6 @@
 #include "TDAQcontrol.h"
 #include "TDAQmodule.h"
 
-ClassImp(TDAQcontrol)
 
 //-----------------------------------------------------------------------------
 TDAQcontrol::TDAQcontrol( TDAQmodule* mod )
@@ -77,4 +76,4 @@ Int_t TDAQcontrol::AddMap( DAQMemMap_t* map )
   fNmap++;
   return fNmap;
 }
-
+ClassImp(TDAQcontrol)

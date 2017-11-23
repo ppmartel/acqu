@@ -1,0 +1,13 @@
+CBTaggTAPSPed_11241.dat.xz
+CBTaggTAPSPed_11295.dat.xz
+CBTaggTAPSPed_11334.dat.xz
+CBTaggTAPSPed_11442.dat.xz
+CBTaggTAPSPed_11485.dat.xz
+CBTaggTAPSPed_11538.dat.xz
+CBTaggTAPSPed_11590.dat.xz
+CBTaggTAPSPed_11646.dat.xz
+CBTaggTAPSPed_11711.dat.xz
+CBTaggTAPSPed_11782.dat.xz
+CBTaggTAPSPed_11844.dat.xz
+CBTaggTAPSPed_11932.dat.xz
+CBTaggTAPSPed_11982.dat.xz

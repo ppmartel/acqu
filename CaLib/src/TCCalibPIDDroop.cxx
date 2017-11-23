@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCCalibPIDDroop.cxx 912 2011-05-18 22:09:17Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller
@@ -15,7 +15,6 @@
 
 #include "TCCalibPIDDroop.h"
 
-ClassImp(TCCalibPIDDroop)
 
 
 //______________________________________________________________________________
@@ -376,4 +375,4 @@ void TCCalibPIDDroop::Write()
     fLinPlot->Write();
     Info("Write", "Droop correction '%s' was written to '%s'", fLinPlot->GetName(), fOutFile->GetName());
 }
-
+ClassImp(TCCalibPIDDroop)

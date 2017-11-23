@@ -21,7 +21,6 @@
 #include "TDAQexperiment.h"
 #include "ARFile_t.h"
 
-ClassImp(TVME_CATCH_TCS)
 
 static Map_t kVME_CATCH_TCSKeys[] = {
   {"TCSFile:",    ETCSFile}, 
@@ -325,4 +324,4 @@ void TVME_CATCH_TCS::ReConfig( )
   WrtCatch(0x24, 0x101);
   return;
 }
-
+ClassImp(TVME_CATCH_TCS)

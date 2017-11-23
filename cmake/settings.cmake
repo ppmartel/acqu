@@ -1,6 +1,9 @@
 # this is a hard requirement...will be sorted out later
 #set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-undefined")
 
+# make more warnings appear
+add_definitions(-D_FORTIFY_SOURCE=2)
+
 # every subdirectory has its own bin/lib path
 # this should be changed to one "global" directory...
 if(NOT DEFINED EXECUTABLE_OUTPUT_PATH)
@@ -11,22 +14,23 @@ if(NOT DEFINED LIBRARY_OUTPUT_PATH)
 	set(LIBRARY_OUTPUT_PATH "${CMAKE_BINARY_DIR}/lib")
 endif()
 
-# we check for empty string here, since the variable
-# is indeed defined to an empty string
-if(NOT CMAKE_BUILD_TYPE)
-  # this also reflects this default in the GUI
-	SET(CMAKE_BUILD_TYPE Debug CACHE STRING
-    "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
-    FORCE)
-endif()
-
 # really no optimization in debug mode
 if(CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -Wall")
+else()
+  message(FATAL_ERROR "Non-gcc compiler not supported")
 endif()
 
+# set default build type if unspecified so far
+if(NOT CMAKE_BUILD_TYPE)
+  message(STATUS "No build type selected, default to Release")
+  set(CMAKE_BUILD_TYPE "Release")
+endif()
+
+# figure out compile flags
 string(TOUPPER ${CMAKE_BUILD_TYPE} BUILD_TYPE)
 set(DEFAULT_COMPILE_FLAGS ${CMAKE_CXX_FLAGS_${BUILD_TYPE}})
+
 
 # disable the DAQ build mode by default
 # unless the site_name aka hostname begins with "vme-"

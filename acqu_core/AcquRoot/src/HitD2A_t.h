@@ -68,7 +68,7 @@ private:
   Bool_t fIsIgnored;            // ignore this element
   Double_t* fEnergyScalePtr;    // DO NOT MOVE THIS DECLARATION!
 public:
-  HitD2A_t( char*, UInt_t, TA2Detector* );
+  HitD2A_t( char*, UInt_t, TA2Detector*, Bool_t ignorePosition = kFALSE );
   virtual ~HitD2A_t();
   Bool_t Calibrate();
   Bool_t CheckEnergy();
@@ -224,7 +224,7 @@ inline Bool_t HitD2A_t::CheckTime( )
       *fTimeM[m] = (Double_t)ENullADC;
     else{
       if( !fNhit ) *fTime = time;             // time from 1st hit
-      *fTimeM[m] = time;                      // store all hit times
+      *fTimeM[fNhit] = time;                      // store all hit times
       fNhit++;                                // log # hits
     }
   }

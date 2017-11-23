@@ -51,7 +51,7 @@ enum { EMaxRandWindows = 16 };
 
 class TA2Ladder : public TA2Detector {
 
-private:
+ private:
  protected:
   HitD2A_t** fTrigger;         	// Trigger info array (only if separate trig)
   UInt_t* fTrigg;              	// Trigger info for each each hit
@@ -62,12 +62,14 @@ private:
   Int_t* fHitsPrompt;		// array with indices of prompt hit channels
   Int_t* fMuHits;               // microscope hits
   Double_t* fECalibration;     	// Energy calibration
+  Double_t* fEWidth;            // Energy width of channel
   Double_t* fEelec;             // electron energy
   Double_t* fEelecOR;           // OR of electron energy
   Double_t* fMeanEelecOR;       // OR of overlap electron energy
   Double_t* fEOverlap;         	// Energy calibration for overlaps
   Double_t* fRandMin;	       	// random windows maxima
   Double_t* fRandMax;           // random windows minima
+  Double_t* fTimeORAll;         // before sorting doubles
   Double_t* fMeanTime;          // doubles mean time
   Double_t* fMeanTimeOR;        // doubles mean time OR
   Double_t* fMeanEnergy;        // doubles mean pulse height
@@ -85,6 +87,7 @@ private:
   UInt_t fNRandWindows;		// No of random windows defined
   UInt_t fNhitsPrompt;		// no of prompt hits
   UInt_t fNhitsRand;		// no of random hits
+  UInt_t fNhitsAll;             // # hits before sorting doubles
   UInt_t fNMuHits;              // # microscope hits
   UInt_t fNMuElem;              // # microscope overlap channels
   UInt_t fFence;		// Fence plot for microscope calibration
@@ -117,12 +120,14 @@ public:
   Int_t* GetHitsPrompt(){ return fHitsPrompt; }
   Int_t* GetMuHits(){ return fMuHits; }
   const Double_t* GetECalibration(){ return (const Double_t*)fECalibration; }
+  Double_t* GetEWidth(){ return fEWidth; }
   Double_t* GetEelec(){ return fEelec; }
   Double_t* GetEelecOR(){ return fEelecOR; }
   Double_t* GetMeanEelecOR(){ return fMeanEelecOR; }
   Double_t* GetEOverlap(){ return fEOverlap; }
   Double_t* GetRandMin(){ return fRandMin; }
   Double_t* GetRandMax(){ return fRandMax; }
+  Double_t* GetTimeORAll(){ return fTimeORAll; }
   Double_t* GetMeanTime(){ return fMeanTime; }
   Double_t* GetMeanTimeOR(){ return fMeanTimeOR; }
   Double_t* GetMeanEnergy(){ return fMeanEnergy; }
@@ -140,6 +145,7 @@ public:
   UInt_t GetNRandWindows(){ return fNRandWindows; }
   UInt_t GetNhitsPrompt(){ return fNhitsPrompt; }
   UInt_t GetNhitsRand(){ return fNhitsRand; }
+  UInt_t GetNhitsAll(){ return fNhitsAll; }
   UInt_t GetFence(){ return fFence; }
   UInt_t GetNMuHits(){ return fNMuHits; }
   UInt_t GetNMuElem(){ return fNMuElem; }
@@ -147,6 +153,22 @@ public:
   Bool_t IsTimeWindows(){return fIsTimeWindows;}
   Bool_t IsFence(){ return fIsFence; }
   Bool_t IsMicro(){ return fIsMicro; }
+
+  
+  UInt_t* fScalerPromptIndex;            // local prompt scalers indices
+  UInt_t* fScalerPromptCurr;             // local prompt scalers current buffer
+  Double_t* fScalerPromptAcc;            // local prompt scalers accumulated buffer
+  UInt_t* fScalerRandIndex;              // local rand scalers indices
+  UInt_t* fScalerRandCurr;               // local rand scalers current buffer
+  Double_t* fScalerRandAcc;              // local rand scalers accumulated buffer
+  
+  UInt_t* GetScalerPromptIndex(){ return fScalerPromptIndex; }       // local prompt scalers
+  UInt_t* GetScalerPromptCurr(){ return fScalerPromptCurr; }         // local prompt scalers
+  Double_t* GetScalerPromptAcc(){ return fScalerPromptAcc; }         // local prompt scalers
+  UInt_t* GetScalerRandIndex(){ return fScalerRandIndex; }       // local rand scalers
+  UInt_t* GetScalerRandCurr(){ return fScalerRandCurr; }         // local rand scalers
+  Double_t* GetScalerRandAcc(){ return fScalerRandAcc; }         // local rand scalers
+  
   ClassDef(TA2Ladder,1)
 };
 
@@ -182,8 +204,8 @@ inline void TA2Ladder::DecodeDoubles( )
       // Look for a chain of coincident hits
       UInt_t k,ik,jk;
       for( k=1;; k++ ){
-	if( (ik = i+k) >= fNhits ) break;
 	jk = j+k;
+	if( (ik = i+k) >= fNhits ) break;
 	if( jk != fHitsAll[ik]) break;
 	tdiff = fTime[j]-fTime[jk];
 	if( fabs(tdiff) >= fTimingRes ) break;
@@ -214,6 +236,7 @@ inline void TA2Ladder::DecodeDoubles( )
 	if(fIsECalib)
 	  fEelecOR[ngood] = fMeanEelecOR[fNDoubles] = fEOverlap[j];
 	fNDoubles++;
+        ngood++;
       }
       // >2 adjacent hits....clear hit and energy/time element
       else{

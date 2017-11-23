@@ -56,7 +56,6 @@ VMEreg_t V1190reg[] = {
   {0xffffffff,0x0,'w',0x0},          // terminate
 };
 
-ClassImp(TVME_V1190)
 
 enum { EV1190_Threshold=200, EV1190_EdgeDet, EV1190_Window};
 static Map_t k1190Keys[] = {
@@ -245,3 +244,5 @@ void TVME_V1190::WrtMicro( Int_t command, Int_t object, Int_t* data )
   }
   Write(EV1190_Micro,data);
 }
+
+ClassImp(TVME_V1190)

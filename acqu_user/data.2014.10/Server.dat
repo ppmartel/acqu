@@ -1,0 +1,29 @@
+##-----------------------------------------------------------------------
+##--Author	JRM Annand   13th Jan 2004
+##--Update	JRM Annand... 1st Dec 2004
+##############################################################################
+# Server setup file
+# ############################################################################
+#
+# Number of Input streams (sources of data), Record length to write data
+# and switch 0/1 = no/yes to control data write
+#
+#              Number streams	Record Len	Save Data
+Input-Streams:	1		327680		0
+#
+##############################################################################
+# Optional directory spec. 
+# If not specified File-Names must contain the full directory path
+File-Directory:	scratch/
+#
+##############################################################################
+# Now the list of data files to analyse normal mode
+##            	Source	Format	Save?	RecLen	Buffers	Swap	MarkID
+Stream-Spec:	File	Mk2	0	327680	32	0	400
+
+#
+##############################################################################
+# Specify files
+File-Name:     	CBTaggTAPS_6398.dat.xz 0 100
+#
+## END

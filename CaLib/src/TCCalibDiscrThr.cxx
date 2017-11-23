@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCCalibDiscrThr.cxx 976 2011-08-31 17:16:34Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller
@@ -15,7 +15,6 @@
 
 #include "TCCalibDiscrThr.h"
 
-ClassImp(TCCalibDiscrThr)
 
 
 //______________________________________________________________________________
@@ -375,4 +374,4 @@ void TCCalibDiscrThr::ReadADC()
     Int_t n = 0;
     while ((e = (TCARElement*)next())) fADC[n++] = atoi(e->GetADC());
 } 
-
+ClassImp(TCCalibDiscrThr)

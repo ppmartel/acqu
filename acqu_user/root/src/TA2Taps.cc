@@ -63,7 +63,6 @@ static Map_t kValidTapsDetectors[] = {
   {NULL,                -1}
 };
 
-ClassImp(TA2Taps)
 
 //-----------------------------------------------------------------------------
 
@@ -78,6 +77,7 @@ TA2Taps::TA2Taps(const char* name, TA2System* analysis)
   fVeto               = NULL;
   fDeltaE             = NULL;
   fEcharged           = NULL;
+  fEchargedcl         = NULL;
   fVetoPromptTime     = NULL;
   fTOFproton          = NULL;
   fTOF                = NULL;
@@ -113,7 +113,6 @@ TA2Taps::~TA2Taps()
   if(fDeltaE)           delete fDeltaE;
   if(fEcharged)         delete fEcharged;
   if(fEchargedcl)       delete fEchargedcl;
-  if(fEchargedIndex)    delete fEchargedIndex;
   if(fHitMatrixX)       delete fHitMatrixX;
   if(fHitMatrixY)       delete fHitMatrixY;
   if(fVetoPromptTime)   delete fVetoPromptTime;
@@ -160,7 +159,6 @@ void TA2Taps::LoadVariable( )
   TA2DataManager::LoadVariable("DeltaE",             fDeltaE,           EDSingleX);
   TA2DataManager::LoadVariable("Echarged",           fEcharged,         EDSingleX);
   TA2DataManager::LoadVariable("Echargedcl",         fEchargedcl,       EDSingleX);
-  TA2DataManager::LoadVariable("EchargedIndex",      fEchargedIndex ,   EDSingleX);
   TA2DataManager::LoadVariable("HitMatrix_X",        fHitMatrixX ,      EDSingleX);
   TA2DataManager::LoadVariable("HitMatrix_Y",        fHitMatrixY ,      EDSingleX);
   TA2DataManager::LoadVariable("VetoPromptTime",     fVetoPromptTime ,  EDSingleX);
@@ -183,7 +181,6 @@ void TA2Taps::PostInit()
   fDeltaE           = new Double_t[fMaxParticle+1];
   fEcharged         = new Double_t[fMaxParticle+1];
   fEchargedcl       = new Double_t[fMaxParticle+1];
-  fEchargedIndex    = new Double_t[fMaxParticle+1];
   fVetoPromptTime   = new Double_t[fMaxParticle+1];
   fTOFproton        = new Double_t[fMaxParticle+1];
   fTOF              = new Double_t[fMaxParticle+1];
@@ -213,7 +210,6 @@ void TA2Taps::MakeAllRootinos()
   fMultipleVetoHit = 0;
   fVeto_dE         = 0.0;
   fEnergy_BaF2     = 0.0;
-  fEnergy_Index    = 0.0;
 
   //set all array-elements to 0, 0.0 or kFALSE
   for(Int_t j=0;j<fMaxParticle;j++)
@@ -228,7 +224,6 @@ void TA2Taps::MakeAllRootinos()
     fDeltaE[j]           = EBufferEnd;
     fEcharged[j]         = EBufferEnd;
     fEchargedcl[j]       = EBufferEnd;
-    fEchargedIndex[j]    = EBufferEnd;
     fVetoPromptTime[j]   = EBufferEnd;
     fTOFproton[j]        = EBufferEnd;
     fTOF[j]              = EBufferEnd;
@@ -254,6 +249,7 @@ void TA2Taps::MakeAllRootinos()
  {
    fDeltaE[i]   = (Double_t)ENullHit;  //not needed anymore... but i leave it here
    fEcharged[i] = (Double_t)ENullHit;  //not needed anymore... but i leave it here
+   fEchargedcl[i] = (Double_t)ENullHit;  //not needed anymore... but i leave it here
  }
 }
 
@@ -288,52 +284,31 @@ void TA2Taps::MainReconstruct()
                         + pow(cl->GetEnergy(), 2) * fTapsRingEnergycorr2[GetTAPSRing(clindex)-1] ;
     fIsClusterTime[i]   = fBaF2->GetTime(id_clBaF2[i]) * FlightTimeCorrection(clindex);
 
-    // check if there is a Veto-Hit infront of at least one cluster-crystal
-    for(UInt_t j=0; j<fVeto_NHits; j++)
+    fVeto_dE = CheckClusterVeto(cl, &fVetoIndex);
+    if(fVeto_dE > 0)
     {
-      //first check veto infront of BaF2-cluster-index-Crystal
-      if(clindex==(UInt_t)fVeto_Hits[j] && CheckVetoBaF2TimeIsPrompt(fVeto->GetTime(fVeto_Hits[j]))==kTRUE)
+      if(CheckVetoBaF2TimeIsPrompt(fVeto->GetTime(fVetoIndex)))
       {
-        fIsVCharged[i] = kTRUE;
-        fVeto_Time     = fVeto->GetTime(fVeto_Hits[j]) * FlightTimeCorrection(clindex);
-        fVeto_dE       = fVeto->GetEnergy(fVeto_Hits[j]);
-        fVetoIndex     = fVeto_Hits[j];
-        fEnergy_Index  = fBaF2->GetEnergy(clindex);
-        fEnergy_BaF2   = fBaF2->GetEnergy(clindex);
-      }
-      else // .. if not, then check other vetos infront of the complete BaF2cluster
-      {    //   ...if there are more than ONE, the LAST one is chosen.
-        for(UInt_t n = 0; n< clBaF2_Nhits; n++)
-        {
-          if(fIsVCharged[i]==kFALSE && clBaF2_elements[n]==(UInt_t)fVeto_Hits[j] &&
-          CheckVetoBaF2TimeIsPrompt(fVeto->GetTime(fVeto_Hits[j])) == kTRUE)
-          {
-            fEnergy_BaF2        = cl->GetEnergy();
-            fVeto_dE            = fVeto->GetEnergy(fVeto_Hits[j]);
-            fIsVCharged[i]      = kTRUE;
-            fVetoIndex          = fVeto_Hits[j];
-            fVeto_Time          = fVeto->GetTime(fVeto_Hits[j]) * FlightTimeCorrection(clindex);
-          }
-        }
+	fIsVCharged[i] = kTRUE;
+	fVeto_Time     = fVeto->GetTime(fVetoIndex) * FlightTimeCorrection(clindex);
+	fEnergy_BaF2   = fBaF2->GetEnergy(clindex);
       }
     }
 
     // check Veto-dE versus BaF2-E Banana-cuts -> dEvE@TAPS
-    // note: mutiple-veto-hits infront of one baf2-cluster not yet supported
     if(fIsVCharged[i] == kTRUE)
     {
-      fDeltaE[i]        = fVeto_dE;             // dE of Veto      - for Histogram TA2DataManager::LoadVariable
-      fEchargedcl[i]    = fIsClusterEnergy[i];  // BaF2_E-Clustero - for Histogram TA2DataManager::LoadVariable
-      fEcharged[i]      = fEnergy_BaF2;         // BaF2_E-Clustero OR E of Index-Crystal - for Histogram TA2DataManager::LoadVariable
-      fEchargedIndex[i] = fEnergy_Index;        // Energy of Index-Crystal - for Histogram TA2DataManager::LoadVariable
-      fVetoPromptTime[i]= fVeto_Time;           // veto Prompt-Time  - for Histogram TA2DataManager::LoadVariable
+      fDeltaE[i]        = fVeto_dE;             // dE of Veto              - for Histogram TA2DataManager::LoadVariable
+      fEcharged[i]      = fEnergy_BaF2;         // BaF2_E of Index-Crystal - for Histogram TA2DataManager::LoadVariable
+      fEchargedcl[i]    = fIsClusterEnergy[i];  // BaF2_E of Cluster       - for Histogram TA2DataManager::LoadVariable
+      fVetoPromptTime[i]= fVeto_Time;           // veto Prompt-Time        - for Histogram TA2DataManager::LoadVariable
       fVetoBaf2Time[i]  = fIsClusterTime[i] - fVeto_Time; // Save Veto-BaF2 Time Diff  - for Histogram TA2DataManager::LoadVariable
 
-       if(fTAPS_dEvE_Active == kTRUE && fTAPS_dEvE_Proton==kTRUE && fTAPS_dEvE_ProtonCut->IsInside(fEnergy_BaF2,fVeto_dE))
+       if(fTAPS_dEvE_Active == kTRUE && fTAPS_dEvE_Proton==kTRUE && fTAPS_dEvE_ProtonCut->IsInside(fEchargedcl[i],fVeto_dE))
          fdEvE_IsProton[i]   = kTRUE;
-       if(fTAPS_dEvE_Active == kTRUE && fTAPS_dEvE_ChPion==kTRUE && fTAPS_dEvE_ChPionCut->IsInside(fEnergy_BaF2,fVeto_dE))
+       if(fTAPS_dEvE_Active == kTRUE && fTAPS_dEvE_ChPion==kTRUE && fTAPS_dEvE_ChPionCut->IsInside(fEchargedcl[i],fVeto_dE))
          fdEvE_IsChPion[i]   = kTRUE;
-       if(fTAPS_dEvE_Active == kTRUE && fTAPS_dEvE_Electron==kTRUE && fTAPS_dEvE_ElectronCut->IsInside(fEnergy_BaF2,fVeto_dE))
+       if(fTAPS_dEvE_Active == kTRUE && fTAPS_dEvE_Electron==kTRUE && fTAPS_dEvE_ElectronCut->IsInside(fEchargedcl[i],fVeto_dE))
          fdEvE_IsElectron[i] = kTRUE;
 
        if(fdEvE_IsProton[i] == kTRUE )
@@ -410,6 +385,56 @@ Int_t TA2Taps::CheckParticleID(UInt_t i)
   }
 
   return kRootino;
+}
+
+//--------------------------------------------------------------------------------
+
+Double_t TA2Taps::CheckClusterVeto(HitCluster_t* inCluster, UInt_t* outVetoIndex) const
+{
+    // Return the maximum energy deposited in one of the veto detectors of the
+    // TAPS cluster 'inCluster'.
+    // Returns 0 if no cluster veto fired.
+    //
+    // If 'outVetoIndex' is provided write the index of the corresponding veto
+    // element to that variable (-1 if no cluster veto fired).
+    
+    Int_t center        = inCluster->GetIndex();
+    UInt_t nNeighbours  = inCluster->GetNNeighbour();
+    UInt_t* neighbours  = inCluster->GetNeighbour();
+        
+    Double_t maxVetoEnergy = 0;
+    if (outVetoIndex) *outVetoIndex = -1;
+
+    // loop over all veto hits
+    for (UInt_t i = 0; i < fVeto_NHits; i++)
+    {
+        // check central element
+        if ((UInt_t)fVeto_Hits[i] == GetVetoInFrontOfElement(center))
+        {
+	    if (fVeto->GetEnergy(fVeto_Hits[i]) > maxVetoEnergy) 
+            {
+	        maxVetoEnergy = fVeto->GetEnergy(fVeto_Hits[i])
+                                * TMath::Abs(TMath::Cos(inCluster->GetTheta() * TMath::DegToRad()));
+                if (outVetoIndex) *outVetoIndex = (UInt_t)fVeto_Hits[i];
+            }
+        }
+
+        // loop over all neighbour elements
+        for (UInt_t j = 0; j < nNeighbours; j++)
+        {
+            if ((UInt_t)fVeto_Hits[i] == GetVetoInFrontOfElement((Int_t)neighbours[j]))
+            {
+	        if (fVeto->GetEnergy(fVeto_Hits[i]) > maxVetoEnergy) 
+                {
+		    maxVetoEnergy = fVeto->GetEnergy(fVeto_Hits[i])
+                                    * TMath::Abs(TMath::Cos(inCluster->GetTheta() * TMath::DegToRad()));
+                    if (outVetoIndex) *outVetoIndex = (UInt_t)fVeto_Hits[i];
+                }
+            }
+        }
+    }
+
+    return maxVetoEnergy;
 }
 
 //--------------------------------------------------------------------------------
@@ -672,6 +697,12 @@ void TA2Taps::SetConfig(char* line, int key)
         sscanf(line, "%s", fTAPS_dEvE_Proton_CutName);
         fTAPS_dEvE_CutFile = new TFile(fTAPS_dEvE_Cuts, "READ");
         CutPtr = (TCutG*)fTAPS_dEvE_CutFile->Get(fTAPS_dEvE_Proton_CutName);
+        // check if the cut was found, otherwise exit to prevent later segfaults
+        if(!CutPtr){
+          fTAPS_dEvE_CutFile->Close();
+          printf("ERROR: TAPS dEvE cut '%s' not found!\n", fTAPS_dEvE_Proton_CutName);
+          PrintError(line, "<TAPS dEvE Proton cut: no cut with specified cutname found>", EErrFatal);
+        }
         fTAPS_dEvE_ProtonCut = CutPtr;
         fTAPS_dEvE_CutFile->Close();
       }
@@ -693,6 +724,12 @@ void TA2Taps::SetConfig(char* line, int key)
         sscanf(line, "%s", fTAPS_dEvE_ChPion_CutName);
         fTAPS_dEvE_CutFile = new TFile(fTAPS_dEvE_Cuts, "READ");
         CutPtr = (TCutG*)fTAPS_dEvE_CutFile->Get(fTAPS_dEvE_ChPion_CutName);
+        // check if the cut was found, otherwise exit to prevent later segfaults
+        if(!CutPtr){
+          fTAPS_dEvE_CutFile->Close();
+          printf("ERROR: TAPS dEvE cut '%s' not found!\n", fTAPS_dEvE_ChPion_CutName);
+          PrintError(line, "<TAPS dEvE Pion cut: no cut with specified cutname found>", EErrFatal);
+        }
         fTAPS_dEvE_ChPionCut = CutPtr;
         fTAPS_dEvE_CutFile->Close();
       }
@@ -715,6 +752,12 @@ void TA2Taps::SetConfig(char* line, int key)
         sscanf(line, "%s", fTAPS_dEvE_Electron_CutName);
         fTAPS_dEvE_CutFile = new TFile(fTAPS_dEvE_Cuts, "READ");
         CutPtr = (TCutG*)fTAPS_dEvE_CutFile->Get(fTAPS_dEvE_Electron_CutName);
+        // check if the cut was found, otherwise exit to prevent later segfaults
+        if(!CutPtr){
+          fTAPS_dEvE_CutFile->Close();
+          printf("ERROR: TAPS dEvE cut '%s' not found!\n", fTAPS_dEvE_Electron_CutName);
+          PrintError(line, "<TAPS dEvE Electron cut: no cut with specified cutname found>", EErrFatal);
+        }
         fTAPS_dEvE_ElectronCut = CutPtr;
         fTAPS_dEvE_CutFile->Close();
       }
@@ -754,6 +797,12 @@ void TA2Taps::SetConfig(char* line, int key)
         sscanf(line, "%s", fTAPS_TOF_Nucleon_CutName);
         fTAPS_TOF_CutFile = new TFile(fTAPS_TOF_Cuts, "READ");
         CutPtr = (TCutG*)fTAPS_TOF_CutFile->Get(fTAPS_TOF_Nucleon_CutName);
+        // check if the cut was found, otherwise exit to prevent later segfaults
+        if(!CutPtr){
+          fTAPS_TOF_CutFile->Close();
+          printf("ERROR: TAPS TOF cut '%s' not found!\n", fTAPS_TOF_Nucleon_CutName);
+          PrintError(line, "<TAPS TOF Nucleon cut: no cut with specified cutname found>", EErrFatal);
+        }
         fTAPS_TOF_NucleonCut = CutPtr;
         fTAPS_TOF_CutFile->Close();
       }
@@ -828,4 +877,4 @@ error:
 }
 
 //-----------------------Thank you for reading ---------------------------
-
+ClassImp(TA2Taps)

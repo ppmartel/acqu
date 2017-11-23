@@ -19,7 +19,6 @@
 #include "ARFile_t.h"
 #include "TParticle.h"
 
-ClassImp(TMCPhotoPSGenerator)
 
 // Recognised Said configure commands
 enum { EMCPhotoPSMisc = 200 };
@@ -89,3 +88,5 @@ void TMCPhotoPSGenerator::SaveEventAsParticles(  )
   }
   fTree->Fill();
 }
+
+ClassImp(TMCPhotoPSGenerator)

@@ -12,7 +12,6 @@ static const Map_t kMoellerKeys[] = {
   {NULL,            -1}
 };
 
-ClassImp(TA2Moeller)
 
 using namespace std;
 
@@ -205,4 +204,4 @@ void TA2Moeller::Decode()
 }
 
 //-----------------------------------------------------------------------------
-
+ClassImp(TA2Moeller)

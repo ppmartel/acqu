@@ -16,7 +16,6 @@
 #include <string>
 #include <time.h>
 
-ClassImp(TVME_VUPROM_Moeller)
 
 enum { EVUPM_CfgMode=500, EVUPM_ModuleChain, EVUPM_ChannelPairs, EVUPM_NBins,
       EVUPM_NReadsPerIRQ, EVUPM_ScalerModulo};
@@ -350,3 +349,5 @@ void TVME_VUPROM_Moeller::ReadIRQScaler(void** outBuffer)
   }
   Write(EVUM_ScalerClr, 1);           // clear the scalers
 }
+
+ClassImp(TVME_VUPROM_Moeller)

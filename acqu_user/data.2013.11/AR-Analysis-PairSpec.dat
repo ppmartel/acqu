@@ -1,0 +1,68 @@
+## Detector setup file for running TA2PairSpec
+########################################################################
+
+# this configures the PairSpec data
+#              #channels  #histograms  ScalerOffset  ScalerBlockSize
+PairSpecSetup: 352        3            2000          32 
+
+# the order of the blocks
+# corresponds to the physical connections, 
+# AB   0  32
+# CD  32  32
+# EF  64  32
+# GH  96  32
+# IJ 128  32  
+# KL 160  32
+# MN 192  32
+# OP 224  32
+# QR 256  32
+# ST 288  32
+# UV 320  32
+# the current connection order is:
+# IJ, OP, CD, GH, QR, KL, EF, ST, MN, AB, UV
+
+# Furthermore, the ScalerBlock: are grouped
+# by the Vuprom: commands, which need the number
+# of ScalerBlock's which follow
+
+Vuprom: 3
+# IJ
+ScalerBlock:  128 
+# OP
+ScalerBlock:  224 
+# CD 
+ScalerBlock:   32 
+
+Vuprom: 3
+# GH 
+ScalerBlock:   96  
+# QR
+ScalerBlock:  256 
+# KL
+ScalerBlock:  160  
+
+Vuprom: 3
+# EF 
+ScalerBlock:   64  
+# ST
+ScalerBlock:  288  
+# MN 
+ScalerBlock:  192  
+
+Vuprom: 2
+# AB 
+#                  custom permutation 
+ScalerBlock:    0  12 0 13 1 14 2 15 3 16 4 17 5 18 6 19 7 20 8 21 9 22 10 23 11 24 25 26 27 28 29 30 31
+# UV
+ScalerBlock:  320
+
+## Do some post-initialisation.
+Initialise:
+
+# show the histograms defined by the detector
+Display: 1D Open     352 0 352
+Display: 1D Gated    352 0 352
+Display: 1D GatedDly 352 0 352
+Display: 1D SumOpen     352 0 352
+Display: 1D SumGated    352 0 352
+Display: 1D SumGatedDly 352 0 352

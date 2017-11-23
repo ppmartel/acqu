@@ -1,5 +1,5 @@
 //--Author	JRM Annand   30th Sep 2003  Read MC data
-//--Rev 	JRM Annand...15th Sep 2003  Generalise methods  
+//--Rev 	JRM Annand...15th Sep 2003  Generalise methods
 //--Rev 	JRM Annand....9th Mar 2004  New OR variables
 //--Rev 	JRM Annand....9th Mar 2005  protected instead of private vars
 //--Rev 	JRM Annand...13th Jul 2005  split offs, time OR
@@ -14,13 +14,13 @@
 //--Update	JRM Annand   17th Sep 2011  log energy weighting
 //--Description
 //                *** Acqu++ <-> Root ***
-// Online/Offline Analysis of Sub-Atomic Physics Experimental Data 
+// Online/Offline Analysis of Sub-Atomic Physics Experimental Data
 //
 // TA2ClusterDetector
 //
 // Decoding and calibration methods for EM calorimeters or similar systems
 // where a shower or showers of secondary particles fire a cluster or
-// clusters neighbouring calorimeter elements, 
+// clusters neighbouring calorimeter elements,
 // e.g. Crystal Ball NaI(Tl) array
 //
 
@@ -30,24 +30,46 @@
 #include "TA2Detector.h"
 #include "HitCluster_t.h"       // hit cluster determination
 
+
+#include "a2display.h"
+#define MAX_DISP_CLUSTERS 8
+
+
 // constants for command-line maps
-enum { 
-  EClustDetMaxCluster = 100, EClustDetNeighbour,  EClustDetAllNeighbour,
+enum {
+  EClustDetMaxCluster = 100, EClustDetNeighbour, EClustAlgo,
+  // keys for traditional cluster algorithm
   EClustDetSplitOff, EClustDetIterate, EClustEnergyWeight,
+  // keys for NextGen cluster algorithm
+  EClustDetMoliereRadius, EClustDetWeighting, EClustDetShowerDepthCorr,
+  // keys for cluster display
   EClustDetEnergy, EClustDetTime, EClustDetCentFrac, EClustDetRadius,
-  EClustDetHits, EClustDetMulti,
+  EClustDetHits, EClustDetMulti
 };
+
+// constants for cluster algorithms
+enum EClustAlgoType {
+  EClustAlgoEmpty = 0,
+  EClustAlgoTrad,
+  EClustAlgoTAPS,
+  EClustAlgoUCLA,
+  EClustAlgoNextGen,
+};
+typedef EClustAlgoType ClustAlgoType_t;
 
 class TA2ClusterDetector : public TA2Detector {
  protected:
+  ClustAlgoType_t fClustAlgoType;       // type of cluster algorithm
   HitCluster_t** fCluster;              // Clusters of hits
   UInt_t* fClustHit;                    // Cluster indices
-  Bool_t* fIsSplit;                     // Indices split-off clusters
-  UInt_t* fTempHits;                    // Element-Hit store
+  Bool_t* fIsSplit;                     // Indices split-off clusters (Trad)
+  UInt_t* fTempHits;                    // Element-Hit store (Trad)
+  UInt_t* fTempHits2;                   // Element-Hit store (UCLA)
+  UInt_t* fTryHits;                     // Element-Hit store (UCLA)
   UInt_t fNCluster;                     // # of clusters
   Int_t fClustSizeFactor;               // enlarge factor, hit cluster buffers
-  UInt_t fNSplit;                       // # low energy clusters
-  UInt_t fNSplitMerged;                 // # split-offs merged
+  UInt_t fNSplit;                       // # low energy clusters (Trad)
+  UInt_t fNSplitMerged;                 // # split-offs merged (Trad)
   UInt_t fMaxCluster;                   // Max # of clusters
   UInt_t* fNClustHitOR;                 // OR of #hits in individuyal clusters
   Double_t* fTheta;                     // theta of cluster hit
@@ -58,17 +80,29 @@ class TA2ClusterDetector : public TA2Detector {
   Double_t* fClRadiusOR;                // OR E-weighted cluster radii
   Double_t fClEthresh;                  // threshold energy for main cluster
   Double_t fEthresh;                    // generic threshold energy for cluster
-  Double_t fEthreshSplit;               // threshold energy for split-off
-  Double_t fMaxThetaSplitOff;           // max split-off opening angle 
-  Double_t fMinPosDiff;                 // min acceptable neighbour pos diff. 
-  Double_t fMaxPosDiff;                 // max acceptable neighbour pos diff. 
-  Double_t* fSplitAngle;                // opening angles detween clusters
-  Double_t fEWgt;                       // energy weighting factor
-  Int_t fLEWgt;                         // energy weighting factor switch
-  Int_t* fISplit;                       // for sorting cluster opening angles
-  Int_t* fIJSplit;                      // for sorting cluster opening angles
-  Int_t fMaxSplitPerm;                  // for sorting cluster opening angles
-  Bool_t fIsIterate;                    // cluster member find iteration ON/OFF
+  Double_t fEthreshSplit;               // threshold energy for split-off (Trad)
+  Double_t fMaxThetaSplitOff;           // max split-off opening angle (Trad)
+  Double_t fMinPosDiff;                 // min acceptable neighbour pos diff. (Trad)
+  Double_t fMaxPosDiff;                 // max acceptable neighbour pos diff. (Trad)
+  Double_t* fSplitAngle;                // opening angles detween clusters (Trad)
+  Double_t fEWgt;                       // energy weighting factor (Trad)
+  Int_t fLEWgt;                         // energy weighting factor switch (Trad)
+  Int_t* fISplit;                       // for sorting cluster opening angles (Trad)
+  Int_t* fIJSplit;                      // for sorting cluster opening angles (Trad)
+  Int_t fMaxSplitPerm;                  // for sorting cluster opening angles (Trad)
+  Bool_t fIsIterate;                    // cluster member find iteration ON/OFF (Trad)
+  UInt_t   fClusterWeightingType;       // type of weighting (NextGen)
+  Double_t fClusterWeightingPar1;       // weighting parameter 1 (NextGen)
+  Double_t fClusterWeightingPar2;       // weighting parameter 2 (NextGen)
+  Double_t fShowerDepthCorrection;      // if non-nan, shower depth correction is applied (NextGen)
+  Double_t* fMoliereRadii;              // value array for Moliere radius overwriting (NextGen)
+
+  Bool_t fDispClusterEnable;
+  TH2Crystals*  fDispClusterHitsAll;
+  TH2Crystals** fDispClusterHitsSingle;
+  TH2Crystals*  fDispClusterHitsEnergy;
+  void DisplayClusters();
+
  public:
   TA2ClusterDetector( const char*, TA2System* );// Normal use
   virtual ~TA2ClusterDetector();
@@ -78,6 +112,9 @@ class TA2ClusterDetector : public TA2Detector {
   virtual void PostInit( );            // initialise using setup info
   virtual void Decode( );              // hits -> energy procedure
   virtual void DecodeCluster( );       // determine clusters
+  virtual void DecodeClusterTrad( );   // determine clusters
+  virtual void DecodeClusterUCLA( );   // determine clusters
+  virtual void DecodeClusterNextGen( );// determine clusters
   virtual void DecodeSaved( );         // decode previously written data
   virtual void Cleanup( );             // end-of-event cleanup
   virtual void SaveDecoded( ) = 0;     // specialist
@@ -92,10 +129,11 @@ class TA2ClusterDetector : public TA2Detector {
   Bool_t* GetIsSplit(){ return fIsSplit; }
   Bool_t* GetIsSplit( UInt_t i ){ return fIsSplit + i; }
   UInt_t* GetTempHits(){ return fTempHits; }
+  UInt_t* GetTempHits2(){ return fTempHits2; }
   UInt_t GetNCluster(){ return fNCluster; }
   Int_t GetClustSizeFactor(){ return fClustSizeFactor; }
   UInt_t GetNSplit(){ return fNSplit; }
-  UInt_t GetNSplitMerged(){ return fNSplitMerged; } 
+  UInt_t GetNSplitMerged(){ return fNSplitMerged; }
   UInt_t GetMaxCluster(){ return fMaxCluster; }
   UInt_t* GetNClustHitOR(){ return fNClustHitOR; }
   Double_t* GetTheta(){ return fTheta; }
@@ -108,7 +146,7 @@ class TA2ClusterDetector : public TA2Detector {
   Double_t GetEthresh(){ return fEthresh; }
   Double_t GetEthreshSplit(){ return fEthreshSplit; }
   Double_t GetMaxThetaSplitOff(){ return fMaxThetaSplitOff; }
-  Double_t GetMinPosDiff(){ return fMinPosDiff; } 
+  Double_t GetMinPosDiff(){ return fMinPosDiff; }
   Double_t GetMaxPosDiff(){ return fMaxPosDiff; }
   Double_t* GetSplitAngle(){ return fSplitAngle; }
   Double_t GetEWgt(){ return fEWgt; }
@@ -117,7 +155,13 @@ class TA2ClusterDetector : public TA2Detector {
   Int_t* GetIJSplit(){ return fIJSplit; }
   Int_t GetMaxSplitPerm(){ return fMaxSplitPerm; }
   Bool_t IsIterate(){ return fIsIterate; }
- 
+
+  void SetEthreshSplit(Double_t e){ fEthreshSplit = e; }
+  void SetMaxThetaSplitOff(Double_t t){ fMaxThetaSplitOff = t; }
+  void SetMinPosDiff(Double_t d){ fMinPosDiff = d; }
+  void SetMaxPosDiff(Double_t d){ fMaxPosDiff = d; }
+  void SetIterate(Bool_t iter){ fIsIterate = iter; }
+
   ClassDef(TA2ClusterDetector,1)
 };
 
@@ -127,8 +171,9 @@ inline void TA2ClusterDetector::Decode( )
   // Run basic TA2Detector decode, then cluster decode
   // and then histogram
 
-  DecodeBasic();                    
+  DecodeBasic();
   DecodeCluster();
+  DisplayClusters();
 }
 
 //---------------------------------------------------------------------------
@@ -137,62 +182,9 @@ inline void TA2ClusterDetector::DecodeSaved( )
   // Run basic TA2Detector decode, then cluster decode
   // and then histogram
 
-  ReadDecoded();                    
+  ReadDecoded();
   DecodeCluster();
-}
-
-//---------------------------------------------------------------------------
-inline void TA2ClusterDetector::DecodeCluster( )
-{
-  // Determine clusters of hits
-  // Search around peak energies absorbed in individual crystals
-  // Make copy of hits array as the copy will be altered
-
-  memcpy( fTempHits, fHits, sizeof(UInt_t)*fNhits );  // temp copy
-  //  fNCluster = 0;
-  Double_t maxenergy;
-  UInt_t i,j,k,kmax,jmax;
-  // Find hit with maximum energy
-  for( i=0; i<fMaxCluster;  ){
-    maxenergy = 0;
-    for( j=0; j<fNhits; j++ ){
-      if( (k = fTempHits[j]) == ENullHit ) continue;
-      if( maxenergy < fEnergy[k] ){
-	maxenergy = fEnergy[k];
-	kmax = k;
-	jmax = j;
-      }
-    }
-    if( maxenergy == 0 ) break;              // no more isolated hits
-    if( kmax < fNelement ){
-      fCluster[kmax]->ClusterDetermine( this ); // determine the cluster
-      if( fCluster[kmax]->GetEnergy() >= fEthresh ){
-	fClustHit[i] = kmax;
-	fTheta[i] = fCluster[kmax]->GetTheta();
-	fPhi[i] = fCluster[kmax]->GetPhi();
-	fNClustHitOR[i] = fCluster[kmax]->GetNhits();
-	fClEnergyOR[i] = fCluster[kmax]->GetEnergy();
-	fClTimeOR[i] = fCluster[kmax]->GetTime();
-	fClCentFracOR[i] = fCluster[kmax]->GetCentralFrac();
-	fClRadiusOR[i] = fCluster[kmax]->GetRadius();
-	i++;
-      }
-    }
-    // If you reach here then there is an error in the decode
-    // possible bad detector ID
-    else fTempHits[jmax] = ENullHit;
-  }
-  fNCluster = i;                   // save # clusters
-  // Now search for possible split offs if this is enabled
-  if( fMaxSplitPerm ) SplitSearch();
-  fClustHit[fNCluster] = EBufferEnd;
-  fTheta[fNCluster] = EBufferEnd;
-  fPhi[fNCluster] = EBufferEnd;
-  fNClustHitOR[fNCluster] = EBufferEnd;
-  fClEnergyOR[fNCluster] = EBufferEnd;
-  fClTimeOR[fNCluster] = EBufferEnd;
-  fClCentFracOR[fNCluster] = EBufferEnd;
-  fClRadiusOR[fNCluster] = EBufferEnd;
+  DisplayClusters();
 }
 
 //---------------------------------------------------------------------------
@@ -216,7 +208,7 @@ inline void TA2ClusterDetector::SplitSearch( )
       if( openAngle > fMaxThetaSplitOff ) continue;
       fSplitAngle[n] = openAngle;
       *pij++ = i | (j<<16);                       // store j,k indices
-      n++;      
+      n++;
     }
   }
   // Sort the opening angles

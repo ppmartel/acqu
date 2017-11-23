@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCCalibQuadEnergy.cxx 912 2011-05-18 22:09:17Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller
@@ -15,7 +15,6 @@
 
 #include "TCCalibQuadEnergy.h"
 
-ClassImp(TCCalibQuadEnergy)
 
 
 //______________________________________________________________________________
@@ -263,7 +262,7 @@ void TCCalibQuadEnergy::Fit(Int_t elem)
         
         // create pi0 fitting function
         sprintf(tmp, "fEta_%i", elem);
-        fFitFunc1b = new TF1(tmp, "gaus(0)+pol3(3)", 450, 650);
+        fFitFunc1b = new TF1(tmp, "gaus(0)+pol2(3)", 450, 650);
         fFitFunc1b->SetLineColor(2);
          
 	// get x-axis range
@@ -280,13 +279,13 @@ void TCCalibQuadEnergy::Fit(Int_t elem)
         fFitFunc->SetParameters(fFitHisto->GetMaximum(), 135, 10, 1, 1, 1);
         fFitFunc->SetParLimits(0, 0, 1e6);
         fFitFunc->SetParLimits(1, 120, 140);
-        fFitFunc->SetParLimits(2, 0, 40);
+        fFitFunc->SetParLimits(2, 5, 40);
 
 	// eta
         fFitFunc1b->SetParameters(fFitHisto1b->GetMaximum(), fMaxEta, 15, 1, 1, 1, 0.1);
         fFitFunc1b->SetParLimits(0, 1, fFitHisto1b->GetMaximum()+1);
         fFitFunc1b->SetParLimits(1, 520, 580);
-        fFitFunc1b->SetParLimits(2, 1, 50);
+        fFitFunc1b->SetParLimits(2, 10, 80);
 	//fFitFunc1b->SetParLimits(3, 0, 100);
         //fFitFunc1b->SetParLimits(4, -1, 0);
         //fFitFunc1b->SetParLimits(5, -1, 0);//0, 50
@@ -457,4 +456,4 @@ void TCCalibQuadEnergy::Write()
     // save overview canvas
     SaveCanvas(fCanvasResult, "Overview");
 }
-
+ClassImp(TCCalibQuadEnergy)

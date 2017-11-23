@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCCalibEnergy.h 912 2011-05-18 22:09:17Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Irakli Keshelashvili, Dominik Werthmueller
@@ -18,22 +18,36 @@
 
 #include "TCanvas.h"
 #include "TH2.h"
-#include "TLine.h"
+#include "TIndicatorLine.h"
 
 #include "TCCalib.h"
 #include "TCFileManager.h"
+
+#include "a2display.h"
+#include "TH2CB.h"
+#include "TH2TAPS.h"
 
 
 class TCCalibEnergy : public TCCalib
 {
 
-private:
+protected:
     Double_t fPi0Pos;                   // pi0 position
-    TLine* fLine;                       // indicator line
+    TIndicatorLine* fLine;              // indicator line
     
     virtual void Init();
     virtual void Fit(Int_t elem);
     virtual void Calculate(Int_t elem);
+
+protected:
+        TH2Crystals* fDetectorView;
+        virtual void initFitFunction() =0;
+        bool fFitOk;
+        enum {
+            vFitOK =1,
+            vCurrPos =2,
+            vFitFailed=3
+        };
 
 public:
     TCCalibEnergy() : TCCalib(), fPi0Pos(0), fLine(0) { }
@@ -47,12 +61,16 @@ public:
 
 class TCCalibCBEnergy : public TCCalibEnergy
 {
+protected:
+    virtual void initFitFunction();
     
 public:
     TCCalibCBEnergy()
         : TCCalibEnergy("CB.Energy", "CB energy calibration", 
                         "Data.CB.E1", 
-                        TCConfig::kMaxCB) { }
+                        TCConfig::kMaxCB) {
+        fDetectorView = new TH2CB("calib_cb", "CB");
+    }
     virtual ~TCCalibCBEnergy() { }
 
     ClassDef(TCCalibCBEnergy, 0) // CB energy calibration
@@ -61,12 +79,17 @@ public:
 
 class TCCalibTAPSEnergyLG : public TCCalibEnergy
 {
+protected:
+    virtual void initFitFunction();
     
 public:
     TCCalibTAPSEnergyLG()
         : TCCalibEnergy("TAPS.Energy.LG", "TAPS LG energy calibration", 
                         "Data.TAPS.LG.E1",
-                        TCReadConfig::GetReader()->GetConfigInt("TAPS.Elements")) { }
+                        TCReadConfig::GetReader()->GetConfigInt("TAPS.Elements")) {
+        fDetectorView = new TH2TAPS("calib_taps", "TAPS");
+    }
+
     virtual ~TCCalibTAPSEnergyLG() { }
 
     ClassDef(TCCalibTAPSEnergyLG, 0) // TAPS LG energy calibration

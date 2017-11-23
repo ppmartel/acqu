@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCReadARCalib.h 1022 2011-10-10 14:51:59Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller

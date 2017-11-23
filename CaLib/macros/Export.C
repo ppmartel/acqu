@@ -1,4 +1,4 @@
-// SVN Info: $Id: Export.C 1078 2012-03-13 16:20:59Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller

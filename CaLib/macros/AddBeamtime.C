@@ -1,4 +1,4 @@
-// SVN Info: $Id: AddBeamtime.C 923 2011-05-28 17:53:17Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller
@@ -18,33 +18,29 @@
 void AddBeamtime()
 {
     // load CaLib
-   // gSystem->Load("lib/libCaLib.so");
+    gSystem->Load("libCaLib.so");
  
     // macro configuration: just change here for your beamtime and leave
     // the other parts of the code unchanged
-    const Char_t rawfilePath[]      = "/data/RAID0_a2datastore1_a2cb/2013_04_UnpolPi0";
-    const Bool_t fileSystemMk2      = kTRUE;
-    const Char_t target[]           = "LH";
-    const Int_t firstRun            = 1445;
-    const Int_t lastRun             = 1455;
-    const Char_t calibName[]        = "UnPol_Pi0";
-    const Char_t calibDesc[]        = "Standard calibration for unpolarized Pi0 May 2013 beamtime";
+    const Int_t firstRun            = 4921;
+    const Int_t lastRun             = 6008;
+    const Char_t calibName[]        = "2015-MC-Init-Test";
+    const Char_t calibDesc[]        = "Calibration for MC data, test to set proper starting values";
+    const Char_t calibFileTagger[]  = "../acqu_user/data/Detector-EPT.dat";
+    const Char_t calibFileCB[]      = "../acqu_user/data/Detector-NaI.dat";
+    const Char_t calibFileTAPS[]    = "../acqu_user/data/Detector-BaF2-PbWO4.dat";
+    const Char_t calibFilePID[]     = "../acqu_user/data/Detector-PID.dat";
+    const Char_t calibFileVeto[]    = "../acqu_user/data/Detector-Veto.dat";
 
-    const Char_t calibFileTagger[]  = "/home/peter/acqu/acqu_user/data/Tagger/FP.dat";
-    const Char_t calibFileCB[]      = "/home/peter/acqu/acqu_user/data/CB/NaI.dat";
-    const Char_t calibFileTAPS[]    = "/home/peter/acqu/acqu_user/data/TAPS/BaF2_PWO.dat";
-    const Char_t calibFilePID[]     = "/home/peter/acqu/acqu_user/data/PID/PID.dat";
-    const Char_t calibFileVeto[]    = "/home/peter/acqu/acqu_user/data/TAPS/Veto.dat";
-
-
-	// Set file System
-	if(fileSystemMk2)
-		TCMySQLManager::GetManager()->SetMk2();
-	
+    // Adding the runfiles should be done by maintainers only!
     // add raw files to the database
-    TCMySQLManager::GetManager()->AddRunFiles(rawfilePath, target);
+    //const Char_t rawfilePath[]      = "/kernph/data/A2/LD2/May_09";
+    //const Char_t target[]           = "LD2";    
+    //TCMySQLManager::GetManager()->AddRunFiles(rawfilePath, target);
     
-    
+    // set MC mode to pass 0s and 1s to the database for gains, offset, pedestals, etc.
+    TCMySQLManager::GetManager()->SetMC(true);
+
     // read AcquRoot calibration of tagger
     TCMySQLManager::GetManager()->AddCalibAR(kDETECTOR_TAGG, calibFileTagger,
                                              calibName, calibDesc,

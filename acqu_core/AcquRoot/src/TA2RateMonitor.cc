@@ -12,7 +12,6 @@
 
 #include "TA2RateMonitor.h"
 
-ClassImp(TA2RateMonitor)
 
 //---------------------------------------------------------------------------
 TA2RateMonitor::TA2RateMonitor( char* fname, UShort_t* adc, UInt_t* scaler,
@@ -95,4 +94,4 @@ void TA2RateMonitor::SetConfig( char* line, int key )
   }
   return;
 }
-
+ClassImp(TA2RateMonitor)

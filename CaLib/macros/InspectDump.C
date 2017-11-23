@@ -1,4 +1,4 @@
-// SVN Info: $Id: InspectDump.C 885 2011-04-16 18:02:40Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller

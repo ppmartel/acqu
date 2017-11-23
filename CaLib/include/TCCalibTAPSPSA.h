@@ -1,4 +1,4 @@
-// SVN Info: $Id: TCCalibTAPSPSA.h 945 2011-07-04 16:24:05Z werthm $
+// SVN Info: $Id$
 
 /*************************************************************************
  * Author: Dominik Werthmueller

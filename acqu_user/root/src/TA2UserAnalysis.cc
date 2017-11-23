@@ -35,7 +35,6 @@
 #include "TA2GenericApp.h"
 #include "TA2BeamPolMon.h"
 #include "TA2MyCaLib.h"
-#include "TA2MyRateEstimation.h"
 #include "TA2TAPSAnalysis.h"
 #include "TA2GeomCalibPhysics.h"
 
@@ -62,7 +61,6 @@ enum {
   EA2Pi0Compton,
   EA2OnlinePhys,
   EA2MyCaLib, 
-  EA2MyRateEstimation,
   EA2GeomCalibPhysics,
   EA2TAPSAnalysis };
 
@@ -92,7 +90,6 @@ static const Map_t kKnownChild[] =
   {"TA2TriggerPhysics",   EA2TriggerPhysics},
  // {"TA2MyAnalysis",       EA2MyAnalysis},
   {"TA2MyCaLib",          EA2MyCaLib},
-  {"TA2MyRateEstimation", EA2MyRateEstimation},
   {"TA2TAPSAnalysis",     EA2TAPSAnalysis},
   {NULL,                  -1}
 };
@@ -184,9 +181,6 @@ TA2DataManager* TA2UserAnalysis::CreateChild(const char* name, Int_t a)
   case EA2MyCaLib:
     // CaLib
     return new TA2MyCaLib( name, this );
-  case EA2MyRateEstimation:
-    // rate estimation
-    return new TA2MyRateEstimation( name, this );
   case EA2GeomCalibPhysics:
     // Geometrical calibration for the TA2Mwpc and TA2CentralApparatus
     return new TA2GeomCalibPhysics( name, this );
@@ -199,3 +193,4 @@ TA2DataManager* TA2UserAnalysis::CreateChild(const char* name, Int_t a)
   }
   return NULL;
 }
+
