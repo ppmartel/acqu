@@ -45,6 +45,8 @@ void HitClusterTrad_t::ClusterDetermine(TA2ClusterDetector* cl)
   TVector3 diff;
   fRadius = 0.0;
   fHits[0] = fIndex;
+  fEnergies[0] = energy[fIndex];
+  fTimes[0] = time[fIndex];
   
   // Accumulate weighted mean position
   for( i=0,k=1; i<nhits; i++ ){
@@ -56,6 +58,8 @@ void HitClusterTrad_t::ClusterDetermine(TA2ClusterDetector* cl)
     if( IsNeighbour(j) ){                     // a neighbour of the center?
       hits[i] = ENullHit;                     // so its not double counted
       fHits[k] = j;                           // add to cluster hits collection
+      fEnergies[k] = energy[j];
+      fTimes[k] = time[j];
       if( !fEWgt ) wgtE = TMath::Sqrt(energy[j]);
       else if( !fLEWgt ) wgtE = TMath::Power( energy[j], fEWgt );
       else wgtE = TMath::Log( energy[j]/fEWgt );
@@ -73,6 +77,8 @@ void HitClusterTrad_t::ClusterDetermine(TA2ClusterDetector* cl)
   if( cl->IsIterate() ) MoreNeighbours( cl );
 
   fHits[fNhits] = EBufferEnd;                  // mark no more hits
+  fEnergies[fNhits] = EBufferEnd;              // mark no more hits
+  fTimes[fNhits] = EBufferEnd;                 // mark no more hits
   // Normalise weighted mean, get fraction total energy in central crystal,
   // calc circular polar coordinates of cluster center
   *fMeanPosition = (*fMeanPosition) * (1./fSqrtEtot);// normalise weighted mean
