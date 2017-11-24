@@ -15,11 +15,11 @@ ParticleID: 	16
 Initialise:
 ##
 #TAPSVetoInit: 520
-TAPS-Factor: 1.19
+#TAPS-Factor: 1.19
 #Use time of flight 0=off 1=on
-TAPSTOF: 0
+#TAPSTOF: 0
 #Use pulsehshape 0=off 1=on
-TAPSPSA: 0
+#TAPSPSA: 0
 # PSA-Sigma*Sigma to distinguish between gamma and proton lineshape, standard = 3, first value has to be greater/equal than second
 #PSA-Sigma: 3.0 3.0
 ## End
