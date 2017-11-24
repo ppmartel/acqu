@@ -14,7 +14,7 @@ Size:	720	1	1	1
 ## Process raw ADC/TDC hits, uncomment if desired
 ########################################################################
 ##
-#RawHits:
+RawHits:
 ##
 ########################################################################
 ## Global energy scale parameter, uncomment if desired
