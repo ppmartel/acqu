@@ -8,6 +8,7 @@
 ##              #hits   start   stop    reference
 MultiADC:       8       800     926     927
 MultiADC:       8       928     1054    1055
+MultiADC:       8       1056    1150    1151
 MultiADC:       3       2001    2767    2000
 ##
 ## Tagger/Target/Pizza test TDC in Beampolmon
@@ -36,7 +37,7 @@ BitPattern:  ./data/monitor/Trig-Pattern.dat
 ##
 ## Apparatus setup....
 ##              Name            Class           	Setup file
-Apparatus:      TAGG            TA2Tagger   		Apparatus-NewTagger855.dat
+Apparatus:      TAGG            TA2Tagger   		Apparatus-NewTagger883.dat
 Apparatus:      CB              TA2CrystalBall		Apparatus-CB.dat
 Apparatus:      MWPC	        TA2GenericApp  		Apparatus-MWPC.dat
 Apparatus:      BeamPolMon      TA2BeamPolMon           Apparatus-BeamPolMon.dat

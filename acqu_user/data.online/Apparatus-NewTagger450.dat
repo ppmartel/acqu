@@ -11,8 +11,7 @@
 Magnet:	0.538415	450.0
 #
 #	  Name          Class Name    	Setup file
-#Detector: FPD          TA2Ladder   	Detector-NewFPD450.dat
-Detector: FPD          TA2Ladder   	Detector-NewFPD450-80Chan.dat
+Detector: FPD          TA2Ladder   	Detector-NewFPD450.dat
 Initialise:
 Reconstruct:
 #
