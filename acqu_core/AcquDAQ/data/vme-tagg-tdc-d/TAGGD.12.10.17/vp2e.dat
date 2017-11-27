@@ -1,21 +1,21 @@
 ##--Rev 	John Annand   13th Oct 2016  For new VP2E VMEbus SBC
 ##--Update	
-##--Description for KPHI386
+##--Description Configure VP2E Concurrent VMEbus controller
 ##                *** AcquDAQ++ <-> Root ***
 ## DAQ for Sub-Atomic Physics Experiments.
 #
-## Specify VMEbus address ranges to map
-## Range	AM	  Start	   Length
-#   MAP: 	32	  0xe0000000 0x300000   0xc0100000 lsi0
-#   MAP: 	24	  0x800000   0x100000   0xc0400000 lsi1
-#   MAP:		16	  0x0000     0xf000   	0xc0500000 lsi2
-   MAP: 	32	  0xe0000000 0x300000   0x00000 lsi0
-   MAP: 	24	  0x800000   0x100000   0x00000 lsi1
-   MAP:		16	  0x0000     0xf000   	0x00000 lsi2
-#   MAP: 	32	  0xe0200000 0x10000    0xc040f000 lsi3
-#   MAP: 	24	  0x800000   0x100000   0xd1500000 lsi2
+## Specify VMEbus address ranges to map to PCI...use auto PCI addressing (0x0)
+## Range	AM	  Start	     Length     PCI Driver
+   MAP: 	32	  0xe0000000 0x200000   0x0 lsi0 0
+   MAP: 	24	  0x800000   0x100000   0x0 lsi1
+   MAP: 	24	  0xe00000   0x100000   0x0 lsi2
+   MAP:		16	  0x0000     0xf000   	0x0 lsi3
+# Hardware byte swapping in Universe II
 #   SWAP:	0x0
-   SWAP:	0x1c
-#   SWAP:	0x38
+#   SWAP:	0x1c
+   SWAP:	0x38
+## DMA Direct memory access 2=32bit data, 0=SCT/1=BLT, ownership 0-ff/0-ff
+## Set 2 0 00 for now
+   DMA:		2	0	00
 #	End of File
 #
