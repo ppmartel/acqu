@@ -45,7 +45,7 @@ $runsets->{CBTaggTAPS} =
                ['vme-cb-tdc-b',     'TDCB'],
                ['vme-mwpc-adc-a',   'WCA'],
                ['vme-mwpc-adc-b',   'WCB'],
-               ['vme-tagg-tdc-a',   'TAGGA'],
+#               ['vme-tagg-tdc-a',   'TAGGA'],
                ['vme-tagg-tdc-b',   'TAGGB'],
                ['vme-taps-trigger', 'Slave'], # TAPS is in slave mode
                ['vme-taps-baf-a',   'BaFA'],
@@ -112,7 +112,7 @@ $runsets->{CBTagg} =
                ['vme-cb-tdc-b',     'TDCB'],
                ['vme-mwpc-adc-a',   'WCA'],
                ['vme-mwpc-adc-b',   'WCB'],
-               ['vme-tagg-tdc-a',   'TAGGA'],
+#               ['vme-tagg-tdc-a',   'TAGGA'],
                ['vme-tagg-tdc-b',   'TAGGB'],
                ['vme-beampolmon',   'BEAM']
               ],
@@ -193,7 +193,7 @@ $runsets->{TaggEff} =
    'DefaultTriggerId' => 74,
    'Hosts' => [
                ['vme-exptrigger',   'TaggEff'], # first, the host where the AcquDAQ GUI is started
-               ['vme-tagg-tdc-a',   'TAGGA'],
+#               ['vme-tagg-tdc-a',   'TAGGA'],
                ['vme-tagg-tdc-b',   'TAGGB'],
                ['vme-beampolmon',   'BEAM_Scan']
               ],
@@ -235,7 +235,7 @@ $runsets->{GoniScan} =
    'DefaultTriggerId' => 74,
    'Hosts' => [
                ['vme-exptrigger',   'GoniScan'], # first, the host where the AcquDAQ GUI is started
-               ['vme-tagg-tdc-a',   'TAGGA'],
+#               ['vme-tagg-tdc-a',   'TAGGA'],
                ['vme-tagg-tdc-b',   'TAGGB'],
                ['vme-beampolmon',   'BEAM_Scan']
               ],
