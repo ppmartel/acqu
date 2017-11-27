@@ -1,12 +1,10 @@
-// SVN Info: $Id: MyFinishMacro.C 781 2011-02-03 13:39:41Z werthm $
-
 /*************************************************************************
  * Author: Dominik Werthmueller, 2007-2008                               *
  *************************************************************************/
 
 //////////////////////////////////////////////////////////////////////////
 //                                                                      //
-// MyFinishMacro.C                                                      //
+// TAPSFinishMacro.C                                                      //
 //                                                                      //
 // Save all histograms and the OSCAR A2 event tree to a ROOT file.      //
 // This macro should be called in batch mode using ARBatchAnalysis.     //
@@ -275,14 +273,14 @@ void CorrectTaggerScalers(Bool_t useNewScalers)
 }
 
 //______________________________________________________________________________
-void MyFinishMacro()
+void TAPSFinishMacro()
 {
     // Main method.
     
     Char_t outFileName[256];
     
     cout << endl;
-    cout << "End of file: Executing MyFinishMacro ..." << endl;
+    cout << "End of file: Executing TAPSFinishMacro ..." << endl;
     
     // get the run number
     Int_t run = ((TA2MyPhysics*)gAR->GetAnalysis()->GetPhysics())->GetRunNumber();
