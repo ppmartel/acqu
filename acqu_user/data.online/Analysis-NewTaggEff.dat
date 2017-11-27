@@ -45,7 +45,7 @@ Initialise:
 ## New FPD test
 #Display: ADC 900 963
 #Display: ADC 356 356
-Display: MultiHit 800 926 5000 -5000 -3000 0
+#Display: MultiHit 800 926 5000 -5000 -3000 0
 #Display: MultiHit 928 1039 5000 -5000 -3000 0
 #Display: ADC 300 427
 ## Microscope QDCs
@@ -57,9 +57,7 @@ Display: MultiHit 800 926 5000 -5000 -3000 0
 ## Display Reference TDC
 #Display: ADC 1400 1400
 Display: ADC 927 927
-Display: ADC 912 912
-#Display: ADC 1040 1040
-#Display: ADC 1055 1055
+Display: ADC 1055 1055
 ## Tagger CATCH TDC's, 1st hit
 #Display: MultiHit 1432 1783 1000 -10000 0 0
 #

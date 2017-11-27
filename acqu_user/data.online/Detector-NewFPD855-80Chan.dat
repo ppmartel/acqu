@@ -116,6 +116,6 @@ Display: 1D Eelect   1000 0 0.0
 Display: 1D ScalerCurr 80 0 80
 Display: 1D ScalerAcc  80 0 80
 Display: 1D Doubles  	80 0 80
-Display: 1D NDoubles  	0 0 50
+Display: 1D NDoubles  	50 0 50
 Display: 2D TimeOR   200 -700.0 700.0 -1 Hits 80 0 80 -1
 Display: 2D TimeOR   200 -700.0 700.0 -1 Doubles 80 0 80 -1
