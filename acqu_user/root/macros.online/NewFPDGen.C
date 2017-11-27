@@ -1,5 +1,5 @@
 void NewFPDGen(Int_t tdcStart=800, Int_t scalerStart=2000,
-	       Int_t n=296, Char_t* calFile=NULL, Double_t eBeam=0.0)
+	       Int_t n=328, Char_t* calFile=NULL, Double_t eBeam=0.0)
 {
   // Generate New FPD ladder file. Input parameters and default values:
   // tdcstart    start index of TDCs
@@ -20,10 +20,10 @@ void NewFPDGen(Int_t tdcStart=800, Int_t scalerStart=2000,
   Int_t BaseScaler[] = {864, 64, 576, 288, 0, 352, 640, 32, 320, 608, 896};
   //
   Char_t* file_name = "/home/a2cb/acqu/data/NewFPDGen.dat"; // output file name
-  Double_t th = 250.0;                 // time upper limit
-  Double_t tl = -250.0;               // time lower limit
+  Double_t th = 700.0;                 // time upper limit
+  Double_t tl = -700.0;               // time lower limit
   Double_t tc = 0.10 ;                 // TDC ns/channel
-  Double_t tp = -2000;                 // TDC zero point channel;
+  Double_t tp = -4050;                 // TDC zero point channel;
   Double_t eCal = 0.0;
   Double_t goosey, eWidth;
   Int_t tdc,scaler;
@@ -99,9 +99,9 @@ void NewFPDGen(Int_t tdcStart=800, Int_t scalerStart=2000,
   //
   // Print some standard display lines
   fprintf(lfile,"Initialise: \n");
-  fprintf(lfile,"Display: 1D Nhits       32 0 32\n");
-  fprintf(lfile,"Display: 1D NhitsPrompt 32 0 32\n");
-  fprintf(lfile,"Display: 1D NhitsRand   32 0 32\n");
+  fprintf(lfile,"Display: 1D Nhits       64 0 64\n");
+  fprintf(lfile,"Display: 1D NhitsPrompt 64 0 64\n");
+  fprintf(lfile,"Display: 1D NhitsRand   64 0 64\n");
   fprintf(lfile,"Display: 1D Hits        %d 0 %d\n", n,n);
   fprintf(lfile,"Display: 1D HitsPrompt  %d 0 %d\n", n,n);
   fprintf(lfile,"Display: 1D HitsRand    %d 0 %d\n", n,n);
@@ -111,7 +111,7 @@ void NewFPDGen(Int_t tdcStart=800, Int_t scalerStart=2000,
   fprintf(lfile,"Display: 1D ScalerCurr %d 0 %d\n",n,n);
   fprintf(lfile,"Display: 1D ScalerAcc  %d 0 %d\n",n,n);
   fprintf(lfile,"Display: 1D Doubles  	%d 0 %d\n",n,n);
-  fprintf(lfile,"Display: 1D NDoubles  	32 0 32\n");
+  fprintf(lfile,"Display: 1D NDoubles  	64 0 64\n");
   fprintf(lfile,"Display: 2D TimeOR   200 %.1f %.1f -1 Hits %d 0 %d -1\n",tl,th,n,n);
   fprintf(lfile,"Display: 2D TimeOR   200 %.1f %.1f -1 Doubles %d 0 %d -1\n",tl,th,n,n);
   fclose(lfile);
