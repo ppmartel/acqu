@@ -314,7 +314,9 @@ my $statusToString =
   };
 my $trigger_baseurl = 'http://wwwa2.kph.uni-mainz.de/intern/trigger';
 my $acqu_datadir = '$HOME/acqu/data'; # were to find the data dir on VME hosts
-my $AcquBin = '/opt/acqu/build/bin'; # where can we find RSupervise, AcquControl, ...
+#####my $AcquBin = '/opt/acqu/build/bin'; # where can we find RSupervise, AcquControl, ...
+my $AcquBin = '/AcquBin'; # where can we find RSupervise, AcquControl, ...
+
 
 Getopt::Long::Configure(qw(gnu_getopt));
 GetOptions(
@@ -952,7 +954,7 @@ sub DoRSupervise {
     my @lines;
     while (1) {
       @lines = $ssh->capture({stderr_discard=>1}, # netstat outputs warnings if run non-root...
-                             "netstat -anp | grep AcquDAQ");
+                             "netstat --tcp -anp | grep AcquDAQ");
       if (@lines == 0 && $tries>0) {
         $tries--;
         sleep 1;
