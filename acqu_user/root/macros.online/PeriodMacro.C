@@ -12,7 +12,8 @@ void PeriodMacro() {
       cmd << "caput -a TAGGER:RAW_SCALER 352";
       for(int n=1; n<=352; n++) {   //New FPD
       //for(int n=352; n>=1; n--) {   //Old FPD
-	cmd << " " << FPD_ScalerCurr->GetBinContent(n);
+	if(n<=328) cmd << " " << FPD_ScalerCurr->GetBinContent(n);
+	else cmd << " 0";
       } 
       cmd << " > /dev/null";
       system(cmd.str().c_str());
@@ -75,13 +76,16 @@ void PeriodMacro() {
       stringstream cmd;
       cmd << "caput -a BEAM:PAIRSPEC:TaggEff 352";
       for(int n=1; n<=352; n++) {
-	Double_t open = PairSpec_Open->GetBinContent(n);
-	Double_t gated = PairSpec_Gated->GetBinContent(n);
-	Double_t gated_dly = PairSpec_GatedDly->GetBinContent(n);
-	Double_t taggeff = (gated-gated_dly)/open;
-	if(!TMath::Finite(taggeff))
-          taggeff = 0;
-	cmd << " " << taggeff;
+	if(n<=328){
+	  Double_t open = PairSpec_Open->GetBinContent(n);
+	  Double_t gated = PairSpec_Gated->GetBinContent(n);
+	  Double_t gated_dly = PairSpec_GatedDly->GetBinContent(n);
+	  Double_t taggeff = (gated-gated_dly)/open;
+	  if(!TMath::Finite(taggeff))
+	    taggeff = 0;
+	  cmd << " " << taggeff;
+	}
+	else cmd << " 0";
       }
       cmd << " > /dev/null";
       system(cmd.str().c_str());
