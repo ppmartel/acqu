@@ -36,7 +36,7 @@ $runsets->{CBTaggTAPS} =
    'Description' => 'The full system including CB, Tagger, TAPS',
    'DefaultTriggerId' => 23,
    'Hosts' => [
-               ['vme-exptrigger',   'NewCBTaggTAPS'], # first, the host where the AcquDAQ GUI is started
+               ['vme-exptrigger',   'CBTaggTAPS'], # first, the host where the AcquDAQ GUI is started
                ['vme-cb-adc-1a',    'SADC1A'],
                ['vme-cb-adc-1b',    'SADC1B'],
                ['vme-cb-adc-2a',    'SADC2A'],
@@ -70,7 +70,7 @@ $runsets->{CBTagg} =
    'Description' => 'CB and Tagger in standalone, without TAPS',
    'DefaultTriggerId' => 23,
    'Hosts' => [
-               ['vme-exptrigger',   'NewCBTagg'], # first, the host where the AcquDAQ GUI is started
+               ['vme-exptrigger',   'CBTagg'], # first, the host where the AcquDAQ GUI is started
                ['vme-cb-adc-1a',    'SADC1A'],
                ['vme-cb-adc-1b',    'SADC1B'],
                ['vme-cb-adc-2a',    'SADC2A'],
@@ -137,7 +137,7 @@ $runsets->{TaggEff} =
    'Description' => 'Tagging efficiency setup without TAPS or CB',
    'DefaultTriggerId' => 74,
    'Hosts' => [
-               ['vme-exptrigger',   'NewTaggEff'], # first, the host where the AcquDAQ GUI is started
+               ['vme-exptrigger',   'TaggEff'], # first, the host where the AcquDAQ GUI is started
                ['vme-tagg-tdc-d',   'TAGGD'],
                ['vme-tagg-tdc-b',   'TAGGB'],
                ['vme-tagg-tdc-c',   'TAGGC'],
@@ -165,7 +165,7 @@ $runsets->{GoniScan} =
    'Description' => 'Goni scan setup without TAPS or CB',
    'DefaultTriggerId' => 74,
    'Hosts' => [
-               ['vme-exptrigger',   'NewGoniScan'], # first, the host where the AcquDAQ GUI is started
+               ['vme-exptrigger',   'GoniScan'], # first, the host where the AcquDAQ GUI is started
                ['vme-tagg-tdc-d',   'TAGGD'],
                ['vme-tagg-tdc-b',   'TAGGB'],
                ['vme-tagg-tdc-c',   'TAGGC'],
