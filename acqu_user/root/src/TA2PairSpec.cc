@@ -83,7 +83,7 @@ void TA2PairSpec::SetConfig(Char_t* line, Int_t key)
         UInt_t offset = fScalerBlockSize*(fVupromSize*j+fScalerBlockIdx);        
         UInt_t idx = fScalerOffset+vupOffset+offset+i;
         fScalerIndex[ch] = idx;
-        cout << ch << " -> " << idx << endl;
+        //cout << ch << " -> " << idx << endl;
       }      
     }
     fScalerBlockIdx++;
