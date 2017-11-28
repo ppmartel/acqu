@@ -23,15 +23,6 @@ Analysis: TA2UserAnalysis
 ## Analysis setup file
 AnalysisSetup: Analysis-CBTaggTAPS.dat
 ##
-## Specify non-clearing scalers
-#ScalerNoClear: 12 139
-#ScalerNoClear: 48 171
-##
-## Fragmented scaler blocks JRMA 01/10/12
-## 2 blocks, 192 scalers from CB, 364 scalers from Tagger (no CATCH)
-#SplitScaler: 2 192 364
-#SplitScaler: 2 256 364
-##
 ## Set Server file
 ServerSetup: Server-CBTaggTAPS.dat
 #

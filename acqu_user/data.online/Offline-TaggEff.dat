@@ -18,6 +18,6 @@ Directory: scratch/
 Analysis: TA2UserAnalysis
 ##
 ## Analysis setup file
-AnalysisSetup: Analysis-NewTaggEff.dat
+AnalysisSetup: Analysis-TaggEff.dat
 ##
-ServerSetup: Server-NewTaggEff.dat
+ServerSetup: ServerOffline-TaggEff.dat

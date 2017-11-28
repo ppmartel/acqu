@@ -12,12 +12,12 @@ Branch:	  RawEvent_Scalers	4192
 Branch:	  Mk1_Header            120000
 ##
 ## Directory to save any created ROOT files (include final / )
-Directory: /scratch/jrma/
+Directory: scratch/
 ##
 ## User-defined analysis class
 Analysis: TA2UserAnalysis
 ##
 ## Analysis setup file
-AnalysisSetup: Analysis-TaggEffN.dat
+AnalysisSetup: Analysis-TaggEff.dat
 ##
 ServerSetup: Server-TaggEff.dat

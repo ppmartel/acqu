@@ -23,10 +23,6 @@ Analysis: TA2UserAnalysis
 ## Analysis setup file
 AnalysisSetup: Analysis-CBTagg.dat
 ##
-## Specify non-clearing scalers
-#ScalerNoClear: 12 139
-#ScalerNoClear: 48 171
-#
 ## Set Server file
 ServerSetup: Server-CBTagg.dat
 #

@@ -1,9 +1,9 @@
-## Detector setup file for running TA2PairSpec
+## Detector setup file for running TA2PairSpec with new FPD
 ########################################################################
 
 # this configures the PairSpec data
 #              #channels  #histograms  ScalerOffset  ScalerBlockSize
-PairSpecSetup: 352        3            2000          32 
+PairSpecSetup: 328        3            2000          32 
 
 # the order of the blocks
 # corresponds to the physical connections, 
@@ -27,42 +27,41 @@ PairSpecSetup: 352        3            2000          32
 
 Vuprom: 3
 # IJ
-ScalerBlock:  128 
+ScalerBlock:  120 5 7 6 4 1 3 2 0 13 15 14 12 9 11 10 8 21 23 22 20 17 19 18 16 29 31 30 28 25 27 26 24
 # OP
-ScalerBlock:  224 
+ScalerBlock:  216 5 7 6 4 1 3 2 0 13 15 14 12 9 11 10 8 21 23 22 20 17 19 18 16 -1 -1 -1 -1 -1 -1 -1 -1
 # CD 
-ScalerBlock:   32 
+ScalerBlock:   32 5 7 6 4 1 3 2 0 13 15 14 12 9 11 10 8 21 23 22 20 17 19 18 16 29 31 30 28 25 27 26 24
 
 Vuprom: 3
 # GH 
-ScalerBlock:   96  
+ScalerBlock:   96 5 7 6 4 1 3 2 0 13 15 14 12 9 11 10 8 21 23 22 20 17 19 18 16 -1 -1 -1 -1 -1 -1 -1 -1
 # QR
-ScalerBlock:  256 
+ScalerBlock:  240 5 7 6 4 1 3 2 0 13 15 14 12 9 11 10 8 21 23 22 20 17 19 18 16 29 31 30 28 25 27 26 24
 # KL
-ScalerBlock:  160  
+ScalerBlock:  152 5 7 6 4 1 3 2 0 13 15 14 12 9 11 10 8 21 23 22 20 17 19 18 16 29 31 30 28 25 27 26 24
 
 Vuprom: 3
 # EF 
-ScalerBlock:   64  
+ScalerBlock:   64 5 7 6 4 1 3 2 0 13 15 14 12 9 11 10 8 21 23 22 20 17 19 18 16 29 31 30 28 25 27 26 24
 # ST
-ScalerBlock:  288  
+ScalerBlock:  272 5 7 6 4 1 3 2 0 13 15 14 12 9 11 10 8 21 23 22 20 17 19 18 16 29 31 30 28 25 27 26 24
 # MN 
-ScalerBlock:  192  
+ScalerBlock:  184 5 7 6 4 1 3 2 0 13 15 14 12 9 11 10 8 21 23 22 20 17 19 18 16 29 31 30 28 25 27 26 24
 
 Vuprom: 2
 # AB 
-#                  custom permutation 
-ScalerBlock:    0  12 0 13 1 14 2 15 3 16 4 17 5 18 6 19 7 20 8 21 9 22 10 23 11 24 25 26 27 28 29 30 31
+ScalerBlock:    0 5 7 6 4 1 3 2 0 13 15 14 12 9 11 10 8 21 23 22 20 17 19 18 16 29 31 30 28 25 27 26 24
 # UV
-ScalerBlock:  320
+ScalerBlock:  304 5 7 6 4 1 3 2 0 13 15 14 12 9 11 10 8 21 23 22 20 17 19 18 16 -1 -1 -1 -1 -1 -1 -1 -1
 
 ## Do some post-initialisation.
 Initialise:
 
 # show the histograms defined by the detector
-Display: 1D Open     352 0 352
-Display: 1D Gated    352 0 352
-Display: 1D GatedDly 352 0 352
-Display: 1D SumOpen     352 0 352
-Display: 1D SumGated    352 0 352
-Display: 1D SumGatedDly 352 0 352
+Display: 1D Open     328 0 328
+Display: 1D Gated    328 0 328
+Display: 1D GatedDly 328 0 328
+Display: 1D SumOpen     328 0 328
+Display: 1D SumGated    328 0 328
+Display: 1D SumGatedDly 328 0 328

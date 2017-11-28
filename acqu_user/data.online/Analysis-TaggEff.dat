@@ -6,34 +6,33 @@
 ## from the other specified channels
 ## CB TDC's
 ##              #hits   start   stop    reference
-MultiADC:       3       1401    1911    1400
-#
-MultiADC:       3       300     423    424
+MultiADC:       8       800     926     927
+MultiADC:       8       928     1054    1055
+MultiADC:       8       1056    1150    1151
 #
 # Moeller ADC channels, not really an ADC value!
-MultiADC:       3       8000    8800
+#MultiADC:       3       8000    8800
 ## Stuff to monitor time dependence of counting rates and the hit pattern
 ## coming from the trigger box....the parameter is the setup file name
-RateMonitor: ./data/monitor/Rate-Tagg.dat
+#RateMonitor: ./data/monitor/Rate-Tagg.dat
 ##
 ## Apparatus setup....
 ## Raw analysis may be performed without Apparati
 ##              Name            Class           	Setup file
-Apparatus:      Tagger           TA2Tagger   		Apparatus-Tagger450.dat
-#Apparatus:      Tagger           TA2Tagger              Apparatus-EPT.dat
-#Apparatus:      LinPol          TA2LinearPol            LinearPolapparatus.dat
+Apparatus:      TAGG           TA2Tagger   		Apparatus-Tagger883.dat
+#Apparatus:      LinPol          TA2LinearPolEpics       Apparatus-LinearPol.dat
 Apparatus:      BeamPolMon      TA2BeamPolMon           Apparatus-BeamPolMon.dat
 ##
 ## Turn on apparatus-level reconstruction
-Reconstruct-Analysis:
+#Reconstruct-Analysis:
 ##
 ## Do some post initialisation...usually necessary
 Initialise:
 ##
 # Macros
-#Period: 100000	PeriodMacro.C	PeriodMacro()
-Period:  3000	PeriodMacro.C	PeriodMacro()
-#Period:   1000	PeriodMacro.C	PeriodMacro()
+#Period: 100000	PeriodMacroTaggEff.C	PeriodMacroTaggEff()
+#Period:  3000	PeriodMacroTaggEff.C	PeriodMacroTaggEff()
+#Period:   1000	PeriodMacroTaggEff.C	PeriodMacroTaggEff()
 #EndFile:	EndFileMacro.C  EndFileMacro()
 #Finish:	FinishMacro.C	FinishMacro()
 ##
@@ -43,17 +42,15 @@ Period:  3000	PeriodMacro.C	PeriodMacro()
 #Display: All
 ## Histogram QDCs
 ## Tagger QDCs
-Display: ADC 800 1183
+#Display: ADC 800 1183
 ## New FPD test
-Display: ADC 200 231
-Display: MultiHit 300 423 5000 -20000 -10000 0
+#Display: ADC 900 963
+#Display: ADC 356 356
+## change range...compensate for use of TCS trigger signal to trigger V1190 TDCs
+## JRMA 28/11/17
+Display: MultiHit 800 926 5000 -7000 -5000 0
+#Display: MultiHit 928 1039 5000 -7000 -5000 0
 #Display: ADC 300 427
-## EPT - TDCs, Microscope Sector E, D, C
-#Display: MultiHit 1817 1863 6000 -4000 -2000 0
-#Display: MultiHit 1817 1863 6000 -4000 -2000 1
-#Display: MultiHit 1817 1863 6000 -4000 -2000 2
-## EPT - ADCs
-#Display: ADC 1184 1231
 ## Microscope QDCs
 #Display: ADC 1184 1279
 #
@@ -61,9 +58,12 @@ Display: MultiHit 300 423 5000 -20000 -10000 0
 #Display: ADC 1280 1375
 ##
 ## Display Reference TDC
-Display: ADC 1400 1400
-## CB CATCH TDC's, 1st hit
-#Display: MultiHit 1432 1948 1000 -10000 0 0
+#Display: ADC 1400 1400
+Display: ADC 927 927
+Display: ADC 1055 1055
+Display: ADC 1151 1151
+## Tagger CATCH TDC's, 1st hit
+#Display: MultiHit 1432 1783 1000 -10000 0 0
 #
 ## Display blocks of scalers
 Display: Scaler 000 191
@@ -76,9 +76,9 @@ Display: Scaler 2000 3000
 Display: SumScaler 2000 3000
 #
 ## Time dependence of individual scaler rates and ratios
-Display: Rate	0	2500
-Display: Rate	1	2500
-Display: Rate	2	2500
+#Display: Rate	0	2500
+#Display: Rate	1	2500
+#Display: Rate	2	2500
 ##
 ## Trigger pattern, and e-beam polarisation bits
 #Display: Pattern	0 16 0 16

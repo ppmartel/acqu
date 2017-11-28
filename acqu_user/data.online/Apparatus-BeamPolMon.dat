@@ -1,7 +1,7 @@
 ## Apparatus setup file for running TA2PairSpec
 ########################################################################
 
-Detector: PairSpec TA2PairSpec Detector-NewPairSpec.dat
+Detector: PairSpec TA2PairSpec Detector-PairSpec.dat
 #Detector: Moeller  TA2Moeller  Detector-Moeller.dat
 
 
