@@ -9,9 +9,9 @@
 BaseSetup:	0		0		Scaler		4000
 Hardware-ID: 0100007f
 #
-Enable-CPU: 27ff
+Enable-CPU: 2fff
 #
-Int-Delay:  0 2000
+Int-Delay:  0 1000
 Int-Delay:  1 2000
 Int-Delay:  2 2000
 Int-Delay:  3 3000
@@ -22,7 +22,7 @@ Int-Delay:  7 2000
 Int-Delay:  8 2000
 Int-Delay:  9 2000
 Int-Delay:  10 2000
-Int-Delay:  11 2000
+Int-Delay:  11 1000
 Int-Delay:  12 0
 Int-Delay:  13 0
 FC-Delay: 100

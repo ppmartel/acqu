@@ -30,41 +30,8 @@ use CA;
 
 our $runsets = {}; # define as our, to be modified by runsetfile maybe
 
-# define runset CBTaggTAPS
-$runsets->{CBTaggTAPS} =
-  {
-   'Description' => 'The full system including CB, Tagger, TAPS',
-   'DefaultTriggerId' => 23,
-   'Hosts' => [
-               ['vme-exptrigger',   'CBTaggTAPS'], # first, the host where the AcquDAQ GUI is started
-               ['vme-cb-adc-1a',    'SADC1A'],
-               ['vme-cb-adc-1b',    'SADC1B'],
-               ['vme-cb-adc-2a',    'SADC2A'],
-               ['vme-cb-adc-2b',    'SADC2B'],
-               ['vme-cb-tdc-a',     'TDCA'],
-               ['vme-cb-tdc-b',     'TDCB'],
-               ['vme-mwpc-adc-a',   'WCA'],
-               ['vme-mwpc-adc-b',   'WCB'],
-#               ['vme-tagg-tdc-a',   'TAGGA'],
-               ['vme-tagg-tdc-b',   'TAGGB'],
-               ['vme-taps-trigger', 'Slave'], # TAPS is in slave mode
-               ['vme-taps-baf-a',   'BaFA'],
-               ['vme-taps-baf-b',   'BaFB'],
-               ['vme-taps-baf-c',   'BaFC'],
-               ['vme-taps-baf-d',   'BaFD'],
-               ['vme-taps-baf-e',   'BaFE'],
-               ['vme-taps-baf-f',   'BaFF'],
-               ['vme-taps-veto-ab', 'VetoAB'],
-               ['vme-taps-veto-cd', 'VetoCD' ],
-               ['vme-taps-veto-ef', 'VetoEF'],
-               ['vme-taps-pwo',     'PbWO4'],
-               ['vme-beampolmon',   'BEAM']
-              ],
-   'TCS' => undef # a bit unnecessary for the whole system
-  };
-
 # define runset CBTaggTAPS with new FPD
-$runsets->{NewCBTaggTAPS} =
+$runsets->{CBTaggTAPS} =
   {
    'Description' => 'The full system including CB, Tagger, TAPS',
    'DefaultTriggerId' => 23,
@@ -97,30 +64,8 @@ $runsets->{NewCBTaggTAPS} =
    'TCS' => undef # a bit unnecessary for the whole system
   };
 
-# define runset CBTagg
-$runsets->{CBTagg} =
-  {
-   'Description' => 'CB and Tagger in standalone, without TAPS',
-   'DefaultTriggerId' => 23,
-   'Hosts' => [
-               ['vme-exptrigger',   'CBTagg'], # first, the host where the AcquDAQ GUI is started
-               ['vme-cb-adc-1a',    'SADC1A'],
-               ['vme-cb-adc-1b',    'SADC1B'],
-               ['vme-cb-adc-2a',    'SADC2A'],
-               ['vme-cb-adc-2b',    'SADC2B'],
-               ['vme-cb-tdc-a',     'TDCA'],
-               ['vme-cb-tdc-b',     'TDCB'],
-               ['vme-mwpc-adc-a',   'WCA'],
-               ['vme-mwpc-adc-b',   'WCB'],
-#               ['vme-tagg-tdc-a',   'TAGGA'],
-               ['vme-tagg-tdc-b',   'TAGGB'],
-               ['vme-beampolmon',   'BEAM']
-              ],
-   'TCS' => 'vme-tagg-tdc-b' # which host has access to the Trigger Control System (TCS)
-  };
-
 # define runset CBTagg with new FPD
-$runsets->{NewCBTagg} =
+$runsets->{CBTagg} =
   {
    'Description' => 'CB and Tagger in standalone, without TAPS',
    'DefaultTriggerId' => 23,
@@ -186,24 +131,10 @@ $runsets->{TAPSPulser} = dclone($runsets->{TAPS});
 $runsets->{TAPSPulser}->{Description} .= ', Pulser only';
 $runsets->{TAPSPulser}->{Hosts}->[0]->[1] = 'MasterP';
 
-# define runset TaggEff
+# define runset TaggEff with new FPD
 $runsets->{TaggEff} =
   {
    'Description' => 'Tagging efficiency setup without TAPS or CB',
-   'DefaultTriggerId' => 74,
-   'Hosts' => [
-               ['vme-exptrigger',   'TaggEff'], # first, the host where the AcquDAQ GUI is started
-#               ['vme-tagg-tdc-a',   'TAGGA'],
-               ['vme-tagg-tdc-b',   'TAGGB'],
-               ['vme-beampolmon',   'BEAM_Scan']
-              ],
-   'TCS' => 'vme-tagg-tdc-b'
-  };
-
-# define runset NewTaggEff
-$runsets->{NewTaggEff} =
-  {
-   'Description' => 'New Tagging efficiency setup without TAPS or CB',
    'DefaultTriggerId' => 74,
    'Hosts' => [
                ['vme-exptrigger',   'NewTaggEff'], # first, the host where the AcquDAQ GUI is started
@@ -228,22 +159,8 @@ $runsets->{Moeller} =
 #   'TCS' => 'vme-tagg-tdc-b'
   };
 
-# define runset GoniScan
-$runsets->{GoniScan} =
-  {
-   'Description' => 'Goni scan setup without TAPS or CB',
-   'DefaultTriggerId' => 74,
-   'Hosts' => [
-               ['vme-exptrigger',   'GoniScan'], # first, the host where the AcquDAQ GUI is started
-#               ['vme-tagg-tdc-a',   'TAGGA'],
-               ['vme-tagg-tdc-b',   'TAGGB'],
-               ['vme-beampolmon',   'BEAM_Scan']
-              ],
-   'TCS' => 'vme-tagg-tdc-b'
-  };
-
 # define runset GoniScan with new FPD
-$runsets->{NewGoniScan} =
+$runsets->{GoniScan} =
   {
    'Description' => 'Goni scan setup without TAPS or CB',
    'DefaultTriggerId' => 74,
