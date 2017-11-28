@@ -66,7 +66,7 @@ void TA2PairSpec::SetConfig(Char_t* line, Int_t key)
     
     // you can specify a custom permutation,
     // by default it's the identity permutation
-    vector<UInt_t> perm;
+    vector<Int_t> perm;
     perm.resize(fScalerBlockSize);
     for(UInt_t i=0;i<fScalerBlockSize;i++) {
       if(!(ss >> perm[i])) {
@@ -76,13 +76,14 @@ void TA2PairSpec::SetConfig(Char_t* line, Int_t key)
     
     // generate the map "ordered channel (three histograms)" -> "ScalerIndex"
     for(UInt_t i=0;i<fScalerBlockSize;i++) {
+      if(perm[i]<0) continue;
       for(UInt_t j=0;j<fNHistograms;j++) {
         UInt_t ch = j*fNchannels+start+perm[i]; // respect the permutation
         UInt_t vupOffset = fScalerBlockSize*fNHistograms*(fVupromSumSize-fVupromSize);
         UInt_t offset = fScalerBlockSize*(fVupromSize*j+fScalerBlockIdx);        
         UInt_t idx = fScalerOffset+vupOffset+offset+i;
         fScalerIndex[ch] = idx;
-        //cout << ch << " -> " << idx << endl;
+        cout << ch << " -> " << idx << endl;
       }      
     }
     fScalerBlockIdx++;
