@@ -900,7 +900,7 @@ void    TA2GoAT::Reconstruct()
                 for(Int_t i=0; i<nTagged; i++)
         		{
                     taggedChannel[i] = (fLadder->GetHitsAll())[i];
-                    taggedTime[i] = (fLadder->GetTimeORAll())[i];
+                    taggedTime[i] = (fLadder->GetTimeAll())[i];
                     taggedEnergy[i] = electron_E - ChToE[taggedChannel[i]];
 	        	}
 		}
