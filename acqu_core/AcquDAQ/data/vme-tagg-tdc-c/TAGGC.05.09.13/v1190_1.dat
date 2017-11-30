@@ -14,7 +14,8 @@ BaseSetup:	0		0		ADC    	    9000
 ## Hits accept window: start -1us, length 1.2us
 ## New setting....extend width by 8 x 25 ns...lets reference in reliably
 ## do not extend width higher than 0x30 = 1.2us
-Window: 0xffd8 0x30
+## Trimmed window width to 1us 0xffdc 0x28  JRMA 30/11/17
+Window: 0xffdc 0x28
 #Window: 0xffeb 0x14
 #Window: 0xffd0 0x38
 ## Edge detect 1=trailing edge, 2=leading edge, 3=leading and trailing edge
