@@ -65,4 +65,4 @@ Display: 2D Echarged 100 0 500 23   DeltaE 100 0 5 23
 #Display: 3D Echarged 100 0 500 0 DeltaEdouble 100 0 5 0 ECentral 20 0 1. 0
 #
 #Display: 1D DeltaTheta 50  0   50 -1
-Display: 1D DeltaPhi   100 -50 50 0 23
+#Display: 1D DeltaPhi   100 -50 50 0 23

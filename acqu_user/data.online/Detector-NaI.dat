@@ -2272,11 +2272,11 @@ Display: 1D   TDCHits     720 0 720
 Display: 1D   Etot        400 0 800
 ##
 ## Energy deposited in individual crystals, per channel and the OR
-Display: 1D   Energy      200 0 400   0 719
+#Display: 1D   Energy      200 0 400   0 719
 Display: 1D   EnergyOR    200 0 400
 ##
 ## Time of individual crystals, per channel and the OR
-Display: 1D   Time        200 -100 100   0 719
+#Display: 1D   Time        200 -100 100   0 719
 Display: 1D   TimeOR      200 -100 100
 ##
 ## Cluster histograms
