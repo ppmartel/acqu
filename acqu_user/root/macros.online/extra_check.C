@@ -4,7 +4,7 @@
     Int_t isCB = gROOT->ProcessLine("TString s1 = gAR->GetFileName();s1.Contains(\"CB\")");
 
     if(isCB){
-      watcher->Divide(3,2);
+      watcher->Divide(2,2);
       watcher->SetWindowSize(1200,1000);
     }
     else {
@@ -18,18 +18,19 @@
     if(FPD_ScalerCurr) FPD_ScalerCurr->Draw();
 
     watcher->cd(2);
-    if(FPD_TimeOR) FPD_TimeOR->Draw();
+    if(FPD_TimeAll) FPD_TimeAll->Draw();
 
     if(isCB){
       watcher->cd(3);
-      if(MWPC_Wires_Hits) MWPC_Wires_Hits->Draw();
+      if(MWPC_Wires_Hits){
+	MWPC_Wires_Hits->GetXaxis()->SetRangeUser(230,528);
+	MWPC_Wires_Hits->Draw();
+      }
       
       watcher->cd(4);
       gPad->SetLogz();
       if(NaI_Hits_v_TimeOR) NaI_Hits_v_TimeOR->Draw("colz");
 
-      watcher->cd(5);
-      TwoD2000v1400->Draw("colz");
     }
 
     TTimer* update_timer = new TTimer("watcher->Update();watcher->Draw();",4000);

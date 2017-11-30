@@ -22,7 +22,7 @@ CheckTagger(TCanvas* canv){
   Char_t* hname[] = {
     "FPD_Nhits", "FPD_NhitsPrompt", "FPD_NhitsRand",  
     "FPD_Hits", "FPD_ScalerCurr", "FPD_ScalerAcc",
-    "FPD_Hits_v_TimeOR","FPD_TimeOR","TAGG_PhotonEnergy",
+    "FPD_Hits_v_TimeOR","FPD_TimeAll","TAGG_PhotonEnergy",
     "FPD_Hits_v_EnergyOR","FPD_EnergyOR",
     "TAGG_Micro_Hits_v_FPD_Hits",
   };

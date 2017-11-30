@@ -17,41 +17,6 @@ void PeriodMacro() {
       } 
       cmd << " > /dev/null";
       system(cmd.str().c_str());
-      /*
-      if((FPD_ScalerCurr->Integral(1,32))<=32) {
-	printf("Tagger Section A appears to be off!\n");
-	dError = 500;
-      }
-      if((FPD_ScalerCurr->Integral(33,80))<=48) {
-	printf("Tagger Section B appears to be off!\n");
-	dError = 500;
-      }
-      if((FPD_ScalerCurr->Integral(81,128))<=48) {
-	printf("Tagger Section C appears to be off!\n");
-	dError = 500;
-      }
-      if((FPD_ScalerCurr->Integral(129,176))<=48) {
-	printf("Tagger Section D appears to be off!\n");
-	dError = 500;
-      }
-      if((FPD_ScalerCurr->Integral(177,224))<=48) {
-	printf("Tagger Section E appears to be off!\n");
-	dError = 500;
-      }
-      if((FPD_ScalerCurr->Integral(225,272))<=48) {
-	printf("Tagger Section F appears to be off!\n");
-	dError = 500;
-      }
-      if((FPD_ScalerCurr->Integral(273,320))<=48) {
-	printf("Tagger Section G appears to be off!\n");
-	dError = 500;
-      }
-      if((FPD_ScalerCurr->Integral(321,352))<=32) {
-      	printf("Tagger Section H appears to be off!\n");
-      	dError = 500;
-      }
-      */
-      if(dError==500) printf("\n");
 
       /*
       if(gROOT->FindObject("ScInt4")){
@@ -94,60 +59,61 @@ void PeriodMacro() {
 
   // look for hole in MWPC
   
-  // if(gROOT->FindObject("MWPC_Wires_Hits")){
-  //   Int_t iNBins = MWPC_Wires_Hits->GetNbinsX();
-  //   if((MWPC_Wires_Hits->Integral()) > (100*iNBins)){
-  //     Int_t iPrev, iThis;
-  //     Double_t dDiff;
-  //     Int_t iProb = 0;
-  //     iThis = MWPC_Wires_Hits->GetBinContent(1);
-  //     for(Int_t i=1; i<iNBins; i++){
-  // 	iPrev = iThis;
-  //       //TODO: exclude broken/noisy channels (as of 20.01.2017)
-  //       if (i == 140 || i == 142 || i == 159 ||
-  // 	    i == 192 || i == 232 || i == 233 ||
-  // 	    i == 327 || i == 423 || i == 526 || ((i>=168)&&(i<=174))||
-  // 	    i == 527)
-  //         continue;
-  // 	iThis = MWPC_Wires_Hits->GetBinContent(i+1);
-  // 	dDiff = (TMath::Abs((iThis-iPrev)/(1.*iPrev)));
-  // 	if(dDiff > 0.5) iProb++;
-  //     }
-  //     if(iProb > 8){
-  // 	printf("Possible problem in MWPC Wires - Event %d\n\t\t\t%d jumps found\n\n",gAN->GetNDAQEvent(),iProb);
-  // 	dError += 1000;
-  //     }
-  //   }
-  //   if((MWPC_Wires_Hits->Integral()) > (400*iNBins)) MWPC_Wires_Hits->Reset();
-  // }
+  if(gROOT->FindObject("MWPC_Wires_Hits")){
+    Int_t iNBins = MWPC_Wires_Hits->GetNbinsX();
+    if((MWPC_Wires_Hits->Integral()) > (100*iNBins)){
+      Int_t iPrev, iThis;
+      Double_t dDiff;
+      Int_t iProb = 0;
+      iThis = MWPC_Wires_Hits->GetBinContent(1);
+      for(Int_t i=1; i<iNBins; i++){
+  	iPrev = iThis;
+        //TODO: exclude broken/noisy channels (as of 29.11.2017)
+        if (i <= 231 || i == 235 || i == 327 || i == 423 ||
+	    i == 513 || i == 515 || i == 517 || i == 526 || i == 527)
+          continue;
+  	iThis = MWPC_Wires_Hits->GetBinContent(i+1);
+  	dDiff = (TMath::Abs((iThis-iPrev)/(1.*iPrev)));
+  	if(dDiff > 0.5) iProb++;
+      }
+      if(iProb > 8){
+  	printf("Possible problem in MWPC Wires - Event %d\n\t\t\t%d jumps found\n\n",gAN->GetNDAQEvent(),iProb);
+  	dError += 1000;
+      }
+    }
+    if((MWPC_Wires_Hits->Integral()) > (400*iNBins)) MWPC_Wires_Hits->Reset();
+  }
   
-
-
   // look for shift in FPD
-  if(gROOT->FindObject("FPD_TimeOR")){
-    Int_t iNBins = FPD_TimeOR->GetNbinsX();
-    if((FPD_TimeOR->Integral()) > (100*iNBins)){
-      TH1D *Temp_FPD = (TH1D*)FPD_TimeOR->Clone("Temp_FPD");
+  if(gROOT->FindObject("FPD_TimeAll")){
+    Int_t iNBins = FPD_TimeAll->GetNbinsX();
+    if((FPD_TimeAll->Integral()) > (100*iNBins)){
+      TH1D *Temp_FPD = (TH1D*)FPD_TimeAll->Clone("Temp_FPD");
+      //Int_t binLo = Temp_FPD->FindBin(-100);
+      //Int_t binHi = Temp_FPD->FindBin(100);
+      //Temp_FPD->GetXaxis()->SetRange(binLo,binHi);
       if(gROOT->FindObject("Prev_FPD")){
 	Temp_FPD->Add(Prev_FPD,-1);
 	if((Temp_FPD->Integral()) > (100*iNBins)){
 	  delete Prev_FPD;
-	  TH1D *Prev_FPD = (TH1D*)FPD_TimeOR->Clone("Prev_FPD");
+	  TH1D *Prev_FPD = (TH1D*)FPD_TimeAll->Clone("Prev_FPD");
 	}
       }
-      else TH1D *Prev_FPD = (TH1D*)FPD_TimeOR->Clone("Prev_FPD");
+      else TH1D *Prev_FPD = (TH1D*)FPD_TimeAll->Clone("Prev_FPD");
       
-      Int_t iPeak = Temp_FPD->GetMaximumBin();
-      Double_t dTime = Temp_FPD->GetBinCenter(iPeak);
-      //Double_t dTime = Temp_FPD->GetMean();
-      if(dTime < -10 || dTime > 10){
-	printf("Possible problem in FPD_TimeOR - Event %d\n\t\t\tPeak at %f ns\n\n",gAN->GetNDAQEvent(),dTime);
-	dError += 2000;
-      }	  
+      if((Temp_FPD->Integral()) > (100*iNBins)){
+	Int_t iPeak = Temp_FPD->GetMaximumBin();
+	Double_t dTime = Temp_FPD->GetBinCenter(iPeak);
+	//Double_t dTime = Temp_FPD->GetMean();
+	if(dTime < -10 || dTime > 10){
+	  printf("Possible problem in FPD_TimeOR - Event %d\n\t\t\tPeak at %f ns\n\n",gAN->GetNDAQEvent(),dTime);
+	  dError += 2000;
+	}
+      }
       delete Temp_FPD;
     }
   }
-
+  
   // look for shift in NaI
   Bool_t bShift = false;
   if(gROOT->FindObject("NaI_Hits_v_TimeOR")){
@@ -159,7 +125,7 @@ void PeriodMacro() {
 	Proj_NaI = (TH1D*)NaI_Hits_v_TimeOR->ProjectionX("Proj_NaI",i+1,i+8);
 	
 	Double_t dTime = Proj_NaI->GetMean();
-	if((dTime < 20) || (dTime > 52)){ //TODO: changed upper limit to from 50 to 52 on 06.11.2016 (mean around 50.x for several channels)
+	if((dTime < -10) || (dTime > 20)){
 	  if(!bShift) printf("Possible problem in NaI_Hits_v_TimeOR - Event %d\n",gAN->GetNDAQEvent());
 	  printf("\t\t\tPeak at %f ns (Channels %3d-%3d)\n",dTime,i,i+7);
 	  if(!bShift) dError += 4000;
