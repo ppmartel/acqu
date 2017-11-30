@@ -94,6 +94,7 @@ class TA2Detector : public TA2HistManager {
   Double_t** fTimeM;                      // stored multihit (TDC) times
   Double_t* fTimeOR;                     // stored hit times for OR timing
   Double_t** fTimeORM;                   // stored hit times for OR timing
+  Double_t* fTimeAll;                    // stored hit times for OR timing
   TVector3** fPosition;                  // stored hit positions
   TVector3 fMeanPos;                     // "centre" of detector
   Int_t* fShiftOp;                       // operations global shift of coords
@@ -110,6 +111,7 @@ class TA2Detector : public TA2HistManager {
   Double_t fTimeOffset;                  // global time offset
   UInt_t fNhits;                         // No. detector hits in event
   UInt_t* fNhitsM;                       // No. detector M-hits in event
+  UInt_t fNhitsAll;                      // No. detector hits+M-hits in event
   UInt_t fNADChits;                      // No. ADC hits in event
   UInt_t fNTDChits;                      // No. TDC hits in event
   UInt_t fNMultihit;                     // Max number multihits to analyse
@@ -156,6 +158,7 @@ public:
   Double_t** GetTimeM(){ return fTimeM; }           // ptr to multi-time array
   Double_t* GetTimeOR(){ return fTimeOR; }          // ptr to time OR
   Double_t* GetTimeORM(Int_t m){return fTimeORM[m];}// ptr to multi time OR
+  Double_t* GetTimeAll(){ return fTimeAll; }        // ptr to time All
   Double_t GetTime(Int_t i){ return fTime[i]; }     // time value elem i
   TVector3** GetPosition(){ return fPosition; }     // ptr position array
   TVector3* GetPosition(Int_t i){                   // ptr position vector
@@ -177,6 +180,7 @@ public:
   Double_t GetTimeOffset(){ return fTimeOffset; }  // overall time offset
   UInt_t GetNhits(){ return fNhits; }              // No. hits in event
   UInt_t GetNhitsM(Int_t m){ return fNhitsM[m]; }  // No. hits multiplicity m
+  UInt_t GetNhitsAll(){ return fNhitsAll; }        // No. hits+M-hits in event
   UInt_t GetNADChits(){ return fNADChits; }        // No. ADC  hits in event
   UInt_t GetNTDChits(){ return fNTDChits; }        // No. TDC hits in event
   UInt_t GetNMultihit(){ return fNMultihit; }      // No. multihits stored
@@ -224,7 +228,7 @@ inline void TA2Detector::DecodeBasic( )
   // Callable only by TA2Detector or classes which inherit from it
   // Add multihit TDC decoding
 
-  fNADChits = fNTDChits = fNhits = 0;
+  fNADChits = fNTDChits = fNhits = fNhitsAll = 0;
   if( fHitsM ){
     for( UInt_t m=0; m<fNMultihit; m++ ) fNhitsM[m] = 0;
   }
@@ -266,14 +270,17 @@ inline void TA2Detector::DecodeBasic( )
 	  fHitsM[m][fNhitsM[m]] = j;
 	  fTimeORM[m][fNhitsM[m]] = fTimeM[m][j];
 	  fNhitsM[m]++;
+	  fTimeAll[fNhitsAll++] = fTimeM[m][j];
 	}
       }
+      else fTimeAll[fNhitsAll++] = fTime[j];
     }
     fNhits++;
   }
   fHits[fNhits] = EBufferEnd;
   if( fIsTime ){
     fTimeOR[fNhits] = EBufferEnd;
+    fTimeAll[fNhitsAll] = EBufferEnd;
     if( fIsRawHits ) fRawTimeHits[fNTDChits] = EBufferEnd;
     for(UInt_t m=0; m<fNMultihit; m++){
       fHitsM[m][fNhitsM[m]] = EBufferEnd;

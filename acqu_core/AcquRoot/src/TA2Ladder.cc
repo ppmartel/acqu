@@ -71,11 +71,11 @@ TA2Ladder::TA2Ladder( const char* name, TA2System* apparatus )
   fTrigg = fDoubles = fHitsAll = fWindows = NULL;
   fHitsRand = fHitsPrompt = fMuHits = NULL;
   fECalibration = fEelec = fEelecOR = fMeanEelecOR = fEOverlap = 
-    fRandMin = fRandMax = fTimeORAll = NULL;
+    fRandMin = fRandMax = NULL;
   fMeanTime = fMeanTimeOR = fMeanEnergy = fMeanEnergyOR = 
     fDiffTime = fDiffTimeOR = NULL;
   fTimingRes = fPromptRand = fPromptMin = fPromptMax = 0.0; 
-  fNDoubles = fNThits = fNtrigger = fNtrig = fNhitsAll = 0;
+  fNDoubles = fNThits = fNtrigger = fNtrig = 0;
   fNRandWindows = fNhitsPrompt = fNhitsRand  = fFence = 0;
   fIsOverlap = fIsTimeWindows = fIsFence = fIsMicro = EFalse;
   AddCmdList( kLaddKeys );                  // for SetConfig()
@@ -108,7 +108,6 @@ TA2Ladder::~TA2Ladder()
   if( fMeanEelecOR ) delete[] fMeanEelecOR;
   if( fHitsRand ) delete[] fHitsRand;
   if( fHitsPrompt ) delete[] fHitsPrompt;
-  if( fTimeORAll ) delete[] fTimeORAll;
   if( fMeanTime ) delete[] fMeanTime;
   if( fMeanTimeOR ) delete[] fMeanTimeOR;
   if( fMeanEnergy ) delete[] fEnergy;
@@ -352,7 +351,6 @@ void TA2Ladder::PostInit()
   if( !fNtrig ) fNtrig = 1;            	// at least 1 "trigger" loop
   fTrigg = new UInt_t[fNelem];
   fHitsAll = new UInt_t[fNelem];
-  if( fIsTime ) fTimeORAll = new Double_t[fNelem];
   fWindows = new UInt_t[fNelem];
   if(fIsTimeWindows){ 	                // windows defined? prompt/rand ratio
     Double_t randTotal=0.0;
@@ -445,16 +443,17 @@ void TA2Ladder::Decode( )
       if( fIsTime ){
 	fTime[j] -= trigtime;
 	fTimeOR[fNhits] = fTime[j];
-    fTimeORAll[fNhits] = fTime[j];
     if( fTimeM ){
 	  for( Int_t m=0; m<elem->GetNhit(); m++ ){
 	    fHitsM[m][fNhitsM[m]] = j;
 	    fTimeM[m][j] -= trigtime; 
 	    fTimeORM[m][fNhitsM[m]] = fTimeM[m][j];
 	    fNhitsM[m]++;
+	    fTimeAll[fNhitsAll++] = fTimeM[m][j];
 	  }
 	}
       }
+      else fTimeAll[fNhitsAll++] = fTime[j];
       if( fIsECalib ){
 	fEelecOR[fNhits] = fECalibration[j];
       }
@@ -468,7 +467,8 @@ void TA2Ladder::Decode( )
 
   fTrigg[fNhits] = EBufferEnd;
 
-  fNhitsAll = fNhits;
+  fHitsAll[fNhits] = EBufferEnd;
+  //fNhitsAll = fNhits;
 
   // Decode double hits
   DecodeDoubles();
@@ -480,10 +480,9 @@ void TA2Ladder::Decode( )
   if( fIsFence ) fFence = Fence();
   
   fHits[fNhits] = EBufferEnd;
-  fHitsAll[fNhitsAll] = EBufferEnd;
   if(fIsTime){
     fTimeOR[fNhits] = (Double_t)EBufferEnd;
-    fTimeORAll[fNhitsAll] = (Double_t)EBufferEnd;
+    fTimeAll[fNhitsAll] = (Double_t)EBufferEnd;
     for(UInt_t m=0; m<fNMultihit; m++){
       fHitsM[m][fNhitsM[m]] = EBufferEnd;
       fTimeORM[m][fNhitsM[m]] = EBufferEnd;
@@ -566,7 +565,7 @@ void TA2Ladder::ReadDecoded( )
       fHits[fNhits] = fHitsAll[fNhits] = iHit;
       if(fIsECalib) fEelecOR[fNhits] = fECalibration[iHit];
       if(fIsTime) fTimeOR[fNhits] = 0.0;
-      if(fIsTime) fTimeORAll[fNhits] = 0.0;
+      if(fIsTime) fTimeAll[fNhits] = 0.0;
       fNhits++;
 
       // Fill next channel too for double hit
@@ -574,7 +573,7 @@ void TA2Ladder::ReadDecoded( )
           fHits[fNhits] = fHitsAll[fNhits] = iHit + 1;
           if(fIsECalib) fEelecOR[fNhits] = fECalibration[iHit+1];
           if(fIsTime) fTimeOR[fNhits] = 0.0;
-          if(fIsTime) fTimeORAll[fNhits] = 0.0;
+          if(fIsTime) fTimeAll[fNhits] = 0.0;
           fNhits++;
       }
   }
@@ -590,7 +589,7 @@ void TA2Ladder::ReadDecoded( )
   fHitsAll[fNhitsAll] = EBufferEnd;
   if(fIsECalib) fEelecOR[fNhits] = EBufferEnd;
   if(fIsTime) fTimeOR[fNhits] = EBufferEnd;
-  if(fIsTime) fTimeORAll[fNhitsAll] = EBufferEnd;
+  if(fIsTime) fTimeAll[fNhitsAll] = EBufferEnd;
   return;
 }
 

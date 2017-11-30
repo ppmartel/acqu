@@ -63,7 +63,7 @@ TA2Detector::TA2Detector(const char* name, TA2System* apparatus,
   fDetectorHist = hists;
 
   // Zero some counters and array ptrs
-  fNhits = fNADChits = fNTDChits = fNelement = fNelem = fMaxHits = 0;
+  fNhits = fNhitsAll = fNADChits = fNTDChits = fNelement = fNelem = fMaxHits = 0;
   fTotalEnergy = 0.0;
   fEnergyScale = 1.0;
   fTimeOffset = 0.0;
@@ -74,6 +74,7 @@ TA2Detector::TA2Detector(const char* name, TA2System* apparatus,
   fTimeM = NULL;
   fTimeOR = NULL;
   fTimeORM = NULL;
+  fTimeAll = NULL;
   fPosition = NULL;
   fMeanPos.SetXYZ(0.0,0.0,0.0);
   fShiftOp = NULL;
@@ -139,6 +140,9 @@ void TA2Detector::SetupArrays( char* line )
     for( i=0; i<fNelement; i++ ) fTime[i] = (Double_t)ENullADC;
     fTimeOR = new Double_t[fNelement];
     fTimeOR[0] = (Double_t)EBufferEnd;
+    UInt_t max = fNelement*8;
+    fTimeAll = new Double_t[max];
+    fTimeAll[0] = (Double_t)EBufferEnd;
   }
 }
 
@@ -184,6 +188,7 @@ void TA2Detector::DeleteArrays()
   if( fTime ){
     delete[] fTime;
     delete[] fTimeOR;
+    delete[] fTimeAll;
   }
   // Hit Position
   if( fHits )   delete[] fHits;
@@ -381,6 +386,7 @@ void TA2Detector::LoadVariable( )
   if( fIsTime ){
     TA2DataManager::LoadVariable("Time",        fTime,          EDSingleX);
     TA2DataManager::LoadVariable("TimeOR",      fTimeOR,        EDMultiX);
+    TA2DataManager::LoadVariable("TimeAll",     fTimeAll,       EDMultiX);
     if( fIsRawHits ){
       TA2DataManager::LoadVariable("TDCHits",     fRawTimeHits,   EIMultiX);
       TA2DataManager::LoadVariable("NTDChits",    &fNTDChits,     EISingleX);
