@@ -1,5 +1,5 @@
 #File-Name: scratch/AcquDAQ 32	5000000	32768 ENet  32768  6032
-File-Name: scratch/AcquDAQ 32	5000000	32768 No-Store  32768  3028
+File-Name: scratch/AcquDAQ 32	5000000	32768 No-Store  32768  6032
 
 # Frequency            Scaler	Slow-Control
 Event-Counters:	       2000000000	2000000000			
@@ -8,17 +8,16 @@ Start-Run: 0
 #Control:  Local    0     0
 ### Control:   ENet	    localhost 4030
 #Control:   GUI-Local	    0 0
-#Control:   ENetSlave	    localhost 4030
-Control:  Slave    0     0
+Control:   ENetSlave	    localhost 4032
+#Control:  Slave    0     0
 #
 #	module	   Name		configFile
 Module:	VPE2xX86_64   vp2_0	vp2e.dat		0	 0
 Module: KPH_VITEC  vit0         vitec_0.dat 0 0 0
 ##
 #Module: CAEN_V1290 v1290_0  v1290_0.dat   e0000000 800     32     16
-Module: CAEN_V1190 v1190_2  v1190_1.dat   e0020000 800    128     14
-#Module: CAEN_V1190 v1190_3  v1190_1.dat   e0030000 928    128     14
-#Module: CAEN_V1190 v1190_1  v1190_1.dat   e0010000 1056    64      14
+Module: CAEN_V1190 v1190_2  v1190_1.dat   e0020000 1056    128     14
+Module: CAEN_V1190 v1190_3  v1190_1.dat   e0030000 928    128     14
 #Module: CAEN_V792  v792_0   v792_0.ped    e0020000 400    32      12
 #Module: CAEN_V965  v965_0   v965_0.ped    e0030000 900    16      12
 #Module: CAEN_V965  v965_1   v965_1.ped    e0040000 916    16      12

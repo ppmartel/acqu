@@ -7,7 +7,7 @@ Start-Run: 0
 #Control:  Local    0     0
 ### Control:   ENet	    localhost 4030
 #Control:   GUI-Local	    0 0
-Control:   ENetSlave        localhost 4029
+Control:   ENetSlave        localhost 4033
 #Control:  Slave    0     0
 #
 #	module	   Name		configFile
@@ -17,7 +17,7 @@ Module: KPH_VITEC  vit0         vitec_0.dat 0 0 0
 ## TCS module should come before any CATCH, other VME doesn't care
 #Module: CATCH_TCS    tcs0       catchTCS.d      00e00000     0    1     0
 ##
-#Module: CAEN_V1190 v1190_1  v1190_1.dat   e0000000 1056    128     14
+Module: CAEN_V1190 v1190_1  v1190_1.dat   e0000000 800    128     14
 #Module: CAEN_V1190 v1190_1  v1190_1.dat   e0010000 1056    128      14
 #Module: CBD_8210   cbd0	    cbd8210_0.dat 800000  0	0
 #
