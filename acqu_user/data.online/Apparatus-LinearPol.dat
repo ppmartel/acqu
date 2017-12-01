@@ -20,7 +20,7 @@ Reconstruct:
 #		norm_energy	edgeMin	edgeMax		tagger	ladder	scaler_ref		edge	plane	deadband(MeV)
 #defaults to:  	700.00		full_tagger_range	TAGG    FPD  	data/scaler.dmp 	fit	epics   0.5
 #Misc:	app	400.00		80.0	200.0		TAGG    FPD 	data/scalerCB_1997.dmp  fit	epics   0.2	
-Misc:	app	400.00		80.0	200.0		TAGG    FPD 	data/scalerCB_1997.dmp  fit	file    0.1	
+Misc:	app	600.00		140.0	160.0		TAGG    FPD 	data/scaler.dmp		fit	epics   0.2	
 #	
 #
 #
@@ -28,7 +28,7 @@ Misc:	app	400.00		80.0	200.0		TAGG    FPD 	data/scalerCB_1997.dmp  fit	file    0
 #Should list all the run ranges here
 #Will use plane info if "plane" is set to "epics" in "Misc: app" above
 #Misc: runs     runMin  runMax          scaler_ref                plane(para|perp|amo) 
-Misc:   runs	100	2000		data/scalerCB_1997.dmp	  para	
+#Misc:   runs	100	2000		data/scalerCB_1997.dmp	  para	
 #
 #
 #
@@ -41,7 +41,7 @@ Misc:	pvnames A2LinPolCohEdge A2LinPolCohRadiator A2LinPolCohPlane A2GoniAxis1 A
 ### Value of epics radiator variable to specify radiator
 #               diamond		amo
 #defaults to:   4               2
-Misc:   rads    4               2
+Misc:   rads    5               4
 #
 #
 #
@@ -49,11 +49,11 @@ Misc:   rads    4               2
 # A different set of parameters should be defined for para and perp 
 ### parameter sets for polarization of beam
 #                  run range     type   plane  params:    
-Misc:   poltable  1000     3000  params	para   0.001304 0.000572 14.079401 0.098990 1557.000000 2.000000 10.552337 0.680416 0.000000 0.000000 9.107692
-Misc:   poltable  1000     3000  params perp   0.001790 0.000223 6.339087 0.008871 1557.000000 2.000000 6.045563 1.341427 0.000000 0.000000 4.271005
+#Misc:   poltable  1000     3000  params	para   0.001304 0.000572 14.079401 0.098990 1557.000000 2.000000 10.552337 0.680416 0.000000 0.000000 9.107692
+#Misc:   poltable  1000     3000  params perp   0.001790 0.000223 6.339087 0.008871 1557.000000 2.000000 6.045563 1.341427 0.000000 0.000000 4.271005
 #
 #                 beforeEdgeMeV afterEdgeMeV	minPol(0.1-1.0)	deadBandMeV
-Misc:   polcuts   150.0         0.0		0.1		0.1
+#Misc:   polcuts   150.0         0.0		0.1		0.1
 #
 #
 # Do some post-initialisation.
@@ -63,13 +63,13 @@ Initialise:
 # histogram name should be preceeded by 1D or 2D (for dimension of spectrum)
 #
 #           Name        	chan/low/high   min/max condition(opt)
-Display: 1D Incoherent		352 0  352 -1
-Display: 1D Coherent		352 0  352 -1
-Display: 1D Enhancement		352 0  352 -1
-Display: 1D CoherentPara	352 0  352 -1
-Display: 1D EnhancementPara	352 0  352 -1
-Display: 1D CoherentPerp	352 0  352 -1
-Display: 1D EnhancementPerp	352 0  352 -1
+Display: 1D Incoherent		328 0  328 -1
+Display: 1D Coherent		328 0  328 -1
+Display: 1D Enhancement		328 0  328 -1
+Display: 1D CoherentPara	328 0  328 -1
+Display: 1D EnhancementPara	328 0  328 -1
+Display: 1D CoherentPerp	328 0  328 -1
+Display: 1D EnhancementPerp	328 0  328 -1
 Display: 1D CohEnergy		4000 0 4000 -1
 Display: 1D CohEdgePara		4000 0 4000 -1
 Display: 1D CohEdgePerp		4000 0 4000 -1
@@ -79,10 +79,10 @@ Display: 1D CohEdgeEpics	4000 0 4000 -1
 Display: 1D CohEdgeParaEpics	4000 0 4000 -1
 Display: 1D CohEdgePerpEpics	4000 0 4000 -1
 Display: 1D CohEdgeDistParaEpics	200  0 200 -1
-Display: 1D PolTableEnh		352 0  352 -1
-Display: 1D PolTablePol		352 0  352 -1
-Display: 1D PolMean		352 0  352 -1
-Display: 1D PolCount		352 0  352 -1
+Display: 1D PolTableEnh		328 0  328 -1
+Display: 1D PolTablePol		328 0  328 -1
+Display: 1D PolMean		328 0  328 -1
+Display: 1D PolCount		328 0  328 -1
 #
 # 2nd pass of Init to pick up ptrs to histograms
 Initialise:
