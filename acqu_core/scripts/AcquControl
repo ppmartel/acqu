@@ -39,7 +39,7 @@ done
 
 # TIMEOUT should be at least 1,
 if ! (( $TIMEOUT > 0 )) 2>/dev/null ; then
-    TIMEOUT=10
+    TIMEOUT=30
 fi
 ## Hack to allow time to initialise V1190A modules
 #TIMEOUT=10
