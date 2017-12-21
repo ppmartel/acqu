@@ -107,7 +107,7 @@ $runsets->{CB} =
   };
 
 # define runset TAPS
-$runsets->{TAPS} = MakePedRunset(
+$runsets->{TAPS} =
   {
    'Description' => 'TAPS in standalone, without CB, MWPC and Tagger',
    'DefaultTriggerId' => undef, # TAPS does not have a trigger ID
@@ -122,10 +122,10 @@ $runsets->{TAPS} = MakePedRunset(
                ['vme-taps-veto-ab', 'VetoAB'],
                ['vme-taps-veto-cd', 'VetoCD' ],
                ['vme-taps-veto-ef', 'VetoEF'],
-               ['vme-taps-pwo',     'PbWO4_standalone'],
+               ['vme-taps-pwo',     'PbWO4'],
               ],
    'TCS' => undef # TAPS does not know about TCS...
-  });
+  };
 
 $runsets->{TAPSPulser} = dclone($runsets->{TAPS});
 $runsets->{TAPSPulser}->{Description} .= ', Pulser only';
@@ -184,8 +184,8 @@ $runsets->{GoniScan} =
 # it adds to some hosts the string '_Ped' to the tagg column
 # see the subfunction MakePedRunset for details
 # commented out since not needed at the moment?
-#$runsets->{TAPSPed}
-#  = MakePedRunset($runsets->{TAPS});
+$runsets->{TAPSPed}
+  = MakePedRunset($runsets->{TAPS});
 $runsets->{CBTaggTAPSPed}
   = MakePedRunset($runsets->{CBTaggTAPS});
 $runsets->{CBTaggPed}
