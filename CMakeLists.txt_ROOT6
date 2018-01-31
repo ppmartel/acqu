@@ -23,8 +23,21 @@ function(REGISTER_MODULE modname topdir linkdef)
     endforeach()
     
     # create dictionary
-    ROOT_GENERATE_DICTIONARY(G__${modname} ${HDR_PURE} 
-                             LINKDEF ${CMAKE_SOURCE_DIR}/${topdir}/src/${linkdef})
+    get_directory_property(incdirs INCLUDE_DIRECTORIES)
+    set(includedirs)
+    foreach( d ${incdirs})
+        set(includedirs ${includedirs} -I${d})
+    endforeach()
+
+    add_custom_command(OUTPUT G__${modname}.cxx
+        COMMAND rootcling -f G__${modname}.cxx
+                          -rml lib${modname}.so
+                          -rmf lib${modname}.rootmap
+                          -s lib${modname}.so
+                          ${includedirs}
+                          ${HDR_PURE}
+                          ${CMAKE_SOURCE_DIR}/${topdir}/src/${linkdef}
+    )
 
     # create library
     add_library(${modname} SHARED ${SRC} G__${modname}.cxx)
