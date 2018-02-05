@@ -2,8 +2,9 @@
     TCanvas* watcher = new TCanvas("watcher","Watch Me");
 
     Int_t isCB = gROOT->ProcessLine("TString s1 = gAR->GetFileName();s1.Contains(\"CB\")");
+    Int_t isTagg = gROOT->ProcessLine("TString s1 = gAR->GetFileName();s1.Contains(\"Tagg\")");
 
-    if(isCB){
+    if(isCB && isTagg){
       watcher->Divide(2,2);
       watcher->SetWindowSize(1200,1000);
     }
@@ -13,24 +14,27 @@
     }
     watcher->SetWindowPosition(1920,500);
 
-    watcher->cd(1);
-    gPad->SetLogy();
-    if(FPD_ScalerCurr) FPD_ScalerCurr->Draw();
+    Int_t pad=1;
 
-    watcher->cd(2);
-    if(FPD_TimeAll) FPD_TimeAll->Draw();
+    if(isTagg){
+      watcher->cd(pad++);
+      gPad->SetLogy();
+      if(FPD_ScalerCurr) FPD_ScalerCurr->Draw();
+
+      watcher->cd(pad++);
+      if(FPD_TimeAll) FPD_TimeAll->Draw();
+    }
 
     if(isCB){
-      watcher->cd(3);
+      watcher->cd(pad++);
       if(MWPC_Wires_Hits){
-	MWPC_Wires_Hits->GetXaxis()->SetRangeUser(230,528);
+	//MWPC_Wires_Hits->GetXaxis()->SetRangeUser(230,528); Paolo jan.11.2018
 	MWPC_Wires_Hits->Draw();
       }
       
-      watcher->cd(4);
+      watcher->cd(pad++);
       gPad->SetLogz();
       if(NaI_Hits_v_TimeOR) NaI_Hits_v_TimeOR->Draw("colz");
-
     }
 
     TTimer* update_timer = new TTimer("watcher->Update();watcher->Draw();",4000);
