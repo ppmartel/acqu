@@ -55,7 +55,8 @@ void CheckCB(TCanvas* canv) {
 		"8", "NaI_ClNhitsOR",       "lin", "",
 		"9", "NaI_ClNhitsOR_v_ClEnergyOR", "log", "CONTZ",
 		"10", "NaI_Hits_v_TimeOR",   "lin", "COLZ",
-		"11", "NaI_Hits_v_EnergyOR", "log", "COLZ",
+		//"11", "NaI_Hits_v_EnergyOR", "log", "COLZ",
+		"11", "NaI_ClPhi_v_ClTheta.CutCluster", "log", "COLZ",
 		"12", "NaI_ClPhi_v_ClTheta", "log", "COLZ",
 	};
 	Char_t* xname[] = {
@@ -73,8 +74,9 @@ void CheckCB(TCanvas* canv) {
 		"CB Number of Hits per Cluster",
 		"CB Hits per Cluster vs Cluster Energy",
 		"CB Time vs Hits",
-		"CB Energy vs Hits",
-		"CB #theta - #phi distribution of Cluster Hits",
+		//"CB Energy vs Hits",
+		"CB #theta - #phi Distribution of Single Cluster Hits",
+		"CB #theta - #phi Distribution of Cluster Hits",
 	};
 	Int_t col[] = { 4,2,4,2,4,2,2,3,5,2,2,1,1,1,1 };
 
