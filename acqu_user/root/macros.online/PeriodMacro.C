@@ -76,7 +76,7 @@ void PeriodMacro() {
   	dDiff = (TMath::Abs((iThis-iPrev)/(1.*iPrev)));
   	if(dDiff > 0.5) iProb++;
       }
-      if(iProb > 8){
+      if(iProb > 4){
   	printf("Possible problem in MWPC Wires - Event %d\n\t\t\t%d jumps found\n\n",gAN->GetNDAQEvent(),iProb);
   	dError += 1000;
       }
@@ -85,23 +85,26 @@ void PeriodMacro() {
   }
   
   // look for shift in FPD
+  int nrebin = 2;
   if(gROOT->FindObject("FPD_TimeAll")){
     Int_t iNBins = FPD_TimeAll->GetNbinsX();
     if((FPD_TimeAll->Integral()) > (100*iNBins)){
-      TH1D *Temp_FPD = (TH1D*)FPD_TimeAll->Clone("Temp_FPD");
-      //Int_t binLo = Temp_FPD->FindBin(-100);
-      //Int_t binHi = Temp_FPD->FindBin(100);
-      //Temp_FPD->GetXaxis()->SetRange(binLo,binHi);
+
+      TH1D *Temp_FPD = FPD_TimeAll->Rebin(nrebin,"Temp_FPD");
       if(gROOT->FindObject("Prev_FPD")){
+        Prev_FPD->Rebin(nrebin);
+
 	Temp_FPD->Add(Prev_FPD,-1);
-	if((Temp_FPD->Integral()) > (100*iNBins)){
+        //Temp_FPD->Add(Prev_FPD,1); // add back in a 2% 
+	if((Temp_FPD->Integral()) > (200*iNBins)){
 	  delete Prev_FPD;
 	  TH1D *Prev_FPD = (TH1D*)FPD_TimeAll->Clone("Prev_FPD");
 	}
       }
       else TH1D *Prev_FPD = (TH1D*)FPD_TimeAll->Clone("Prev_FPD");
       
-      if((Temp_FPD->Integral()) > (100*iNBins)){
+      if((Temp_FPD->Integral()) > (200*iNBins)){
+
 	Int_t iPeak = Temp_FPD->GetMaximumBin();
 	Double_t dTime = Temp_FPD->GetBinCenter(iPeak);
 	//Double_t dTime = Temp_FPD->GetMean();
