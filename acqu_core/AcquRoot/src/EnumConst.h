@@ -26,7 +26,7 @@ enum { ESkDefPacket = 1024 };   // Default transfer length for stream socket
 enum { ESkLocal, ESkRemote };   // local/remote socket connect
 enum { ESkBacklog = 8 };        // max length pending connection queue (socket)
 enum { ESkInitBuff = 2 };       // # ints in initial handshake buffer (socket)
-enum { EMaxDataLength = 65536 };// max data buffer length
+enum { EMaxDataLength = 327680 };// max data buffer length
 enum { EMaxInputFiles = 1024 }; // size of input-file pointer buffer
 enum { EFalse, ETrue };         // Logic...should use kTRUE, kFALSE
 
