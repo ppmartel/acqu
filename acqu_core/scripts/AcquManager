@@ -141,18 +141,18 @@ $runsets->{TaggEff} =
                ['vme-tagg-tdc-d',   'TAGGD'],
                ['vme-tagg-tdc-b',   'TAGGB'],
                ['vme-tagg-tdc-c',   'TAGGC'],
-               ['vme-beampolmon',   'BEAM_Scan']
+               ['vme-beampolmon',   'BEAM']
               ],
    'TCS' => 'vme-tagg-tdc-b'
   };
 
-# define runset Moeller
-$runsets->{Moeller} =
+# define runset Scalers
+$runsets->{Scalers} =
   {
-   'Description' => 'Moeller standalone measurement without Tagger, TAPS or CB',
-   'DefaultTriggerId' => 67,
+   'Description' => 'Scaler standalone measurement without Tagger, TAPS or CB',
+   'DefaultTriggerId' => 101,
    'Hosts' => [
-               ['vme-exptrigger',   'Moeller'], # first, the host where the AcquDAQ GUI is started
+               ['vme-exptrigger',   'Scalers'], # first, the host where the AcquDAQ GUI is started
                ['vme-beampolmon',   'BEAM_Scan']
               ],
    'TCS' => undef # a bit unnecessary for the whole system

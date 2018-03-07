@@ -1,4 +1,4 @@
-# Server file for TaggEff
+# Server file for only scalers
 #############################################################################
 ## Number of Input streams (sources of data), Record length to write data
 ## and switch 0/1 = no/yes to control data write

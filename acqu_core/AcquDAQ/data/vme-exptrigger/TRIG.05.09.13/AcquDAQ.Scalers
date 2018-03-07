@@ -1,9 +1,9 @@
 ####
-Description: Moeller standalone
-#File-Name: scratch/Moeller  32	500000	32768	ENet  32768  3030
-File-Name: scratch/Moeller  32	500000	32768	No-Store  32768  3030
+Description: Scalers standalone
+File-Name: scratch/Scalers  32	500000	32768	ENet  32768  3030
+#File-Name: scratch/Scalers  32	500000	32768	No-Store  32768  3030
 # Frequency            Scaler	Slow-Control
-Event-Counters:	       10000	0			
+Event-Counters:	       100	0			
 Start-Run: 0
 #
 #Control:  Local    0     0
@@ -13,7 +13,7 @@ Control:   GUI-Local	    0 0
 #
 #	module	   Name		configFile
 Module:	KPH_I686   kphi686_0	kphi686.dat		0	 0
-Module: GSI_VUPROM vup0         vuprom.Moeller		ea000000 0   196 32 
+Module: GSI_VUPROM vup0         vuprom.Scalers		ea000000 0   196 32 
 Module: GSI_VUPROM vup1         vuprom.patt     	ea000000 0    6 8
 Module: GSI_VUPROM vup2         vuprom.sca_coplan 	e8000000 196 32 32
 Module: GSI_VUPROM vup3         vuprom.sca_multi  	e7000000 228 32 32
@@ -41,9 +41,10 @@ Module: CAMAC         lrs_4413  lrs_4413.CB_TimeAmp	1	5
 #                                                      (timer/scaler)   Period (#scaler events for scaler mode)
 #                                                                       (0 = only at beginning of run file)
 #Module:   EPICS       EPICS   data/EpicsEvent_0.dat        timer         3000
-Module:   EPICS       EPICS   data/EpicsCbrem.dat  	    scaler        2
+#Module:   EPICS       EPICS   data/EpicsCbrem.dat  	    scaler        2
 #Module:   EPICS       EPICS   data/EpicsEvent_Scalers.dat  scaler        2
 #Module:   EPICS       EPICS   data/EpicsEvent_2.dat        scaler        0
+Module:   EPICS       EPICS   data/EpicsScalers.dat         scaler        1
 #
 Reset-Ctrl: kphi686_0
 #

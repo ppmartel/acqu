@@ -1,4 +1,4 @@
-## Analysis setup file for running TaggEff
+## Analysis setup file for running only scalers
 ########################################################################
 ##
 ## Catch-TDC, where a reference TDC channel has to be specified

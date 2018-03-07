@@ -1,4 +1,4 @@
-## Online file for running TaggEff
+## Online file for running only scalers
 ########################################################################
 ##
 ## Batch mode operation...redirect output directory for log files etc.
@@ -18,6 +18,6 @@ Directory: /scratch/jrma/
 Analysis: TA2UserAnalysis
 ##
 ## Analysis setup file
-AnalysisSetup: Analysis-Moeller.dat
+AnalysisSetup: Analysis-Scalers.dat
 ##
-ServerSetup: Server-Moeller.dat
+ServerSetup: Server-Scalers.dat
