@@ -21,6 +21,7 @@ Module: GSI_VUPROM vup3         vuprom.sca_multi  	e7000000 228 32 32
 ##
 Module: CBD_8210   cbd0		cbd8210_0.dat	800000	0	0
 #
+Module: CAEN_V792  v792_0 v792_0.dat                eb000000 200    32      12
 #----------------------------------------	crate	station
 Module: CAMAC	      a2_1	a2ctrl_0.dat	  1	30
 Module: CAMAC	      lrs_4413	lrs_4413.CB1	  1	4
