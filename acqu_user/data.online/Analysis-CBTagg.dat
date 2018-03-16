@@ -128,7 +128,7 @@ Display: 2D 125	100 0 4000 2001M0 100 -4000 -1000
 ## New FPD/Active Target Tests
 ########################################################################
 ##
-#Display: ADC 200 231
+Display: ADC 200 231
 #Display: ADC 295 295
 #Display: MultiHit 232 294 10000 -7500 2500 0
 ##

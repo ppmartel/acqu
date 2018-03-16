@@ -46,6 +46,7 @@ Initialise:
 ## New FPD test
 #Display: ADC 900 963
 #Display: ADC 356 356
+Display: ADC 200 231
 ## change range...compensate for use of TCS trigger signal to trigger V1190 TDCs
 ## JRMA 28/11/17
 Display: MultiHit 800 926 5000 -7000 -5000 0
