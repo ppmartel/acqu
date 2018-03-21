@@ -15,8 +15,8 @@ Control:  Slave    0     0
 Module:	VPE2xX86_64   vp2_0	vp2e.dat		0	 0
 Module: KPH_VITEC  vit0         vitec_0.dat 0 0 0
 ##
-Module: CAEN_V1190 v1190_2  v1190_DMA.dat   e0020000 1056    128     14
-Module: CAEN_V1190 v1190_3  v1190_DMA.dat   e0030000 928    128     14
+Module: CAEN_V1190 v1190_2  v1190_NoDMA.dat   e0020000 1056    128     14
+Module: CAEN_V1190 v1190_3  v1190_NoDMA.dat   e0030000 928    128     14
 #Module: CBD_8210   cbd0	    cbd8210_0.dat 800000  0	0
 #
 #----------------------------------------	crate	station
