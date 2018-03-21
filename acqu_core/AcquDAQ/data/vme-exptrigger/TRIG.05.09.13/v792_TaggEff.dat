@@ -13,39 +13,39 @@ BaseSetup:      0               0               ADC         9000
 ## Set pedestal current
 Pedestal-Current: 255
 ## Turn off pedestal suppression
-No-threshold:
+#No-threshold:
 ##
 ##Set Threshold to 256 to disable channel
 ## Valid thresholds up to 255
-Threshold: 0 1
+Threshold: 0 256
 Threshold: 1 1
-Threshold: 2 1
-Threshold: 3 1
-Threshold: 4 1
-Threshold: 5 1
-Threshold: 6 1
-Threshold: 7 1
-Threshold: 8 1
-Threshold: 9 1
-Threshold: 10 1
-Threshold: 11 1
-Threshold: 12 1
-Threshold: 13 1
-Threshold: 14 1
-Threshold: 15 1
-Threshold: 16 1
-Threshold: 17 1
-Threshold: 18 1
-Threshold: 19 1
-Threshold: 20 1
-Threshold: 21 1
-Threshold: 22 1
-Threshold: 23 1
-Threshold: 24 1
-Threshold: 25 1
-Threshold: 26 1
-Threshold: 27 1
-Threshold: 28 1
-Threshold: 29 1
-Threshold: 30 1
-Threshold: 31 1
+Threshold: 2 256
+Threshold: 3 256
+Threshold: 4 256
+Threshold: 5 256
+Threshold: 6 256
+Threshold: 7 256
+Threshold: 8 256
+Threshold: 9 256
+Threshold: 10 256
+Threshold: 11 256
+Threshold: 12 256
+Threshold: 13 256
+Threshold: 14 256
+Threshold: 15 256
+Threshold: 16 256
+Threshold: 17 256
+Threshold: 18 256
+Threshold: 19 256
+Threshold: 20 256
+Threshold: 21 256
+Threshold: 22 256
+Threshold: 23 256
+Threshold: 24 256
+Threshold: 25 256
+Threshold: 26 256
+Threshold: 27 256
+Threshold: 28 256
+Threshold: 29 256
+Threshold: 30 256
+Threshold: 31 256
