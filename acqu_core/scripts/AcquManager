@@ -138,9 +138,9 @@ $runsets->{TaggEff} =
    'DefaultTriggerId' => 74,
    'Hosts' => [
                ['vme-exptrigger',   'TaggEff'], # first, the host where the AcquDAQ GUI is started
-               ['vme-tagg-tdc-d',   'TAGGD'],
+               ['vme-tagg-tdc-d',   'TAGGD_NoDMA'],
                ['vme-tagg-tdc-b',   'TAGGB'],
-               ['vme-tagg-tdc-c',   'TAGGC'],
+               ['vme-tagg-tdc-c',   'TAGGC_NoDMA'],
                ['vme-beampolmon',   'BEAM']
               ],
    'TCS' => 'vme-tagg-tdc-b'
