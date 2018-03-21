@@ -15,12 +15,12 @@ Control:    Slave      0 0
 #	module	   Name		configFile		BaseAdr		BaseIndex	Nchannel	NBits
 Module:	KPH_I686   kphi686_0	kphi686.veto		0		0
 Module: KPH_VITEC  vit_0	vitec_0.dat		0000		0		0
-Module: CAEN_V965  v965_0	v965_1.ped		23000000   	29000		32		12
-Module: CAEN_V965  v965_0	v965_2.ped		24000000   	29032		32		12
-Module: CAEN_V965  v965_0	v965_3.ped		25000000   	29064		32		12
-Module: CAEN_V965  v965_0	v965_4.ped		26000000   	29096		32		12
-Module: CAEN_V965  v965_0	v965_5.ped		27000000   	29128		32		12
-Module: CAEN_V965  v965_0	v965_6.ped		28000000   	29160		32		12
+Module: CAEN_V965  v965_0	v965.off		23000000   	29000		32		12
+Module: CAEN_V965  v965_0	v965.off		24000000   	29032		32		12
+Module: CAEN_V965  v965_0	v965.off		25000000   	29064		32		12
+Module: CAEN_V965  v965_0	v965.off		26000000   	29096		32		12
+Module: CAEN_V965  v965_0	v965.off		27000000   	29128		32		12
+Module: CAEN_V965  v965_0	v965.off		28000000   	29160		32		12
 Module: CAEN_V1190 v1190_0	v1190_0.dat		29000000   	29192		128		14
 # Switch this to VITEC card
 IRQ-Ctrl: vit_0
