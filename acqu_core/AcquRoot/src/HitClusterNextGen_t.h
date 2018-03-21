@@ -3,6 +3,7 @@
 
 #include "HitCluster_t.h"       // base hit cluster determination
 
+#include <iostream>
 #include <list>
 #include <vector>
 #include <set>
