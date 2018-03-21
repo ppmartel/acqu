@@ -68,9 +68,9 @@ void PeriodMacro() {
       iThis = MWPC_Wires_Hits->GetBinContent(1);
       for(Int_t i=1; i<iNBins; i++){
   	iPrev = iThis;
-        //TODO: exclude broken/noisy channels (as of 29.11.2017)
-        if (i <= 231 || i == 235 || i == 327 || i == 423 ||
-	    i == 513 || i == 515 || i == 517 || i == 526 || i == 527)
+        //TODO: exclude broken/noisy channels (as of 21.03.2018)
+        if (i == 195 || i == 296 || i == 297 || i == 303 || i == 327 ||
+	    i == 383 || i == 417 || i == 418 || i == 421 || i == 526 || i == 527)
           continue;
   	iThis = MWPC_Wires_Hits->GetBinContent(i+1);
   	dDiff = (TMath::Abs((iThis-iPrev)/(1.*iPrev)));
