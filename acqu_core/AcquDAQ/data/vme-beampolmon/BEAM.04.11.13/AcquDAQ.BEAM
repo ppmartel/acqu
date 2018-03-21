@@ -25,7 +25,8 @@ Module: KPH_VITEC  vit0	        vitec_0.dat 0 0 0
 Module: GSI_VUPROM_Scaler vup1 vup_tagg_288ch.dat    01000000  2000       288  32 
 Module: GSI_VUPROM_Scaler vup2 vup_tagg_288ch.dat    02000000  2288       288  32
 Module: GSI_VUPROM_Scaler vup3 vup_tagg_288ch.dat    03000000  2576       288  32
-Module: GSI_VUPROM_Scaler vup4 vup_tagg_192ch.dat    04000000  2864       192  32
+Module: GSI_VUPROM_Scaler vup4 vup_tagg_288ch.dat    04000000  2864       288  32
+
 
 # EPT/PairSpec readout
 #Module: GSI_VUPROM_Scaler vup1 vup_EPT_dummy.dat        01000000  0           0    0

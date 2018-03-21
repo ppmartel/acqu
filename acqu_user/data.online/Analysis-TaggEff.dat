@@ -8,7 +8,7 @@
 ##              #hits   start   stop    reference
 MultiADC:       8       800     926     927
 MultiADC:       8       928     1054    1055
-MultiADC:       8       1056    1150    1151
+MultiADC:       8       1056    1182    1183
 #
 # Moeller ADC channels, not really an ADC value!
 #MultiADC:       3       8000    8800
