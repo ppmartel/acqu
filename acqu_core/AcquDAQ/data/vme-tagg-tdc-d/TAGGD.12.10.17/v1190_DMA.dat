@@ -23,10 +23,10 @@ Edge-Detect: 2
 ## max # hits 2**(8-1) to save
 MaxHits: 9
 ## Use direct memory access readout, 520 bytes transfer max
-##DMA:	  736
-DMA:	  688
+DMA:	  520
+#DMA:	  1032
 ## Block read...0x1 = generate BERR on no more data, 130 x 4 bytes max in block
 ## Note DMA overrides block readout...but BERR parameter still set if >1
 ##        BERR  #4-byte-words
-BlkParm:  0x0	130
+#BlkParm:  0x0	130
 ##
