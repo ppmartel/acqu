@@ -93,9 +93,10 @@ int main(int argc, char **argv)
   // Int_t status = select( 1, &rfds, NULL, NULL, &t );
   // -1 error, 0 nothing there, + something there
 
+  char *retstr;
   for(;;){
     printf("\nAcquDAQ> ");
-    fgets(line, ELineSize, stdin);
+    retstr = fgets(line, ELineSize, stdin);
     // unused Int_t length = strlen(line);
     printf("\n %s", line);
     sscanf(line,"%s",command);
