@@ -245,6 +245,13 @@ public:
      else
        return((AcquExptInfo_t*)((UInt_t*)fHeaderBuff + 1))->fOutFile;
    }
+   Char_t* GetFileTime(){
+     // ONLINE...access the start time of the current file from the ACQU header record
+     if( fIsMk2Format )
+       return((AcquMk2Info_t*)((UInt_t*)fHeaderBuff + 1))->fTime;
+     else
+       return((AcquExptInfo_t*)((UInt_t*)fHeaderBuff + 1))->fTime;
+   }
    Int_t GetRunNumber(){
      // ONLINE...access the current run number from the ACQU header record
      if( fIsMk2Format )
