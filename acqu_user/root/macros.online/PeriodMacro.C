@@ -108,7 +108,7 @@ void PeriodMacro() {
 	Int_t iPeak = Temp_FPD->GetMaximumBin();
 	Double_t dTime = Temp_FPD->GetBinCenter(iPeak);
 	//Double_t dTime = Temp_FPD->GetMean();
-	if(dTime < -20 || dTime > 10){
+	if(dTime < -30 || dTime > 10){
 	  printf("Possible problem in FPD_TimeOR - Event %d\n\t\t\tPeak at %f ns\n\n",gAN->GetNDAQEvent(),dTime);
 	  dError += 2000;
 	}
