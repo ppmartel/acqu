@@ -1,5 +1,5 @@
-File-Name: scratch/AcquDAQ 32	5000000	32768 ENet  32768  6032
-#File-Name: scratch/AcquDAQ 32	5000000	32768 No-Store  32768  3028
+#File-Name: scratch/AcquDAQ 32	5000000	32768 ENet  32768  6032
+File-Name: scratch/AcquDAQ 32	5000000	32768 No-Store  32768  6032
 
 # Frequency            Scaler	Slow-Control
 Event-Counters:	       2000000000	2000000000			
@@ -8,8 +8,8 @@ Start-Run: 0
 #Control:  Local    0     0
 ### Control:   ENet	    localhost 4030
 #Control:   GUI-Local	    0 0
-#Control:   ENetSlave	    localhost 4030
-Control:  Slave    0     0
+Control:   ENetSlave	    localhost 4032
+#Control:  Slave    0     0
 #
 #	module	   Name		configFile
 Module:	VPE2xX86_64   vp2_0	vp2e.dat		0	 0

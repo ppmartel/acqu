@@ -45,9 +45,9 @@ $runsets->{CBTaggTAPS} =
                ['vme-cb-tdc-b',     'TDCB'],
                ['vme-mwpc-adc-a',   'WCA'],
                ['vme-mwpc-adc-b',   'WCB'],
-               ['vme-tagg-tdc-d',   'TAGGD'],
-               ['vme-tagg-tdc-b',   'TAGGB'],
                ['vme-tagg-tdc-c',   'TAGGC'],
+               ['vme-tagg-tdc-d',   'TAGGD'],
+               ['vme-tagg-tdc-e',   'TAGGE'],
                ['vme-taps-trigger', 'Slave'], # TAPS is in slave mode
                ['vme-taps-baf-a',   'BaFA'],
                ['vme-taps-baf-b',   'BaFB'],
@@ -79,12 +79,12 @@ $runsets->{CBTagg} =
                ['vme-cb-tdc-b',     'TDCB'],
                ['vme-mwpc-adc-a',   'WCA'],
                ['vme-mwpc-adc-b',   'WCB'],
-               ['vme-tagg-tdc-d',   'TAGGD'],
-               ['vme-tagg-tdc-b',   'TAGGB'],
                ['vme-tagg-tdc-c',   'TAGGC'],
+               ['vme-tagg-tdc-d',   'TAGGD'],
+               ['vme-tagg-tdc-e',   'TAGGE'],
                ['vme-beampolmon',   'BEAM']
               ],
-   'TCS' => 'vme-tagg-tdc-b' # which host has access to the Trigger Control System (TCS)
+   'TCS' => 'vme-beampolmon' # which host has access to the Trigger Control System (TCS)
   };
 
 # define runset CB
@@ -138,12 +138,12 @@ $runsets->{TaggEff} =
    'DefaultTriggerId' => 74,
    'Hosts' => [
                ['vme-exptrigger',   'TaggEff'], # first, the host where the AcquDAQ GUI is started
-               ['vme-tagg-tdc-d',   'TAGGD_NoDMA'],
-               ['vme-tagg-tdc-b',   'TAGGB'],
                ['vme-tagg-tdc-c',   'TAGGC_NoDMA'],
+               ['vme-tagg-tdc-d',   'TAGGD_NoDMA'],
+               ['vme-tagg-tdc-e',   'TAGGE_NoDMA'],
                ['vme-beampolmon',   'BEAM']
               ],
-   'TCS' => 'vme-tagg-tdc-b'
+   'TCS' => 'vme-beampolmon'
   };
 
 # define runset Scalers
@@ -156,7 +156,6 @@ $runsets->{Scalers} =
                ['vme-beampolmon',   'BEAM_Scan']
               ],
    'TCS' => undef # a bit unnecessary for the whole system
-#   'TCS' => 'vme-tagg-tdc-b'
   };
 
 # define runset GoniScan with new FPD
@@ -166,12 +165,12 @@ $runsets->{GoniScan} =
    'DefaultTriggerId' => 74,
    'Hosts' => [
                ['vme-exptrigger',   'GoniScan'], # first, the host where the AcquDAQ GUI is started
-               ['vme-tagg-tdc-d',   'TAGGD'],
-               ['vme-tagg-tdc-b',   'TAGGB'],
                ['vme-tagg-tdc-c',   'TAGGC'],
+               ['vme-tagg-tdc-d',   'TAGGD'],
+               ['vme-tagg-tdc-e',   'TAGGE'],
                ['vme-beampolmon',   'BEAM_Scan']
               ],
-   'TCS' => 'vme-tagg-tdc-b'
+   'TCS' => 'vme-beampolmon'
   };
 
 # define TaggEffBg, just another tag for the GUI host

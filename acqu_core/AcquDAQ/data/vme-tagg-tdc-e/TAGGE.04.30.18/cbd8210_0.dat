@@ -1,0 +1,24 @@
+##--Rev 	JRM Annand... 1st Oct 2005  New DAQ software
+##--Update	JRM Annand...
+##--Description
+##                *** AcquDAQ++ <-> Root ***
+## DAQ for Sub-Atomic Physics Experiments.
+##
+
+##              Hex Base	#Registers	Module type	MapSize  <-- Baya Added MapSize
+BaseSetup:	0		10		S-Ctrl		80000
+##
+
+##		Hex Offset	DW	AM
+Register:	e802		16	39		
+Register:	e812		16	39		
+Register:	e816		16	39		
+Register:	e806		16	39		
+Register:	e81a		16	39		
+Register:	e80a		16	39		
+Register:	e81e		16	39		
+Register:	e80e		16	39		
+Register:	e822		16	39		
+Register:	e826		16	39		
+#	End of File
+#

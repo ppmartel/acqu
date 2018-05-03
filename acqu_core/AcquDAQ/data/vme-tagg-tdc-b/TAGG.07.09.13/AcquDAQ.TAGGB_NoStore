@@ -5,15 +5,15 @@ File-Name: scratch/AcquDAQ 32	5000000	32768 No-Store  32768  3029
 Event-Counters:	2000000000	2000000000
 Start-Run: 0
 #
-#Control:  Slave    0     0
+Control:  Slave    0     0
 #Control:   ENet	    localhost 4029
-Control:   ENetSlave	    localhost 4029
+#Control:   ENetSlave	    localhost 4029
 #
 #	module	   Name		configFile
 Module:	KPH_I686   kphi686_0	kphi686.dat	0	0
 Module: KPH_VITEC   vit0        vitec_0.dat     0000    0       0
 # put TCS module first, since it should be inited before the TDCs
-Module: CATCH_TCS    tcs0       catchTCS.d      00e00000     0    1	0
+#Module: CATCH_TCS    tcs0       catchTCS.d      00e00000     0    1	0
 #Module: CATCH_TDC    cat2 	catchTDC.d 	e0320000  1656    128 	14
 #Module: CATCH_TDC    cat3       catchTDC.d      e0330000  1784    128   14
 # Catch setup file with larger TDC window EJD & PBO 28.09.10

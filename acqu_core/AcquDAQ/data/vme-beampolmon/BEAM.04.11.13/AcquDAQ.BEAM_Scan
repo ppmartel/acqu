@@ -14,6 +14,8 @@ Control:  Slave    0     0
 Module:	KPH_I686   kphi686_0	kphi686.dat 0 0
 Module: KPH_VITEC  vit0	        vitec_0.dat 0 0 0
 
+Module: CATCH_TCS    tcs0       catchTCS.d      00e00000     0    1	0
+
 ### Since the VUPROM can only handle EPT or Tagger fully,
 ### it is very important to either enable 
 ### vup1..vup4 for Tagger 
