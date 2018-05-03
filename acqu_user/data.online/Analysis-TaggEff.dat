@@ -33,6 +33,7 @@ Initialise:
 #Period: 100000	PeriodMacroTaggEff.C	PeriodMacroTaggEff()
 #Period:  3000	PeriodMacroTaggEff.C	PeriodMacroTaggEff()
 #Period:   1000	PeriodMacroTaggEff.C	PeriodMacroTaggEff()
+Period:   10000	PeriodMacro.C	PeriodMacro()
 #EndFile:	EndFileMacro.C  EndFileMacro()
 #Finish:	FinishMacro.C	FinishMacro()
 ##

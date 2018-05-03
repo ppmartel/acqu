@@ -58,7 +58,7 @@ void PeriodMacro() {
   }
 
   // look for hole in MWPC
-  
+  /*
   if(gROOT->FindObject("MWPC_Wires_Hits")){
     Int_t iNBins = MWPC_Wires_Hits->GetNbinsX();
     if((MWPC_Wires_Hits->Integral()) > (100*iNBins)){
@@ -83,7 +83,7 @@ void PeriodMacro() {
     }
     if((MWPC_Wires_Hits->Integral()) > (400*iNBins)) MWPC_Wires_Hits->Reset();
   }
-  
+  */
   // look for shift in FPD
   int nrebin = 2;
   if(gROOT->FindObject("FPD_TimeAll")){
