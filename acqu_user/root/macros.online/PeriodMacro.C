@@ -1,4 +1,5 @@
 // This code gets executed by the online analysis
+
 // every Nth events (see online config Period: statement)
 //int x=5;
 
@@ -58,7 +59,7 @@ void PeriodMacro() {
   }
 
   // look for hole in MWPC
-  /*
+  
   if(gROOT->FindObject("MWPC_Wires_Hits")){
     Int_t iNBins = MWPC_Wires_Hits->GetNbinsX();
     if((MWPC_Wires_Hits->Integral()) > (100*iNBins)){
@@ -66,24 +67,42 @@ void PeriodMacro() {
       Double_t dDiff;
       Int_t iProb = 0;
       iThis = MWPC_Wires_Hits->GetBinContent(1);
+      
+      Int_t poor_man = 0;//Adding in a poor mans rolling window
+
       for(Int_t i=1; i<iNBins; i++){
-  	iPrev = iThis;
-        //TODO: exclude broken/noisy channels (as of 21.03.2018)
-        if (i == 195 || i == 296 || i == 297 || i == 303 || i == 327 ||
-	    i == 383 || i == 417 || i == 418 || i == 421 || i == 526 || i == 527)
-          continue;
-  	iThis = MWPC_Wires_Hits->GetBinContent(i+1);
+        poor_man++;
+        if(poor_man > 20)
+        {
+            if(iProb >=6){
+                printf("Possible problem in MWPC Wires %d to %d - Event %d\n\t\t\t%d jumps found\n\n",i-20, i, gAN->GetNDAQEvent(),iProb);
+                dError=1000;
+            }
+            
+            poor_man = 0; // reset rolling window counter
+            iProb = 0;    // reset probability counter
+            i = i-10;     // start search again 10 bins back 
+       }
+
+  	//iPrev = iThis;
+        //Exclude broken/noisy channels (as of 18.05.2018)
+        //if (i == 129 || i == 140 || i == 142 || i == 327 || i == 526 || i == 527)
+        //Exclude broken/noisy channels (as of 21.05.2018)
+        if ((i> 130 && i<150) || i == 89 || i == 217 || i == 303 || i == 327 || i == 526 || i == 527)
+            continue;
+  	iPrev = MWPC_Wires_Hits->GetBinContent(i);
+        iThis = MWPC_Wires_Hits->GetBinContent(i+1);
   	dDiff = (TMath::Abs((iThis-iPrev)/(1.*iPrev)));
-  	if(dDiff > 0.5) iProb++;
+  	if(dDiff > 0.75) iProb++;
       }
-      if(iProb > 4){
-  	printf("Possible problem in MWPC Wires - Event %d\n\t\t\t%d jumps found\n\n",gAN->GetNDAQEvent(),iProb);
-  	dError += 1000;
-      }
+//      if(iProb >= 6){
+//  	printf("Possible problem in MWPC Wires - Event %d\n\t\t\t%d jumps found\n\n",gAN->GetNDAQEvent(),iProb);
+//  	dError += 1000;
+//      }
     }
     if((MWPC_Wires_Hits->Integral()) > (400*iNBins)) MWPC_Wires_Hits->Reset();
   }
-  */
+  
   // look for shift in FPD
   int nrebin = 2;
   if(gROOT->FindObject("FPD_TimeAll")){

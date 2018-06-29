@@ -347,7 +347,7 @@ Element: 326 0.0 0.0 0.0 0.0   1005M0 -700.0 700.0 -4050.0 0.1000 0 0 0  134.9 0
 Element: 327 0.0 0.0 0.0 0.0   1020M0 -700.0 700.0 -4050.0 0.1000 0 0 0  133.8 0.0 2665
 ##
 Initialise: 
-Display: 1D Nhits       96 0 96
+Display: 1D Nhits       200 0 200
 Display: 1D NhitsPrompt 32 0 32
 Display: 1D NhitsRand   32 0 32
 Display: 1D Hits        328 0 328
