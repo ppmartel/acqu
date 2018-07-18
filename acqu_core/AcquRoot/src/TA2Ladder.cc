@@ -212,7 +212,7 @@ void TA2Ladder::SetConfig( char* line, int key )
     // here we deal with the extra params not handled by that
     if( fNelem >= fNelement ) goto error;
     if ( sscanf( line, "%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%*s%lf%lf%d",
-         &calib,&width,&scaler) != 3) goto error;
+		 &calib,&width,&scaler) != 3) goto error;
     if(fIsECalib) fECalibration[fNelem] = calib;
     fEWidth[fNelem] = width;
     if(fIsScaler) fScalerIndex[fNelem] = scaler;
@@ -246,8 +246,8 @@ void TA2Ladder::SetConfig( char* line, int key )
     if(fNelement){
       if( fIsECalib ){
 	fECalibration = new Double_t[fNelement];
-    fEWidth = new Double_t[fNelement];
-    if( fIsOverlap ) fEOverlap = new Double_t[fNelement];
+	fEWidth = new Double_t[fNelement];
+	if( fIsOverlap ) fEOverlap = new Double_t[fNelement];
       }
       if( fIsScaler ){
 	fScalerIndex = new UInt_t[fNelement];
@@ -276,7 +276,7 @@ void TA2Ladder::SetConfig( char* line, int key )
     fTrigger[fNtrig] = new HitD2A_t( line, fNtrig, this ); fNtrig++;
     break;
     //  case ELaddInit:
-  // do some further initialisation
+    // do some further initialisation
     //    PostInitialise();
     //    break;
     //  case ELaddDisplay:
@@ -325,7 +325,7 @@ void TA2Ladder::PostInit()
 
   if( fIsOverlap ){
     for( i=0; i<fNelem-1; i++ ){
-        fEOverlap[i]=(0.5*(fECalibration[i]+fECalibration[i+1])+0.25*(fEWidth[i]-fEWidth[i+1]));
+      fEOverlap[i]=(0.5*(fECalibration[i]+fECalibration[i+1])+0.25*(fEWidth[i]-fEWidth[i+1]));
     }
     if( fIsTime ){
       fMeanTime = new Double_t[fNelem];
@@ -443,7 +443,7 @@ void TA2Ladder::Decode( )
       if( fIsTime ){
 	fTime[j] -= trigtime;
 	fTimeOR[fNhits] = fTime[j];
-    if( fTimeM ){
+	if( fTimeM ){
 	  for( Int_t m=0; m<elem->GetNhit(); m++ ){
 	    fHitsM[m][fNhitsM[m]] = j;
 	    fTimeM[m][j] -= trigtime; 
@@ -513,9 +513,24 @@ void TA2Ladder::ReadDecoded( )
   fNDoubles = 0; 
   Float_t* energy = (Float_t*)(fEvent[EI_beam]);
   Double_t Ee = ((TA2Tagger*)fParent)->GetBeamEnergy() - 1000.0*energy[3];
+  
+  Double_t fECalibrationSorted[fNelem], fEWidthSorted[fNelem];
 
+  if(fECalibration[0] < fECalibration[fNelem-1]){ // Old FDP detector Ee ->
+    for(Int_t i = 0; i < fNelem; i++){
+      fECalibrationSorted[i] = fECalibration[i];
+      fEWidthSorted[i] = fEWidth[i];
+    }
+  }
+  else{                                          // New FDP detector  Ee <-
+    for(Int_t i = 0; i < fNelem; i++){
+      fECalibrationSorted[i] = fECalibration[fNelem-1-i];
+      fEWidthSorted[i] = fEWidth[fNelem-1-i];
+    }
+  }
+ 
   // Determine nearest channel with energy smaller than this energy
-  UInt_t iHit = TMath::BinarySearch( fNelem, fECalibration, Ee );
+  UInt_t iHit = TMath::BinarySearch( fNelem, fECalibrationSorted, Ee );
 
   // Ensure that we do not go out of range, also handles the above returning -1
   if( iHit >= fNelem ) iHit = 0;
@@ -524,58 +539,70 @@ void TA2Ladder::ReadDecoded( )
 
   // If widths were set, use these to determine limits of the channel
   if( fEWidth[iHit] ){
-      centLo = fECalibration[iHit] - 0.5*fEWidth[iHit];
-      centHi = fECalibration[iHit] + 0.5*fEWidth[iHit];
+    centLo = fECalibrationSorted[iHit] - 0.5*fEWidthSorted[iHit];
+    centHi = fECalibrationSorted[iHit] + 0.5*fEWidthSorted[iHit];
   }
   // Otherwise set the limits as midpoints between this channel and its neighbors
   else{
-      if( iHit > 0 ) centLo = 0.5*(fECalibration[iHit-1]+fECalibration[iHit]);
-      else centLo = (fECalibration[iHit]-0.5*(fECalibration[iHit+1]-fECalibration[iHit]));
-      if( iHit < (fNelem-1) ) centHi = 0.5*(fECalibration[iHit]+fECalibration[iHit+1]);
-      else centHi = (fECalibration[iHit]+0.5*(fECalibration[iHit]-fECalibration[iHit-1]));
+    if( iHit > 0 ) centLo = 0.5*(fECalibrationSorted[iHit-1]+fECalibrationSorted[iHit]);
+    else centLo = (fECalibrationSorted[iHit]-0.5*(fECalibrationSorted[iHit+1]-fECalibrationSorted[iHit]));
+    if( iHit < (fNelem-1) ) centHi = 0.5*(fECalibrationSorted[iHit]+fECalibrationSorted[iHit+1]);
+    else centHi = (fECalibrationSorted[iHit]+0.5*(fECalibrationSorted[iHit]-fECalibrationSorted[iHit-1]));
   }
 
   // Increment channel (without going out of range) if energy is beyond limit of this channel
   if( Ee > centHi && iHit < (fNelem-1) ){
-      iHit++;
+    iHit++;
 
-      // If widths were set, use these to determine limits of the channel
-      if( fEWidth[iHit] ){
-          centLo = fECalibration[iHit] - 0.5*fEWidth[iHit];
-          centHi = fECalibration[iHit] + 0.5*fEWidth[iHit];
-      }
-      // Otherwise set the limits as midpoints between this channel and its neighbors
-      else{
-          if( iHit > 0 ) centLo = 0.5*(fECalibration[iHit-1]+fECalibration[iHit]);
-          else centLo = (fECalibration[iHit]-0.5*(fECalibration[iHit+1]-fECalibration[iHit]));
-          if( iHit < (fNelem-1) ) centHi = 0.5*(fECalibration[iHit]+fECalibration[iHit+1]);
-          else centHi = (fECalibration[iHit]+0.5*(fECalibration[iHit]-fECalibration[iHit-1]));
-      }
+    // If widths were set, use these to determine limits of the channel
+    if( fEWidth[iHit] ){
+      centLo = fECalibrationSorted[iHit] - 0.5*fEWidthSorted[iHit];
+      centHi = fECalibrationSorted[iHit] + 0.5*fEWidthSorted[iHit];
+    }
+    // Otherwise set the limits as midpoints between this channel and its neighbors
+    else{
+      if( iHit > 0 ) centLo = 0.5*(fECalibrationSorted[iHit-1]+fECalibrationSorted[iHit]);
+      else centLo = (fECalibrationSorted[iHit]-0.5*(fECalibrationSorted[iHit+1]-fECalibrationSorted[iHit]));
+      if( iHit < (fNelem-1) ) centHi = 0.5*(fECalibrationSorted[iHit]+fECalibrationSorted[iHit+1]);
+      else centHi = (fECalibrationSorted[iHit]+0.5*(fECalibrationSorted[iHit]-fECalibrationSorted[iHit-1]));
+    }
   }
 
   // Set limits for next channel to do double decoding
   // If widths were set, use these to determine limits of the channel
-  if( iHit < (fNelem-1) && fEWidth[iHit] ) nextLo = fECalibration[iHit+1] - 0.5*fEWidth[iHit+1];
+  if( iHit < (fNelem-1) && fEWidth[iHit] ) nextLo = fECalibrationSorted[iHit+1] - 0.5*fEWidthSorted[iHit+1];
   else nextLo = centHi;
 
   // Fill central element if energy is within range, this check may seem extraneous but
   // it's necessary for cases outside of the range of the tagger, or for detectors like
   // the end-point tagger, which have gaps between detectors
   if( (Ee >= centLo) && (Ee < centHi) ){
+    if(fECalibration[0] < fECalibration[fNelem-1]){
       fHits[fNhits] = fHitsAll[fNhits] = iHit;
       if(fIsECalib) fEelecOR[fNhits] = fECalibration[iHit];
+    }
+    else{
+      fHits[fNhits] = fHitsAll[fNhits] = fNelem-iHit;
+      if(fIsECalib) fEelecOR[fNhits] = fECalibration[fNelem-iHit];
+    }
+    if(fIsTime) fTimeOR[fNhits] = 0.0;
+    if(fIsTime) fTimeAll[fNhits] = 0.0;
+    fNhits++;
+
+    // Fill next channel too for double hit
+    if( Ee >= nextLo ){
+      if(fECalibration[0] < fECalibration[fNelem-1]){
+	fHits[fNhits] = fHitsAll[fNhits] = iHit + 1;
+	if(fIsECalib) fEelecOR[fNhits] = fECalibration[iHit+1];
+      }
+      else{
+	fHits[fNhits] = fHitsAll[fNhits] = fNelem-(iHit + 1);
+	if(fIsECalib) fEelecOR[fNhits] = fECalibration[fNelem-(iHit+1)];
+      }
       if(fIsTime) fTimeOR[fNhits] = 0.0;
       if(fIsTime) fTimeAll[fNhits] = 0.0;
       fNhits++;
-
-      // Fill next channel too for double hit
-      if( Ee >= nextLo ){
-          fHits[fNhits] = fHitsAll[fNhits] = iHit + 1;
-          if(fIsECalib) fEelecOR[fNhits] = fECalibration[iHit+1];
-          if(fIsTime) fTimeOR[fNhits] = 0.0;
-          if(fIsTime) fTimeAll[fNhits] = 0.0;
-          fNhits++;
-      }
+    }
   }
 
   fNhitsAll = fNhits;
