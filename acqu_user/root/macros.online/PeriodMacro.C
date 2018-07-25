@@ -75,8 +75,8 @@ void PeriodMacro() {
         if(poor_man > 20)
         {
             if(iProb >=6){
-                printf("Possible problem in MWPC Wires %d to %d - Event %d\n\t\t\t%d jumps found\n\n",i-20, i, gAN->GetNDAQEvent(),iProb);
-                dError=1000;
+	      //printf("Possible problem in MWPC Wires %d to %d - Event %d\n\t\t\t%d jumps found\n\n",i-20, i, gAN->GetNDAQEvent(),iProb);
+                //dError=1000;
             }
             
             poor_man = 0; // reset rolling window counter
@@ -85,8 +85,6 @@ void PeriodMacro() {
        }
 
   	//iPrev = iThis;
-        //Exclude broken/noisy channels (as of 18.05.2018)
-        //if (i == 129 || i == 140 || i == 142 || i == 327 || i == 526 || i == 527)
         //Exclude broken/noisy channels (as of 21.05.2018)
         if ((i> 130 && i<150) || i == 89 || i == 217 || i == 303 || i == 327 || i == 526 || i == 527)
             continue;
