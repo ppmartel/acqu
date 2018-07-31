@@ -1,6 +1,51 @@
 cmake_minimum_required (VERSION 2.6)
 project(acqu)
 
+############################ Register module ###################################
+function(REGISTER_MODULE modname topdir linkdef)
+
+    # set sources
+    set(SRC ${CMAKE_SOURCE_DIR}/${topdir}/src/T*.cc)
+    set(SRC ${SRC} ${CMAKE_SOURCE_DIR}/${topdir}/src/*_t.cc)
+    set(SRC ${SRC} ${CMAKE_SOURCE_DIR}/${topdir}/src/*.cpp)
+    file(GLOB SRC ${SRC})
+    
+    # set headers
+    set(HDR ${CMAKE_SOURCE_DIR}/${topdir}/src/T*.h)
+    set(HDR ${HDR} ${CMAKE_SOURCE_DIR}/${topdir}/src/*_t.h)
+    set(HDR ${HDR} ${CMAKE_SOURCE_DIR}/${topdir}/inc/*.h)
+    file(GLOB HDR ${HDR})
+    list(REMOVE_ITEM HDR "${CMAKE_SOURCE_DIR}/Tools/a2display/inc/LinkDef.h")
+    set(ALL_HDR ${ALL_HDR} ${HDR} PARENT_SCOPE)
+    foreach(head_file ${HDR})
+        get_filename_component(ph ${head_file} NAME)
+        set(HDR_PURE ${HDR_PURE} ${ph})
+    endforeach()
+    
+    # create dictionary
+    get_directory_property(incdirs INCLUDE_DIRECTORIES)
+    set(includedirs)
+    foreach( d ${incdirs})
+        set(includedirs ${includedirs} -I${d})
+    endforeach()
+
+    add_custom_command(OUTPUT G__${modname}.cxx
+        COMMAND rootcling -f G__${modname}.cxx
+                          -rml lib${modname}.so
+                          -rmf lib${modname}.rootmap
+                          -s lib${modname}.so
+                          ${includedirs}
+                          ${HDR_PURE}
+                          ${CMAKE_SOURCE_DIR}/${topdir}/src/${linkdef}
+    )
+
+    # create library
+    add_library(${modname} SHARED ${SRC} G__${modname}.cxx)
+
+endfunction()
+################################################################################
+
+
 # check for in-source build, forbid it!
 if(CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR AND NOT MSVC_IDE)
   message(FATAL_ERROR "\nIn-source build attempt detected!\n"
@@ -19,55 +64,60 @@ if(ACQU_DAQ)
   message(STATUS "*** Building DAQ Part only (ACQU_DAQ=On)")
 endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules/" ${CMAKE_MODULE_PATH})
-# require a fairly recent ROOT version
-find_package(ROOT "5.30" REQUIRED)
+# configure ROOT
+find_package(ROOT REQUIRED Core EG Gui Foam)
+include(${ROOT_USE_FILE})
 
-#if(NOT ${ROOT_VERSION_MAJOR} EQUAL 5) 
-#  message(FATAL_ERROR "Only ROOT version 5.x.x supported")
-#endif() 
-
-# since all subprojects need ROOT, set that up here
-include_directories(${ROOT_INCLUDES})
-link_directories(${ROOT_LIBRARY_DIR})
-
-
-# in these two variables, we collect over the subprojects
-# the include dirs and the libnames on which acqu_user
-# code can depend on...
-set(ACQU_USER_INCS "")
-set(ACQU_USER_LIBS "")
-# this must be a macro to have the same scope as the subdir
-macro(SET_ACQU_USER_VARS LIBS)
-  get_property(allincdirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    PROPERTY INCLUDE_DIRECTORIES)
-  list(APPEND ACQU_USER_INCS ${allincdirs})
-  set(ACQU_USER_INCS ${ACQU_USER_INCS} PARENT_SCOPE)
-  
-  list(APPEND ACQU_USER_LIBS ${LIBS})
-  set(ACQU_USER_LIBS ${ACQU_USER_LIBS} PARENT_SCOPE)
-endmacro()
-
-# helper libraries
-add_subdirectory(Tools)
-
-add_subdirectory(acqu_core)
-
-# ACQU_DAQ=On usually on VME machines for DAQ
-if(ACQU_DAQ)
-  return()
-endif()
-
-# check for external CaLib
-if(DEFINED ENV{CALIB})
-  message("-- Found external CaLib in " $ENV{CALIB})
+# check for external OSCAR
+if(DEFINED ENV{OSCAR})
+    message(STATUS "Found external OSCAR in " $ENV{OSCAR})
+    include_directories($ENV{OSCAR}/include)
+    link_directories($ENV{OSCAR}/lib)
 else()
-  add_subdirectory(CaLib)
+    message(FATAL_ERROR "External OSCAR not found!")   
 endif()
 
-# finally, the main user part
-add_subdirectory(acqu_user)
+# includes
+include_directories(${CMAKE_SOURCE_DIR}/acqu_core/AcquDAQ/src)
+include_directories(${CMAKE_SOURCE_DIR}/acqu_core/AcquRoot/src)
+include_directories(${CMAKE_SOURCE_DIR}/acqu_core/AcquMC/src)
+include_directories(${CMAKE_SOURCE_DIR}/acqu_user/root/src)
+include_directories(${CMAKE_SOURCE_DIR}/Tools/a2display/inc)
 
-# doxygen stuff
-include(cmake/doxygen.cmake)
+# register all modules
+REGISTER_MODULE(AcquDAQ acqu_core/AcquDAQ AcquDAQLinkDef.h)
+REGISTER_MODULE(AcquRoot acqu_core/AcquRoot AcquRootLinkDef.h)
+REGISTER_MODULE(AcquMC acqu_core/AcquMC MCLinkDef.h)
+REGISTER_MODULE(UserRoot acqu_user/root UserLinkDef.h)
+REGISTER_MODULE(a2display Tools/a2display ../inc/LinkDef.h)
+
+# additional headers for installation
+set(ALL_HDR ${ALL_HDR} ${CMAKE_SOURCE_DIR}/acqu_core/AcquRoot/src/EnumConst.h)
+set(ALL_HDR ${ALL_HDR} ${CMAKE_SOURCE_DIR}/acqu_core/AcquRoot/src/DataFormats.h)
+set(ALL_HDR ${ALL_HDR} ${CMAKE_SOURCE_DIR}/acqu_core/AcquRoot/src/SwapBytes.h)
+set(ALL_HDR ${ALL_HDR} ${CMAKE_SOURCE_DIR}/acqu_core/AcquDAQ/src/ModuleIndex.h)
+set(ALL_HDR ${ALL_HDR} ${CMAKE_SOURCE_DIR}/acqu_core/AcquRoot/src/MCBranchID.h)
+
+# the following feature helps us to get rid of
+# getenv("acqu"), getenv("acqu_sys"), getenv("ROOTSYS")
+# because we define this variables now at "configure" time!
+set(ACQU_CONFIG_FILE "${CMAKE_SOURCE_DIR}/acqu_core/AcquRoot/src/CMakeConfig.h")
+configure_file("${CMAKE_SOURCE_DIR}/cmake/CMakeConfig.h.in" "${ACQU_CONFIG_FILE}")
+
+# create executables
+add_executable(AcquRoot-bin acqu_user/root/src/MainAcquRoot.cc)
+set_target_properties(AcquRoot-bin PROPERTIES OUTPUT_NAME AcquRoot)
+target_link_libraries(AcquRoot-bin AcquDAQ AcquRoot UserRoot a2display OSCAR ${ROOT_LIBRARIES})
+add_executable(AcquMC-bin acqu_core/AcquMC/src/MainAcquMC.cc)
+set_target_properties(AcquMC-bin PROPERTIES OUTPUT_NAME AcquMC)
+target_link_libraries(AcquMC-bin AcquDAQ AcquRoot AcquMC ${ROOT_LIBRARIES})
+
+# copy rootmaps, pcm, headers and scripts
+add_custom_command(TARGET AcquRoot-bin POST_BUILD 
+    COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/*.rootmap ${PROJECT_BINARY_DIR}/lib
+    COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/*.pcm ${PROJECT_BINARY_DIR}/lib
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/include
+    COMMAND ${CMAKE_COMMAND} -E copy ${ALL_HDR} ${PROJECT_BINARY_DIR}/include
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/acqu_core/scripts/AcquHierarchy ${PROJECT_BINARY_DIR}/bin
+)
+
