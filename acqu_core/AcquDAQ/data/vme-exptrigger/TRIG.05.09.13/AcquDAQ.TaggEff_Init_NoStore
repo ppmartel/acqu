@@ -4,7 +4,7 @@ Description: NoStore mode! Use Go to start
 #File-Name: scratch/NewDAQtest  32	500000	32768	ENet  32768  3030
 File-Name: scratch/NewDAQtest  32	500000	32768	No-Store  32768  3030
 # Frequency            Scaler	Slow-Control
-Event-Counters:	       1000	200000			
+Event-Counters:	       10000	200000			
 Start-Run: 0
 #
 #Control:  Local    0     0
@@ -21,13 +21,16 @@ Module: GSI_VUPROM vup3         vuprom.sca_multi  	e7000000 228 32 32
 ##
 Module: CBD_8210   cbd0		cbd8210_0.dat	800000	0	0
 #
-Module: CAEN_V792  v792_0 v792_TaggEff.dat                eb000000 200    32      12
+#Module: CAEN_V792  v792_0 v792_TaggEff.dat                eb000000 200    32      12
 #----------------------------------------	crate	station
 Module: CAMAC	      a2_1	a2ctrl_0.dat	  1	30
 Module: CAMAC	      lrs_4413	lrs_4413.CB1	  1	4
 Module: CAMAC	      lrs_4413	lrs_4413.CB2	  1	3
 # edited by Jennifer & Patrik
 Module: CAMAC         lrs_4413  lrs_4413.CB_TimeAmp	1	5
+#
+Module: CAMAC         lrs_2551  lrs_2551.dat    1       16
+Module: CAMAC         vucam     vucam.dat       1       17
 #
 #EPICS Slow control readout. Readout at beginning and end of each data file, and periodically as specified
 #

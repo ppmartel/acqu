@@ -1,0 +1,19 @@
+##--Rev         JRM Annand... 20th Jul 2018  Borer clock setup
+##--Update      JRM Annand...
+##--Description
+##                *** AcquDAQ++ <-> Root ***
+## DAQ for Sub-Atomic Physics Experiments.
+##
+##              Hex Base Addr   #Registers      Module type     MapSize
+#BaseSetup:      0               14              Scaler          1000
+BaseSetup:      0               14              ADC          1000
+##
+## change BaseIndex 400 to something not used by any other device
+##              Chan Base Index #Subaddr        #bits
+BaseIndex:      300             12               16
+##
+##              Data    F       Amin    Amax    Type
+CAMAC-CNAF:     0xfffff 9       0       0       Init
+CAMAC-CNAF:     0       0       0       11      IRQ
+#       End of File
+#

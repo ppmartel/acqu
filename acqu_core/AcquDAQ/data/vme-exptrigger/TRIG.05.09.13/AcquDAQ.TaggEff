@@ -28,6 +28,9 @@ Module: CAMAC	      lrs_4413	lrs_4413.CB2	  1	3
 # edited by Jennifer & Patrik
 Module: CAMAC         lrs_4413  lrs_4413.CB_TimeAmp	1	5
 #
+Module: CAMAC         lrs_2551  lrs_2551.dat	1	16
+Module: CAMAC         vucam     vucam.dat	1	17
+#
 #EPICS Slow control readout. Readout at beginning and end of each data file, and periodically as specified
 #
 #                                                       Period Mode     Period (ms for timer mode)
