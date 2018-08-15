@@ -101,6 +101,7 @@ class TDAQexperiment : public TA2System {
   TList* fEPICSList;                // linked list of all EPICS modules
   TList* fEPICSTimedList;           // EPICS modules with period in time (mn)
   TList* fEPICSCountedList;         // EPICS mod with period in scaler counts
+  TList* fEPICSTriggeredList;       // EPICS mod dependent on a trigger
   Char_t* fIRQModName;              // name of Interrupt control module
   Char_t* fStartModName;            // name of Trigger start/stop module
   Char_t* fSynchModName;            // name of Event synchronisation module
@@ -123,6 +124,7 @@ class TDAQexperiment : public TA2System {
   Int_t fNEPICS;                    // # All EPICS "modules"
   Int_t fNEPICSTimed;               // # EPICS "modules" periodic readout in ms
   Int_t fNEPICSCounted;             // # EPICS "modules" periodic scaler counts
+  Int_t fNEPICSTriggered;           // # No of EPICS "modules" periodic readout triggered
   Int_t fDataOutMode;               // mode of data output
   Int_t fScReadFreq;                // scaler read frequency (events)
   Int_t fSlCtrlFreq;                // slow control scan frequency (events)

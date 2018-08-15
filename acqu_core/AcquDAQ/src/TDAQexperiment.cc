@@ -145,12 +145,13 @@ TDAQexperiment::TDAQexperiment( const Char_t* name, const Char_t* input, const C
   fEPICSList =  new TList;
   fEPICSTimedList =  new TList;
   fEPICSCountedList =  new TList;
+  fEPICSTriggeredList =  new TList;
   fIRQModName = fStartModName = fSynchModName = fEventSendModName = NULL;
   fIRQMod = fStartMod = fSynchMod = fCtrlMod = fEventSendMod = NULL;
   fSynchIndex = -1;
   fStartSettleDelay = 0;
   fNModule = fNADC = fNScaler = fNCtrl = fNSlowCtrl =
-    fNEPICS = fNEPICSTimed = fNEPICSCounted = 0;
+    fNEPICS = fNEPICSTimed = fNEPICSCounted = fNEPICSTriggered = 0;
   fDataOutMode = EStoreDOUndef;
   fScReadFreq = 0;
   fSlCtrlFreq = 0;
@@ -592,6 +593,10 @@ void TDAQexperiment::AddModule( Char_t* line )
       fEPICSCountedList->AddLast( mod );
       fNEPICSCounted++;
     }
+    else if(((TEPICSmodule *)mod)->IsTriggered()){
+      fEPICSTriggeredList->AddLast( mod );
+      fNEPICSTriggered++;
+    }
   }
   fModuleList->AddLast( mod );                 // all modules
   fNModule++;
@@ -683,6 +688,7 @@ void TDAQexperiment::RunIRQ()
   TIter nexte( fEPICSList );
   TIter nextet( fEPICSTimedList );
   TIter nextec( fEPICSCountedList );
+  TIter nextetr( fEPICSTriggeredList );
 
   TDAQmodule* mod;
   void* out;              // output buffer pointer
@@ -691,6 +697,7 @@ void TDAQexperiment::RunIRQ()
   Int_t* scLen;
   Bool_t scEpicsFlag = kFALSE;    //for epics to know it was a scaler read. 
   Int_t* evLen;                   // place to put event length
+  Int_t  adcEnd;                  // index of last adc in event buffer
   UShort_t* evID;                 // place to put event ID info
   fIsRunTerm = kFALSE;            // ensure run terminated flag off
   // If in slave mode run the autostart procedure, bypass any local control
@@ -743,6 +750,8 @@ void TDAQexperiment::RunIRQ()
     slCtrlCnt++;
     nexta.Reset();
     while( ( mod = (TDAQmodule*)nexta() ) ) mod->ReadIRQ(&out);
+
+    adcEnd = (Int_t)((Char_t*)out - fEventBuff);
 
     // Move slave event ID stuff here before scaler and EPICS read
     // so that detection of end-of-run in the slave event ID can trigger
@@ -805,6 +814,7 @@ void TDAQexperiment::RunIRQ()
 	fStartMod->ResetTrigCtrl(); // trigger control reset
       }
     }
+
     //------------------------------------------------------------------------
     // Start of EPICS stuff
     // Check if any timed EPICS reads due - a separate buffer for each 
@@ -816,7 +826,7 @@ void TDAQexperiment::RunIRQ()
       if(fNEvent==0){
 	nexte.Reset();
 	while( ( mod = (TDAQmodule*)nexte() ) ){    // loop all epics modules
-	  BuffStore(&out, EEPICSBuffer); // epics-buffer marker
+	  BuffStore(&out, EEPICSBuffer);            // epics-buffer marker
 	  ((TEPICSmodule*)mod)->WriteEPICS(&out);   // write 
 	}
 	//start any EPICS timers / counters
@@ -824,16 +834,26 @@ void TDAQexperiment::RunIRQ()
 	while( ( mod = (TDAQmodule*)nextet() ) ){
 	  ((TEPICSmodule*)mod)->Start();
 	}
-	nextec.Reset();                         // ones counted in scaler reads
+	nextec.Reset();                             // ones counted in scaler reads
 	while( ( mod = (TDAQmodule*)nextec() ) ){
 	  ((TEPICSmodule*)mod)->Start();
 	}
       }	
       //
+      nextetr.Reset();
+      while( ( mod = (TDAQmodule*)nextetr() ) ){                        // loop triggered epics modules
+	if(fNEvent>0){                                                  // already recorded for event 0
+	  if(((TEPICSmodule*)mod)->IsTriggeredOut(fEventBuff,adcEnd)){         // Check if read is triggered
+	    BuffStore(&out, EEPICSBuffer);                              // epics-buffer marker
+	    ((TEPICSmodule*)mod)->WriteEPICS(&out);                     // write 
+	  }
+	}
+      }
+      //
       nextet.Reset();
       while( ( mod = (TDAQmodule*)nextet() ) ){    // loop timed epics modules
 	if(((TEPICSmodule*)mod)->IsTimedOut()){    // Check if read is due
-	  BuffStore(&out, EEPICSBuffer);// epics-buffer marker
+	  BuffStore(&out, EEPICSBuffer);           // epics-buffer marker
 	  ((TEPICSmodule*)mod)->WriteEPICS(&out);  // write 
 	  ((TEPICSmodule*)mod)->Start();           // restart the timer 
 	}
