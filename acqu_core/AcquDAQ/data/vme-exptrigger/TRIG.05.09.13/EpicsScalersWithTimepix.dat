@@ -11,8 +11,10 @@ EPICSBaseSetup:      	1           ScalersEPICS
 #
 ## Define the channels
 #               PVName			     Nelem   Type (epicsBYTE,epicsSHORT,epicsLONG,epicsFLOAT,epicsDOUBLE)
-EPICSchannel:   TAGG:MagneticField           1       epicsDOUBLE
-EPICSchannel:   PPOL:TIMEPIX:RAW:DETA        2000   epicsBYTE
-EPICSchannel:   PPOL:TIMEPIX:RAW:DETB        2000   epicsBYTE
+EPICSchannel:   TAGG:MagneticField           1      epicsDOUBLE
+EPICSchannel:   PPOL:TIMEPIXA:NHITS          1      epicsDOUBLE
+EPICSchannel:   PPOL:TIMEPIXB:NHITS          1      epicsDOUBLE
+#EPICSchannel:   PPOL:TIMEPIXA:ENCODED        2000   epicsBYTE
+#EPICSchannel:   PPOL:TIMEPIXB:ENCODED        2000   epicsBYTE
 #
 ##
