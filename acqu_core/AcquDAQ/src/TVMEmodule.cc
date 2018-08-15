@@ -15,8 +15,9 @@
 //                                          Implement "repeat" in reg init
 //--Rev 	JRM Annand   24th Aug 2012  'w' = 2 bytes (not 'm')
 //--Rev 	JRM Annand    7th Sep 2013  Do NOT neglect A16
-//--Update	JRM Annand   23rd Sep 2013  Add WriteChk()
-
+//--Rev 	JRM Annand   23rd Sep 2013  Add WriteChk()
+//--Update	JRM Annand    2nd Nov 2017  DMA support
+//
 //--Description
 //                *** AcquDAQ++ <-> Root ***
 // DAQ for Sub-Atomic Physics Experiments.
@@ -31,11 +32,12 @@
 #include "TDAQexperiment.h"
 
 
-enum { EVME_AMDW=100, EVME_Register, EVME_IDRegister };
+enum { EVME_AMDW=100, EVME_Register, EVME_IDRegister, EVME_DMA };
 static Map_t kVMEKeys[] = {
   {"Address-Data:",       EVME_AMDW},
   {"Register:",           EVME_Register},
   {"ID-Register:",        EVME_IDRegister},
+  {"DMA:",                EVME_DMA},
   {NULL,                  -1}
 };
 
@@ -59,6 +61,10 @@ TVMEmodule::TVMEmodule( Char_t* name, Char_t* file, FILE* log, Char_t* line ):
   fBus = E_VMEbus;
   fHardID = 0;
   fHardIDReg = -1;
+  fBlkBuff = NULL;
+  fBlkSize = 0;
+  fBlkParm = 0;
+  fIsBlk = false;
 }
 
 //-----------------------------------------------------------------------------
@@ -81,6 +87,12 @@ void TVMEmodule::SetConfig( Char_t* line, Int_t key )
     if( sscanf( line, "%d", &fHardID ) != 1 )
       PrintError(line,"<Parse hardware ID>");
     fHardIDReg = fNreg - 1;
+    break;
+  case EVME_DMA:
+    // turn on direct memory access....VMEbus controller must support this
+    fIsDMA = true;
+    if( sscanf( line, "%d", &fDMAsize ) != 1 )
+      PrintError(line,"<Parse DMA buffer size>",EErrFatal);
     break;
   default:
     // default try commands of TDAQmodule
@@ -214,6 +226,11 @@ void TVMEmodule::PostInit( )
   for(Int_t i=0; i<fNreg; i++){
     if( fIsWrt[i] )
       Write( i );
+  }
+  if(fIsDMA){
+    fMemDMA = fPCtrlMod->InitDMA();          // buffer address
+    fPCtrlMod->LinkDMA(fBaseAddr, fDMAsize); // this address, max transfer size
+    fDMAnPkt = fPCtrlMod->GetDMAnPkt();      // position on DMA linked list
   }
 }
 

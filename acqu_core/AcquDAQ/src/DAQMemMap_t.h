@@ -26,6 +26,7 @@ class DAQMemMap_t : public TObject {
   TA2System* fSys;
  public:
   DAQMemMap_t( void*, Int_t, Int_t, TA2System* );  //<--- Baya
+  DAQMemMap_t( ULong_t, Int_t, ULong_t, Int_t, TA2System* );
   virtual ~DAQMemMap_t();
   void SetConfig(char*, int){ return; }
   Int_t GetID(){ return fID; }

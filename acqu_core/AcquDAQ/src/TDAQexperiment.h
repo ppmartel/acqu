@@ -39,7 +39,7 @@
 //--Rev         JRM Annand    2nd Sep 2012  Add fEventSendMod..event ID send
 //--Rev         B. Oussena    9th Nov 2012  sleep(1) after launching data store
 //--Rev         JRM Annand    9th Jan 2013  add CAEN V874 TAPS module
-//--Rev 	K Livingston..7th Feb 2013  Support for writing EPICS buffers
+//--Rev 	K Livingston  7th Feb 2013  Support for writing EPICS buffers
 //--Rev 	JRM Annand    2nd Mar 2013  EPICS read in conditional block
 //--Rev 	JRM Annand    6th Jul 2013  Add V965 QDC
 //--Rev 	JRM Annand    3rd Sep 2013  Add VITEC interrupt/event-ID card
@@ -47,7 +47,14 @@
 //--Rev 	JRM Annand   22nd Sep 2013  Add VUPROMT, remove SlowCtrl thread
 //--Rev 	JRM Annand   24nd Sep 2013  Don't start ctrl thread if slave
 //                                          End-run scaler read for slaves
-//--Update	JRM Annand   29nd Mar 2014  Slave ev-ID read before scaler read
+//--Rev 	JRM Annand   29nd Mar 2014  Slave ev-ID read before scaler read
+//--Rev 	JRM Annand   14th Oct 2016  Add TDAQ_VP2ExX86_64
+//--Rev 	JRM Annand    3rd Nov 2016  Add TVME_V785
+//--Update	JRM Annand   19th Oct 2017  Ensure add TVME_V1290,TDAQ_SIS1100
+//--Rev         K Livingston 20th Jun 2018  Fixed bug to allow proper timed periodic EPICS buffers
+//--Update      K Livingston  3rd Jul 2018  Added EPICS trigger mode to write EPICS buffer triggered by ADC value.
+//                                          Using AND,OR, threshold or window of ADC[x].datum with value y. 
+//                                          Where x,y specified in setup line.
 //
 //--Description
 //                *** AcquDAQ++ <-> Root ***
@@ -122,8 +129,8 @@ class TDAQexperiment : public TA2System {
   Int_t fNCtrl;                     // # controllers
   Int_t fNSlowCtrl;                 // # slow control "modules"
   Int_t fNEPICS;                    // # All EPICS "modules"
-  Int_t fNEPICSTimed;               // # EPICS "modules" periodic readout in ms
-  Int_t fNEPICSCounted;             // # EPICS "modules" periodic scaler counts
+  Int_t fNEPICSTimed;               // # No of EPICS "modules" periodic readout ms
+  Int_t fNEPICSCounted;             // # No of EPICS "modules" periodic readout scaler 
   Int_t fNEPICSTriggered;           // # No of EPICS "modules" periodic readout triggered
   Int_t fDataOutMode;               // mode of data output
   Int_t fScReadFreq;                // scaler read frequency (events)
@@ -138,6 +145,7 @@ class TDAQexperiment : public TA2System {
   UInt_t fNEvent;                   // event number
   UInt_t fDataHeader;               // data header either Mk2 or Mk1
   Int_t fInitLevel;                 // hardware initialisation
+  UInt_t fTimeOut;                  // timeout wait for Supervisor end run
   Bool_t fIsSwap;                   // byte-swap data? big/little endian
   Bool_t fIsSlowCtrl;               // any slow-control functions?
   Bool_t fIsCtrl;                   // DAQ control enabled (run start/stop)?
