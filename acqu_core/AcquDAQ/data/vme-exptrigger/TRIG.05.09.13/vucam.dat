@@ -16,7 +16,7 @@ BaseSetup:      0               6               SlowCtrl
 ##              Datum   F       A0      A1      Register Type
 CAMAC-CNAF:     7      16      0       0       Init
 CAMAC-CNAF:     F      16      1       4       Init
-CAMAC-CNAF:     FF7    16      5       5       Init
+CAMAC-CNAF:     174    16      5       5       Init
 ##
 #       End of File
 #
