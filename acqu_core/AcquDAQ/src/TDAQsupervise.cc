@@ -551,7 +551,7 @@ void TDAQsupervise::ExecEnd(  )
   // If not wait indefinitely until TDAQexperiment says ready
   // Only set timeout if running single DAQ node
   if(fTimeOut){
-    for(Int_t i=0; i<fTimeOut; i++){
+    for(UInt_t i=0; i<fTimeOut; i++){
       usleep(1);
       if(fEXP->IsRunTerm())
 	break;
