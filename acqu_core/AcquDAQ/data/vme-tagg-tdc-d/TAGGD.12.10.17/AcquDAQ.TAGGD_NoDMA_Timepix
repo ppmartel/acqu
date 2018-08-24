@@ -1,0 +1,49 @@
+File-Name: scratch/AcquDAQ 32	5000000	262144 ENet  262144  6033
+#File-Name: scratch/AcquDAQ 32	5000000	32768 No-Store  32768  6033
+
+# Frequency            Scaler	Slow-Control
+Event-Counters:	       2000000000	2000000000			
+Start-Run: 0
+#
+#Control:  Local    0     0
+### Control:   ENet	    localhost 4030
+#Control:   GUI-Local	    0 0
+#Control:   ENetSlave	    localhost 4030
+Control:  Slave    0     0
+#
+#	module	   Name		configFile
+Module:	VPE2xX86_64   vp2_0	vp2e.dat		0	 0
+Module: KPH_VITEC  vit0         vitec_0.dat 0 0 0
+##
+## TCS module should come before any CATCH, other VME doesn't care
+#Module: CATCH_TCS    tcs0       catchTCS.d      00e00000     0    1     0
+##
+Module: CAEN_V1190 v1190_1  v1190_NoDMA.dat   e0000000 800    128     14
+#Module: CBD_8210   cbd0	    cbd8210_0.dat 800000  0	0
+#
+#----------------------------------------	crate	station
+#Module: CAMAC	      a2_1	a2ctrl_0.dat	  1	30
+#Module: CAMAC	      lrs_4413	lrs_4413.CB1	  1	4
+#Module: CAMAC	      lrs_4413	lrs_4413.CB2	  1	3
+#
+#
+## Interrupt control module
+IRQ-Ctrl: vit0
+## Event Synchronisation info provider module and event ID index
+Synch-Ctrl: vit0 400
+##
+## Trigger enable and TCS start/stop module, 
+## and delay in usec after CATCH reset
+#Start-Ctrl: vup0 555000
+#
+## Event info provider module
+#EventID-Send: cbd0
+#
+##
+## Event Synchronisation info provider module and event ID index
+#EventID-Master: 400
+#Synch-Ctrl: vup0 400
+## for end run not to lock up on single-node system
+#RunEndTimeOut: 1000
+Reset-Ctrl: vp2_0
+########### End of File #######################

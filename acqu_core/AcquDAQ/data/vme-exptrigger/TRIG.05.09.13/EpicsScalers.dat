@@ -1,1 +1,17 @@
-EpicsScalersWithTimepix.dat
+#--Rev	Ken Livingston...21st Sept 2012
+##--Update  
+##--Description
+##                *** AcquDAQ++ <-> Root ***
+## DAQ for Sub-Atomic Physics Experiments.
+##
+## Setup Epics channels all to be read together
+#              		EventID     EventName(no spaces) 
+EPICSBaseSetup:      	1           ScalersEPICS
+#
+#
+## Define the channels
+#               PVName			     Nelem   Type (epicsBYTE,epicsSHORT,epicsLONG,epicsFLOAT,epicsDOUBLE)
+EPICSchannel:   TAGG:MagneticField           1       epicsDOUBLE
+EPICSchannel:   TAGG:DipoleCurrent           1       epicsDOUBLE
+#
+##
