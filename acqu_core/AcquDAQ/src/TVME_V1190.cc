@@ -166,9 +166,23 @@ void TVME_V1190::ReadIRQ( void** outBuffer )
     }
     //
     Int_t adcVal, adcIndex;                // adc value and index
+    Int_t errVal, wcount;
     for(Int_t i=0; i<=fMaxHits; i++ ){
       datum = *buff++;
-      if( (datum & 0x80000000) ) break;       // global trailer
+      if( (datum & 0x08000000) ) continue;    // TDC header
+      if( (datum & 0x10000000) ) continue;    // TDC trailer
+      if( (datum & 0x20000000) ){             // TDC error
+	errVal = datum & 0x7fff;
+	ErrorStore(outBuffer, errVal);
+	continue;
+      }
+      if( (datum & 0x80000000) ){       // global trailer
+	errVal = (datum & 0x7000000) >> 24;
+	if(errVal) ErrorStore(outBuffer, errVal);
+	wcount = (datum & 0x1fffe0) >> 5;
+	if(wcount==0 || (4*(wcount-2))==fDMAsize) ErrorStore(outBuffer, 9);
+	break;
+      }
       adcVal = datum & 0x7ffff;               // ADC value
       adcIndex = (datum & 0x3f80000) >> 19;   // ADC subaddress
       adcIndex += fBaseIndex;                 // index offset
@@ -203,8 +217,16 @@ void TVME_V1190::ReadIRQ( void** outBuffer )
     }
     //
     Int_t adcVal, adcIndex;                // adc value and index
+    Int_t errVal;
     for(Int_t i=0; i<=fMaxHits; i++ ){
       datum = *buff++;
+      if( (datum & 0x08000000) ) continue;    // TDC header
+      if( (datum & 0x10000000) ) continue;    // TDC trailer
+      if( (datum & 0x20000000) ){             // TDC error
+	errVal = datum & 0x7fff;
+	ErrorStore(outBuffer, errVal);
+	continue;
+      }
       if( (datum & 0x80000000) ) break;       // global trailer
       adcVal = datum & 0x7ffff;               // ADC value
       adcIndex = (datum & 0x3f80000) >> 19;   // ADC subaddress
@@ -236,8 +258,16 @@ void TVME_V1190::ReadIRQ( void** outBuffer )
   }
   //
   Int_t adcVal, adcIndex;                // adc value and index
+  Int_t errVal;
   for(Int_t i=ich; i<imax; i++ ){
     datum = Read(i);
+    if( (datum & 0x08000000) ) continue;    // TDC header
+    if( (datum & 0x10000000) ) continue;    // TDC trailer
+    if( (datum & 0x20000000) ){             // TDC error
+      errVal = datum & 0x7fff;
+      ErrorStore(outBuffer, errVal);
+      continue;
+    }
     if( (datum & 0x80000000) ) break;       // global trailer
     adcVal = datum & 0x7ffff;               // ADC value
     adcIndex = (datum & 0x3f80000) >> 19;   // ADC subaddress
@@ -282,17 +312,20 @@ void TVME_V1190::PostInit( )
   else
     WrtMicro(EM1190_EnSubTrig);                // enable trigger time subtract
   WrtMicro(EM1190_DisHeadTrailer);             // disable TDC header/trailer
-  WrtMicro(EM1190_DisErrMark);                 // disable TDC error mark
+  //WrtMicro(EM1190_EnHeadTrailer);             // disable TDC header/trailer
+  //WrtMicro(EM1190_DisErrMark);                 // disable TDC error mark
   if(fIsBlk){                                  // Berr enable yes/no
     fData[EV1190_Ctrl] = Read(EV1190_Ctrl);
-    if(fBlkParm == 0)
+    if(fBlkParm == 0){
       fData[EV1190_Ctrl] &= 0xfe;              // unset bit 0, BERR bit
+      Write(EV1190_Ctrl);
+    }
     else{
       fData[EV1190_Ctrl] |= 0x1;               // set bit 0, BERR bit
       Write(EV1190_Ctrl);
-      fData[EV1190_BLTEvent] = fBlkParm;       // fBlkParm = #events
-      Write(EV1190_BLTEvent);
     }
+    fData[EV1190_BLTEvent] = fBlkParm;       // fBlkParm = #events
+    Write(EV1190_BLTEvent);
   }
   return;
 }
