@@ -137,6 +137,7 @@ void CheckGUI()
 	Int_t isCB = gROOT->ProcessLine("TString s1 = gAR->GetFileName();s1.Contains(\"CB\")");
 	Int_t isTagg = gROOT->ProcessLine("TString s1 = gAR->GetFileName();s1.Contains(\"Tagg\")");
 	Int_t isTAPS = gROOT->ProcessLine("TString s1 = gAR->GetFileName();s1.Contains(\"TAPS\")");
+	Int_t isScalers = gROOT->ProcessLine("TString s1 = gAR->GetFileName();s1.Contains(\"Scalers\")");
 	// init the list of macros to be called
 	items = new TObjArray();
 	if(isCB){
@@ -158,6 +159,7 @@ void CheckGUI()
 	  // items->Add(MacroEntry::Make("CheckActiveADC.C","Active_ADC"));	
 	  // items->Add(MacroEntry::Make("CheckActiveTDC.C","Active_TDC"));	
 	}
+	if(isScalers) items->Add(MacroEntry::Make("CheckTagger.C","Tagger"));
 
 	// main frame
 	fMainFrame = new TGMainFrame(gClient->GetRoot(), 1240, 890, kMainFrame | kVerticalFrame);
