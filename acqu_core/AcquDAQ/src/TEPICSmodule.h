@@ -136,7 +136,7 @@ inline Bool_t TEPICSmodule::IsTriggeredOut(Char_t* eventBuff, Int_t adcEnd)
   
   switch(fTrigType){
   case  EEPICS_TRIG_AND:
-    if (fTrigHigh&&fVal) return kTRUE;
+    if (fTrigHigh&fVal) return kTRUE;
     break;
   case  EEPICS_TRIG_THRESH:
     if (fTrigLow<=fVal) return kTRUE;

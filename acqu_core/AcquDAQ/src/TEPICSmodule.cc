@@ -260,7 +260,7 @@ void TEPICSmodule::PostInit(){
   fBuffLen=sizeof(EpicsHeaderInfo_t);                          //size of the header
   for(int n=0; n<fNChannels; n++){                             //loop over all the channels and add space
     fBuffLen += sizeof(EpicsChannelInfo_t);                    //chan header
-    fBuffLen+=fNelem[n]*epicsTypeSize[fChannelType[0]];        //size of array
+    fBuffLen+=fNelem[n]*epicsTypeSize[fChannelType[n]];        //size of array
   }
   fBuffLen=fBuffLen+(sizeof(UInt_t)-(fBuffLen%sizeof(UInt_t))); //AcquRoot assumes bufflen is multiple of UInt_t
                                                                 //this pads it out
