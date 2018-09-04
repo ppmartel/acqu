@@ -48,8 +48,6 @@
 #include "TVME_V874.h"
 
 #include <time.h>
-//#include <iostream>
-//#include <string>
 #include <sstream>
 
 
@@ -944,12 +942,13 @@ void TDAQsupervise::SetTCSRunMode(UInt_t runmode)
   while( (mod = (TDAQmodule*)nextM()) ){
     if( mod->InheritsFrom("TVME_CATCH_TCS") ){
       ((TVME_CATCH_TCS*)mod)->SetRunMode(runmode);
-      Char_t tcsstr[32];
-      //stringstream ss;
-      //ss << " Set TCS runmode to " << runmode << endl;
-      sprintf(tcsstr,"Set TCS runmode to %d\n",runmode);
-      //PutString(ss.str().c_str());         // output message
-      PutString(tcsstr);         // output message
+      stringstream ss;
+      ss << " Set TCS runmode to " << runmode << endl;
+      PutString(ss.str().c_str());         // output message
+      // This version below breaks the CATCH TDC init... why?
+      //Char_t tcsstr[32];
+      //sprintf(tcsstr,"Set TCS runmode to %d\n",runmode);
+      //PutString(tcsstr);         // output message
       return;
     }
   }
