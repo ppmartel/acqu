@@ -24,8 +24,11 @@ configure_file("${CMAKE_SOURCE_DIR}/cmake/CMakeConfig.h.in" "${ACQU_CONFIG_FILE}
 # add a precompiler flag to indicate that 
 # actual VME access is enabled (this allows running AcquDAQ on non-VME machines)
 site_name(MY_HOSTNAME)
-if(MY_HOSTNAME MATCHES "^vme-")
+if(MY_HOSTNAME MATCHES "[vme]")
+  message(STATUS "HOSTNAME: ${MY_HOSTNAME}...adding VME_HOST definition")
   add_definitions(-DVME_HOST)
+else()
+  message(STATUS "HOSTNAME: ${MY_HOSTNAME} not a VME host")
 endif()
 
 # use all "src" subfolders as include directories

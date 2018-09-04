@@ -48,6 +48,18 @@ else()
   endif()
 endif()
 
+# default no Universe VME bridge libraries from Concurrent Technology
+# if DAQ_CCTVMEEN defined ON, then also turn ACQU_DAQ ON
+if(DEFINED DAQ_CCTVMEEN)
+  string(TOUPPER "${DAQ_CCTVMEEN}" DAQ_CCTVMEEN)
+  if(NOT "${DAQ_CCTVMEEN}" STREQUAL "ON")
+    set(DAQ_CCTVMEEN 0)
+  else()
+    set(DAQ_CCTVMEEN 1)
+    set(ACQU_DAQ 1)
+  endif()
+endif()
+
 # currently the following variables are used to
 # create a configure file in acqu_core
 
