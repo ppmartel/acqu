@@ -38,9 +38,9 @@ Ped-SGS: 4979 5164 4669 3122
 ## CFD thresholds in raw values for piggy back
 Thr-CFD-Raw: 8106 8129 8106 8137
 ## LED1 thresholds in mV
-Thr-LED1: 115 107 80 55
+Thr-LED1: 30 30 30 30
 ## LED2 thresholds in mV
-Thr-LED2: 114 109 78 55
+Thr-LED2: 30 30 30 30
 #
 # Global data ready signal
 Data-Ready: 2
