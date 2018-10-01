@@ -1,6 +1,6 @@
 ####
 ##Mk1-Format:
-File-Name: scratch/AcquDAQ 32	5000000	32768 ENet  32768  3028
+File-Name: scratch/AcquDAQ 32	5000000	524288 ENet  524288  3028
 #File-Name: scratch/AcquDAQ 32	5000000	32768 No-Store  32768  3028
 #Freq	   	Scaler	   	SlowCtrl
 Event-Counters:	2000000000	2000000000

@@ -1,6 +1,6 @@
 ####
 Description: Goni Scan
-File-Name: scratch/GoniScan  32	500000	32768	ENet  32768  3030
+File-Name: scratch/GoniScan  32	500000	524288	ENet  524288  3030
 #File-Name: scratch/GoniScan  32	500000	32768	No-Store  32768  3030
 # Frequency            Scaler	Slow-Control
 Event-Counters:	       1000	200000		
