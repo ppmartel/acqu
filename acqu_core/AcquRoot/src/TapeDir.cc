@@ -25,7 +25,7 @@ int main(int argc, char **argv)
   // Set default tape device and record length
   // Command-line arguments can override these
 
-  Int_t recLength = 32768;             // default record length
+  Int_t recLength = 524288;             // default record length
   Char_t device[64];
   strcpy( device,"/dev/nst0" );        // default linux tape device
 
