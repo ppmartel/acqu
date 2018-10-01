@@ -3,7 +3,7 @@
 ## Number of Input streams (sources of data), Record length to write data
 ## and switch 0/1 = no/yes to control data write
 ##              Number streams	Record Len	Save Data
-Input-Streams:	2		327680		1
+Input-Streams:	2		524288		1
 ##
 ## Optional directory spec. If not specified File-Names must contain the full
 ## directory path
