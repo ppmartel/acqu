@@ -552,10 +552,7 @@ void    TA2GoAT::PostInit()
 
     // Recording start time of file
 
-    const char *headertime = gAR->GetFileTime();
-    struct tm tm;
-    strptime(headertime, "%a %b %d %T %Y", &tm);
-    time_t timestamp = mktime(&tm);
+    Int_t timestamp = gAR->GetFileTimeEpoch();
     treeSetupParameters->Branch("TimeStamp", &timestamp, "TimeStamp/I");
 
     // Adding Tagger information to parameters tree

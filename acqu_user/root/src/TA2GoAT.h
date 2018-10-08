@@ -5,7 +5,6 @@
 #include "TFile.h"
 #include "TTree.h"
 #include "TA2AccessSQL.h"
-#include "time.h"
 
 #define TA2GoAT_MAX_TAGGER	 4096
 #define TA2GoAT_MAX_PARTICLE 128
