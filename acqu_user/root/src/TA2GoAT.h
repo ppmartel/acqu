@@ -217,7 +217,8 @@ private:
         Int_t fEpicsNElem;                                      // no of elements in last channel read
         Int_t fEpicsType;                                       // data type of last channel read
         void *fEpicsChannelBuffer;                              // buffer of last channel data
-        Float_t fA2NMR;                                        // variables to be read from epics
+        Float_t fTaggNMR;                                       // variables to be read from epics
+        Float_t fTaggCur;                                       // variables to be read from epics
 
         //MC
         Long64_t    MCEventID;
