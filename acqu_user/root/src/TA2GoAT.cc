@@ -840,8 +840,6 @@ void    TA2GoAT::PostInit()
 	
 	eventNumber	= 0;
 
-    cout << gAR->GetFileTime() << endl;
-
    	printf("---------\n");
    	printf("Running\n");
    	printf("---------\n");	
