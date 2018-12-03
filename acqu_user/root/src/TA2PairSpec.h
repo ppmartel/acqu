@@ -2,14 +2,19 @@
 #define __TA2PairSpec_h__
 
 #include "TA2Detector.h"            // Acqu-Root histogrammer
+#include "TA2Tagger.h"
+#include "TA2Ladder.h"
 
 class TA2PairSpec : public TA2Detector
 {
+protected:
+  TA2Ladder* fLadder;	// Ladder
 private:
   UInt_t fNchannels;
-  UInt_t fNHistograms;
-  UInt_t fScalerOffset;
-  UInt_t fScalerBlockSize;
+  // To distinguish old/new FPD
+  UInt_t fDay0; 
+  UInt_t fTimeStamp;
+  Bool_t isOldFPD;
   
   UInt_t* fScalerOpen;
   UInt_t* fScalerGated;    // Gated with PairSpec
@@ -18,10 +23,7 @@ private:
   Double_t* fScalerSumOpen;
   Double_t* fScalerSumGated;    // Gated with PairSpec
   Double_t* fScalerSumGatedDly; // Gated, but out of coincidence with PairSpec
-  
-  UInt_t fScalerBlockIdx; // used in SetConfig, counts ScalerBlocks within Vuprom
-  UInt_t fVupromSize;    // number of ScalerBlocks in Vuprom
-  UInt_t fVupromSumSize; // used in SetConfig, sum of VupromSize
+
 public:
   TA2PairSpec( const char*, TA2System* );  // pass ptr to analyser
   virtual ~TA2PairSpec();                  // destructor
@@ -29,7 +31,6 @@ public:
   virtual void LoadVariable();              // display setup
   virtual void Decode();                // event by event analysis
   virtual void Cleanup() {}                     // reset at end of event
-  virtual void SetConfig( Char_t*, Int_t );   // setup decode in implement
   virtual void SaveDecoded() {}
   virtual void ReadDecoded() {}
  

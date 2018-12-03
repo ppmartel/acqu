@@ -2,16 +2,6 @@
 #include <sstream>
 #include <iostream>
 
-// Valid Keywords for command-line setup of CB apparatus
-enum { EPairSpecScalerBlock = 2000, EPairSpecVuprom, EPairSpecSetup };
-static const Map_t kPairSpecKeys[] = {
-  {"ScalerBlock:",   EPairSpecScalerBlock},   
-  {"Vuprom:",        EPairSpecVuprom},
-  {"PairSpecSetup:", EPairSpecSetup},
-  {NULL,            -1}
-};
-
-
 using namespace std;
 
 //-----------------------------------------------------------------------------
@@ -19,8 +9,9 @@ using namespace std;
 TA2PairSpec::TA2PairSpec( const char* name, TA2System* analysis  )
                :TA2Detector( name, analysis)
 {
-  fVupromSumSize = 0; 
-  fScalerIndex = NULL;
+  fNchannels = 0;
+  fDay0 = 0;
+  fTimeStamp = 0;
   
   fScalerOpen = NULL; 
   fScalerGated = NULL;
@@ -29,8 +20,9 @@ TA2PairSpec::TA2PairSpec( const char* name, TA2System* analysis  )
   fScalerSumOpen = NULL; 
   fScalerSumGated = NULL;
   fScalerSumGatedDly = NULL;
+
+  fLadder	= NULL; // Tagger ladder
   
-  AddCmdList( kPairSpecKeys );                  // for SetConfig()
 }
 
 
@@ -38,89 +30,40 @@ TA2PairSpec::TA2PairSpec( const char* name, TA2System* analysis  )
 
 TA2PairSpec::~TA2PairSpec() 
 {
-  if(fScalerIndex) delete[] fScalerIndex;
-  
   if(fScalerOpen)     delete[] fScalerOpen;
-  if(fScalerGatedDly) delete[] fScalerGatedDly;
+  if(fScalerGated)    delete[] fScalerGated;
   if(fScalerGatedDly) delete[] fScalerGatedDly;
   
   if(fScalerSumOpen)     delete[] fScalerSumOpen;
-  if(fScalerSumGatedDly) delete[] fScalerSumGatedDly;
+  if(fScalerSumGated)    delete[] fScalerSumGated;
   if(fScalerSumGatedDly) delete[] fScalerSumGatedDly;
 }
 
 //-----------------------------------------------------------------------------
 
-void TA2PairSpec::SetConfig(Char_t* line, Int_t key)
+void TA2PairSpec::PostInit( )
 {
-  // Any special command-line input for Crystal Ball apparatus
-  std::stringstream ss(line);
-  switch (key) {
-  case EPairSpecScalerBlock: {
-    UInt_t start;
-    if(!(ss >> start)) {
-      PrintError(line, "TA2PairSpec Start of ScalerBlock", EErrFatal);
-    }
-    // init the scaler map
-    if(!fScalerIndex) fScalerIndex = new UInt_t[fNHistograms*fNchannels];
-    
-    // you can specify a custom permutation,
-    // by default it's the identity permutation
-    vector<Int_t> perm;
-    perm.resize(fScalerBlockSize);
-    for(UInt_t i=0;i<fScalerBlockSize;i++) {
-      if(!(ss >> perm[i])) {
-        perm[i] = i;
-      }
-    }
-    
-    // generate the map "ordered channel (three histograms)" -> "ScalerIndex"
-    for(UInt_t i=0;i<fScalerBlockSize;i++) {
-      if(perm[i]<0) continue;
-      for(UInt_t j=0;j<fNHistograms;j++) {
-        UInt_t ch = j*fNchannels+start+perm[i]; // respect the permutation
-        UInt_t vupOffset = fScalerBlockSize*fNHistograms*(fVupromSumSize-fVupromSize);
-        UInt_t offset = fScalerBlockSize*(fVupromSize*j+fScalerBlockIdx);        
-        UInt_t idx = fScalerOffset+vupOffset+offset+i;
-        fScalerIndex[ch] = idx;
-        //cout << ch << " -> " << idx << endl;
-      }      
-    }
-    fScalerBlockIdx++;
-    break;
-  }
-  case EPairSpecVuprom: {
-    if(!(ss >> fVupromSize)) {
-      PrintError(line, "TA2PairSpec Size of Vuprom", EErrFatal);
-    }
-    fVupromSumSize += fVupromSize;
-    fScalerBlockIdx=0;
-    break;
-  }
-  case EPairSpecSetup: {
-    if(!(ss >> fNchannels)) {
-      PrintError(line, "TA2PairSpec Nchannels", EErrFatal);
-    }
-    if(!(ss >> fNHistograms)) {
-      PrintError(line, "TA2PairSpec NHistograms", EErrFatal);
-    }
-    if(!(ss >> fScalerOffset)) {
-      PrintError(line, "TA2PairSpec ScalerOffset", EErrFatal);
-    }
-    if(!(ss >> fScalerBlockSize)) {
-      PrintError(line, "TA2PairSpec ScalerOffset", EErrFatal);
-    }
-    break;
-  }
-  default: {
-    // default main apparatus SetConfig()
-    TA2Detector::SetConfig( line, key );
-    break;
-  }
-  }
-}
+  // Ladder
+  fLadder = (TA2Ladder*)gAN->GetGrandChild("FPD","TA2Detector");
+  if (!fLadder) PrintError( "", "<No Ladder class found>", EErrFatal);
 
-//-----------------------------------------------------------------------------
+  fNchannels = fLadder -> GetNelement();
+
+  // Need to distinguish between OLD/NEW tagger, for the decoding.
+  // To avoid flag in the config, this can be done using the timestamp
+  // Decided to set day-0 of the new FPD on the 2017-10-01 at 00.00.01
+  isOldFPD = kFALSE;
+  fDay0 = 1506816000; // 2017-10-01 at 00.00.01
+  fTimeStamp = gAR->GetFileTimeEpoch();
+
+  if (fTimeStamp < fDay0)
+    isOldFPD = kTRUE;
+  
+  // skip TA2Detector PostInit
+  TA2DataManager::PostInit();
+}
+  
+  //-----------------------------------------------------------------------------
 
 void TA2PairSpec::LoadVariable( )
 {
@@ -152,39 +95,33 @@ void TA2PairSpec::LoadVariable( )
   TA2DataManager::LoadVariable("SumGatedDly", fScalerSumGatedDly, EDScalerX);
 }
 
-
-
-//-----------------------------------------------------------------------------
-
-void TA2PairSpec::PostInit( )
-{
-  // skip TA2Detector PostInit
-  TA2DataManager::PostInit();
-}
-
 //-----------------------------------------------------------------------------
 
 void TA2PairSpec::Decode()
 {
   for(UInt_t i=0;i<fNchannels;i++) {
-    fScalerOpen[i] = fScaler[fScalerIndex[i+0*fNchannels]];
+    fScalerOpen[i] = fScaler[fLadder->GetScalerIndex()[i]];
   }
   for(UInt_t i=0;i<fNchannels;i++) {
-    fScalerGated[i] = fScaler[fScalerIndex[i+1*fNchannels]];
+    if(isOldFPD && (i<=31 || i>=321) )fScalerGated[i] = fScaler[fLadder->GetScalerIndex()[i]+64];
+    else fScalerGated[i] = fScaler[fLadder->GetScalerIndex()[i]+96];
   }
   for(UInt_t i=0;i<fNchannels;i++) {
-    fScalerGatedDly[i] = fScaler[fScalerIndex[i+2*fNchannels]];
+    if(isOldFPD && (i<=31 || i>=321) ) fScalerGatedDly[i] = fScaler[fLadder->GetScalerIndex()[i]+(2*64)];
+    else fScalerGatedDly[i] = fScaler[fLadder->GetScalerIndex()[i]+(2*96)];
   }
   
   for(UInt_t i=0;i<fNchannels;i++) {
-    fScalerSumOpen[i] = fScalerSum[fScalerIndex[i+0*fNchannels]];
+    fScalerSumOpen[i] = fScalerSum[fLadder->GetScalerIndex()[i]];
   }
   for(UInt_t i=0;i<fNchannels;i++) {
-    fScalerSumGated[i] = fScalerSum[fScalerIndex[i+1*fNchannels]];
+    if(isOldFPD && (i<=31 || i>=321) ) fScalerSumGated[i] = fScalerSum[fLadder->GetScalerIndex()[i]+64];
+    else fScalerSumGated[i] = fScalerSum[fLadder->GetScalerIndex()[i]+96];
   }
   for(UInt_t i=0;i<fNchannels;i++) {
-    fScalerSumGatedDly[i] = fScalerSum[fScalerIndex[i+2*fNchannels]];
-  }
+    if(isOldFPD && (i<=31 || i>=321) ) fScalerSumGatedDly[i] = fScalerSum[fLadder->GetScalerIndex()[i]+(2*64)];
+    else fScalerSumGatedDly[i] = fScalerSum[fLadder->GetScalerIndex()[i]+(2*96)];
+  }  
 }
 
 //-----------------------------------------------------------------------------
