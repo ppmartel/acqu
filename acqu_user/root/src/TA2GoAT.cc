@@ -32,14 +32,14 @@ TA2GoAT::TA2GoAT(const char* Name, TA2Analysis* Analysis) : TA2AccessSQL(Name, A
                                                                     vertexX(0),
                                                                     vertexY(0),
                                                                     vertexZ(0),
-								    nChamberHitsin1(0),
-								    nChamberHitsin2(0),
-								    MWPC0PosX(0),
-								    MWPC1PosX(0),
-								    MWPC0PosY(0),
-								    MWPC1PosY(0),
-								    MWPC0PosZ(0),
-								    MWPC1PosZ(0),
+                                                                    nChamberHitsin1(0),
+                                                                    nChamberHitsin2(0),
+                                                                    MWPC0PosX(0),
+                                                                    MWPC1PosX(0),
+                                                                    MWPC0PosY(0),
+                                                                    MWPC1PosY(0),
+                                                                    MWPC0PosZ(0),
+                                                                    MWPC1PosZ(0),
                                                                     nTagged(0),
                                                                     taggedEnergy(0),
                                                                     taggedChannel(0),
@@ -269,7 +269,6 @@ void    TA2GoAT::PostInit()
     MWPC1PosY         = new Double_t[TA2GoAT_MAX_PARTICLE];
     MWPC0PosZ         = new Double_t[TA2GoAT_MAX_PARTICLE];
     MWPC1PosZ         = new Double_t[TA2GoAT_MAX_PARTICLE];
-
 
     vertexX          = new Double_t[TA2GoAT_MAX_PARTICLE];
     vertexY          = new Double_t[TA2GoAT_MAX_PARTICLE];
@@ -550,6 +549,11 @@ void    TA2GoAT::PostInit()
         if(EI_mc_evt_id < gAR->GetNbranch()) treeTrigger->Branch("mc_evt_id", &MCEventID, "mc_event_id/L");
         if(EI_mc_rnd_id < gAR->GetNbranch()) treeTrigger->Branch("mc_rnd_id", &MCRndID, "mc_rnd_id/L");
     }
+
+    // Recording start time of file
+
+    Int_t timestamp = gAR->GetFileTimeEpoch();
+    treeSetupParameters->Branch("TimeStamp", &timestamp, "TimeStamp/I");
 
     // Adding Tagger information to parameters tree
 

@@ -1,6 +1,6 @@
 #Default data format is Mk2
 #Mk1-Format:
-File-Name: scratch/AcquDAQ 32	5000000	32768 ENet  32768  3031
+File-Name: scratch/AcquDAQ 32	5000000	524288 ENet  524288  3031
 #File-Name: scratch/AcquDAQ 32   5000000 32768 No-Store  32768  3031
 # Frequency     Scalers  SlowControl
 Event-Counters: 100      2000000000

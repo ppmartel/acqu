@@ -1,4 +1,5 @@
 // This code gets executed by the online analysis
+
 // every Nth events (see online config Period: statement)
 //int x=5;
 
@@ -58,7 +59,7 @@ void PeriodMacro() {
   }
 
   // look for hole in MWPC
-  /*
+  
   if(gROOT->FindObject("MWPC_Wires_Hits")){
     Int_t iNBins = MWPC_Wires_Hits->GetNbinsX();
     if((MWPC_Wires_Hits->Integral()) > (100*iNBins)){
@@ -66,24 +67,40 @@ void PeriodMacro() {
       Double_t dDiff;
       Int_t iProb = 0;
       iThis = MWPC_Wires_Hits->GetBinContent(1);
+      
+      Int_t poor_man = 0;//Adding in a poor mans rolling window
+
       for(Int_t i=1; i<iNBins; i++){
-  	iPrev = iThis;
-        //TODO: exclude broken/noisy channels (as of 21.03.2018)
-        if (i == 195 || i == 296 || i == 297 || i == 303 || i == 327 ||
-	    i == 383 || i == 417 || i == 418 || i == 421 || i == 526 || i == 527)
-          continue;
-  	iThis = MWPC_Wires_Hits->GetBinContent(i+1);
+        poor_man++;
+        if(poor_man > 20)
+        {
+            if(iProb >=6){
+	      printf("Possible problem in MWPC Wires %d to %d - Event %d\n\t\t\t%d jumps found\n\n",i-20, i, gAN->GetNDAQEvent(),iProb);
+              dError=1000;
+            }
+            
+            poor_man = 0; // reset rolling window counter
+            iProb = 0;    // reset probability counter
+            i = i-10;     // start search again 10 bins back 
+       }
+
+  	//iPrev = iThis;
+        //Exclude broken/noisy channels (as of 21.05.2018)
+        if ( i<232 || i == 297 || i == 303 || i == 327)
+            continue;
+  	iPrev = MWPC_Wires_Hits->GetBinContent(i);
+        iThis = MWPC_Wires_Hits->GetBinContent(i+1);
   	dDiff = (TMath::Abs((iThis-iPrev)/(1.*iPrev)));
-  	if(dDiff > 0.5) iProb++;
+  	if(dDiff > 0.75) iProb++;
       }
-      if(iProb > 4){
-  	printf("Possible problem in MWPC Wires - Event %d\n\t\t\t%d jumps found\n\n",gAN->GetNDAQEvent(),iProb);
-  	dError += 1000;
-      }
+      //      if(iProb >= 6){
+      //  	printf("Possible problem in MWPC Wires - Event %d\n\t\t\t%d jumps found\n\n",gAN->GetNDAQEvent(),iProb);
+      //  	dError += 1000;
+      //      }
     }
     if((MWPC_Wires_Hits->Integral()) > (400*iNBins)) MWPC_Wires_Hits->Reset();
   }
-  */
+
   // look for shift in FPD
   int nrebin = 2;
   if(gROOT->FindObject("FPD_TimeAll")){
@@ -108,7 +125,7 @@ void PeriodMacro() {
 	Int_t iPeak = Temp_FPD->GetMaximumBin();
 	Double_t dTime = Temp_FPD->GetBinCenter(iPeak);
 	//Double_t dTime = Temp_FPD->GetMean();
-	if(dTime < -30 || dTime > 10){
+	if(dTime < 0 || dTime > 60){
 	  printf("Possible problem in FPD_TimeOR - Event %d\n\t\t\tPeak at %f ns\n\n",gAN->GetNDAQEvent(),dTime);
 	  dError += 2000;
 	}
@@ -309,4 +326,24 @@ void PeriodMacro() {
       system(cmdB.str().c_str());
       system(cmdT.str().c_str());
   }
+
+  // See if the PID signals are still coming in
+  if(gROOT->FindObject("PID_Hits")){
+    if(gROOT->FindObject("Prev_PID_Hits")){
+      Double_t intgr = PID_Hits->Integral();
+      Double_t intgrPrev = Prev_PID_Hits->Integral();
+      if(intgr == intgrPrev){
+        printf("PID Hits no longer increasing. Previous no = %f, Current no = %f \n",intgrPrev,intgr);
+      }
+      // TEST
+      //if(intgr > intgrPrev){
+      //  printf("PID Hits is increasing YAY. Previous no = %f, Current no = %f \n",intgrPrev,intgr);
+      //}
+      delete Prev_PID_Hits;
+      TH1D *Prev_PID_Hits = (TH1D*)PID_Hits->Clone("Prev_PID_Hits");
+    }
+    else TH1D *Prev_PID_Hits = (TH1D*)PID_Hits->Clone("Prev_PID_Hits");
+
+  }
+
 }

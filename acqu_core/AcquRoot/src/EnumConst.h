@@ -26,7 +26,7 @@ enum { ESkDefPacket = 1024 };   // Default transfer length for stream socket
 enum { ESkLocal, ESkRemote };   // local/remote socket connect
 enum { ESkBacklog = 8 };        // max length pending connection queue (socket)
 enum { ESkInitBuff = 2 };       // # ints in initial handshake buffer (socket)
-enum { EMaxDataLength = 327680 };// max data buffer length
+enum { EMaxDataLength = 524288 };// max data buffer length
 enum { EMaxInputFiles = 1024 }; // size of input-file pointer buffer
 enum { EFalse, ETrue };         // Logic...should use kTRUE, kFALSE
 
@@ -50,7 +50,7 @@ enum{ EHeadBuff = 0x10101010,      // header buffer (experimental parameters
 };
 
 // Constants for ROOT storage and analysis
-enum{ EMaxEventSize = 32768, EMaxName = 256 };
+enum{ EMaxEventSize = 524288, EMaxName = 256 };
 
 // Definitions for ADC setup
 enum{ EUndefinedADC = 0,          // ADC index not registered in analysis

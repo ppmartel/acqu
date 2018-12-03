@@ -1,6 +1,6 @@
 ###
 Description: BaF Sector C readout
-File-Name: /scratch/TAPS  32   500000	32768   ENet	32768  5012
+File-Name: /scratch/TAPS  32   500000	524288   ENet	524288  5012
 #File-Name: scratch/TAPS 32   	500000	32768 No-Store  32768  5012
 #                      Freq
 Event-Counters:	       0     0

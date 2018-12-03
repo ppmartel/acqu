@@ -23,8 +23,10 @@
 //--Rev         JRM Annand   29th Aug 2012  Add fNScalerChan
 //--Rev         JRM Annand    2nd Sep 2012  Add fEventSendMod
 //--Rev         JRM Annand    3rd Sep 2012  Module types changes SetConfig
-//--Update      JRM Annand    6th Jun 2013  Save fBaseIndex in error block
-//--Update  A Neiser...   6th June 2013  Make char_t* const
+//--Rev         JRM Annand    6th Jun 2013  Save fBaseIndex in error block
+//--Rev          A Neiser...  6th Jun 2013  Make char_t* const
+//--Update      JRM Annand   26th Oct 2017  Add prototypes for DMA
+//
 //--Description
 //                *** AcquDAQ++ <-> Root ***
 // DAQ for Sub-Atomic Physics Experiments.
@@ -96,6 +98,13 @@ TDAQmodule::TDAQmodule(const Char_t* name, const Char_t* file, FILE* log ):
   fNBits = 0;
   fInitLevel = EExpInit0;
   fIsError = kFALSE;
+  // initialise no DMA
+  fIsDMA = false;
+  fDMAsize = 0;
+  fDMAtrans = NULL;
+  fDMAaddr = NULL;
+  fDMAnPkt = 0;
+  fMemDMA = NULL;
 }
 
 //-----------------------------------------------------------------------------
@@ -382,4 +391,5 @@ inline void TDAQmodule::ErrorStore( void** out, Int_t errcode )
   if( IsType(EDAQ_ADC) )fEXP->IncADCError();
   else if( IsType(EDAQ_Scaler) )fEXP->IncScalerError();
 }
+
 ClassImp(TDAQmodule)

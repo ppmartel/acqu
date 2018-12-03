@@ -27,6 +27,7 @@
 
     if(isCB){
       watcher->cd(pad++);
+      gPad->SetLogy(); //Edo May.06.2018
       if(MWPC_Wires_Hits){
 	//MWPC_Wires_Hits->GetXaxis()->SetRangeUser(230,528); Paolo jan.11.2018
 	MWPC_Wires_Hits->Draw();

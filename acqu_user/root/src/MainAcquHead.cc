@@ -80,7 +80,7 @@ UInt_t* ReadFileBuffer(const string& filename) {
   // this is really ugly, but using ARFile_t way we can read 
   // also compressed files...
   
-  const UInt_t recLen = 32768;
+  const UInt_t recLen = 524288;
   TAcquRoot* ar = new TAcquRoot("AcquRoot", kTRUE);
   ar->SetLogFile("/dev/null"); // no log file creation...
   

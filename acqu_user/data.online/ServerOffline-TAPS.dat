@@ -13,7 +13,7 @@
 ## Number of Input streams (sources of data), Record length to write data
 ## and switch 0/1 = no/yes to control data write
 ##              Number streams	Record Len	Save Data
-Input-Streams:	1		327680		0
+Input-Streams:	1		524288		0
 ##
 ## Optional directory spec. If not specified File-Names must contain the full
 ## directory path
@@ -24,12 +24,10 @@ Input-Streams:	1		327680		0
 ## Input data record length, Output data record length
 ##
 ##              Source  Format  Save?   RecLen  Buffers Swap    MarkID
-Stream-Spec:    File    Mk2     0       327680   1024      0       400
+Stream-Spec:    File    Mk2     0       524288   1024      0       400
 ##
 ## Now the list of data files to analyse
 ##              File Name       1st rec Last rec
 ##
-#File-Name /mnt/rundata/2016-01_TaggerTargetTests/TAPS_550.dat.xz 0 0
-#File-Name: /home/a2cb/acqu/scratch/CBTaggTAPS_11167.dat 0 0
-File-Name:  /home/a2cb/acqu/scratch/TAPS_653.dat   0   0
+File-Name:  /home/a2cb/acqu/scratch/TAPS_1139.dat  0   0
 ## END

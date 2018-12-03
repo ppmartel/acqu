@@ -123,8 +123,10 @@ find_library(EPICS_LIB_CA NAMES ca
   PATHS ${EPICS_LIBRARY_DIR}
   NO_DEFAULT_PATH)  
 if(NOT EPICS_LIB_CA)
-  message(FATAL_ERROR "EPICS libca not found. "
+  message(STATUS "EPICS libca not found. "
     "EPICS not correctly installed?")
+  Set(EPICS_FOUND FALSE)
+  return()
 else()
   list(APPEND EPICS_LIBRARIES ${EPICS_LIB_CA})
 endif()

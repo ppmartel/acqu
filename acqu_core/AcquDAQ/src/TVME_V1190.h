@@ -5,7 +5,8 @@
 //--Rev 	JRM Annand..28th Apr 2009..remove TDAQmemmap.h
 //--Rev 	JRM Annand..24th Aug 2012..Start debugging
 //--Rev 	JRM Annand..25th Sep 2012.."Working version"
-//--Update	JRM Annand..25th Sep 2013..Edge detection control
+//--Rev 	JRM Annand..25th Sep 2013..Edge detection control
+//--Update	JRM Annand...2nd Nov 2017..DMA support, extra config opt.
 //--Description
 //                *** AcquDAQ++ <-> Root ***
 // DAQ for Sub-Atomic Physics Experiments.
@@ -133,7 +134,9 @@ class TVME_V1190 : public TVMEmodule {
   Int_t fEdgeDet;
   Int_t fWindow;
   Int_t fWindowOffset;
+  Int_t fMaxHits;
   Bool_t fIsContStore;
+  Bool_t fIsDisSubTrig;
  public:
   TVME_V1190( Char_t*, Char_t*, FILE*, Char_t* );
   virtual ~TVME_V1190();

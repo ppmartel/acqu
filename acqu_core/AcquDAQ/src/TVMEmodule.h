@@ -15,8 +15,9 @@
 //                                          Implement "repeat" in reg init
 //--Rev 	JRM Annand   24th Aug 2012  'w' = 2 bytes (not 'm')
 //--Rev 	JRM Annand    7th Sep 2013  Do NOT neglect A16
-//--Update	JRM Annand   23rd Sep 2013  Add WriteChk()
-
+//--Rev 	JRM Annand   23rd Sep 2013  Add WriteChk()
+//--Update	JRM Annand    2nd Nov 2017  DMA support
+//
 //--Description
 //                *** AcquDAQ++ <-> Root ***
 // DAQ for Sub-Atomic Physics Experiments.
@@ -46,6 +47,10 @@ class TVMEmodule : public TDAQmodule {
   Int_t* fAM;                               // AM (address modifer) codes
   Bool_t* fIsWrt;                           // Write initialisation data?
   Int_t fHardIDReg;                         // ID register index 
+  Int_t fBlkParm;                           // end of block readout control
+  Int_t fBlkSize;                           // size of block read
+  UInt_t* fBlkBuff;                         // for block read
+  Bool_t fIsBlk;                            // block transfer readout?
  public:
   TVMEmodule( Char_t*, Char_t*, FILE*, Char_t* );
   virtual ~TVMEmodule();
@@ -64,6 +69,7 @@ class TVMEmodule : public TDAQmodule {
   virtual void Read(void*, void*);
   virtual void Write(void*, void*);
   virtual Bool_t CheckHardID();
+  virtual Bool_t IsBlk(){ return fIsBlk; }
   //
   Int_t* GetAM(){ return fAM; }
   Bool_t* GetIsWrt(){ return fIsWrt; }

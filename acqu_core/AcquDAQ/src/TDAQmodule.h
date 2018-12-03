@@ -28,8 +28,10 @@
 //--Rev         JRM Annand   29th Aug 2012  Add fNScalerChan
 //--Rev         JRM Annand    2nd Sep 2012  Add fEventSendMod
 //--Rev         JRM Annand    3rd Sep 2012  Module types changes SetConfig
-//--Update      JRM Annand    6th Jun 2013  Save fBaseIndex in error block
-//--Update  A Neiser...   6th June 2013  Make char_t* const
+//--Rev         JRM Annand    6th Jun 2013  Save fBaseIndex in error block
+//--Rev          A Neiser...  6th Jun 2013  Make char_t* const
+//--Update      JRM Annand   26th Oct 2017  Add prototypes for DMA
+//
 //--Description
 //                *** AcquDAQ++ <-> Root ***
 // DAQ for Sub-Atomic Physics Experiments.
@@ -90,10 +92,17 @@ class TDAQmodule : public TA2System {
   Int_t fType;                       // ADC, scaler, slow control etc.
   Int_t fBaseIndex;                  // readout base index
   Int_t fNChannel;                   // # ADC/scaler channels in module
-  Int_t fNScalerChan;                // # Scaler channels, if both ADC and scaler
+  Int_t fNScalerChan;                // # Scaler channels,if both ADC and scaler
   Int_t fNBits;                      // # significant bits adc/scaler word
   Int_t fInitLevel;                  // hardware initialisation
   Bool_t fIsError;                   // any error
+  //
+  Bool_t fIsDMA;                     // DMA transfer?
+  Int_t fDMAsize;                    // DMA buffer length
+  Int_t* fDMAtrans;                  // DMA transfer length
+  void** fDMAaddr;                   // DMA VME start address
+  Int_t fDMAnPkt;                    // # DMA command packets
+  void* fMemDMA;                     // DMA map address
  public:
   friend class TDAQcontrol;          // access to protected variables
   TDAQmodule(const Char_t*, const Char_t*, FILE* );
@@ -123,6 +132,7 @@ class TDAQmodule : public TA2System {
   virtual void Test(){}                     // default null test function
   virtual void ReadHeader( ModuleInfoMk2_t* );
   virtual void ReadHeader( ModuleInfo_t* );
+  virtual void* DMAread(){return NULL;}
   // Calculate address
   virtual UShort_t* AddrS( UInt_t, UInt_t=0, UInt_t=0, UInt_t=0 )
   { return NULL; }
@@ -193,6 +203,16 @@ class TDAQmodule : public TA2System {
   void SetEventSendMod( TDAQmodule* evsend ){ fEventSendMod = evsend; }
   Bool_t IsError(){ return fIsError; }
   virtual DAQMemMap_t* MapSlave( void*, Int_t, Int_t ){ return NULL; }
+  //
+  // DMA parameter getters
+  Bool_t IsDMA(){ return fIsDMA; }
+  Int_t GetDMAsize(){ return fDMAsize; }
+  Int_t* GetDMAtrans(){ return fDMAtrans; }
+  void** GetDMAaddr(){ return fDMAaddr; }
+  Int_t GetDMAnPkt(){ return fDMAnPkt; }
+  virtual void* InitDMA(Int_t=0x1000){ return NULL; }
+  virtual void LinkDMA(void*, Int_t, Int_t=-1){ return; }
+
   ClassDef(TDAQmodule,1)   
     };
 

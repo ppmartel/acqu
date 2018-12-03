@@ -1,6 +1,6 @@
-//--Author	JRM Annand   6th July 2012 Inherit from V792
+//--Author	JRM Annand   6th Jul 2012 Inherit from V792
 //--Rev 	JRM Annand
-//--Update	JRM Annand
+//--Update	JRM Annand   2nd Nov 2017 DMA support
 //--Description
 //                *** AcquDAQ++ <-> Root ***
 // DAQ for Sub-Atomic Physics Experiments.

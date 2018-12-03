@@ -25,7 +25,9 @@
 //--Rev         JRM Annand    2nd Mar 2013 VADC/VScalers Mk2 header counting
 //--Rev         JRM Annand   10th Jul 2013 V874 config
 //--Rev         JRM Annand    9th Sep 2013 mod to end-run...wait for expt
-//--Update      JRM Annand   24th Sep 2013 set fIRQMod from exp->PostInit()
+//--Rev         JRM Annand   24th Sep 2013 set fIRQMod from exp->PostInit()
+//--Update      JRM Annand    8th Nov 2016 timeout in ExecEnd() procedure
+//
 //--Description
 //                *** AcquDAQ++ <-> Root ***
 // DAQ for Sub-Atomic Physics Experiments.
@@ -54,6 +56,9 @@ enum { ESupStart, ESupGo, ESupRun, ESupPause, ESupStop, ESupEnd, ESupKill,
        ESupExperiment, ESupComm, ESupFile, ESupRunNumber,
        ESupAuto, ESupNoAuto, ESupIsRunning, ESupConfigTCS, ESupSetTCSRunMode, ESupCAMAC, 
        ESupVUPROM, ESupV874 };
+// timeout (in usleeps) waiting for TDAQ experiment to signal run ended
+// with single-node DAQ the wait gets into an infinite loop
+enum { ETimeOut = 2000000 };
 
 class ARSocket_t;
 class TDAQmodule;
@@ -78,6 +83,7 @@ class TDAQsupervise : public TA2System {
   Char_t* fOutBuff;                  // output buffer
   Int_t fRunNumber;                  // Experimental run number
   UInt_t fDataHeader;                // Either Mk1 or Mk2 format
+  UInt_t fTimeOut;                   // Wait timeout for TDAQexperiment finish
   Bool_t fIsRunInit;                 // Experimental run initialised
   Bool_t fIsRunTerm;                 // Experimental run terminated
   Bool_t fIsBufferDump;              // Data buffer printout?
@@ -135,6 +141,7 @@ class TDAQsupervise : public TA2System {
     fRunNumber = r;
     SaveRunLog();
   }
+  virtual void SetTimeOut(UInt_t tmout){ fTimeOut = tmout; }
   virtual void SetAuto( Bool_t state ){ fIsAuto = state; }
   virtual void SetTrigMod( TDAQmodule* trigmod ){ fTrigMod = trigmod; }
   virtual void SetIRQMod( TDAQmodule* irqmod ){ fIRQMod = irqmod; }

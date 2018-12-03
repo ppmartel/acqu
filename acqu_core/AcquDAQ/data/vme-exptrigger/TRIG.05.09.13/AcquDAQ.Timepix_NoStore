@@ -1,0 +1,62 @@
+####
+Description: NoStore mode! Use Go to start
+#Mk1-Format:
+#File-Name: scratch/NewDAQtest  32	500000	32768	ENet  32768  3030
+File-Name: scratch/NewDAQtest  32	500000	262144	No-Store  262144  3030
+# Frequency            Scaler	Slow-Control
+Event-Counters:	       10000	200000			
+Start-Run: 0
+#
+#Control:  Local    0     0
+### Control:   ENet	    a2CBtrigger 4030
+Control:   GUI-Local	    0 0
+#Control:   ENetSlave	    a2CBtrigger 4030
+#
+#	module	   Name		configFile
+Module:	KPH_I686   kphi686_0	kphi686.dat		0	 0
+Module: GSI_VUPROM vup0         vuprom.TaggEff		ea000000 0   196 32 
+Module: GSI_VUPROM vup1         vuprom.patt     	ea000000 0   6 8
+Module: GSI_VUPROM vup2         vuprom.sca_coplan 	e8000000 196 32 32
+Module: GSI_VUPROM vup3         vuprom.sca_multi  	e7000000 228 32 32
+##
+Module: CBD_8210   cbd0		cbd8210_0.dat	800000	0	0
+#
+#Module: CAEN_V792  v792_0 v792_TaggEff.dat                eb000000 200    32      12
+#----------------------------------------	crate	station
+Module: CAMAC	      a2_1	a2ctrl_0.dat	  1	30
+Module: CAMAC	      lrs_4413	lrs_4413.CB1	  1	4
+Module: CAMAC	      lrs_4413	lrs_4413.CB2	  1	3
+# edited by Jennifer & Patrik
+Module: CAMAC         lrs_4413  lrs_4413.CB_TimeAmp	1	5
+#
+Module: CAMAC         lrs_2551  lrs_2551.dat    1       16
+Module: CAMAC         vucam     vucam.dat       1       17
+#
+#EPICS Slow control readout. Readout at beginning and end of each data file, and periodically as specified
+#
+#                                                       Period Mode     Period (ms for timer mode)
+#                                                      (timer/scaler)   Period (#scaler events for scaler mode)
+#                                                                       (0 = only at beginning of run file)
+#Module:   EPICS       EPICS   data/EpicsEvent_0.dat        timer         3000
+#Module:   EPICS       EPICS   data/EpicsCbrem.dat  	    scaler        2
+#Module:   EPICS       EPICS   data/EpicsEvent_Scalers.dat  scaler        2
+#Module:   EPICS       EPICS   data/EpicsEvent_2.dat        scaler        0
+Module:   EPICS       EPICS   data/EpicsTimepix.dat         trigger       0  -1  16
+#
+Reset-Ctrl: kphi686_0
+#
+## Interrupt control module
+IRQ-Ctrl: vup0
+##
+## Trigger enable and TCS start/stop module, 
+## and delay in usec after CATCH reset
+Start-Ctrl: vup0 555000
+#
+## Event info provider module
+EventID-Send: vup0
+#
+##
+## Event Synchronisation info provider module and event ID index
+EventID-Master: 400
+#Synch-Ctrl: vup0 400
+########### End of File #######################
