@@ -68,9 +68,9 @@ void TA2PairSpec::PostInit( )
 void TA2PairSpec::LoadVariable( )
 {
   // buffers for histogram contents 
-  fScalerOpen = new UInt_t[fNchannels]; 
-  fScalerGated = new UInt_t[fNchannels];
-  fScalerGatedDly = new UInt_t[fNchannels];
+  fScalerOpen = new Double_t[fNchannels]; 
+  fScalerGated = new Double_t[fNchannels];
+  fScalerGatedDly = new Double_t[fNchannels];
   
   fScalerSumOpen = new Double_t[fNchannels]; 
   fScalerSumGated = new Double_t[fNchannels];
@@ -87,9 +87,9 @@ void TA2PairSpec::LoadVariable( )
   //           MultiX  for a multi-valued variable
 
   //                            name                     pointer          type-spec
-  TA2DataManager::LoadVariable("Open",     fScalerOpen,     EIScalerX);
-  TA2DataManager::LoadVariable("Gated",    fScalerGated,    EIScalerX);
-  TA2DataManager::LoadVariable("GatedDly", fScalerGatedDly, EIScalerX);
+  TA2DataManager::LoadVariable("Open",     fScalerOpen,     EDScalerX);
+  TA2DataManager::LoadVariable("Gated",    fScalerGated,    EDScalerX);
+  TA2DataManager::LoadVariable("GatedDly", fScalerGatedDly, EDScalerX);
   TA2DataManager::LoadVariable("SumOpen",     fScalerSumOpen,     EDScalerX);
   TA2DataManager::LoadVariable("SumGated",    fScalerSumGated,    EDScalerX);
   TA2DataManager::LoadVariable("SumGatedDly", fScalerSumGatedDly, EDScalerX);

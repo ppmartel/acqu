@@ -35,11 +35,12 @@ TA2AccessSQL::TA2AccessSQL(const char* name, TA2Analysis* analysis)	: TA2Physics
   fCB			= 0;   						// pointer to the Crystal Ball
   fNaI		= 0;       					// pointer to the NaI elements
   fPID		= 0;           				// pointer to the PID
-  fMWPC 		= 0;						// pointer to the MWPC
+  fMWPC       	= 0;						// pointer to the MWPC
   fTAPS		= 0;       					// pointer to TAPS
   fBaF2PWO	= 0;	       				// pointer to the BaF2 (or the BaF2/PWO) array
   fVeto		= 0;           				// pointer to the TAPS Vetos
-  fLinPol		= 0;           				// pointer to the linear Polarization class (if available)
+  fLinPol	= 0;           				// pointer to the linear Polarization class (if available)
+  fPairSpec     = 0;
   fPbWO4            = 0;
   fTOF              = 0;   
   fPbGlassApp       = 0;
@@ -320,6 +321,11 @@ void TA2AccessSQL::LoadDetectors(TA2DataManager* parent, Int_t depth)
     else if (!strcmp(obj->ClassName(), "TA2LinearPolEpics"))
     {
       fLinPol = (TA2LinearPolEpics*) obj;
+      added = kTRUE;
+    }
+    else if (!strcmp(obj->ClassName(), "TA2PairSpec"))
+    {
+      fPairSpec = (TA2PairSpec*) obj;
       added = kTRUE;
     }
     else if (!strcmp(obj->ClassName(), "TA2Moeller"))
