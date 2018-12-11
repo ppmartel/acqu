@@ -14,7 +14,7 @@
 #ifndef __TA2LinearPolEpics_h__
 #define __TA2LinearPolEpics_h__
 
-#include "TA2Apparatus.h"  
+#include "TA2Apparatus.h" 
 #include "TA2Tagger.h"
 #include "TEPICSmodule.h"
 #include "TA2Ladder.h"
@@ -41,7 +41,6 @@ class TA2LinearPolEpics : public TA2Apparatus {
  protected:
   TA2System *fAnalysis;
   Int_t    fInitLevel;		//To allow multiple passes at Init
-
   Int_t    fTaggerChannels;	// no of tagger scalers
   Int_t    fNormChannel;	// Channel to use for normalisation
   Double_t fNormEnergy;		// Photon energy for normalisation for  "enhancement"
@@ -118,9 +117,6 @@ class TA2LinearPolEpics : public TA2Apparatus {
   Char_t   fRunRefFiles[100][80];
   Int_t    fRunRangeIndex;
   Int_t    fLastRunRangeIndex;
-  
-
-  Double_t polTable[2][352];           //where its [plane][edge][E_id][field]
   
   //flags for lines from setup file;
   Bool_t fHaveApp;     
@@ -271,6 +267,9 @@ class TA2LinearPolEpics : public TA2Apparatus {
   TH1F *fFitEnhData;
   TH1F *fFitEnh;
   TH1F *fFitPol;
+
+  // Old/new tagger style 
+  Bool_t isIncreasingPhotonEnergy; // default is new!
   
  public:
   TA2LinearPolEpics( const char*, TA2System* ); 	// pass ptr to analyser
@@ -302,7 +301,7 @@ class TA2LinearPolEpics : public TA2Apparatus {
   Double_t 	*FillPolArray();	         //fill and return array of polarizations for all ladder hits.
   void          FitInit(const TH1F *histD);
   void          FitEnhancement(const TH1F *histD, const double scalingN, const int nVec=2);
-  void          parFromHuman(Double_t edgeMeV = 750.0, Double_t spreadMeV = 20.0, Double_t colliDist_m = 2.5, Double_t colliRad_mm = 3.0, Int_t nVec = 2, Double_t *par=NULL);
+  void          parFromHuman(Double_t edgeMeV = 150.0, Double_t spreadMeV = 20.0, Double_t colliDist_m = 2.5, Double_t colliRad_mm = 3.0, Int_t nVec = 2, Double_t *par=NULL);
   Double_t      efit(const Double_t *parms); //The main customized fitting function which gets called by MINUIT
   
   // Root needs this line for incorporation in dictionary
