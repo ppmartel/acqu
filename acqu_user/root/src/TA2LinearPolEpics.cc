@@ -211,6 +211,10 @@ TA2LinearPolEpics::TA2LinearPolEpics( const char* name, TA2System* fAnalysis  )
   ///Fit Enhancement
   fLOWFIT = 400;
   fFitInitialised = kFALSE;
+
+  // Old/new tagger style 
+  isIncreasingPhotonEnergy = kTRUE; // default is new!
+
 }
 
 
@@ -351,13 +355,17 @@ void TA2LinearPolEpics::PostInitialise( )
     fNormChannel=fTaggerChannels/2;			// default norm chan to .5 of range
 
     if((ladderECal = fLadder->GetECalibration())){	//get the ladder energy calibration
+      if(ladderECal[0] < ladderECal[1]) isIncreasingPhotonEnergy = kFALSE;
       fEnergyCalib = new Double_t[fTaggerChannels];
       fLadderPhotonEnergy = new Double_t[fTaggerChannels];
       fEnergyBins = new Double_t[fTaggerChannels+1];
       for(int n=0;n<fTaggerChannels;n++){		// fill the photon energy calib
 	energy=fBeamEnergy-ladderECal[n];
 	fLadderPhotonEnergy[n]=energy;
-	fEnergyCalib[fTaggerChannels-1-n]=energy;
+	if(!isIncreasingPhotonEnergy)
+	  fEnergyCalib[fTaggerChannels-1-n]=energy; // old tagger style (energy goes from high -> low)
+	if(isIncreasingPhotonEnergy)
+	  fEnergyCalib[n]=energy; // new tagger style (energy goes from low -> high)
       }
       //Make array of bin lower limits for hist axes
       //first bin low edge
@@ -507,7 +515,7 @@ void TA2LinearPolEpics::PostInitialise( )
     }
     sprintf(histName,"%s_GatedIncoherent",fName.Data());
     fHGatedInc=(TH1F *)f1Dhist->FindObject(histName);
-    if(fHInc!=NULL){
+    if(fHGatedInc!=NULL){
       fHGatedInc->GetXaxis()->Set(fTaggerChannels,fEnergyBins);
       fHGatedInc->GetXaxis()->SetTitle("Photon Energy (MeV)");
     }
@@ -907,11 +915,21 @@ void TA2LinearPolEpics::Reconstruct( ){
 	  }
 	}
       }
-      
-      for(int n=0;n<fTaggerChannels;n++){	           //fill various arrays for hists (in ascending E_g order)
-	fAccScaler[fScalerEvent%fNScalerBuffers][fTaggerChannels-1-n]=fScalerCurr[n];
-	fAccPromptScaler[fScalerEvent%fNScalerBuffers][fTaggerChannels-1-n]=fLadder->fScalerPromptCurr[n];
-	fAccRandScaler[fScalerEvent%fNScalerBuffers][fTaggerChannels-1-n]=fLadder->fScalerRandCurr[n];
+
+      if(!isIncreasingPhotonEnergy){
+	for(int n=0;n<fTaggerChannels;n++){	           //fill various arrays for hists (in ascending E_g order) - old tagger (energy goes from high -> low)
+	  fAccScaler[fScalerEvent%fNScalerBuffers][fTaggerChannels-1-n]=fScalerCurr[n];
+	  fAccPromptScaler[fScalerEvent%fNScalerBuffers][fTaggerChannels-1-n]=fLadder->fScalerPromptCurr[n];
+	  fAccRandScaler[fScalerEvent%fNScalerBuffers][fTaggerChannels-1-n]=fLadder->fScalerRandCurr[n];
+	}
+      }
+
+      if(isIncreasingPhotonEnergy){
+	for(int n=0;n<fTaggerChannels;n++){	           //fill various arrays for hists (in descending  E_g order) - new tagger (energy goes from low -> high)
+	  fAccScaler[fScalerEvent%fNScalerBuffers][n]=fScalerCurr[n];
+	  fAccPromptScaler[fScalerEvent%fNScalerBuffers][n]=fLadder->fScalerPromptCurr[n];
+	  fAccRandScaler[fScalerEvent%fNScalerBuffers][n]=fLadder->fScalerRandCurr[n];
+	}
       }
       
       for(int n=0;n<fTaggerChannels;n++){
@@ -1005,10 +1023,12 @@ void TA2LinearPolEpics::Reconstruct( ){
 	      fGatedCurrEnhSpec[n]=normValueGated*fRandSubtraction[n]/fIncGatedSpectrum[n];
 	    }
 	  }
+	  if(fHEnh!=NULL)  {
+	    fHEnh->Fill(fEnergyBins[n],fEnhSpectrum[n]);
+	  }
 	} //end loop over all tagger channels for filling
 
-	// make enhancements
-	if(fHEnh!=NULL)  fHEnh->Divide(fHCoh,fHInc,normValue);
+	
 	switch(fPlane){	//now fill hists etc according to mode
 	case ETablePara:
 	  if(fHEnhPara!=NULL){	//para enhancement one
@@ -1069,14 +1089,13 @@ void TA2LinearPolEpics::Reconstruct( ){
 	      edgeFit->SetParameter(2,10.0);
 	      edgeFit->SetParameter(3,100.0);
 	      fHEnh->Fit(edgeFit,"QNR");
-	 
-	    
+	      	    
 	      errordummy1 = edgeFit->GetParError(1);
 	      errordummy2 = edgeFit->GetParError(2); 
 	    
 	      fEdge = (edgeFit->GetParameter(1)) + abs(edgeFit->GetParameter(2));
-	      fEdgeError = sqrt(errordummy1*errordummy1 + errordummy2*errordummy2);
-
+	      fEdgeError = sqrt(errordummy1*errordummy1 + errordummy2*errordummy2); 
+	     	      
 	    }
 	  if(fHEdge){
 	    if(fScalerEvent%(fHEdge->GetNbinsX()-1)==0){
@@ -1091,7 +1110,7 @@ void TA2LinearPolEpics::Reconstruct( ){
 	    }
 	    if(fPlane==ETablePara){
 	      fHEdgePara->SetBinContent(fScalerEvent%(fHEdgePara->GetNbinsX()-1),fEdge);
-	      fHEdgePara->SetBinError(fScalerEvent%(fHEdge->GetNbinsX()-1),fEdgeError);
+          fHEdgePara->SetBinError(fScalerEvent%(fHEdgePara->GetNbinsX()-1),fEdgeError);
 	    }
 	    else{
 	      fHEdgePara->Fill(fScalerEvent%(fHEdgePara->GetNbinsX()-1),0);
@@ -1103,7 +1122,7 @@ void TA2LinearPolEpics::Reconstruct( ){
 	    }
 	    if(fPlane==ETablePerp){
 	      fHEdgePerp->SetBinContent(fScalerEvent%(fHEdgePerp->GetNbinsX()-1),fEdge);
-	      fHEdgePerp->SetBinError(fScalerEvent%(fHEdge->GetNbinsX()-1),fEdgeError);
+          fHEdgePerp->SetBinError(fScalerEvent%(fHEdgePerp->GetNbinsX()-1),fEdgeError);
 	    }
 	    else{
 	      fHEdgePerp->Fill(fScalerEvent%(fHEdgePerp->GetNbinsX()-1),0);
@@ -1376,14 +1395,21 @@ int TA2LinearPolEpics::LoadAmoRef(Char_t *refFileName){
 	sscanf(line,"%*d%lf",&content);         // get chan and contents
 	
 	if(channel>=fTaggerChannels) break; 		// break if past last chan
-	fIncSpectrum[fTaggerChannels-1-channel]=content; //fill array
+	if(!isIncreasingPhotonEnergy)
+	  fIncSpectrum[fTaggerChannels-1-channel]=content; //fill array - old tagger style (energy goes from high -> low)
+	if(isIncreasingPhotonEnergy)
+	  fIncSpectrum[channel]=content; //fill array - new tagger style (energy goes from low -> high)
       }
       if(IsFlagged){
        	sscanf(line,"%*d%lf%lf",&content,&gateRef);
 
 	if(channel>=fTaggerChannels) break; 		// break if past last chan
-	fIncSpectrum[fTaggerChannels-1-channel]=content; //fill arrays
-        fIncGatedSpectrum[fTaggerChannels-1-channel]=gateRef;
+	if(!isIncreasingPhotonEnergy){
+	  fIncSpectrum[fTaggerChannels-1-channel]=content; //fill arrays - old tagger style (energy goes from high -> low)
+	  fIncGatedSpectrum[fTaggerChannels-1-channel]=gateRef;} //fill arrays - old tagger style (energy goes from high -> low)
+	if(isIncreasingPhotonEnergy){
+	  fIncSpectrum[channel]=content; //fill arrays - new tagger style (energy goes from low -> high)
+	  fIncGatedSpectrum[channel]=gateRef;} //fill arrays  - new tagger style (energy goes from low -> high)
       }
       channel++;
     } 						 //(increasing E_g order)
@@ -1629,9 +1655,12 @@ void  TA2LinearPolEpics::enhFromParams(){
     if(fHPolTablePol)fHPolTablePol->SetBinContent(n+1,fHistP->GetBinContent(n+1));
     fCurrentPolTable[n]	=fHistP->GetBinContent(n+1);
     fCurrentEnhTable[n]	=fHistE->GetBinContent(n+1);      
-    
-    fCurrentPolTable_TC[fTaggerChannels-n]=fHistP->GetBinContent(n+1);
-    fCurrentEnhTable_TC[fTaggerChannels-n]=fHistE->GetBinContent(n+1);
+    if(!isIncreasingPhotonEnergy){
+      fCurrentPolTable_TC[fTaggerChannels-n]=fHistP->GetBinContent(n+1); // old tagger style (energy goes from high -> low)
+      fCurrentEnhTable_TC[fTaggerChannels-n]=fHistE->GetBinContent(n+1);} // old tagger style (energy goes from high -> low)
+    if(isIncreasingPhotonEnergy){
+      fCurrentPolTable_TC[n]=fHistP->GetBinContent(n+1); // new tagger style (energy goes from low -> high)
+      fCurrentEnhTable_TC[n]=fHistE->GetBinContent(n+1);} // new tagger style (energy goes from low -> high)
   }
 }
 
@@ -1819,7 +1848,7 @@ void  TA2LinearPolEpics::FitEnhancement(const TH1F *histD, const double scalingN
 void  TA2LinearPolEpics::parFromHuman(Double_t edgeMeV, Double_t spreadMeV, 
 		  Double_t colliDist_m, Double_t colliRad_mm, Int_t nVec, Double_t *par){
 
-   //takes some physical quantities and makes them into parameters, then calls the 
+  //takes some physical quantities and makes them into parameters, then calls the 
   //enhFromParams function.
   
   Int_t g = 2;                                                                //variables used in CLAS note
