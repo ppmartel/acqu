@@ -15,6 +15,7 @@
 #define OSCAR_TOArray2D
 
 #include "TNamed.h"
+#include "TBuffer.h"
 
 class TOArray2D : public TNamed
 {

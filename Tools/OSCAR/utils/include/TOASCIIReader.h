@@ -15,6 +15,9 @@
 #define OSCAR_TOASCIIReader
 
 #include "TObject.h"
+#include <fstream>
+
+using namespace std;
 
 class TOASCIIReader : public TObject
 {
