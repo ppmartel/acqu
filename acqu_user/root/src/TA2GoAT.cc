@@ -492,11 +492,6 @@ void    TA2GoAT::PostInit()
     }
 
 
-  // Recording start time of file
-
-  Int_t timestamp = gAR->GetFileTimeEpoch();
-  treeSetupParameters->Branch("TimeStamp", &timestamp, "TimeStamp/I");
-
   // Adding Tagger information to parameters tree
 
   Int_t nTagger;
@@ -547,6 +542,10 @@ void    TA2GoAT::PostInit()
   // Store Scalers for non-MC process
   if (gAR->GetProcessType() != EMCProcess) 
     {
+      // Recording start time of file
+      Int_t timestamp = gAR->GetFileTimeEpoch();
+      treeSetupParameters->Branch("TimeStamp", &timestamp, "TimeStamp/I");
+      
       treeScalers = new TTree("scalers", "scalers");
       treeScalers->Branch("eventNumber", &eventNumber, "eventNumber/I");
       treeScalers->Branch("eventID", &eventID, "eventID/I");
