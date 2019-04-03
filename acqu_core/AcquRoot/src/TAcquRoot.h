@@ -255,8 +255,11 @@ public:
    }
    Int_t GetFileTimeEpoch(){
      const char *headertime = GetFileTimeString();
+     setenv("TZ", "Europe/Berlin", 1);
+     tzset();
      struct tm tm;
      strptime(headertime, "%a %b %d %T %Y", &tm);
+     tm.tm_isdst = -1;
      time_t timestamp = mktime(&tm);
      return (Int_t)timestamp;
    }
