@@ -531,10 +531,10 @@ void TA2Ladder::ReadDecoded( )
  
   // Determine nearest channel with energy smaller than this energy
   UInt_t iHit = TMath::BinarySearch( fNelem, fECalibrationSorted, Ee );
-
+  
   // Ensure that we do not go out of range, also handles the above returning -1
   if( iHit >= fNelem ) iHit = 0;
-
+    
   Double_t centLo,centHi,nextLo;
 
   // If widths were set, use these to determine limits of the channel
@@ -582,8 +582,8 @@ void TA2Ladder::ReadDecoded( )
       if(fIsECalib) fEelecOR[fNhits] = fECalibration[iHit];
     }
     else{
-      fHits[fNhits] = fHitsAll[fNhits] = fNelem-iHit;
-      if(fIsECalib) fEelecOR[fNhits] = fECalibration[fNelem-iHit];
+      fHits[fNhits] = fHitsAll[fNhits] = fNelem-1-iHit;
+      if(fIsECalib) fEelecOR[fNhits] = fECalibration[fNelem-1-iHit];
     }
     if(fIsTime) fTimeOR[fNhits] = 0.0;
     if(fIsTime) fTimeAll[fNhits] = 0.0;
@@ -596,8 +596,8 @@ void TA2Ladder::ReadDecoded( )
 	if(fIsECalib) fEelecOR[fNhits] = fECalibration[iHit+1];
       }
       else{
-	fHits[fNhits] = fHitsAll[fNhits] = fNelem-(iHit + 1);
-	if(fIsECalib) fEelecOR[fNhits] = fECalibration[fNelem-(iHit+1)];
+	fHits[fNhits] = fHitsAll[fNhits] = fNelem-1-(iHit + 1);
+	if(fIsECalib) fEelecOR[fNhits] = fECalibration[fNelem-1-(iHit+1)];
       }
       if(fIsTime) fTimeOR[fNhits] = 0.0;
       if(fIsTime) fTimeAll[fNhits] = 0.0;
