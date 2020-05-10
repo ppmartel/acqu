@@ -122,7 +122,7 @@ void TCCalibEnergy::Fit(Int_t elem)
         // delete old function
         if (fFitFunc) delete fFitFunc;
         sprintf(tmp, "fEnergy_%i", elem);
-        fFitFunc = new TF1(tmp, "gaus(0)+pol3(3)");
+        fFitFunc = new TF1(tmp, "[0]*(exp(-0.5*((x-[1])/[2])**2)+[3]*exp(-0.5*((x-([1]-[4]))/([2]*[5]))**2))+pol3(6)");
         fFitFunc->SetLineColor(2);
         
         // estimate peak position
@@ -137,29 +137,23 @@ void TCCalibEnergy::Fit(Int_t elem)
             if (!fFitHisto->Fit(fFitFunc, "RBQ0")) break;
 
         // final results
-        fPi0Pos = fFitFunc->GetParameter(1); 
-        
-        // check if mass is in normal range
-        if (fPi0Pos < 80 || fPi0Pos > 200) fPi0Pos = 135;
- 
-        // set indicator line
-        fLine->SetY1(0);
-        fLine->SetupY(0, fFitHisto->GetMaximum()*1.05);
-        fLine->SetX1(fPi0Pos);
-        fLine->SetX2(fPi0Pos);
-   
+        fPi0Pos = fFitFunc->GetParameter(1);
+
         // draw fitting function
         if (fFitFunc) {
             fFitFunc->Draw("same");
 
             delete fFitPeak;
-            fFitPeak = new TF1("peak", "gaus(0)", fFitFunc->GetXmin(), fFitFunc->GetXmax());
+            fFitPeak = new TF1("peak", "[0]*(exp(-0.5*((x-[1])/[2])**2)+[3]*exp(-0.5*((x-([1]-[4]))/([2]*[5]))**2))", fFitFunc->GetXmin(), fFitFunc->GetXmax());
             fFitPeak->SetLineColor(kGreen);
 
             // copy parameters from fit
             for(int i=0;i<fFitPeak->GetNpar(); ++i) {
                 fFitPeak->SetParameter(i, fFitFunc->GetParameter(i));
             }
+
+            // better final result
+            fPi0Pos = fFitPeak->GetMaximumX();
 
             // background = fit - peak
             delete fFitBackGround;
@@ -174,6 +168,15 @@ void TCCalibEnergy::Fit(Int_t elem)
             //double bg_integral   = fFitBackGround->Integral(fFitBackGround->GetXmin(), fFitBackGround->GetXmax(), nullptr);
             //double peak_ratio    = peak_integral / bg_integral;
         }
+
+        // check if mass is in normal range
+        if (fPi0Pos < 80 || fPi0Pos > 200) fPi0Pos = 135;
+
+        // set indicator line
+        fLine->SetY1(0);
+        fLine->SetupY(0, fFitHisto->GetMaximum()*1.05);
+        fLine->SetX1(fPi0Pos);
+        fLine->SetX2(fPi0Pos);
     
         // draw indicator line
         fLine->Draw();
@@ -184,7 +187,6 @@ void TCCalibEnergy::Fit(Int_t elem)
     double maximum = fFitFunc->GetMaximumX();
     fFitOk=false;
     if(maximum < xmax && maximum > xmin) {
-        puts("Fit OK!\n");
         fFitOk=true;
     } else {
         puts("No Maximum found in fit!");
@@ -284,19 +286,29 @@ void TCCalibEnergy::Calculate(Int_t elem)
 void TCCalibCBEnergy::initFitFunction()
 {
     fFitFunc->SetRange(fPi0Pos - 50, fPi0Pos + 80);
-    fFitFunc->SetParameters(fFitHisto->GetMaximum(), fPi0Pos, 8, 1, 1, 1, 0.1);
+    fFitFunc->SetParameters(fFitHisto->GetMaximum(), fPi0Pos, 10, 0.25, 5, 2, 1, 1, 1, 0.1);
+
     fFitFunc->SetParLimits(1, 130, 140);
     fFitFunc->SetParLimits(2, 3, 15);
+
+    fFitFunc->SetParLimits(3, 0, 0.33);
+    fFitFunc->SetParLimits(4, 4, 25);
+    fFitFunc->SetParLimits(5, 1, 3);
 }
 
 void TCCalibTAPSEnergyLG::initFitFunction()
 {
     fFitFunc->SetRange(80, 250);
-    fFitFunc->SetParameters(fFitHisto->GetMaximum(), fPi0Pos, 10, 1, 1, 1, 0.1);
+    fFitFunc->SetParameters(fFitHisto->GetMaximum(), fPi0Pos, 10, 0.25, 5, 2, 1, 1, 1, 0.1);
+
     fFitFunc->SetParLimits(0, 1, fFitHisto->GetMaximum());
     fFitFunc->SetParLimits(1, 115, 140);
     fFitFunc->SetParLimits(2, 5, 50);
-    fFitFunc->FixParameter(6, 0);
+
+    fFitFunc->SetParLimits(3, 0, 0.33);
+    fFitFunc->SetParLimits(4, 4, 25);
+    fFitFunc->SetParLimits(5, 1, 3);
+    fFitFunc->FixParameter(9, 0);
 }
 
 ClassImp(TCCalibEnergy)
