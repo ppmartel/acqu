@@ -75,3 +75,24 @@ HitCluster_t::~HitCluster_t( )
   if( fMeanPosition ) delete fMeanPosition;
 }
 
+//---------------------------------------------------------------------------
+void HitCluster_t::BuildElementary(TA2ClusterDetector* det)
+{
+    // Build the elementary cluster consisting only of the central element.
+
+    fNhits = 1;
+    fHits[0] = fIndex;
+    fEnergies[0] = det->GetEnergy()[fIndex];
+    fTimes[0] = det->GetTime()[fIndex];
+    fHits[fNhits] = EBufferEnd;
+
+    *fMeanPosition = *(det->GetPosition()[fIndex]);
+    fEnergy = fEnergies[0];
+    fCentralFrac = 1;
+    fSqrtEtot = 0;
+    fTime = fTimes[0];
+    fTheta = TMath::RadToDeg() * fMeanPosition->Theta();
+    fPhi = TMath::RadToDeg() * fMeanPosition->Phi();
+    fRadius = 0;
+}
+

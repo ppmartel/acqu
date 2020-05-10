@@ -62,7 +62,9 @@ class TA2Ladder : public TA2Detector {
   Int_t* fHitsPrompt;		// array with indices of prompt hit channels
   Int_t* fMuHits;               // microscope hits
   Double_t* fECalibration;     	// Energy calibration
+  Double_t* fECalibrationSorted;// Energy calibration (sorted)
   Double_t* fEWidth;            // Energy width of channel
+  Double_t* fEWidthSorted;      // Energy width of channel (sorted)
   Double_t* fEelec;             // electron energy
   Double_t* fEelecOR;           // OR of electron energy
   Double_t* fMeanEelecOR;       // OR of overlap electron energy

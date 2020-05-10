@@ -65,6 +65,7 @@
 #include "TA2RingBuffer.h"             // data buffer class
 
 #include <string>
+#include "time.h"
 
 // Types raw-data tree branch
 enum { EARHitBr, EARScalerBr, EARHeaderBr };
@@ -244,6 +245,23 @@ public:
        return((AcquMk2Info_t*)((UInt_t*)fHeaderBuff + 1))->fOutFile;
      else
        return((AcquExptInfo_t*)((UInt_t*)fHeaderBuff + 1))->fOutFile;
+   }
+   Char_t* GetFileTimeString(){
+     // ONLINE...access the start time of the current file from the ACQU header record
+     if( fIsMk2Format )
+       return((AcquMk2Info_t*)((UInt_t*)fHeaderBuff + 1))->fTime;
+     else
+       return((AcquExptInfo_t*)((UInt_t*)fHeaderBuff + 1))->fTime;
+   }
+   Int_t GetFileTimeEpoch(){
+     const char *headertime = GetFileTimeString();
+     setenv("TZ", "Europe/Berlin", 1);
+     tzset();
+     struct tm tm;
+     strptime(headertime, "%a %b %d %T %Y", &tm);
+     tm.tm_isdst = -1;
+     time_t timestamp = mktime(&tm);
+     return (Int_t)timestamp;
    }
    Int_t GetRunNumber(){
      // ONLINE...access the current run number from the ACQU header record

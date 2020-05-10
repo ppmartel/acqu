@@ -53,6 +53,7 @@ public:
   virtual ~HitCluster_t();
   virtual void ClusterDetermine( TA2ClusterDetector* ) = 0;
   virtual void Cleanup();
+  virtual void BuildElementary(TA2ClusterDetector* det);
   virtual Bool_t IsNeighbour( UInt_t );
   virtual void Merge( HitCluster_t* );
   virtual Double_t OpeningAngle( HitCluster_t* );

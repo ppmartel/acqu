@@ -7,7 +7,7 @@ BatchDir: /tmp/jrma/
 ##        Tree Name     	# branches	Process Type
 Name:     RawEvent_AR_Save	3		Raw
 ##        Branch Name		Buffer size
-Branch:   RawEvent_Hits		32768
+Branch:   RawEvent_Hits		524288
 Branch:	  RawEvent_Scalers	4192
 Branch:	  Mk1_Header        120000
 ##

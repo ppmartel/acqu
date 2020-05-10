@@ -28,6 +28,7 @@
 #include "TA2TAPS_BaF2.h"
 #include "TA2TAPS_Veto.h"
 #include "TA2LinearPolEpics.h"
+#include "TA2PairSpec.h"
 #include "TA2LongScint.h"
 #include "TA2GenericApparatus.h"
 #include "TA2GenericDetector.h"
@@ -84,6 +85,7 @@ protected:
   TA2TAPS_BaF2* 			  fBaF2PWO;     		// pointer to the BaF2 (or the BaF2/PWO) array
   TA2TAPS_Veto* 			  fVeto;         		// pointer to the TAPS Vetos
   TA2LinearPolEpics* 		fLinPol;          // pointer to the Linear Polarisation class
+  TA2PairSpec* 		fPairSpec;          // pointer to the Pair Spec class  
   TA2GenericDetector* fPbWO4;                             // pointer to the PbWO4 ring of TAPS
   TA2LongScint* fTOF;                                     // pointer to the TOF wall
   TA2GenericApparatus* fPbGlassApp;                       // pointer to the Pb glass detector apparatus

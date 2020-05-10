@@ -12,5 +12,6 @@ EPICSBaseSetup:      	1           ScalersEPICS
 ## Define the channels
 #               PVName			     Nelem   Type (epicsBYTE,epicsSHORT,epicsLONG,epicsFLOAT,epicsDOUBLE)
 EPICSchannel:   TAGG:MagneticField           1       epicsDOUBLE
+EPICSchannel:   TAGG:DipoleCurrent           1       epicsDOUBLE
 #
 ##

@@ -1,0 +1,71 @@
+#Default data format is Mk2
+#Mk1-Format:
+File-Name: scratch/AcquDAQ 32	5000000	262144 ENet  262144  3031
+#File-Name: scratch/AcquDAQ 32   5000000 32768 No-Store  32768  3031
+# Frequency     Scalers  SlowControl
+Event-Counters: 10000      2000000000
+Start-Run: 0
+#
+Control:  Slave    0     0
+#Control:   ENet	    localhost 4031
+#Control:   ENetSlave	    localhost 4031
+
+#	module	   Name		configFile
+Module:	KPH_I686   kphi686_0	kphi686.dat 0 0
+Module: KPH_VITEC  vit0	        vitec_0.dat 0 0 0
+
+Module: CATCH_TCS    tcs0       catchTCS.d      00e00000     0    1	0
+
+### Since the VUPROM can only handle EPT or Tagger fully,
+### it is very important to either enable 
+### vup1..vup4 for Tagger 
+### or 
+### vup1..vup7 for EPT
+### Never enable both module groups at once!
+
+# Tagger/PairSpec readout                            baseAddr  baseIndex  #ch  #bits
+Module: GSI_VUPROM_Scaler vup1 vup_tagg_288ch.dat    01000000  2000       288  32 
+Module: GSI_VUPROM_Scaler vup2 vup_tagg_288ch.dat    02000000  2288       288  32
+Module: GSI_VUPROM_Scaler vup3 vup_tagg_288ch.dat    03000000  2576       288  32
+Module: GSI_VUPROM_Scaler vup4 vup_tagg_288ch.dat    04000000  2864       288  32
+
+
+# EPT/PairSpec readout
+#Module: GSI_VUPROM_Scaler vup1 vup_EPT_dummy.dat        01000000  0           0    0
+#Module: GSI_VUPROM_Scaler vup2 vup_EPT_32ch_10.dat      03000000  3100        32  32
+#Module: GSI_VUPROM_Scaler vup3 vup_EPT_32ch_10.dat      04000000  3132        32  32
+#Module: GSI_VUPROM_Scaler vup4 vup_EPT_32ch_12.dat      03000000  3164        32  32
+#Module: GSI_VUPROM_Scaler vup5 vup_EPT_32ch_12.dat      04000000  3196        32  32
+#Module: GSI_VUPROM_Scaler vup6 vup_EPT_32ch_13.dat      03000000  3228        32  32
+#Module: GSI_VUPROM_Scaler vup7 vup_EPT_32ch_13.dat      04000000  3260        32  32
+
+# DAQ monitor scalers
+# Note the different base index
+Module: GSI_VUPROM_Scaler vup_mon vup_mon_16ch.dat  04000000  300        16   32
+
+# Moeller readout and config
+# the configuration is partly done at the PairSpec/Tagger modules,
+# this is why we have always two instances for one readout vuprom
+Module: GSI_VUPROM_Moeller vup11 vup_moe_hist.dat   11000000  8000      106  32
+Module: GSI_VUPROM_Moeller vup21 vup_moe_cfg01.dat  01000000  0 0 0
+
+Module: GSI_VUPROM_Moeller vup12 vup_moe_hist.dat   12000000  8200      106  32
+Module: GSI_VUPROM_Moeller vup22 vup_moe_cfg02.dat  02000000  0 0 0
+
+Module: GSI_VUPROM_Moeller vup13 vup_moe_hist.dat   13000000  8400      106  32
+Module: GSI_VUPROM_Moeller vup23 vup_moe_cfg03.dat  03000000  0 0 0
+
+Module: GSI_VUPROM_Moeller vup14 vup_moe_hist.dat   14000000  8600      106  32
+Module: GSI_VUPROM_Moeller vup24 vup_moe_cfg04.dat  04000000  0 0 0
+##
+## Tagger New FPD Test
+#Module: CAEN_V792  v792_0 v792_0.dat		    0e000000 200    32      12
+#Module: CAEN_V1190 v1190_0  v1190_0.dat             0f000000 232    128      14
+#Module: CAEN_V1190 v1190_0  v1190_0.dat             0f000000 232    64      14
+##
+## Interrupt control module
+IRQ-Ctrl: vit0
+## Event Synchronisation info provider module and event ID index
+Synch-Ctrl: vit0 400 
+#
+########### End of File #######################

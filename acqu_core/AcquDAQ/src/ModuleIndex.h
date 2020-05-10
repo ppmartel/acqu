@@ -17,8 +17,12 @@
 //--Rev         JRM Annand    9th Jan 2013  ECAEN_V874 added
 //--Rev 	K Livingston..7th Feb 2013  Support for handling EPICS buffers
 //--Rev 	JRM Annand  ..6th Jul 2013  ECAEN_V965 added
-//--Update	JRM Annand  ..3rd Sep 2013  VITEC added
-//--Update	JRM Annand  .22nd Sep 2013  VUPROMT added
+//--Rev 	JRM Annand  ..3rd Sep 2013  VITEC added
+//--Rev 	JRM Annand  .22nd Sep 2013  VUPROMT added
+//--Rev 	JRM Annand  .14th Oct 2016  TDAQ_VPE2xX86_64 added
+//--Rev 	JRM Annand  ..3rd Nov 2016  TVME_V785 added
+//--Rev 	JRM Annand  .16th Aug 2017  TDAQ_SIS1100 added
+//--Update	JRM Annand  .19th Oct 2017  Ensure TVME_V1290 added
 //--Description
 //                *** AcquDAQ++ <-> Root ***
 // DAQ for Sub-Atomic Physics Experiments.
@@ -52,7 +56,8 @@
 enum { EID_Undef = -1 };
 
 // Controllers
-enum { ECAEN_V2718 = 0xf000, EKPH_I686, ECAEN_SY1527 };
+enum { ECAEN_V2718 = 0xf000, ESIS_1100, EKPH_I686, ECAEN_SY1527, EVPE2xX86_64,
+       EVPE2xX86_64A };
 
 // VMEbus
 enum { EVMEbus, ECBD_8210, EHSM_8170, EVIC_8250, ESLV_8250 };
@@ -60,7 +65,7 @@ enum { ELRS_1131 = 0x0100 };
 enum { ESTR_8090 = 0x0200, ESTR_8080, ESIS_3820 };
 enum { EKPH_SMI = 0x0400, EKPH_VITEC };
 enum { ECAEN_1465 = 0x0300, ECAEN_1488, ECAEN_V792, ECAEN_V775, ECAEN_V1190,
-       ECAEN_V874, ECAEN_V965 };
+       ECAEN_V874, ECAEN_V965, ECAEN_V785, ECAEN_V1290 };
 enum { EINFN_56001 = 0x0500 };
 enum { EFIADC_64 = 0x0600, ECATCH_TDC, ECATCH_SCA, EGeSiCA, ECATCH_TCS };
 enum { EGSI_VUPROM = 0x0700, EGSI_VUPROMT, 
@@ -112,6 +117,9 @@ const Map_t kExpModules[] = {
   // Controllers
   {"CAEN_V2718", ECAEN_V2718},
   {"KPH_I686",   EKPH_I686},
+  {"VPE2xX86_64",EVPE2xX86_64},
+  {"VPE2xX86_64A",EVPE2xX86_64A},
+  {"SIS_1100",   ESIS_1100},
   // VMEbus
   {"VMEbus",     EVMEbus},
   {"CBD_8210",   ECBD_8210},
@@ -125,8 +133,10 @@ const Map_t kExpModules[] = {
   {"CAEN_1488",  ECAEN_1488},
   {"CAEN_V792",  ECAEN_V792},
   {"CAEN_V775",  ECAEN_V775},
+  {"CAEN_V785",  ECAEN_V785},
   {"CAEN_V874",  ECAEN_V874},
   {"CAEN_V1190", ECAEN_V1190},
+  {"CAEN_V1290", ECAEN_V1290},
   {"CAEN_V965",  ECAEN_V965},
   {"CAEN_SY1527",ECAEN_SY1527},
   {"CAEN_208",   ECAEN_208},

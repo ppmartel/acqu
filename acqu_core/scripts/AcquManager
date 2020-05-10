@@ -131,6 +131,21 @@ $runsets->{TAPSPulser} = dclone($runsets->{TAPS});
 $runsets->{TAPSPulser}->{Description} .= ', Pulser only';
 $runsets->{TAPSPulser}->{Hosts}->[0]->[1] = 'MasterP';
 
+# define runset Timepix with new FPD
+$runsets->{Timepix} =
+  {
+   'Description' => 'Tagging efficiency setup without TAPS or CB with bigger buffers for Timepix readout',
+   'DefaultTriggerId' => 74,
+   'Hosts' => [
+               ['vme-exptrigger',   'Timepix'], # first, the host where the AcquDAQ GUI is started
+               ['vme-tagg-tdc-c',   'TAGGC_NoDMA_Timepix'],
+               ['vme-tagg-tdc-d',   'TAGGD_NoDMA_Timepix'],
+               ['vme-tagg-tdc-e',   'TAGGE_NoDMA_Timepix'],
+               ['vme-beampolmon',   'BEAM_Timepix']
+              ],
+   'TCS' => 'vme-beampolmon'
+  };
+
 # define runset TaggEff with new FPD
 $runsets->{TaggEff} =
   {

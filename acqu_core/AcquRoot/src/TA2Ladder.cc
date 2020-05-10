@@ -70,7 +70,8 @@ TA2Ladder::TA2Ladder( const char* name, TA2System* apparatus )
   fTrigger = NULL;
   fTrigg = fDoubles = fHitsAll = fWindows = NULL;
   fHitsRand = fHitsPrompt = fMuHits = NULL;
-  fECalibration = fEelec = fEelecOR = fMeanEelecOR = fEOverlap = 
+  fECalibration = fECalibrationSorted = fEelec = fEelecOR = fMeanEelecOR = fEOverlap = 
+    fEWidth = fEWidthSorted =
     fRandMin = fRandMax = NULL;
   fMeanTime = fMeanTimeOR = fMeanEnergy = fMeanEnergyOR = 
     fDiffTime = fDiffTimeOR = NULL;
@@ -100,7 +101,9 @@ TA2Ladder::~TA2Ladder()
   }
   if( fDoubles ) delete[] fDoubles;
   if( fECalibration ) delete[] fECalibration;
+  if( fECalibrationSorted ) delete[] fECalibrationSorted;
   if( fEWidth ) delete[] fEWidth;
+  if( fEWidthSorted ) delete[] fEWidthSorted;
   if( fEOverlap ) delete[] fEOverlap;
   if( fWindows ) delete[] fWindows;
   if( fEelec ) delete[] fEelec;
@@ -246,7 +249,9 @@ void TA2Ladder::SetConfig( char* line, int key )
     if(fNelement){
       if( fIsECalib ){
 	fECalibration = new Double_t[fNelement];
+	fECalibrationSorted = new Double_t[fNelement];
 	fEWidth = new Double_t[fNelement];
+	fEWidthSorted = new Double_t[fNelement];
 	if( fIsOverlap ) fEOverlap = new Double_t[fNelement];
       }
       if( fIsScaler ){
@@ -347,6 +352,19 @@ void TA2Ladder::PostInit()
     fEelec = new Double_t[fNelem];	//create required arrays
     fEelecOR = new Double_t[fNelem];
     fMeanEelecOR = new Double_t[fNelem];
+    // create sorted arrays
+    if(fECalibration[0] < fECalibration[fNelem-1]){ // Old FDP detector Ee ->
+    for(Int_t i = 0; i < fNelem; i++){
+      fECalibrationSorted[i] = fECalibration[i];
+      fEWidthSorted[i] = fEWidth[i];
+    }
+    }
+    else{                                          // New FDP detector  Ee <-
+      for(Int_t i = 0; i < fNelem; i++){
+        fECalibrationSorted[i] = fECalibration[fNelem-1-i];
+        fEWidthSorted[i] = fEWidth[fNelem-1-i];
+      }
+    }
   }
   if( !fNtrig ) fNtrig = 1;            	// at least 1 "trigger" loop
   fTrigg = new UInt_t[fNelem];
@@ -513,28 +531,13 @@ void TA2Ladder::ReadDecoded( )
   fNDoubles = 0; 
   Float_t* energy = (Float_t*)(fEvent[EI_beam]);
   Double_t Ee = ((TA2Tagger*)fParent)->GetBeamEnergy() - 1000.0*energy[3];
-  
-  Double_t fECalibrationSorted[fNelem], fEWidthSorted[fNelem];
 
-  if(fECalibration[0] < fECalibration[fNelem-1]){ // Old FDP detector Ee ->
-    for(Int_t i = 0; i < fNelem; i++){
-      fECalibrationSorted[i] = fECalibration[i];
-      fEWidthSorted[i] = fEWidth[i];
-    }
-  }
-  else{                                          // New FDP detector  Ee <-
-    for(Int_t i = 0; i < fNelem; i++){
-      fECalibrationSorted[i] = fECalibration[fNelem-1-i];
-      fEWidthSorted[i] = fEWidth[fNelem-1-i];
-    }
-  }
- 
   // Determine nearest channel with energy smaller than this energy
   UInt_t iHit = TMath::BinarySearch( fNelem, fECalibrationSorted, Ee );
-
+  
   // Ensure that we do not go out of range, also handles the above returning -1
   if( iHit >= fNelem ) iHit = 0;
-
+    
   Double_t centLo,centHi,nextLo;
 
   // If widths were set, use these to determine limits of the channel
@@ -582,8 +585,8 @@ void TA2Ladder::ReadDecoded( )
       if(fIsECalib) fEelecOR[fNhits] = fECalibration[iHit];
     }
     else{
-      fHits[fNhits] = fHitsAll[fNhits] = fNelem-iHit;
-      if(fIsECalib) fEelecOR[fNhits] = fECalibration[fNelem-iHit];
+      fHits[fNhits] = fHitsAll[fNhits] = fNelem-1-iHit;
+      if(fIsECalib) fEelecOR[fNhits] = fECalibration[fNelem-1-iHit];
     }
     if(fIsTime) fTimeOR[fNhits] = 0.0;
     if(fIsTime) fTimeAll[fNhits] = 0.0;
@@ -596,8 +599,8 @@ void TA2Ladder::ReadDecoded( )
 	if(fIsECalib) fEelecOR[fNhits] = fECalibration[iHit+1];
       }
       else{
-	fHits[fNhits] = fHitsAll[fNhits] = fNelem-(iHit + 1);
-	if(fIsECalib) fEelecOR[fNhits] = fECalibration[fNelem-(iHit+1)];
+	fHits[fNhits] = fHitsAll[fNhits] = fNelem-1-(iHit + 1);
+	if(fIsECalib) fEelecOR[fNhits] = fECalibration[fNelem-1-(iHit+1)];
       }
       if(fIsTime) fTimeOR[fNhits] = 0.0;
       if(fIsTime) fTimeAll[fNhits] = 0.0;

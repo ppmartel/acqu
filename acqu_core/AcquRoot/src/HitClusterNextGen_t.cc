@@ -39,8 +39,8 @@ Bool_t HitClusterNextGen_t::SetFields(const std::vector< crystal_t >& cluster,
   MeanPosition.GetXYZ(xyz);
   fMeanPosition->SetXYZ(xyz[0], xyz[1], xyz[2]);
   // precalculate theta/phi...
-  fTheta = fMeanPosition->Theta();
-  fPhi = fMeanPosition->Phi();
+  fTheta = TMath::RadToDeg() * fMeanPosition->Theta();
+  fPhi = TMath::RadToDeg() * fMeanPosition->Phi();
   return kTRUE;
 }
 

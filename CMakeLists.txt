@@ -32,6 +32,15 @@ find_package(ROOT "5.30" REQUIRED)
 include_directories(${ROOT_INCLUDES})
 link_directories(${ROOT_LIBRARY_DIR})
 
+##
+## Search for Universe II driver library if requested in cmake command
+if(DEFINED DAQ_CCTVMEEN)
+           find_package(cctvmeen REQUIRED)
+           link_libraries(${CCTVMEEN_LIB})
+           link_directories(${CCTVMEEN_INCLUDE_DIR})
+           add_definitions(-DDAQ_CCTVMEEN)
+           add_definitions(-DOS64BIT)
+endif()
 
 # in these two variables, we collect over the subprojects
 # the include dirs and the libnames on which acqu_user

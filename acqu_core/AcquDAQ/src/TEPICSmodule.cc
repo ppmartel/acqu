@@ -45,6 +45,7 @@
 #include "ezcaRoot.h"      //header for the library of root wrappers for ezca channel access functions
 #endif
 
+ClassImp(TEPICSmodule)
 
 enum  EepicsType{              EepicsBYTE,    EepicsSTRING,     EepicsSHORT,    EepicsLONG,    EepicsFLOAT,    EepicsDOUBLE, EepicsNULL};
 const char *epicsTypeName[] = {"epicsBYTE",   "epicsSTRING",    "epicsSHORT",   "epicsLONG",   "epicsFLOAT",   "epicsDOUBLE",      NULL};
@@ -53,7 +54,8 @@ const int   epicsTypeSize[] = { ESizeBYTE,     ESizeSTRING,      ESizeSHORT,    
 //For some reason there's no INT in ezca channel access - not sure why
 //And STRING doesn't work
 
-enum EModes{ EEPICS_TIMER_MODE, EEPICS_SCALER_MODE};
+enum EModes{ EEPICS_TIMER_MODE, EEPICS_SCALER_MODE, EEPICS_TRIGGER_MODE};
+//enum ETrigTypes{ EEPICS_TRIG_RANGE, EEPICS_TRIG_AND, EEPICS_TRIG_OR};
 
 //defs for reading the setup file
 enum { EEPICS_SETUP, EEPICS_CHANNEL};
@@ -73,8 +75,26 @@ TEPICSmodule::TEPICSmodule(  Char_t* name, Char_t* file, FILE* log, Char_t* line
     fReadOnly=kTRUE;  //set read only flag and return
     return;
   }
+  //the setup line is like this:
+  //          type     name         configFile              mode     period/#ADC  (trigLow  trigHigh)
+  //Module:   EPICS    EPICS_TRIG   data/EpicsThorlabs.dat  trigger  30            44       0
+  //
+  // mode can be timer/scaler/trigger
+  // the remaining values depend on the value of mode:
+  // mode = scaler/timer:
+  //        only the value of period is considered:
+  //        period == 0  Read this EPICS module at the start of the run (and maybe the end, one day ...)
+  //        period >  0: Read at periodoc intervals (#scaler events, or ms, as appropriate)
+  //
+  // mode = trigger:
+  //        Read out the module based on the value of the adc specified under "Period" (= #adc)
+  //        The trigger mode can be OR,AND, Threshold or Range, depending of the values of trigLow, trigHigh 
+  //        trigLow ==  0:      Read module if #adc AND trigLow
+  //        trigLow == -1:      Read module if #adc OR  trigLow
+  //        trigLow > trigHigh: Read module if trigLow <= #adc  
+  //        trigLow < trigHigh: Read module if trigLow <= #adc <= trigHigh
   
-  
+
 #ifndef ACQUROOT_EPICS
   PrintError( line, "<EPICS Channel Access support not built. Set up EPICS environment and remake AcquDAQ, or remove EPICS from setup file>", EErrFatal );
 #endif
@@ -90,6 +110,11 @@ TEPICSmodule::TEPICSmodule(  Char_t* name, Char_t* file, FILE* log, Char_t* line
   // 
   AddCmdList( kEPICSKeys );                  // physics-specific cmds
 
+  fNEpics  = 0;       // Count no of epics events
+  fNEpicsT = 0;       // Count no of epics events timed
+  fNEpicsC = 0;       // Count no of epics events scaler counted
+  
+  fCounter=0;  
   fEpicsIndex=0;  
   fReadOnly = kFALSE;
   fType = EDAQ_Epics;
@@ -101,24 +126,56 @@ TEPICSmodule::TEPICSmodule(  Char_t* name, Char_t* file, FILE* log, Char_t* line
   fIsCountedOut = kFALSE;
   fIsTimed = kFALSE;
   fIsCounted = kFALSE;
+  fIsTriggered = kFALSE;
+
   if( line ){                              
-    if( (n = sscanf( line, "%*s%*s%*s%s%ld",mode,&fPeriod )) < 2 ) //scan in the mode and period
+    if( (n = sscanf( line, "%*s%*s%*s%s%ld%hd%hd",mode,&fPeriod,&fTrigLow,&fTrigHigh )) < 2 ) //scan in the mode and period
       PrintError( line, "<EPICS setup line parse>", EErrFatal );
   }
 
   //set the period mode to timer or scaler 
   if ( strcmp(mode,"timer") == 0 ) fPeriodMode=EEPICS_TIMER_MODE;
   else if ( strcmp(mode,"scaler") == 0 ) fPeriodMode=EEPICS_SCALER_MODE;
+  else if ( strcmp(mode,"trigger") == 0 ) fPeriodMode=EEPICS_TRIGGER_MODE;
   else PrintError( line, "<EPICS setup line parse1>", EErrFatal );
   
   if((fPeriodMode==EEPICS_TIMER_MODE)&&(fPeriod)){
-    fTimer=new TTimer(this, fPeriod, kFALSE);             //timer mode and period non-zero, set up the timer.
+    //fTimer=new TTimer(this, fPeriod, kFALSE);             //timer mode and period non-zero, set up the timer.
+    sprintf(fModeString," #timer=%ld ms",fPeriod);
+    fTimer=new TTimer(this, fPeriod, kTRUE);                //timer mode and period non-zero, set up the timer.
     fIsTimed = kTRUE; 
     }
   if((fPeriodMode==EEPICS_SCALER_MODE)&&(fPeriod)){
+    sprintf(fModeString," #scaler=%ld events",fPeriod);
     fIsCounted = kTRUE; 
   }
   
+  if(fPeriodMode==EEPICS_TRIGGER_MODE){                    //added as an afterthought, but very useful
+
+    fTrigADC=(UShort_t)fPeriod;
+
+    if(fTrigLow == -1)             fTrigType = EEPICS_TRIG_AND;
+    else if (fTrigHigh < fTrigLow) fTrigType = EEPICS_TRIG_THRESH;
+    else                           fTrigType = EEPICS_TRIG_WINDOW;
+
+    switch(fTrigType){
+    case EEPICS_TRIG_AND:
+      sprintf(fModeString," #ADC%hd AND 0x%04x",fTrigADC,fTrigHigh);
+      break;
+    case EEPICS_TRIG_THRESH:
+      sprintf(fModeString," #ADC%hd >=%hd",fTrigADC,fTrigLow);
+      break;
+    case EEPICS_TRIG_WINDOW:
+      sprintf(fModeString," #ADC%hd >=%hd <=%hd",fTrigADC,fTrigLow,fTrigHigh);
+      break;
+    default:
+      break;
+    }
+    fIsTriggered = kTRUE; 
+  }
+  
+  
+
   //open the config file an decide how many EPICS_CHANNEL lines there are to set the sizes of some arrays
   //the actual parsing of this gets done later in SetConfig
   if ( (fp = fopen(file,"r")) == NULL ) {
@@ -154,8 +211,14 @@ void TEPICSmodule::SetConfig( Char_t* line, Int_t key ){
   // Configuration from file
   switch( key ){
   case  EEPICS_SETUP:
-    if( (n = sscanf( line, "%hd%s",&fEPICSID,fName )) < 2 ) //scan in the period
+    if( (n = sscanf( line, "%hd%s",&fEPICSID,fName )) < 2 )       //scan in the id and name
       PrintError( line, "<EPICS setup line parse>", EErrFatal );
+    if(strlen(fName)+strlen(fModeString)>31){       //clip name if required and tag on mode description
+      sprintf((fName+31)-strlen(fModeString),"%s",fModeString);
+    }
+    else{
+      strcat(fName,fModeString);
+    }
     break;
     
   case EEPICS_CHANNEL:
@@ -197,7 +260,7 @@ void TEPICSmodule::PostInit(){
   fBuffLen=sizeof(EpicsHeaderInfo_t);                          //size of the header
   for(int n=0; n<fNChannels; n++){                             //loop over all the channels and add space
     fBuffLen += sizeof(EpicsChannelInfo_t);                    //chan header
-    fBuffLen+=fNelem[n]*epicsTypeSize[fChannelType[0]];        //size of array
+    fBuffLen+=fNelem[n]*epicsTypeSize[fChannelType[n]];        //size of array
   }
   fBuffLen=fBuffLen+(sizeof(UInt_t)-(fBuffLen%sizeof(UInt_t))); //AcquRoot assumes bufflen is multiple of UInt_t
                                                                 //this pads it out
@@ -216,7 +279,7 @@ void TEPICSmodule::PostInit(){
     bhead->period=fPeriod;
   }
   else{
-   bhead-> period=0;
+   bhead->period=0;
   }
    
   bhead->nchan=fNChannels;
@@ -257,6 +320,9 @@ void TEPICSmodule::WriteEPICS(void **outBuffer){
   //Write time of the EPICS event into the header
   bhead=(EpicsHeaderInfo_t*)localBuff;         //fill the buffer header
   bhead->time = time(NULL);
+  if(fPeriodMode==EEPICS_TRIGGER_MODE){         //if we're in triggered mode, misuse the period 
+    bhead->period = fVal;                      //to save the trigger value
+  }
 
   // Read out the channels
   for(int n=0; n<fNChannels; n++){           //loop over all the channels
@@ -356,16 +422,15 @@ void TEPICSmodule::DumpBuffer(Char_t *buffer, Char_t *outfile){
 
 
 Bool_t TEPICSmodule::HandleTimer(TTimer* timer){
+  //fprintf(stderr,"Handling Timer Event %d\n",fNEpicsT++);
+  
   if(fReadOnly){
     fprintf(stderr,"Warning epics is in ReadOnly mode\n");
     return kFALSE;
   }
+  fIsTimedOut=kTRUE;  //Called when the timer times out
+  return kTRUE;
 
-  if(timer!=fTimer) return kFALSE;
-  else{
-    fIsTimedOut=kTRUE;  //Called when the timer times out
-    return kTRUE;
-  }
 };
 
 Int_t TEPICSmodule::GetBufferInfo(Short_t *index, Short_t* period, Short_t *id, Char_t *EventName, Short_t *nchan, Char_t *epics_buffer, time_t *timestamp){
@@ -474,4 +539,4 @@ TEPICSmodule::~TEPICSmodule( ){
   //delete fDataBuffer; //hmm - this delete causes a seg fault. Don't know why.  
 #endif
 }
-ClassImp(TEPICSmodule)
+

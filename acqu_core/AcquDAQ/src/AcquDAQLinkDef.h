@@ -6,8 +6,10 @@
 //--Rev 	JRM Annand    9th Jan 2013  CAEN V874 (TAPS) addition
 //--Rev 	K Livingston..7th Feb 2013  Support for handling EPICS buffers
 //--Rev 	JRM Annand  ..6th Jul 2013  CAEN V965 addition
-//--Update	JRM Annand  ..3rd Sep 2013  VITEC addition
-//--Update	JRM Annand  .22nd Sep 2013  VUPROMT (TAPS) addition
+//--Rev 	JRM Annand  ..3rd Sep 2013  VITEC addition
+//--Rev 	JRM Annand  .22nd Sep 2013  VUPROMT (TAPS) addition
+//--Rev 	JRM Annand  ..3rd Nov 2016  add TDAQ_VPE2xX86_64+, TVME_V785
+//--Update	JRM Annand  .19th Oct 2017  ensure SIS1100 and V1290 added
 //--Description
 //                *** AcquDAQ++ <-> Root ***
 // DAQ for Sub-Atomic Physics Experiments.
@@ -39,14 +41,19 @@
 //
 #pragma link C++ class TDAQ_V2718+;
 #pragma link C++ class TDAQ_KPhI686+;
+#pragma link C++ class TDAQ_VPE2xX86_64+;
+#pragma link C++ class TDAQ_VPE2xX86_64A+;
+#pragma link C++ class TDAQ_SIS1100+;
 #pragma link C++ class TDAQ_SY1527+;
 #pragma link C++ class TVME_CBD8210+;
 #pragma link C++ class TVME_KPhSMI+;
 #pragma link C++ class TVME_V792+;
 #pragma link C++ class TVME_V965+;
 #pragma link C++ class TVME_V775+;
+#pragma link C++ class TVME_V785+;
 #pragma link C++ class TVME_V874+;
 #pragma link C++ class TVME_V1190+;
+#pragma link C++ class TVME_V1290+;
 #pragma link C++ class TVME_CATCH+;
 #pragma link C++ class TVME_CATCH_TDC+;
 #pragma link C++ class TVME_CATCH_Scaler+;
