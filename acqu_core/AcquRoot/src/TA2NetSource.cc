@@ -11,6 +11,9 @@
 //
 //---------------------------------------------------------------------------
 
+#include <fcntl.h>
+#include <sys/stat.h>
+
 #include "TA2NetSource.h"
 #include "ARSocket_t.h"
 

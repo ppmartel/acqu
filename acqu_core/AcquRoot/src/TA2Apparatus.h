@@ -31,6 +31,7 @@
 #include "TA2Detector.h"
 #include "TList.h"
 #include "TLorentzVector.h"
+#include "TSystem.h"
 
 #include "TA2ParticleID.h"             // PDG particle attributes
 
