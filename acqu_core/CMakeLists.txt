@@ -47,6 +47,11 @@ macro(CompileCoreLib MOD)
   set_target_properties("lib${MOD}"
     PROPERTIES COMPILE_FLAGS "${ARGN}" OUTPUT_NAME ${MOD})
   target_link_libraries("lib${MOD}" ${ROOT_LIBRARIES} ${EXTRA_LIBS})
+  if (ROOT_VERSION_MAJOR VERSION_EQUAL 6)
+    add_custom_command(TARGET lib${MOD} POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${MOD}/src/${MOD}Dict_rdict.pcm" ${PROJECT_BINARY_DIR}/lib
+    )
+  endif()
   # track this library for the following exe's
   list(APPEND CORE_LIBS "lib${MOD}")
   list(APPEND CORE_EXESRCS ${EXESRCS})
