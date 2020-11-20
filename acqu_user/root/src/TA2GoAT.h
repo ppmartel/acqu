@@ -47,6 +47,7 @@ class	TA2GoAT	: public TA2AccessSQL
   TTree*	    treeScalers;        // Scaler read information (filled each scaler read)
   TTree*            treeMoeller;        // Moeller information (filled each moeller read)
   TTree*            treeSetupParameters;// Calibration parameters (filled once)
+  TTree*        treeActiveHe3;      // Active He3 simulation
 
   char        outputFolder[256];
   char        inputName[64];
@@ -174,6 +175,12 @@ class	TA2GoAT	: public TA2AccessSQL
   Int_t*		VetoHits;
   Double_t*   VetoEnergy;
   Double_t*   VetoTime;
+
+  Int_t       nActiveHits;
+  Int_t*      ActiveHits;
+  Double_t*   ActiveEnergy;
+  Double_t*   ActiveTime;
+  Bool_t      hasActive;
 
   //Trigger 
   Double_t 	energySum;	// or Detector Energies

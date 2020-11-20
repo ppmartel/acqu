@@ -13,6 +13,7 @@ TA2GoAT::TA2GoAT(const char* Name, TA2Analysis* Analysis) : TA2AccessSQL(Name, A
 							    treeScalers(0),
 							    treeMoeller(0),
 							    treeSetupParameters(0),
+                                treeActiveHe3(0),
 							    nParticles(0),
 							    clusterEnergy(0),
 							    theta(0),
@@ -101,6 +102,11 @@ TA2GoAT::TA2GoAT(const char* Name, TA2Analysis* Analysis) : TA2AccessSQL(Name, A
 							    VetoHits(0),
 							    VetoEnergy(0),
 							    VetoTime(0),
+                                nActiveHits(0),
+                                ActiveHits(0),
+                                ActiveEnergy(0),
+                                ActiveTime(0),
+                                hasActive(0),
 							    energySum(0),
 							    multiplicity(0),
 							    nTriggerPattern(0),
@@ -320,6 +326,9 @@ void    TA2GoAT::PostInit()
   VetoHits         = new Int_t[TA2GoAT_MAX_HITS];
   VetoEnergy       = new Double_t[TA2GoAT_MAX_HITS];
   VetoTime         = new Double_t[TA2GoAT_MAX_HITS];
+  ActiveHits       = new Int_t[TA2GoAT_MAX_HITS];
+  ActiveEnergy     = new Double_t[TA2GoAT_MAX_HITS];
+  ActiveTime       = new Double_t[TA2GoAT_MAX_HITS];
 
   triggerPattern   = new Int_t[32];
 
@@ -480,6 +489,23 @@ void    TA2GoAT::PostInit()
       if(fVeto->IsTime()) treeDetectorHits->Branch("VetoTime", VetoTime, "VetoTime[nVetoHits]/D");
     }
 
+  if (gAR->GetProcessType() == EMCProcess)
+  {
+      for(Int_t i=0; i<gAR->GetNbranch()-3; i++)
+      {
+          if(strcmp(gAR->GetBranchName(i), "nhe3") != 0) continue;
+          treeDetectorHits->Branch("nActiveHits", &nActiveHits, "nActiveHits/I");
+          if(strcmp(gAR->GetBranchName(i+1), "ihe3") != 0) break;
+          treeDetectorHits->Branch("ActiveHits", ActiveHits, "ActiveHits[nActiveHits]/I");
+          if(strcmp(gAR->GetBranchName(i+2), "ehe3") != 0) break;
+          treeDetectorHits->Branch("ActiveEnergy", ActiveEnergy, "ActiveEnergy[nActiveHits]/D");
+          if(strcmp(gAR->GetBranchName(i+3), "the3") != 0) break;
+          treeDetectorHits->Branch("ActiveTime", ActiveTime, "ActiveTime[nActiveHits]/D");
+          hasActive = true;
+          break;
+      }
+  }
+
   for(Int_t i=0; i<nChannels; i++) treeDetectorHits->Branch(channelName[i],&channelValue[i],Form("%s/I",channelName[i]));
 
   if(fNaI && fMWPC)
@@ -608,11 +634,11 @@ void    TA2GoAT::PostInit()
     }
 
   if (gAR->GetProcessType() == EMCProcess)
-    {
+  {
       // Store MC event id for MC process
       if(EI_mc_evt_id < gAR->GetNbranch()) treeTrigger->Branch("mc_evt_id", &MCEventID, "mc_event_id/L");
       if(EI_mc_rnd_id < gAR->GetNbranch()) treeTrigger->Branch("mc_rnd_id", &MCRndID, "mc_rnd_id/L");
-    }
+  }
 
   // Adding NaI information to parameters tree
 
@@ -854,9 +880,23 @@ void    TA2GoAT::Reconstruct()
   // Fill standard data check histograms
   DataCheckHistograms();
 
-  if(gAR->GetProcessType() == EMCProcess ) { 
-    if(EI_mc_evt_id < gAR->GetNbranch()) MCEventID = *(Long64_t*) (fEvent[EI_mc_evt_id]);
-    if(EI_mc_rnd_id < gAR->GetNbranch()) MCRndID   = *(Long64_t*) (fEvent[EI_mc_rnd_id]);
+  if(gAR->GetProcessType() == EMCProcess )
+  {
+      if(hasActive)
+      {
+          nActiveHits = *(Int_t*) (fEvent[EI_nhe3]);
+          Int_t* tempHits = (Int_t*) (fEvent[EI_ihe3]);
+          Float_t* tempEnergy = (Float_t*) (fEvent[EI_ehe3]);
+          Float_t* tempTime = (Float_t*) (fEvent[EI_the3]);
+          for(Int_t i=0; i<nActiveHits; i++)
+          {
+              ActiveHits[i] = tempHits[i];
+              ActiveEnergy[i] = tempEnergy[i];
+              ActiveTime[i] = tempTime[i];
+          }
+      }
+      if(EI_mc_evt_id < gAR->GetNbranch()) MCEventID = *(Long64_t*) (fEvent[EI_mc_evt_id]);
+      if(EI_mc_rnd_id < gAR->GetNbranch()) MCRndID   = *(Long64_t*) (fEvent[EI_mc_rnd_id]);
   }
 
   // Output scaler info on scaler read events
@@ -1333,6 +1373,9 @@ void    TA2GoAT::Reconstruct()
   VetoHits[nVetoHits] 	  = EBufferEnd;
   VetoEnergy[nVetoHits] 	  = EBufferEnd;
   VetoTime[nVetoHits]       = EBufferEnd;
+  ActiveHits[nActiveHits] 	= EBufferEnd;
+  ActiveEnergy[nActiveHits] = EBufferEnd;
+  ActiveTime[nActiveHits]   = EBufferEnd;
 
   errorModuleID[nErrors] 	  = EBufferEnd;
   errorModuleIndex[nErrors] = EBufferEnd;
