@@ -891,7 +891,7 @@ void    TA2GoAT::Reconstruct()
           for(Int_t i=0; i<nActiveHits; i++)
           {
               ActiveHits[i] = tempHits[i];
-              ActiveEnergy[i] = tempEnergy[i];
+              ActiveEnergy[i] = 1000*tempEnergy[i];
               ActiveTime[i] = tempTime[i];
           }
       }
